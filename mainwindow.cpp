@@ -13,6 +13,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    setMaximumWidth(300);
+
     scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
 

@@ -25,12 +25,17 @@ struct Strategy
     Slot slotAtIndex(int index);
     void setSlotAtIndex(int index, Slot slot);
     void copySlot(int fromIndex, int toIndex);
+    void fillSlots(int fromIndex, int toIndex);
 
     static Strategy *createEmtpty();
 
     SlotsState slotsState() const;
     void setSlotsState(const SlotsState &slotsState);
-    void debug();
+
+    string debugSlots();
+    string debugGroups();
+
+    bool hasSlotIndex(int index);
 
 private:
     SlotsState _slotsState;

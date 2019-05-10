@@ -21,26 +21,52 @@ void SlotBoard::updateUI()
 
     for (unsigned int i = 0; i < state.size(); i++) {
         SlotWidget *slot;
-        auto laytoutItem = layout()->itemAt(static_cast<int>(i));
+        auto *laytoutItem = layout()->itemAt(static_cast<int>(i));
         if (laytoutItem != nullptr) {
             slot = static_cast<SlotWidget *>(laytoutItem->widget());
+            if (slot->isHidden()) {
+                slot->show();
+            }
         } else {
             slot = new SlotWidget();
             layout()->addWidget(slot);
         }
 
         auto activityGroup = state[i];
-        slot->setMinimumHeight(SLOT_HEIGHT * activityGroup.length);
-        slot->setNumber(static_cast<int>(i));
+
+        auto groupHeight = SLOT_HEIGHT * activityGroup.length;
+        if (slot->minimumHeight() != groupHeight) {
+            slot->setMinimumHeight(groupHeight);
+        }
+
+        auto groupNumber = static_cast<int>(i);
+        if (slot->number() != groupNumber) {
+            slot->setNumber(groupNumber);
+        }
 
         if (activityGroup.activity.has_value()) {
-            slot->setTitle(QString::fromStdString(activityGroup.activity.value()->name));
+            auto title = QString::fromStdString(activityGroup.activity.value()->name);
+            if (slot->title() != title) {
+                slot->setTitle(title);
+            }
         } else {
-            slot->setTitle("");
+            if (slot->title() != "") {
+                slot->setTitle("");
+            }
         }
     }
 
-    strategy()->debug();
+    int stateSize = static_cast<int>(state.size());
+    while (layout()->itemAt(stateSize) != nullptr && layout()->itemAt(stateSize)->widget()->isVisible()) {
+        layout()->itemAt(stateSize)->widget()->hide();
+//        layout()->removeWidget(layout()->itemAt(stateSize)->widget());
+    }
+
+    qDebug() << "stateSize" << stateSize;
+    qDebug() << "layoutCount" << layout()->count();
+
+
+    qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
 }
 
 void SlotBoard::mousePressEvent(QMouseEvent *event)
@@ -61,9 +87,9 @@ void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
 void SlotBoard::mouseMoveEvent(QMouseEvent *event)
 {
     pulledTo = slotIndexForEvent(event);
-    copySlot(pulledFrom, pulledTo);
+    fillSlots(pulledFrom, pulledTo);
 
-    qDebug() << "mouseMoveEvent" << slotIndexForEvent(event);
+//    qDebug() << "mouseMoveEvent" << slotIndexForEvent(event);
 }
 
 int SlotBoard::slotIndexForEvent(QMouseEvent *event)
@@ -88,17 +114,15 @@ void SlotBoard::copySlot(int fromIndex, int toIndex)
 
 void SlotBoard::fillSlots(int fromIndex, int toIndex)
 {
-    auto sourceIndex = fromIndex;
+    auto fromSlot = strategy()->slotAtIndex(fromIndex);
+    auto toSlot = strategy()->slotAtIndex(toIndex);
 
-    if (toIndex < fromIndex) {
-        auto tempIndex = fromIndex;
-        fromIndex = toIndex;
-        toIndex = tempIndex;
+    if (fromSlot == toSlot) {
+        return;
     }
 
-    for (int i = fromIndex + 1; i <= toIndex; i++) {
-        copySlot(sourceIndex, i);
-    }
+    strategy()->fillSlots(fromIndex, toIndex);
+    updateUI();
 }
 
 SlotWidget *SlotBoard::slotAtIndex(int index)

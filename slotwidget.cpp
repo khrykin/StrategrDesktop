@@ -5,11 +5,6 @@
 
 SlotWidget::SlotWidget(QWidget *parent) : QWidget(parent)
 {
-    setStyleSheet("SlotWidget { "
-                  "background-color: white;"
-                  "border-bottom: 1px solid gray;"
-                  "}");
-
     label = new QLabel();
     label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     label->setMaximumWidth(30);
@@ -21,6 +16,8 @@ SlotWidget::SlotWidget(QWidget *parent) : QWidget(parent)
     setLayout(new QHBoxLayout());
     layout()->addWidget(label);
     layout()->addWidget(titleLabel);
+
+    updateStyleSheet();
 }
 
 void SlotWidget::paintEvent(QPaintEvent *)
@@ -29,6 +26,21 @@ void SlotWidget::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void SlotWidget::updateStyleSheet()
+{
+    if (title().length()) {
+        setStyleSheet("SlotWidget { "
+                      "background-color: white;"
+                      "border-bottom: 1px solid gray;"
+                      "}");
+    } else {
+        setStyleSheet("SlotWidget { "
+                      "background-color: #ccc;"
+                      "border-bottom: 1px solid gray;"
+                      "}");
+    }
 }
 
 int SlotWidget::length() const
@@ -65,6 +77,7 @@ void SlotWidget::setTitle(QString title)
 {
     _title = title;
     titleLabel->setText(title);
+    updateStyleSheet();
 }
 
 int SlotWidget::number() const

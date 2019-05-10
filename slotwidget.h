@@ -27,6 +27,7 @@ signals:
 public slots:
 private:
     void paintEvent(QPaintEvent *) override;
+    void updateStyleSheet();
     int _number;
     int _length = 1;
 
