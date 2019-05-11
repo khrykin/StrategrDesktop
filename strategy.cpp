@@ -90,6 +90,26 @@ void Strategy::fillSlots(int fromIndex, int toIndex)
     }
 }
 
+optional<int> Strategy::startSlotIndexForGroupIndex(int groupIndex)
+{
+    auto activityGroups = group();
+    if (groupIndex < 0 || static_cast<unsigned int>(groupIndex) >= activityGroups.size()) {
+        return nullopt;
+    }
+
+    int lastSlotIndex = -1;
+    for (unsigned int i = 0; i <= static_cast<unsigned int>(groupIndex); i++) {
+        auto activityGroup = activityGroups[i];
+        auto startSlotIndex = lastSlotIndex + 1;
+        auto endSlotIndex  = startSlotIndex + static_cast<int>(activityGroup.length) - 1;
+
+        lastSlotIndex = endSlotIndex;
+    }
+
+    int lastSlotLength = static_cast<int>(activityGroups[static_cast<unsigned int>(groupIndex)].length);
+    return lastSlotIndex - (lastSlotLength - 1);
+}
+
 optional<int> Strategy::groupIndexForSlotIndex(int slotIndex)
 {
     auto activityGroups = group();
@@ -100,7 +120,6 @@ optional<int> Strategy::groupIndexForSlotIndex(int slotIndex)
         auto endSlotIndex  = startSlotIndex + static_cast<int>(activityGroup.length) - 1;
 
         if (slotIndex >= startSlotIndex && slotIndex <= endSlotIndex) {
-//            qDebug() << "startSlotIndex" << startSlotIndex << "endSlotIndex" << endSlotIndex << "slotIndex" << slotIndex << "groupIndex" << i;
             return make_optional(i);
         }
 

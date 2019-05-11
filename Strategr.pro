@@ -27,18 +27,18 @@ CONFIG += c++17
 SOURCES += \
         activity.cpp \
         activitygroup.cpp \
+        activitygroupwidget.cpp \
         main.cpp \
         mainwindow.cpp \
         slotboard.cpp \
-        slotwidget.cpp \
         strategy.cpp
 
 HEADERS += \
         activity.h \
         activitygroup.h \
+        activitygroupwidget.h \
         mainwindow.h \
         slotboard.h \
-        slotwidget.h \
         strategy.h
 
 FORMS +=

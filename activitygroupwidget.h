@@ -3,13 +3,14 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QMap>
 
-class SlotWidget : public QWidget
+class ActivityGroupWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit SlotWidget(QWidget *parent = nullptr);
+    explicit ActivityGroupWidget(QWidget *parent = nullptr);
     int number() const;
     void setNumber(int number);
 
@@ -25,9 +26,14 @@ public:
     bool isSelected() const;
     void setIsSelected(bool isSelected);
 
-signals:
+    void setSlotHeight(int height);
 
-public slots:
+    void selectSlotAtIndex(int slotIndex);
+    void deselectSlotAtIndex(int slotIndex);
+    void deselectAllSlots();
+
+    bool hasSelection();
+
 private:
     void paintEvent(QPaintEvent *) override;
     void updateStyleSheet();
@@ -40,6 +46,8 @@ private:
 
     QLabel *label;
     QLabel *titleLabel;
+    QWidget *selectionWidget;
+    QMap<int, QWidget *> selectionSlots;
 };
 
 #endif // SLOT_H

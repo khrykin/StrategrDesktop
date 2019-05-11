@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
-#include "slotwidget.h"
+#include "activitygroupwidget.h"
 #include "strategy.h"
 
 class SlotBoard : public QWidget
@@ -28,10 +28,12 @@ private:
 
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
-    void setSlotSelected(int index);
-    void deselectAllSLots();
+    void selectGroupAtIndex(int selectedGroupIndex);
+    void deselectAlGroups();
 
-    SlotWidget *slotAtIndex(int index);
+    void selectSlotAtIndex(int slotIndex);
+
+    ActivityGroupWidget *groupWidgetAtIndex(int index);
 
     const int SLOT_HEIGHT = 50;
     const int NUMBER_OF_SLOTS = 20;
@@ -40,12 +42,14 @@ private:
 
     Strategy *_strategy;
 
-    std::optional<int> _selectedSlotIndex;
+    std::optional<int> _selectedGroupIndex;
 
     int _pulledFrom;
     int _pulledTo;
 
     bool _isPulling = false;
+
+    QWidget *selectionWidget;
 };
 
 #endif // SLOTBOARD_H

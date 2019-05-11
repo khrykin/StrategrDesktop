@@ -27,6 +27,7 @@ struct Strategy
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
 
+    optional<int> startSlotIndexForGroupIndex(int groupIndex);
     optional<int> groupIndexForSlotIndex(int slotIndex);
 
     static Strategy *createEmtpty();
