@@ -3,6 +3,8 @@
 #include <string>
 #include "strategy.h"
 
+#include <QDebug>
+
 ActivityGroupsState Strategy::group()
 {
     auto slotsState = this->slotsState();
@@ -86,6 +88,26 @@ void Strategy::fillSlots(int fromIndex, int toIndex)
     for (auto i = fromIndex; i <= toIndex; i++) {
         copySlot(sourceIndex, i);
     }
+}
+
+optional<int> Strategy::groupIndexForSlotIndex(int slotIndex)
+{
+    auto activityGroups = group();
+    int lastSlotIndex = -1;
+    for (unsigned int i = 0; i < activityGroups.size(); i++) {
+        auto activityGroup = activityGroups[i];
+        auto startSlotIndex = lastSlotIndex + 1;
+        auto endSlotIndex  = startSlotIndex + static_cast<int>(activityGroup.length) - 1;
+
+        if (slotIndex >= startSlotIndex && slotIndex <= endSlotIndex) {
+//            qDebug() << "startSlotIndex" << startSlotIndex << "endSlotIndex" << endSlotIndex << "slotIndex" << slotIndex << "groupIndex" << i;
+            return make_optional(i);
+        }
+
+        lastSlotIndex = endSlotIndex;
+    }
+
+    return nullopt;
 }
 
 Strategy *Strategy::createEmtpty()

@@ -28,20 +28,24 @@ private:
 
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
+    void setSlotSelected(int index);
+    void deselectAllSLots();
 
     SlotWidget *slotAtIndex(int index);
-
-    Strategy *_strategy;
 
     const int SLOT_HEIGHT = 50;
     const int NUMBER_OF_SLOTS = 20;
 
     void paintEvent(QPaintEvent *) override;
 
-    int pulledFrom;
-    int pulledTo;
+    Strategy *_strategy;
 
-    bool isPulling = false;
+    std::optional<int> _selectedSlotIndex;
+
+    int _pulledFrom;
+    int _pulledTo;
+
+    bool _isPulling = false;
 };
 
 #endif // SLOTBOARD_H

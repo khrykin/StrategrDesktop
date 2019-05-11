@@ -34,7 +34,7 @@ void SlotBoard::updateUI()
 
         auto activityGroup = state[i];
 
-        auto groupHeight = SLOT_HEIGHT * activityGroup.length;
+        auto groupHeight = SLOT_HEIGHT * static_cast<int>(activityGroup.length);
         if (slot->minimumHeight() != groupHeight) {
             slot->setMinimumHeight(groupHeight);
         }
@@ -59,37 +59,32 @@ void SlotBoard::updateUI()
     int stateSize = static_cast<int>(state.size());
     while (layout()->itemAt(stateSize) != nullptr && layout()->itemAt(stateSize)->widget()->isVisible()) {
         layout()->itemAt(stateSize)->widget()->hide();
-//        layout()->removeWidget(layout()->itemAt(stateSize)->widget());
     }
-
-    qDebug() << "stateSize" << stateSize;
-    qDebug() << "layoutCount" << layout()->count();
-
 
     qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
 }
 
 void SlotBoard::mousePressEvent(QMouseEvent *event)
 {
-    isPulling = true;
-    pulledFrom = slotIndexForEvent(event);
-//    qDebug() << "mousePressEvent" << "pulledFrom" << pulledFrom;
+    _isPulling = true;
+    _pulledFrom = slotIndexForEvent(event);
+    setSlotSelected(_pulledFrom);
 }
 
 void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
 {
-    isPulling = false;
-    pulledTo = slotIndexForEvent(event);
-//    fillSlots(pulledFrom, pulledTo);
+    _isPulling = false;
+    _pulledTo = slotIndexForEvent(event);
+    deselectAllSLots();
+
 //    qDebug() << "mouseReleaseEvent" << "pulledFrom" << pulledFrom << "to" << pulledTo;
 }
 
 void SlotBoard::mouseMoveEvent(QMouseEvent *event)
 {
-    pulledTo = slotIndexForEvent(event);
-    fillSlots(pulledFrom, pulledTo);
-
-//    qDebug() << "mouseMoveEvent" << slotIndexForEvent(event);
+    _pulledTo = slotIndexForEvent(event);
+    fillSlots(_pulledFrom, _pulledTo);
+    setSlotSelected(_pulledTo);
 }
 
 int SlotBoard::slotIndexForEvent(QMouseEvent *event)
@@ -106,8 +101,6 @@ void SlotBoard::copySlot(int fromIndex, int toIndex)
         return;
     }
 
-    qDebug() << "copySlot" << fromIndex << toIndex;
-
     strategy()->copySlot(fromIndex, toIndex);
     updateUI();
 }
@@ -123,6 +116,37 @@ void SlotBoard::fillSlots(int fromIndex, int toIndex)
 
     strategy()->fillSlots(fromIndex, toIndex);
     updateUI();
+}
+
+void SlotBoard::setSlotSelected(int selectedIndex)
+{
+    if (_selectedSlotIndex.has_value() && _selectedSlotIndex.value() == selectedIndex) {
+        return;
+    }
+
+    _selectedSlotIndex = make_optional(selectedIndex);
+    auto groupIndex = strategy()->groupIndexForSlotIndex(selectedIndex);
+    if (groupIndex.has_value()) {
+        for (int i = 0; i < layout()->count(); i++) {
+            auto *slot = slotAtIndex(i);
+            auto isSelected = i == groupIndex.value() ? true : false;
+
+            if (slot->isSelected() != isSelected) {
+                slot->setIsSelected(isSelected);
+            }
+        }
+    }
+}
+
+void SlotBoard::deselectAllSLots()
+{
+    _selectedSlotIndex = nullopt;
+    for (int i = 0; i < layout()->count(); i++) {
+        auto *slot = slotAtIndex(i);
+        if (slot->isSelected() != false) {
+            slot->setIsSelected(false);
+        }
+    }
 }
 
 SlotWidget *SlotBoard::slotAtIndex(int index)

@@ -22,6 +22,9 @@ public:
     void grow();
     void shrink();
 
+    bool isSelected() const;
+    void setIsSelected(bool isSelected);
+
 signals:
 
 public slots:
@@ -30,6 +33,8 @@ private:
     void updateStyleSheet();
     int _number;
     int _length = 1;
+
+    bool _isSelected = false;
 
     QString _title;
 

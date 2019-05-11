@@ -43,6 +43,25 @@ void SlotWidget::updateStyleSheet()
     }
 }
 
+bool SlotWidget::isSelected() const
+{
+    return _isSelected;
+}
+
+void SlotWidget::setIsSelected(bool isSelected)
+{
+    _isSelected = isSelected;
+
+    if (isSelected) {
+        setStyleSheet("SlotWidget { "
+                      "background-color: #eee;"
+                      "border-bottom: 1px solid gray;"
+                      "}");
+    } else {
+        updateStyleSheet();
+    }
+}
+
 int SlotWidget::length() const
 {
     return _length;
