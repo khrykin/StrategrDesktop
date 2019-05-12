@@ -19,49 +19,60 @@ void SlotBoard::updateUI()
 
     auto state = strategy()->group();
 
+    int stateSize = static_cast<int>(state.size());
+    int hideAtIndex = stateSize;
+    while (layout()->itemAt(hideAtIndex) != nullptr) {
+        auto *widgetToHide = layout()->itemAt(hideAtIndex)->widget();
+        if (widgetToHide->isVisible()) {
+            widgetToHide->hide();
+        }
+
+        hideAtIndex++;
+    }
+
     for (unsigned int i = 0; i < state.size(); i++) {
-        ActivityGroupWidget *slot;
+        ActivityGroupWidget *groupWidget;
         auto *laytoutItem = layout()->itemAt(static_cast<int>(i));
         if (laytoutItem != nullptr) {
-            slot = static_cast<ActivityGroupWidget *>(laytoutItem->widget());
-            if (slot->isHidden()) {
-                slot->show();
+            groupWidget = static_cast<ActivityGroupWidget *>(laytoutItem->widget());
+            if (groupWidget->isHidden()) {
+                groupWidget->show();
             }
         } else {
-            slot = new ActivityGroupWidget();
-            layout()->addWidget(slot);
+            groupWidget = new ActivityGroupWidget();
+            layout()->addWidget(groupWidget);
         }
 
         auto activityGroup = state[i];
 
         auto groupHeight = SLOT_HEIGHT * static_cast<int>(activityGroup.length);
-        if (slot->minimumHeight() != groupHeight) {
-            slot->setSlotHeight(groupHeight);
+        if (groupWidget->minimumHeight() != groupHeight) {
+            groupWidget->setSlotHeight(groupHeight);
         }
 
         auto groupNumber = static_cast<int>(i);
-        if (slot->number() != groupNumber) {
-            slot->setNumber(groupNumber);
+        if (groupWidget->number() != groupNumber) {
+            groupWidget->setNumber(groupNumber);
         }
 
         if (activityGroup.activity.has_value()) {
             auto title = QString::fromStdString(activityGroup.activity.value()->name);
-            if (slot->title() != title) {
-                slot->setTitle(title);
+            if (groupWidget->title() != title) {
+                groupWidget->setTitle(title);
             }
         } else {
-            if (slot->title() != "") {
-                slot->setTitle("");
+            if (groupWidget->title() != "") {
+                groupWidget->setTitle("");
             }
         }
     }
 
-    int stateSize = static_cast<int>(state.size());
-    while (layout()->itemAt(stateSize) != nullptr && layout()->itemAt(stateSize)->widget()->isVisible()) {
-        layout()->itemAt(stateSize)->widget()->hide();
+    qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
+
+    for (int i = 0; i < layout()->count(); i++) {
+        qDebug() << "layout item" << i << "visible?" << layout()->itemAt(i)->widget()->isVisible();
     }
 
-    qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
 }
 
 void SlotBoard::mousePressEvent(QMouseEvent *event)
@@ -112,6 +123,13 @@ void SlotBoard::fillSlots(int fromIndex, int toIndex)
     auto fromSlot = strategy()->slotAtIndex(fromIndex);
     auto toSlot = strategy()->slotAtIndex(toIndex);
 
+    for (auto i = 0; i < layout()->count(); i++) {
+        auto *groupWidget = groupWidgetAtIndex(i);
+        if (groupWidget->hasSelection()) {
+            groupWidget->deselectAllSlots();
+        }
+    }
+
     if (fromSlot == toSlot) {
         return;
     }
@@ -119,10 +137,7 @@ void SlotBoard::fillSlots(int fromIndex, int toIndex)
     strategy()->fillSlots(fromIndex, toIndex);
     updateUI();
 
-    for (auto i = 0; i < layout()->count(); i++) {
-        auto *groupWidget = groupWidgetAtIndex(i);
-        groupWidget->deselectAllSlots();
-    }
+
 }
 
 void SlotBoard::selectGroupAtIndex(int selectedGroupIndex)
