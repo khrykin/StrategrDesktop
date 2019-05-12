@@ -77,10 +77,13 @@ void SlotBoard::updateUI()
 
 void SlotBoard::mousePressEvent(QMouseEvent *event)
 {
-    _isPulling = true;
     _pulledFrom = slotIndexForEvent(event);
-    selectSlotAtIndex(_pulledFrom);
-//    selectGroupAtIndex(_pulledFrom);
+    if (event->modifiers() == Qt::CTRL) {
+        selectSlotAtIndex(_pulledFrom);
+    } else {
+        _isPulling = true;
+        selectGroupAtIndex(_pulledFrom);
+    }
 }
 
 void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
@@ -89,15 +92,16 @@ void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
     _pulledTo = slotIndexForEvent(event);
     deselectAlGroups();
 
-
-//    qDebug() << "mouseReleaseEvent" << "pulledFrom" << pulledFrom << "to" << pulledTo;
+    //    qDebug() << "mouseReleaseEvent" << "pulledFrom" << pulledFrom << "to" << pulledTo;
 }
 
 void SlotBoard::mouseMoveEvent(QMouseEvent *event)
 {
-    _pulledTo = slotIndexForEvent(event);
-    fillSlots(_pulledFrom, _pulledTo);
-    selectGroupAtIndex(_pulledTo);
+    if (_isPulling) {
+        _pulledTo = slotIndexForEvent(event);
+        fillSlots(_pulledFrom, _pulledTo);
+        selectGroupAtIndex(_pulledTo);
+    }
 }
 
 int SlotBoard::slotIndexForEvent(QMouseEvent *event)
@@ -123,12 +127,7 @@ void SlotBoard::fillSlots(int fromIndex, int toIndex)
     auto fromSlot = strategy()->slotAtIndex(fromIndex);
     auto toSlot = strategy()->slotAtIndex(toIndex);
 
-    for (auto i = 0; i < layout()->count(); i++) {
-        auto *groupWidget = groupWidgetAtIndex(i);
-        if (groupWidget->hasSelection()) {
-            groupWidget->deselectAllSlots();
-        }
-    }
+    deselectAllSlots();
 
     if (fromSlot == toSlot) {
         return;
@@ -190,14 +189,24 @@ void SlotBoard::selectSlotAtIndex(int slotIndex)
 
     selectedGroupWidget->selectSlotAtIndex(relativeIndex);
 
-//    for (int i; i < layout()->count(); i++) {
-//        auto *groupWidget = groupWidgetAtIndex(i);
-//        if (groupWidget->hasSelection()) {
-//            groupWidget->deselectAllSlots();
-//        }
-//    }
+    //    for (int i; i < layout()->count(); i++) {
+    //        auto *groupWidget = groupWidgetAtIndex(i);
+    //        if (groupWidget->hasSelection()) {
+    //            groupWidget->deselectAllSlots();
+    //        }
+    //    }
 
     qDebug() << "startSlotIndex" << startSlotIndex.value() << "relativeIndex" << relativeIndex;
+}
+
+void SlotBoard::deselectAllSlots()
+{
+    for (auto i = 0; i < layout()->count(); i++) {
+        auto *groupWidget = groupWidgetAtIndex(i);
+        if (groupWidget->hasSelection()) {
+            groupWidget->deselectAllSlots();
+        }
+    }
 }
 
 ActivityGroupWidget *SlotBoard::groupWidgetAtIndex(int index)

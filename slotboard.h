@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <QTimer>
 #include "activitygroupwidget.h"
 #include "strategy.h"
 
@@ -32,6 +33,7 @@ private:
     void deselectAlGroups();
 
     void selectSlotAtIndex(int slotIndex);
+    void deselectAllSlots();
 
     ActivityGroupWidget *groupWidgetAtIndex(int index);
 
@@ -48,6 +50,8 @@ private:
     int _pulledTo;
 
     bool _isPulling = false;
+
+    QTimer *_longPressTimer;
 
     QWidget *selectionWidget;
 };
