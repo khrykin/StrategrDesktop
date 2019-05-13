@@ -80,9 +80,10 @@ void SlotBoard::mousePressEvent(QMouseEvent *event)
     _pulledFrom = slotIndexForEvent(event);
     if (event->modifiers() == Qt::CTRL) {
         selectSlotAtIndex(_pulledFrom);
-    } else {
+    } else if (event->buttons() == Qt::LeftButton) {
         _isPulling = true;
         selectGroupAtIndex(_pulledFrom);
+        deselectAllSlots();
     }
 }
 
@@ -90,9 +91,9 @@ void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
 {
     _isPulling = false;
     _pulledTo = slotIndexForEvent(event);
-    deselectAlGroups();
+    deselectAllGroups();
 
-    //    qDebug() << "mouseReleaseEvent" << "pulledFrom" << pulledFrom << "to" << pulledTo;
+    qDebug() << "mouseReleaseEvent";
 }
 
 void SlotBoard::mouseMoveEvent(QMouseEvent *event)
@@ -159,7 +160,7 @@ void SlotBoard::selectGroupAtIndex(int selectedGroupIndex)
     }
 }
 
-void SlotBoard::deselectAlGroups()
+void SlotBoard::deselectAllGroups()
 {
     _selectedGroupIndex = nullopt;
     for (int i = 0; i < layout()->count(); i++) {
@@ -188,13 +189,6 @@ void SlotBoard::selectSlotAtIndex(int slotIndex)
     auto relativeIndex = slotIndex - startSlotIndex.value();
 
     selectedGroupWidget->selectSlotAtIndex(relativeIndex);
-
-    //    for (int i; i < layout()->count(); i++) {
-    //        auto *groupWidget = groupWidgetAtIndex(i);
-    //        if (groupWidget->hasSelection()) {
-    //            groupWidget->deselectAllSlots();
-    //        }
-    //    }
 
     qDebug() << "startSlotIndex" << startSlotIndex.value() << "relativeIndex" << relativeIndex;
 }

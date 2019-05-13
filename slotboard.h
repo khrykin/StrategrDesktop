@@ -30,7 +30,7 @@ private:
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
     void selectGroupAtIndex(int selectedGroupIndex);
-    void deselectAlGroups();
+    void deselectAllGroups();
 
     void selectSlotAtIndex(int slotIndex);
     void deselectAllSlots();
@@ -38,7 +38,6 @@ private:
     ActivityGroupWidget *groupWidgetAtIndex(int index);
 
     const int SLOT_HEIGHT = 50;
-    const int NUMBER_OF_SLOTS = 20;
 
     void paintEvent(QPaintEvent *) override;
 

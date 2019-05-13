@@ -18,7 +18,7 @@ struct Strategy
 {
     optional<string> title;
     vector<shared_ptr<Activity>> activities;
-    unsigned int numberOfSlots = 20;
+    unsigned int numberOfSlots = 48;
 
     ActivityGroupsState group();
 

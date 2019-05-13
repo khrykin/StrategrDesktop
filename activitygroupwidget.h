@@ -36,6 +36,8 @@ public:
 
 private:
     void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
+
     void updateStyleSheet();
     int _number;
     int _length = 1;
@@ -48,6 +50,8 @@ private:
     QLabel *titleLabel;
     QWidget *selectionWidget;
     QMap<int, QWidget *> selectionSlots;
+
+    QWidget *mainWidget;
 };
 
 #endif // SLOT_H

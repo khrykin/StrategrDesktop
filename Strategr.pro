@@ -31,6 +31,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         slotboard.cpp \
+        stacklayout.cpp \
         strategy.cpp
 
 HEADERS += \
@@ -39,6 +40,7 @@ HEADERS += \
         activitygroupwidget.h \
         mainwindow.h \
         slotboard.h \
+        stacklayout.h \
         strategy.h
 
 FORMS +=

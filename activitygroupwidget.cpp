@@ -3,9 +3,13 @@
 #include <QStyleOption>
 #include <QLayout>
 #include <QDebug>
+#include "stacklayout.h"
 
 ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent)
 {
+    setAttribute(Qt::WA_TransparentForMouseEvents);
+    mainWidget = new QWidget(this);
+
     label = new QLabel();
     label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     label->setMaximumWidth(30);
@@ -14,16 +18,17 @@ ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent)
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("font-weight: bold;");
 
-    setLayout(new QHBoxLayout());
-    layout()->addWidget(label);
-    layout()->addWidget(titleLabel);
+    mainWidget->setLayout(new QHBoxLayout());
+    mainWidget->layout()->addWidget(label);
+    mainWidget->layout()->addWidget(titleLabel);
 
     selectionWidget = new QWidget(this);
-    selectionWidget->setGeometry(geometry());
     selectionWidget->hide();
-/*    selectionWidget->setLayout(new QVBoxLayout());
-    selectionWidget->layout()->setMargin(0);
-    selectionWidget->layout()->setSpacing(0)*/;
+
+    setLayout(new StackLayout());
+
+    layout()->addWidget(mainWidget);
+    layout()->addWidget(selectionWidget);
 
     updateStyleSheet();
 }
@@ -34,6 +39,18 @@ void ActivityGroupWidget::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void ActivityGroupWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    for (auto selectionIndex : selectionSlots.keys()) {
+        auto *selectionSlot = selectionSlots[selectionIndex];
+        selectionSlot->setGeometry(QRect(0,
+                                         selectionIndex * 50,
+                                         geometry().width(),
+                                         50));
+    }
 }
 
 void ActivityGroupWidget::updateStyleSheet()
@@ -77,6 +94,7 @@ void ActivityGroupWidget::setSlotHeight(int height)
 
 void ActivityGroupWidget::selectSlotAtIndex(int slotIndex)
 {
+//    selectionWidget->repaint();
     if (!selectionSlots.contains(slotIndex)) {
         auto *selectionSlot = new QWidget(selectionWidget);
         selectionSlot->setFixedHeight(50);
@@ -106,6 +124,10 @@ void ActivityGroupWidget::deselectSlotAtIndex(int slotIndex)
     if (selectionSlots.contains(slotIndex)) {
         selectionSlots.remove(slotIndex);
     }
+
+    if (!selectionSlots.count()) {
+        selectionWidget->hide();
+    }
 }
 
 void ActivityGroupWidget::deselectAllSlots()
@@ -113,6 +135,7 @@ void ActivityGroupWidget::deselectAllSlots()
     for (auto selectionIndex : selectionSlots.keys()) {
         deselectSlotAtIndex(selectionIndex);
     }
+    selectionWidget->hide();
 }
 
 bool ActivityGroupWidget::hasSelection()
