@@ -5,13 +5,22 @@
 #include <QStyleOption>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QMenu>
 
 SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent)
 {
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
     layout()->setMargin(0);
+
+    setActivityAction = new QAction(tr("Set Activity"), this);
+    connect(setActivityAction, &QAction::triggered, this, &SlotBoard::openActivitiesWindow);
+
+    deleteActivityAction = new QAction(tr("Clear"), this);
+    connect(deleteActivityAction, &QAction::triggered, this, &SlotBoard::clearCurrentSelection);
 }
+
+
 
 void SlotBoard::updateUI()
 {
@@ -78,7 +87,7 @@ void SlotBoard::updateUI()
 void SlotBoard::mousePressEvent(QMouseEvent *event)
 {
     _pulledFrom = slotIndexForEvent(event);
-    if (event->modifiers() == Qt::CTRL) {
+    if (event->modifiers() == Qt::CTRL || (event->buttons() == Qt::RightButton && !hasSelection())) {
         selectSlotAtIndex(_pulledFrom);
     } else if (event->buttons() == Qt::LeftButton) {
         _isPulling = true;
@@ -103,6 +112,16 @@ void SlotBoard::mouseMoveEvent(QMouseEvent *event)
         fillSlots(_pulledFrom, _pulledTo);
         selectGroupAtIndex(_pulledTo);
     }
+}
+
+void SlotBoard::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    menu.addAction(setActivityAction);
+    menu.addAction(deleteActivityAction);
+    menu.exec(event->globalPos());
+
+    qDebug() << "context menu event" << selectionSlots();
 }
 
 int SlotBoard::slotIndexForEvent(QMouseEvent *event)
@@ -224,4 +243,37 @@ void SlotBoard::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+QVector<int> SlotBoard::selectionSlots()
+{
+    QVector<int> result;
+    for (int i = 0; i < layout()->count(); i++) {
+        auto *groupWidget = groupWidgetAtIndex(i);
+        auto selectionSlotsRelativeIndices = groupWidget->selectionSlots().keys();
+        for (auto relativeIndex : selectionSlotsRelativeIndices) {
+            auto startSlotIndex = strategy()->startSlotIndexForGroupIndex(i);
+            if (startSlotIndex.has_value()) {
+                result.append(startSlotIndex.value() + relativeIndex);
+            }
+        }
+
+    }
+
+    return result;
+}
+
+bool SlotBoard::hasSelection()
+{
+    return selectionSlots().length() > 0;
+}
+
+void SlotBoard::openActivitiesWindow()
+{
+
+}
+
+void SlotBoard::clearCurrentSelection()
+{
+
 }

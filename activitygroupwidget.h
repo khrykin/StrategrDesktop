@@ -34,6 +34,8 @@ public:
 
     bool hasSelection();
 
+    QMap<int, QWidget *> selectionSlots() const;
+
 private:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -49,7 +51,7 @@ private:
     QLabel *label;
     QLabel *titleLabel;
     QWidget *selectionWidget;
-    QMap<int, QWidget *> selectionSlots;
+    QMap<int, QWidget *> _selectionSlots;
 
     QWidget *mainWidget;
 };

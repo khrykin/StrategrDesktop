@@ -6,6 +6,7 @@
 #include <QTimer>
 #include "activitygroupwidget.h"
 #include "strategy.h"
+#include <QAction>
 
 class SlotBoard : public QWidget
 {
@@ -17,13 +18,11 @@ public:
     Strategy *strategy() const;
     void setStrategy(Strategy *strategy);
 
-signals:
-
-public slots:
 private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
     int slotIndexForEvent(QMouseEvent *event);
 
@@ -53,6 +52,15 @@ private:
     QTimer *_longPressTimer;
 
     QWidget *selectionWidget;
+
+    QAction *setActivityAction;
+    QAction *deleteActivityAction;
+
+    QVector<int> selectionSlots();
+    bool hasSelection();
+
+    void openActivitiesWindow();
+    void clearCurrentSelection();
 };
 
 #endif // SLOTBOARD_H

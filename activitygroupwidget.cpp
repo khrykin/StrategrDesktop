@@ -44,8 +44,8 @@ void ActivityGroupWidget::paintEvent(QPaintEvent *)
 void ActivityGroupWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
-    for (auto selectionIndex : selectionSlots.keys()) {
-        auto *selectionSlot = selectionSlots[selectionIndex];
+    for (auto selectionIndex : _selectionSlots.keys()) {
+        auto *selectionSlot = _selectionSlots[selectionIndex];
         selectionSlot->setGeometry(QRect(0,
                                          selectionIndex * 50,
                                          geometry().width(),
@@ -66,6 +66,11 @@ void ActivityGroupWidget::updateStyleSheet()
                       "border-bottom: 1px solid gray;"
                       "}");
     }
+}
+
+QMap<int, QWidget *> ActivityGroupWidget::selectionSlots() const
+{
+    return _selectionSlots;
 }
 
 bool ActivityGroupWidget::isSelected() const
@@ -95,7 +100,7 @@ void ActivityGroupWidget::setSlotHeight(int height)
 void ActivityGroupWidget::selectSlotAtIndex(int slotIndex)
 {
 //    selectionWidget->repaint();
-    if (!selectionSlots.contains(slotIndex)) {
+    if (!_selectionSlots.contains(slotIndex)) {
         auto *selectionSlot = new QWidget(selectionWidget);
         selectionSlot->setFixedHeight(50);
         selectionSlot->setStyleSheet("background-color: rgba(255, 255, 0, 0.5)");
@@ -105,7 +110,7 @@ void ActivityGroupWidget::selectSlotAtIndex(int slotIndex)
                                          50));
         selectionSlot->show();
 
-        selectionSlots.insert(slotIndex, selectionSlot);
+        _selectionSlots.insert(slotIndex, selectionSlot);
     } else {
         deselectSlotAtIndex(slotIndex);
     }
@@ -117,22 +122,22 @@ void ActivityGroupWidget::selectSlotAtIndex(int slotIndex)
 
 void ActivityGroupWidget::deselectSlotAtIndex(int slotIndex)
 {
-    if (selectionSlots[slotIndex] != nullptr) {
-        delete selectionSlots[slotIndex];
+    if (_selectionSlots[slotIndex] != nullptr) {
+        delete _selectionSlots[slotIndex];
     }
 
-    if (selectionSlots.contains(slotIndex)) {
-        selectionSlots.remove(slotIndex);
+    if (_selectionSlots.contains(slotIndex)) {
+        _selectionSlots.remove(slotIndex);
     }
 
-    if (!selectionSlots.count()) {
+    if (!_selectionSlots.count()) {
         selectionWidget->hide();
     }
 }
 
 void ActivityGroupWidget::deselectAllSlots()
 {
-    for (auto selectionIndex : selectionSlots.keys()) {
+    for (auto selectionIndex : _selectionSlots.keys()) {
         deselectSlotAtIndex(selectionIndex);
     }
     selectionWidget->hide();
@@ -140,7 +145,7 @@ void ActivityGroupWidget::deselectAllSlots()
 
 bool ActivityGroupWidget::hasSelection()
 {
-    return selectionSlots.count() > 0;
+    return _selectionSlots.count() > 0;
 }
 
 int ActivityGroupWidget::length() const
