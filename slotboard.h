@@ -17,6 +17,12 @@ public:
     void updateUI();
     Strategy *strategy() const;
     void setStrategy(Strategy *strategy);
+
+    QVector<int> selectionSlots();
+    bool hasSelection();
+    void selectSlotAtIndex(int slotIndex);
+    void deselectAllSlots();
+
 signals:
     void wantToSetActivtyForSelection(QVector <int> selection);
 
@@ -34,8 +40,7 @@ private:
     void selectGroupAtIndex(int selectedGroupIndex);
     void deselectAllGroups();
 
-    void selectSlotAtIndex(int slotIndex);
-    void deselectAllSlots();
+
 
     ActivityGroupWidget *groupWidgetAtIndex(int index);
 
@@ -59,9 +64,6 @@ private:
     QAction *setActivityAction;
     QAction *deleteActivityAction;
     QAction *clearSelectionAction;
-
-    QVector<int> selectionSlots();
-    bool hasSelection();
 
     void openActivitiesWindow();
     void deleteActivityInSelection();

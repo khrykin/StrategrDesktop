@@ -6,34 +6,54 @@
 #include <QMenuBar>
 #include <QMenu>
 #include <functional>
-
 #include <QDebug>
+#include <QDesktopWidget>
+
+#include "activitieslistwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setMaximumWidth(300);
+//    setMaximumWidth(300);
+    setMinimumWidth(250);
+
+//    setMinimumHeight(700);
+
+    resize(300, QDesktopWidget().availableGeometry(this).size().height() * 0.7);
 
     scrollArea = new QScrollArea();
     scrollArea->setWidgetResizable(true);
+
+    strategy = Strategy::createEmtpty();
+    strategy->title = "Morning Training";
+
+    auto *activitiesListWidget = new ActivitiesListWidget();
+    activitiesListWidget->setStrategy(strategy);
+    connect(activitiesListWidget,
+            &ActivitiesListWidget::selectActivity,
+            this,
+            &MainWindow::setActivity);
+
+    stackedWidget = new QStackedWidget();
+    stackedWidget->addWidget(scrollArea);
+    stackedWidget->addWidget(activitiesListWidget);
 
     slotBoard = new SlotBoard();
 
     scrollArea->setWidget(slotBoard);
     scrollArea->setMouseTracking(true);
 
-    strategy = Strategy::createEmtpty();
-    strategy->title = "Morning Training";
-
     if (strategy->title.has_value()) {
         setWindowTitle(QString::fromStdString(strategy->title.value()));
     }
 
     slotBoard->setStrategy(strategy);
+    connect(slotBoard,
+            &SlotBoard::wantToSetActivtyForSelection,
+            this,
+            &MainWindow::showActivitiesListForSelection);
 
-    slotBoard->updateUI();
-
-    setCentralWidget(scrollArea);
+    setCentralWidget(stackedWidget);
     createMenus();
 }
 
@@ -94,3 +114,18 @@ void MainWindow::saveAs()
 {
     qDebug() << "save as";
 }
+
+void MainWindow::showActivitiesListForSelection(QVector <int> selection)
+{
+    stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::setActivity(std::shared_ptr<Activity> activity)
+{
+    auto selection = slotBoard->selectionSlots();
+    strategy->setSlotAtIndices(selection.toStdVector(), activity);
+    slotBoard->deselectAllSlots();
+    stackedWidget->setCurrentIndex(0);
+    slotBoard->updateUI();
+}
+

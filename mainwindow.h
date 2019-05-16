@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QScrollArea>
+#include <QStackedWidget>
 
 #include "slotboard.h"
 #include "strategy.h"
@@ -19,6 +20,7 @@ private:
     QScrollArea *scrollArea;
     SlotBoard *slotBoard;
     Strategy *strategy;
+    QStackedWidget *stackedWidget;
 
     void createMenus();
 
@@ -26,6 +28,9 @@ private:
     void open();
     void save();
     void saveAs();
+
+    void showActivitiesListForSelection(QVector<int> selection);
+    void setActivity(std::shared_ptr<Activity> activity);
 };
 
 #endif // MAINWINDOW_H

@@ -16,6 +16,8 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent)
 
     setActivityAction = new QAction(tr("Set Activity"), this);
     connect(setActivityAction, &QAction::triggered, this, &SlotBoard::openActivitiesWindow);
+    setActivityAction->setShortcut(QKeySequence(Qt::Key_Return));
+    addAction(setActivityAction);
 
     deleteActivityAction = new QAction(tr("Make Empty"), this);
     deleteActivityAction->setShortcut(QKeySequence(Qt::Key_Delete));
@@ -253,6 +255,7 @@ Strategy *SlotBoard::strategy() const
 void SlotBoard::setStrategy(Strategy *strategy)
 {
     _strategy = strategy;
+    updateUI();
 }
 
 void SlotBoard::paintEvent(QPaintEvent *)
@@ -289,6 +292,7 @@ bool SlotBoard::hasSelection()
 void SlotBoard::openActivitiesWindow()
 {
     emit wantToSetActivtyForSelection(selectionSlots());
+    qDebug() << "open activities window";
 }
 
 void SlotBoard::deleteActivityInSelection()

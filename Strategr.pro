@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
+        activitieslistitem.cpp \
+        activitieslistwidget.cpp \
         activity.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
@@ -35,6 +37,8 @@ SOURCES += \
         strategy.cpp
 
 HEADERS += \
+        activitieslistitem.h \
+        activitieslistwidget.h \
         activity.h \
         activitygroup.h \
         activitygroupwidget.h \
