@@ -17,6 +17,8 @@ public:
     void updateUI();
     Strategy *strategy() const;
     void setStrategy(Strategy *strategy);
+signals:
+    void wantToSetActivtyForSelection(QVector <int> selection);
 
 private:
     void mousePressEvent(QMouseEvent *event) override;
@@ -24,6 +26,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
+    int slotIndexForEvent(QContextMenuEvent *event);
     int slotIndexForEvent(QMouseEvent *event);
 
     void copySlot(int fromIndex, int toIndex);
@@ -55,11 +58,13 @@ private:
 
     QAction *setActivityAction;
     QAction *deleteActivityAction;
+    QAction *clearSelectionAction;
 
     QVector<int> selectionSlots();
     bool hasSelection();
 
     void openActivitiesWindow();
+    void deleteActivityInSelection();
     void clearCurrentSelection();
 };
 

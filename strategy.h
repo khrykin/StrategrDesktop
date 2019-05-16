@@ -24,6 +24,7 @@ struct Strategy
 
     Slot slotAtIndex(int index);
     void setSlotAtIndex(int index, Slot slot);
+    void setSlotAtIndices(vector<int> indices, Slot slot);
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
 

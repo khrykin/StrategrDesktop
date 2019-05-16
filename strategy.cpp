@@ -62,6 +62,13 @@ void Strategy::setSlotAtIndex(int index, Slot slot)
     _slotsState[static_cast<unsigned int>(index)] = slot;
 }
 
+void Strategy::setSlotAtIndices(vector<int> indices, Slot slot)
+{
+    for (int index : indices) {
+        setSlotAtIndex(index, slot);
+    }
+}
+
 void Strategy::copySlot(int fromIndex, int toIndex)
 {
     if (!hasSlotIndex(fromIndex) || !hasSlotIndex(toIndex)) {

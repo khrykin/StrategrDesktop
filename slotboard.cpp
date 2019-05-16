@@ -6,6 +6,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QMenu>
+#include <QVector>
 
 SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent)
 {
@@ -16,11 +17,16 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent)
     setActivityAction = new QAction(tr("Set Activity"), this);
     connect(setActivityAction, &QAction::triggered, this, &SlotBoard::openActivitiesWindow);
 
-    deleteActivityAction = new QAction(tr("Clear"), this);
-    connect(deleteActivityAction, &QAction::triggered, this, &SlotBoard::clearCurrentSelection);
+    deleteActivityAction = new QAction(tr("Make Empty"), this);
+    deleteActivityAction->setShortcut(QKeySequence(Qt::Key_Delete));
+    addAction(deleteActivityAction);
+    connect(deleteActivityAction, &QAction::triggered, this, &SlotBoard::deleteActivityInSelection);
+
+    clearSelectionAction = new QAction(tr("Clear Selection"), this);
+    clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
+    addAction(clearSelectionAction);
+    connect(clearSelectionAction, &QAction::triggered, this, &SlotBoard::clearCurrentSelection);
 }
-
-
 
 void SlotBoard::updateUI()
 {
@@ -117,12 +123,23 @@ void SlotBoard::mouseMoveEvent(QMouseEvent *event)
 
 void SlotBoard::contextMenuEvent(QContextMenuEvent *event)
 {
+    auto currentIndex = slotIndexForEvent(event);
+    auto currentSlot = strategy()->slotAtIndex(currentIndex);
+
     QMenu menu(this);
     menu.addAction(setActivityAction);
-    menu.addAction(deleteActivityAction);
+    if (currentSlot.has_value()) {
+        menu.addAction(deleteActivityAction);
+    }
+    menu.addAction(clearSelectionAction);
     menu.exec(event->globalPos());
 
     qDebug() << "context menu event" << selectionSlots();
+}
+
+int SlotBoard::slotIndexForEvent(QContextMenuEvent *event)
+{
+    return event->pos().y() / SLOT_HEIGHT;
 }
 
 int SlotBoard::slotIndexForEvent(QMouseEvent *event)
@@ -271,10 +288,20 @@ bool SlotBoard::hasSelection()
 
 void SlotBoard::openActivitiesWindow()
 {
+    emit wantToSetActivtyForSelection(selectionSlots());
+}
 
+void SlotBoard::deleteActivityInSelection()
+{
+    if (hasSelection()) {
+        strategy()->setSlotAtIndices(selectionSlots().toStdVector(), nullopt);
+        updateUI();
+        deselectAllSlots();
+        qDebug() << "Delete activity";
+    }
 }
 
 void SlotBoard::clearCurrentSelection()
 {
-
+    deselectAllSlots();
 }
