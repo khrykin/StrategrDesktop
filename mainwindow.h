@@ -17,7 +17,7 @@ public:
     ~MainWindow();
 
 private:
-    QScrollArea *scrollArea;
+    QScrollArea *slotBoardScrollArea;
     SlotBoard *slotBoard;
     Strategy *strategy;
     QStackedWidget *stackedWidget;

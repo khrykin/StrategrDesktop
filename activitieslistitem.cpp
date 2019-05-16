@@ -10,6 +10,7 @@ ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget
 {
     setFixedHeight(50);
     setStyleSheet("ActivitiesListItem {"
+                  "background-color: white;"
                   "border-bottom: 1px solid gray;"
                   "}"
                   "ActivitiesListItem::hover {"

@@ -14,15 +14,11 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-//    setMaximumWidth(300);
     setMinimumWidth(250);
-
-//    setMinimumHeight(700);
-
     resize(300, QDesktopWidget().availableGeometry(this).size().height() * 0.7);
 
-    scrollArea = new QScrollArea();
-    scrollArea->setWidgetResizable(true);
+    slotBoardScrollArea = new QScrollArea();
+    slotBoardScrollArea->setWidgetResizable(true);
 
     strategy = Strategy::createEmtpty();
     strategy->title = "Morning Training";
@@ -35,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
             &MainWindow::setActivity);
 
     stackedWidget = new QStackedWidget();
-    stackedWidget->addWidget(scrollArea);
+    stackedWidget->addWidget(slotBoardScrollArea);
     stackedWidget->addWidget(activitiesListWidget);
 
     slotBoard = new SlotBoard();
 
-    scrollArea->setWidget(slotBoard);
-    scrollArea->setMouseTracking(true);
+    slotBoardScrollArea->setWidget(slotBoard);
+    slotBoardScrollArea->setMouseTracking(true);
 
     if (strategy->title.has_value()) {
         setWindowTitle(QString::fromStdString(strategy->title.value()));

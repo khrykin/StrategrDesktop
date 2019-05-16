@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QStackedWidget>
 #include "strategy.h"
+#include <QScrollArea>
 
 class ActivitiesListWidget : public QWidget
 {
@@ -25,6 +26,9 @@ private:
     void getBack();
     void updateList();
 
+    QScrollArea *scrollArea;
+    QWidget *listWidget;
+    QWidget *navWidget;
     Strategy *_strategy;
 };
 
