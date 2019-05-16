@@ -87,7 +87,8 @@ void SlotBoard::updateUI()
 void SlotBoard::mousePressEvent(QMouseEvent *event)
 {
     _pulledFrom = slotIndexForEvent(event);
-    if (event->modifiers() == Qt::CTRL || (event->buttons() == Qt::RightButton && !hasSelection())) {
+    if ((event->buttons() == Qt::LeftButton && event->modifiers() == Qt::CTRL)
+            || (event->buttons() == Qt::RightButton && !hasSelection())) {
         selectSlotAtIndex(_pulledFrom);
     } else if (event->buttons() == Qt::LeftButton) {
         _isPulling = true;
