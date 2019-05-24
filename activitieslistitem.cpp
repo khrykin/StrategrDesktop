@@ -4,6 +4,7 @@
 #include <QStyleOption>
 #include <QPainter>
 #include <QDebug>
+#include <QMouseEvent>
 
 ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget(parent),
     _title(title)
@@ -51,18 +52,32 @@ void ActivitiesListItem::setTitle(const QString &title)
 
 void ActivitiesListItem::mousePressEvent(QMouseEvent *event)
 {
+    if (event->buttons() == Qt::LeftButton) {
+        _isClicked = true;
+    }
+
     qDebug() << "mousePressEvent";
 }
 
 void ActivitiesListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     qDebug() << "mouseReleaseEvent";
-    emit selected();
+    if (_isClicked) {
+        emit selected();
+    }
+
+    _isClicked = false;
 
 }
 
 void ActivitiesListItem::mouseDoubleClickEvent(QMouseEvent *event)
 {
     qDebug() << "mouseDoubleClickEvent";
+
+}
+
+void ActivitiesListItem::contextMenuEvent(QContextMenuEvent *event)
+{
+    qDebug() << "contextMenuEvent";
 
 }

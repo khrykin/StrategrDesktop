@@ -21,11 +21,13 @@ private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *) override;
     QString _title;
 
     QLabel *label;
+    bool _isClicked = false;
 };
 
 #endif // ACTIVITIESLISTITEM_H

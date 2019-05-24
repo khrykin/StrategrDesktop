@@ -5,6 +5,7 @@
 #include <QStackedWidget>
 #include "strategy.h"
 #include <QScrollArea>
+#include "navbar.h"
 
 class ActivitiesListWidget : public QWidget
 {
@@ -17,6 +18,7 @@ public:
 
 signals:
     void selectActivity(std::shared_ptr<Activity> activity);
+    void wantNewActivity();
 public slots:
 
 private:
@@ -25,6 +27,7 @@ private:
     QStackedWidget *parentStackedWidget();
     void getBack();
     void updateList();
+    void sendWantNewActivity();
 
     QScrollArea *scrollArea;
     QWidget *listWidget;

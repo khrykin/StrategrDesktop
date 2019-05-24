@@ -58,12 +58,12 @@ void ActivityGroupWidget::updateStyleSheet()
     if (title().length()) {
         setStyleSheet("ActivityGroupWidget { "
                       "background-color: white;"
-                      "border-bottom: 1px solid gray;"
+                      "border-bottom: 1px solid #ccc;"
                       "}");
     } else {
         setStyleSheet("ActivityGroupWidget { "
-                      "background-color: #ccc;"
-                      "border-bottom: 1px solid gray;"
+                      "background-color: #dedede;"
+                      "border-bottom: 1px solid #ccc;"
                       "}");
     }
 }
@@ -84,8 +84,8 @@ void ActivityGroupWidget::setIsSelected(bool isSelected)
 
     if (isSelected) {
         setStyleSheet("ActivityGroupWidget { "
-                      "background-color: #eee;"
-                      "border-bottom: 1px solid gray;"
+                      "background-color: #efefef;"
+                      "border-bottom: 1px solid #ccc;"
                       "}");
     } else {
         updateStyleSheet();

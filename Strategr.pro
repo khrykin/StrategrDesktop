@@ -32,6 +32,7 @@ SOURCES += \
         activitygroupwidget.cpp \
         main.cpp \
         mainwindow.cpp \
+        navbar.cpp \
         slotboard.cpp \
         stacklayout.cpp \
         strategy.cpp
@@ -43,6 +44,7 @@ HEADERS += \
         activitygroup.h \
         activitygroupwidget.h \
         mainwindow.h \
+        navbar.h \
         slotboard.h \
         stacklayout.h \
         strategy.h

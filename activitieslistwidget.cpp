@@ -7,6 +7,7 @@
 #include <QPainter>
 #include "activitieslistitem.h"
 #include <QDebug>
+#include <QPushButton>
 
 ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent)
 {
@@ -14,25 +15,13 @@ ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent)
     layout()->setSpacing(0);
     layout()->setMargin(0);
 
-    navWidget = new QWidget();
-    navWidget->setLayout(new QHBoxLayout());
-    navWidget->layout()->setSpacing(0);
-    navWidget->layout()->setMargin(0);
-    navWidget->setFixedHeight(50);
+    auto *navBar = new Navbar();
 
-    navWidget->setProperty("navWidget", true);
-    navWidget->setStyleSheet("[navWidget] {"
-                             "border-bottom: 1px solid black;"
-                             "");
+    layout()->addWidget(navBar);
 
-    layout()->addWidget(navWidget);
-
-    auto *titleLabel = new QLabel("Activities");
-    titleLabel->setAlignment(Qt::AlignCenter);
-    titleLabel->setStyleSheet("font-size: 18px;");
-
-    navWidget->layout()->addWidget(titleLabel);
-    layout()->addWidget(navWidget);
+    navBar->setTitle("Activities");
+    navBar->setLeftButton("‹ Back", this, &ActivitiesListWidget::getBack);
+    navBar->setRightButton("New", this, &ActivitiesListWidget::sendWantNewActivity);
 
     listWidget = new QWidget();
     listWidget->setLayout(new QVBoxLayout());
@@ -42,13 +31,11 @@ ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent)
     scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(listWidget);
+    scrollArea->setStyleSheet("QScrollArea {"
+                              "border: none;"
+                              "}");
 
     layout()->addWidget(scrollArea);
-
-//    auto *label = new QLabel("ActivitiesListWidget");
-//    label->setAlignment(Qt::AlignCenter);
-
-//    layout()->addWidget(label);
 
     auto *getBackAction = new QAction("Back", this);
     getBackAction->setShortcut(QKeySequence(Qt::Key_Escape));
@@ -98,6 +85,11 @@ void ActivitiesListWidget::updateList()
     }
 
     listWidget->layout()->addWidget(new QWidget());
+}
+
+void ActivitiesListWidget::sendWantNewActivity()
+{
+    emit wantNewActivity();
 }
 
 Strategy *ActivitiesListWidget::strategy() const
