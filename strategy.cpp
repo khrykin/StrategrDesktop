@@ -48,6 +48,23 @@ ActivityGroupsState Strategy::group()
     return result;
 }
 
+void Strategy::appendActivity(const Activity activity)
+{
+    activities.push_back(activity);
+}
+
+void Strategy::removeActivity(const Activity &activity)
+{
+    activities.erase(std::remove(activities.begin(), activities.end(), activity), activities.end());
+    for (unsigned int i = 0; i < slotsState().size(); i++) {
+        auto slot = slotAtIndex(static_cast<int>(i));
+
+        if (slot.has_value() && slot.value() == activity) {
+            _slotsState[i] = nullopt;
+        }
+    }
+}
+
 Slot Strategy::slotAtIndex(int index)
 {
     if (!hasSlotIndex(index)) {
@@ -140,10 +157,10 @@ Strategy *Strategy::createEmtpty()
 {
     auto strategy = new Strategy();
     strategy->activities = {
-        make_shared<Activity>("Training"),
-        make_shared<Activity>("Work 1"),
-        make_shared<Activity>("Nap"),
-        make_shared<Activity>("Commute")
+        Activity("Training"),
+        Activity("Work 1"),
+        Activity("Nap"),
+        Activity("Commute")
     };
 
     SlotsState slotsState;
@@ -181,7 +198,7 @@ string Strategy::debugSlots()
     for (unsigned int i = 0; i < slotsState().size(); i++) {
         auto slot = slotsState()[i];
         if (slot.has_value()) {
-            result += static_cast<string>("Slot " + to_string(i) + "\t" + slot.value()->name + "\n");
+            result += static_cast<string>("Slot " + to_string(i) + "\t" + slot.value().name + "\n");
         } else {
             result += static_cast<string>("Slot " + to_string(i) + "\t" + "None" + "\n");
         }
@@ -198,7 +215,7 @@ string Strategy::debugGroups()
     for (unsigned int i = 0; i < groups.size(); i++) {
         auto group = groups[i];
         if (group.activity.has_value()) {
-            result += static_cast<string>("Group " + to_string(i) + "\t" + group.activity.value()->name + "\n");
+            result += static_cast<string>("Group " + to_string(i) + "\t" + group.activity.value().name + "\n");
         } else {
             result += static_cast<string>("Group " + to_string(i) + "\t" + "None" + "\n");
         }
@@ -211,4 +228,13 @@ string Strategy::debugGroups()
 bool Strategy::hasSlotIndex(int index)
 {
     return  index >= 0 && static_cast<unsigned int>(index) < slotsState().size();
+}
+
+bool Strategy::hasActivity(const Activity &activity)
+{
+    if (std::find(activities.begin(), activities.end(), activity) != activities.end()) {
+        return true;
+    } else {
+        return false;
+    }
 }

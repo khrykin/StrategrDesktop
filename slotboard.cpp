@@ -73,7 +73,7 @@ void SlotBoard::updateUI()
         }
 
         if (activityGroup.activity.has_value()) {
-            auto title = QString::fromStdString(activityGroup.activity.value()->name);
+            auto title = QString::fromStdString(activityGroup.activity.value().name);
             if (groupWidget->title() != title) {
                 groupWidget->setTitle(title);
             }
@@ -175,8 +175,6 @@ void SlotBoard::fillSlots(int fromIndex, int toIndex)
 
     strategy()->fillSlots(fromIndex, toIndex);
     updateUI();
-
-
 }
 
 void SlotBoard::selectGroupAtIndex(int selectedGroupIndex)

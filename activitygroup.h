@@ -11,8 +11,8 @@ using namespace std;
 
 struct ActivityGroup
 {
-    ActivityGroup(optional<shared_ptr<Activity>> activity, unsigned int length = 1);
-    optional<shared_ptr<Activity>> activity;
+    ActivityGroup(optional<Activity> activity, unsigned int length = 1);
+    optional<Activity> activity;
     unsigned int length;
 };
 

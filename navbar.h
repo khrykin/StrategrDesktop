@@ -24,6 +24,8 @@ private:
     QWidget *navbar;
     QWidget *contentWidget;
 
+    void paintEvent(QPaintEvent *) override;
+
 public:
     explicit Navbar(QWidget *parent = nullptr);
 

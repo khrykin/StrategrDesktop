@@ -9,7 +9,6 @@
 #include <QDebug>
 #include <QDesktopWidget>
 
-#include "activitieslistwidget.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -23,16 +22,35 @@ MainWindow::MainWindow(QWidget *parent) :
     strategy = Strategy::createEmtpty();
     strategy->title = "Morning Training";
 
-    auto *activitiesListWidget = new ActivitiesListWidget();
+    activitiesListWidget = new ActivitiesListWidget();
     activitiesListWidget->setStrategy(strategy);
+
     connect(activitiesListWidget,
             &ActivitiesListWidget::selectActivity,
             this,
             &MainWindow::setActivity);
 
+    connect(activitiesListWidget,
+            &ActivitiesListWidget::wantNewActivity,
+            this,
+            &MainWindow::openActivityEditor);
+
+    connect(activitiesListWidget,
+            &ActivitiesListWidget::activityRemoved,
+            this,
+            &MainWindow::removeActivityFromSlots);
+
     stackedWidget = new QStackedWidget();
     stackedWidget->addWidget(slotBoardScrollArea);
     stackedWidget->addWidget(activitiesListWidget);
+
+    activityEditorWidget = new ActivityEditor();
+    connect(activityEditorWidget,
+            &ActivityEditor::done,
+            this,
+            &MainWindow::activityEdited);
+
+    stackedWidget->addWidget(activityEditorWidget);
 
     slotBoard = new SlotBoard();
 
@@ -111,12 +129,34 @@ void MainWindow::saveAs()
     qDebug() << "save as";
 }
 
+void MainWindow::openActivityEditor()
+{
+    stackedWidget->setCurrentIndex(2);
+    activityEditorWidget->reset();
+}
+
+void MainWindow::activityEdited(const Activity &activity)
+{
+    if (!strategy->hasActivity(activity)) {
+        strategy->activities.push_back(activity);
+        stackedWidget->setCurrentIndex(1);
+        activitiesListWidget->updateList();
+    } else {
+        activityEditorWidget->showError("Name", "Already exists");
+    }
+}
+
+void MainWindow::removeActivityFromSlots(const Activity &activity)
+{
+    slotBoard->updateUI();
+}
+
 void MainWindow::showActivitiesListForSelection(QVector <int> selection)
 {
     stackedWidget->setCurrentIndex(1);
 }
 
-void MainWindow::setActivity(std::shared_ptr<Activity> activity)
+void MainWindow::setActivity(const Activity &activity)
 {
     auto selection = slotBoard->selectionSlots();
     strategy->setSlotAtIndices(selection.toStdVector(), activity);

@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QMenu>
 
 ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget(parent),
     _title(title)
@@ -12,11 +13,11 @@ ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget
     setFixedHeight(50);
     setStyleSheet("ActivitiesListItem {"
                   "background-color: white;"
-                  "border-bottom: 1px solid gray;"
+                  "border-bottom: 1px solid #ddd;"
                   "}"
                   "ActivitiesListItem::hover {"
                   "background-color: #eee;"
-                  "border-bottom: 1px solid gray;"
+                  "border-bottom: 1px solid #ddd;"
                   "}");
 
     setLayout(new QHBoxLayout());
@@ -29,6 +30,14 @@ ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget
     label->setText(title);
 
     layout()->addWidget(label);
+
+    deleteActivityAction = new QAction(tr("Delete"), this);
+    deleteActivityAction->setShortcut(QKeySequence(Qt::Key_Delete));
+    addAction(deleteActivityAction);
+    connect(deleteActivityAction,
+            &QAction::triggered,
+            this,
+            &ActivitiesListItem::wantDeleteActivity);
 }
 
 void ActivitiesListItem::paintEvent(QPaintEvent *)
@@ -37,6 +46,11 @@ void ActivitiesListItem::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+void ActivitiesListItem::wantDeleteActivity()
+{
+    emit wantToDelete();
 }
 
 QString ActivitiesListItem::title() const
@@ -78,6 +92,9 @@ void ActivitiesListItem::mouseDoubleClickEvent(QMouseEvent *event)
 
 void ActivitiesListItem::contextMenuEvent(QContextMenuEvent *event)
 {
+    QMenu menu(this);
+//    menu.addAction(editActivityAction);
+    menu.addAction(deleteActivityAction);
+    menu.exec(event->globalPos());
     qDebug() << "contextMenuEvent";
-
 }

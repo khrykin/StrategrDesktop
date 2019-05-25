@@ -73,12 +73,23 @@ void ActivitiesListWidget::getBack()
 
 void ActivitiesListWidget::updateList()
 {
+    while (listWidget->layout()->itemAt(0) != nullptr) {
+        listWidget->layout()->removeItem(listWidget->layout()->itemAt(0));
+    }
+
     for (unsigned int index = 0; index < strategy()->activities.size(); index++) {
         auto activity = strategy()->activities[index];
-        auto *item = new ActivitiesListItem(QString::fromStdString(activity->name));
+        auto *item = new ActivitiesListItem(QString::fromStdString(activity.name));
 
         connect(item, &ActivitiesListItem::selected, [=] () {
             emit selectActivity(activity);
+        });
+
+        connect(item, &ActivitiesListItem::wantToDelete, [=] () {
+           this->strategy()->removeActivity(activity);
+           item->hide();
+           this->listWidget->layout()->removeWidget(item);
+           emit activityRemoved(activity);
         });
 
         listWidget->layout()->addWidget(item);

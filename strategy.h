@@ -10,17 +10,20 @@
 #include "activitygroup.h"
 
 using namespace std;
-using Slot = optional<shared_ptr<Activity>>;
+using Slot = optional<Activity>;
 using SlotsState = vector<Slot>;
 using ActivityGroupsState = vector<ActivityGroup>;
 
 struct Strategy
 {
     optional<string> title;
-    vector<shared_ptr<Activity>> activities;
+    vector<Activity> activities;
     unsigned int numberOfSlots = 48;
 
     ActivityGroupsState group();
+
+    void appendActivity(const Activity activity);
+    void removeActivity(const Activity &activity);
 
     Slot slotAtIndex(int index);
     void setSlotAtIndex(int index, Slot slot);
@@ -40,7 +43,7 @@ struct Strategy
     string debugGroups();
 
     bool hasSlotIndex(int index);
-
+    bool hasActivity(const Activity &activity);
 private:
     SlotsState _slotsState;
 

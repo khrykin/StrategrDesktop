@@ -15,6 +15,8 @@ public:
 
 signals:
     void selected();
+    void wantToDelete();
+
 public slots:
 
 private:
@@ -22,9 +24,15 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
-
     void paintEvent(QPaintEvent *) override;
+
+    void wantDeleteActivity();
+
+
     QString _title;
+
+    QAction *editActivityAction;
+    QAction *deleteActivityAction;
 
     QLabel *label;
     bool _isClicked = false;

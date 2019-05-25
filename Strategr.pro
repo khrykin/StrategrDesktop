@@ -28,6 +28,7 @@ SOURCES += \
         activitieslistitem.cpp \
         activitieslistwidget.cpp \
         activity.cpp \
+        activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
         main.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
         activitieslistitem.h \
         activitieslistwidget.h \
         activity.h \
+        activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
         mainwindow.h \
