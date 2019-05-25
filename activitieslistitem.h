@@ -16,6 +16,7 @@ public:
 signals:
     void selected();
     void wantToDelete();
+    void wantToEdit();
 
 public slots:
 
@@ -27,7 +28,7 @@ private:
     void paintEvent(QPaintEvent *) override;
 
     void wantDeleteActivity();
-
+    void wantEditActivity();
 
     QString _title;
 

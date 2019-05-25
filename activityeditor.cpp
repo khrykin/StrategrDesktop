@@ -15,11 +15,11 @@ ActivityEditor::ActivityEditor(QWidget *parent) :  QWidget(parent)
                   "background-color: white;"
                   "}");
 
-    auto *navBar = new Navbar();
+    navBar = new Navbar();
 
     layout()->addWidget(navBar);
 
-    navBar->setTitle("Edit Activity");
+    navBar->setTitle("New Activity");
     navBar->setLeftButton("‹ Back", this, &ActivityEditor::getBack);
     navBar->setRightButton("Done", this, &ActivityEditor::save);
 
@@ -76,10 +76,10 @@ void ActivityEditor::save()
     if (!titleEditor->text().isEmpty()) {
         if (_activity.has_value()) {
             _activity.value().name = titleEditor->text().toStdString();
-            emit done(_activity.value());
+            emit done(_activity.value(), false);
         } else {
             auto newActivity = Activity(titleEditor->text().toStdString());
-            emit done(newActivity);
+            emit done(newActivity, true);
         }
     }
 }
@@ -95,6 +95,7 @@ void ActivityEditor::setActivity(const std::optional<Activity> &activity)
     titleEditor->setText(activity.has_value()
                          ? QString::fromStdString(activity.value().name)
                          : "");
+    navBar->setTitle(activity.has_value() ? "Edit Activity" : "New Activity");
 }
 
 void ActivityEditor::showError(QString key, QString message)
@@ -108,7 +109,9 @@ void ActivityEditor::showError(QString key, QString message)
 void ActivityEditor::reset(std::optional<Activity> activity)
 {
     titleError->hide();
-    titleEditor->setText("");
+    titleEditor->setText(activity.has_value()
+                         ? QString::fromStdString(activity.value().name)
+                         : "");
     titleEditor->setFocus();
 }
 

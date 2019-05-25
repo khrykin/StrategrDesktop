@@ -22,6 +22,7 @@ signals:
     void selectActivity(const Activity &activity);
     void wantNewActivity();
     void activityRemoved(const Activity &activity);
+    void wantToEditActivity(const Activity &activity);
 public slots:
 
 private:

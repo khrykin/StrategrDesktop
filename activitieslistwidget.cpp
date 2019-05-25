@@ -92,6 +92,10 @@ void ActivitiesListWidget::updateList()
            emit activityRemoved(activity);
         });
 
+        connect(item, &ActivitiesListItem::wantToEdit, [=] () {
+          emit wantToEditActivity(activity);
+        });
+
         listWidget->layout()->addWidget(item);
     }
 

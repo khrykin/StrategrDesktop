@@ -65,6 +65,23 @@ void Strategy::removeActivity(const Activity &activity)
     }
 }
 
+void Strategy::editActivity(const Activity &from, const Activity &to)
+{
+    auto it = std::find(activities.begin(), activities.end(), from);
+    if (it == activities.end()) {
+      return;
+    } else {
+      auto index = static_cast<unsigned int>(std::distance(activities.begin(), it));
+      activities[index] = to;
+
+      for (unsigned int i = 0; i < slotsState().size(); i++) {
+          if (slotsState()[i].has_value() && slotsState()[i].value() == from) {
+              _slotsState[i] = to;
+          }
+      }
+    }
+}
+
 Slot Strategy::slotAtIndex(int index)
 {
     if (!hasSlotIndex(index)) {

@@ -20,7 +20,7 @@ public:
     void showError(QString key, QString message);
     void reset(std::optional<Activity> activity = std::nullopt);
 signals:
-    void done(Activity activity);
+    void done(Activity activity, bool isNew);
 
 public slots:
 
@@ -36,6 +36,7 @@ private:
     QLineEdit *titleEditor;
     QLabel *titleError;
     QVBoxLayout *formLayout;
+    Navbar *navBar;
 };
 
 #endif // ACTIVITYEDITOR_H

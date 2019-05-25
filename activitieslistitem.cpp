@@ -38,6 +38,14 @@ ActivitiesListItem::ActivitiesListItem(QString title, QWidget *parent) : QWidget
             &QAction::triggered,
             this,
             &ActivitiesListItem::wantDeleteActivity);
+
+
+    editActivityAction = new QAction(tr("Edit"), this);
+    addAction(editActivityAction);
+    connect(editActivityAction,
+            &QAction::triggered,
+            this,
+            &ActivitiesListItem::wantEditActivity);
 }
 
 void ActivitiesListItem::paintEvent(QPaintEvent *)
@@ -51,6 +59,11 @@ void ActivitiesListItem::paintEvent(QPaintEvent *)
 void ActivitiesListItem::wantDeleteActivity()
 {
     emit wantToDelete();
+}
+
+void ActivitiesListItem::wantEditActivity()
+{
+    emit wantToEdit();
 }
 
 QString ActivitiesListItem::title() const
@@ -93,7 +106,7 @@ void ActivitiesListItem::mouseDoubleClickEvent(QMouseEvent *event)
 void ActivitiesListItem::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
-//    menu.addAction(editActivityAction);
+    menu.addAction(editActivityAction);
     menu.addAction(deleteActivityAction);
     menu.exec(event->globalPos());
     qDebug() << "contextMenuEvent";

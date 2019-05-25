@@ -40,6 +40,11 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             &MainWindow::removeActivityFromSlots);
 
+    connect(activitiesListWidget,
+            &ActivitiesListWidget::wantToEditActivity,
+            this,
+            &MainWindow::editActivity);
+
     stackedWidget = new QStackedWidget();
     stackedWidget->addWidget(slotBoardScrollArea);
     stackedWidget->addWidget(activitiesListWidget);
@@ -135,10 +140,19 @@ void MainWindow::openActivityEditor()
     activityEditorWidget->reset();
 }
 
-void MainWindow::activityEdited(const Activity &activity)
+void MainWindow::activityEdited(const Activity &activity, bool isNew)
 {
+    if (!isNew && activityBeingEdited.has_value()) {
+        strategy->editActivity(activityBeingEdited.value(), activity);
+        stackedWidget->setCurrentIndex(1);
+        activitiesListWidget->updateList();
+        slotBoard->updateUI();
+        activityBeingEdited = std::nullopt;
+        return;
+    }
+
     if (!strategy->hasActivity(activity)) {
-        strategy->activities.push_back(activity);
+        strategy->appendActivity(activity);
         stackedWidget->setCurrentIndex(1);
         activitiesListWidget->updateList();
     } else {
@@ -149,6 +163,13 @@ void MainWindow::activityEdited(const Activity &activity)
 void MainWindow::removeActivityFromSlots(const Activity &activity)
 {
     slotBoard->updateUI();
+}
+
+void MainWindow::editActivity(const Activity &activity)
+{
+    activityEditorWidget->setActivity(activity);
+    stackedWidget->setCurrentIndex(2);
+    activityBeingEdited = activity;
 }
 
 void MainWindow::showActivitiesListForSelection(QVector <int> selection)

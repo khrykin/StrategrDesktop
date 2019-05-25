@@ -24,6 +24,7 @@ struct Strategy
 
     void appendActivity(const Activity activity);
     void removeActivity(const Activity &activity);
+    void editActivity(const Activity &from, const Activity &to);
 
     Slot slotAtIndex(int index);
     void setSlotAtIndex(int index, Slot slot);

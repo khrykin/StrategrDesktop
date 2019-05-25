@@ -25,6 +25,7 @@ private:
     QStackedWidget *stackedWidget;
     ActivitiesListWidget *activitiesListWidget;
     ActivityEditor *activityEditorWidget;
+    std::optional<Activity> activityBeingEdited;
 
     void createMenus();
     void newWindow();
@@ -32,8 +33,9 @@ private:
     void save();
     void saveAs();
     void openActivityEditor();
-    void activityEdited(const Activity &activity);
+    void activityEdited(const Activity &activity, bool isNew);
     void removeActivityFromSlots(const Activity &activity);
+    void editActivity(const Activity &activity);
 
     void showActivitiesListForSelection(QVector<int> selection);
     void setActivity(const Activity &activity);
