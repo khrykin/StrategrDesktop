@@ -28,6 +28,16 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent)
     clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(clearSelectionAction);
     connect(clearSelectionAction, &QAction::triggered, this, &SlotBoard::clearCurrentSelection);
+
+    undoAction = new QAction(tr("Undo"), this);
+    undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
+    addAction(undoAction);
+    connect(undoAction, &QAction::triggered, this, &SlotBoard::undo);
+
+    redoAction = new QAction(tr("Undo"), this);
+    redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+    addAction(redoAction);
+    connect(redoAction, &QAction::triggered, this, &SlotBoard::redo);
 }
 
 void SlotBoard::updateUI()
@@ -97,10 +107,13 @@ void SlotBoard::mousePressEvent(QMouseEvent *event)
     _pulledFrom = slotIndexForEvent(event);
     if ((event->buttons() == Qt::LeftButton && event->modifiers() == Qt::CTRL)
             || (event->buttons() == Qt::RightButton && !hasSelection())) {
+        // Slot selection event
         selectSlotAtIndex(_pulledFrom);
     } else if (event->buttons() == Qt::LeftButton) {
+        // Slot pulling event
         _isPulling = true;
         selectGroupAtIndex(_pulledFrom);
+        historyEntry = Strategy::HistoryEntry(strategy());
         deselectAllSlots();
     }
 }
@@ -110,6 +123,11 @@ void SlotBoard::mouseReleaseEvent(QMouseEvent *event)
     _isPulling = false;
     _pulledTo = slotIndexForEvent(event);
     deselectAllGroups();
+
+    if (historyEntry.has_value()) {
+        strategy()->commitToHistory(historyEntry.value());
+        historyEntry = std::nullopt;
+    }
 
     qDebug() << "mouseReleaseEvent";
 }
@@ -306,4 +324,18 @@ void SlotBoard::deleteActivityInSelection()
 void SlotBoard::clearCurrentSelection()
 {
     deselectAllSlots();
+}
+
+void SlotBoard::undo()
+{
+    strategy()->undo();
+    updateUI();
+    qDebug() << "Undo";
+}
+
+void SlotBoard::redo()
+{
+    strategy()->redo();
+    updateUI();
+    qDebug() << "Redo";
 }

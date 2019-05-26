@@ -55,6 +55,8 @@ void Strategy::appendActivity(const Activity activity)
 
 void Strategy::removeActivity(const Activity &activity)
 {
+    commitToHistory(_slotsState, activities);
+
     activities.erase(std::remove(activities.begin(), activities.end(), activity), activities.end());
     for (unsigned int i = 0; i < slotsState().size(); i++) {
         auto slot = slotAtIndex(static_cast<int>(i));
@@ -69,16 +71,18 @@ void Strategy::editActivity(const Activity &from, const Activity &to)
 {
     auto it = std::find(activities.begin(), activities.end(), from);
     if (it == activities.end()) {
-      return;
+        return;
     } else {
-      auto index = static_cast<unsigned int>(std::distance(activities.begin(), it));
-      activities[index] = to;
+        commitToHistory(_slotsState, activities);
 
-      for (unsigned int i = 0; i < slotsState().size(); i++) {
-          if (slotsState()[i].has_value() && slotsState()[i].value() == from) {
-              _slotsState[i] = to;
-          }
-      }
+        auto index = static_cast<unsigned int>(std::distance(activities.begin(), it));
+        activities[index] = to;
+
+        for (unsigned int i = 0; i < slotsState().size(); i++) {
+            if (slotsState()[i].has_value() && slotsState()[i].value() == from) {
+                _slotsState[i] = to;
+            }
+        }
     }
 }
 
@@ -98,6 +102,7 @@ void Strategy::setSlotAtIndex(int index, Slot slot)
 
 void Strategy::setSlotAtIndices(vector<int> indices, Slot slot)
 {
+    commitToHistory(_slotsState, activities);
     for (int index : indices) {
         setSlotAtIndex(index, slot);
     }
@@ -254,4 +259,62 @@ bool Strategy::hasActivity(const Activity &activity)
     } else {
         return false;
     }
+}
+
+void Strategy::commitToHistory(SlotsState state, vector<Activity> activities)
+{
+    undoStack.push_back(HistoryEntry(state, activities));
+    redoStack = {};
+}
+
+void Strategy::commitToHistory(Strategy::HistoryEntry entry)
+{
+    undoStack.push_back(entry);
+    redoStack = {};
+}
+
+
+void Strategy::undo()
+{
+    if (undoStack.empty()) {
+        return;
+    }
+
+    auto newEntry = HistoryEntry(this);
+    redoStack.push_back(newEntry);
+
+    auto prevEntry = undoStack.back();
+
+    _slotsState = prevEntry.slotsState;
+    activities = prevEntry.activities;
+
+    undoStack.pop_back();
+}
+
+void Strategy::redo()
+{
+    if (redoStack.empty()) {
+        return;
+    }
+
+    undoStack.push_back(HistoryEntry(this));
+
+    auto historyEntry = redoStack.back();
+
+    _slotsState = historyEntry.slotsState;
+    activities = historyEntry.activities;
+
+    redoStack.pop_back();
+}
+
+
+Strategy::HistoryEntry::HistoryEntry(Strategy *strategy)
+{
+    this->slotsState = strategy->slotsState();
+    this->activities = strategy->activities;
+}
+
+Strategy::HistoryEntry::HistoryEntry(SlotsState slotsState, vector<Activity> activities): slotsState(slotsState), activities(activities)
+{
+
 }

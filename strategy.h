@@ -45,9 +45,25 @@ struct Strategy
 
     bool hasSlotIndex(int index);
     bool hasActivity(const Activity &activity);
+
+    void commitToHistory(SlotsState state, vector<Activity> activities);
+    void undo();
+    void redo();
+
+    struct HistoryEntry {
+        HistoryEntry(Strategy *strategy);
+        HistoryEntry(SlotsState slotsState, vector<Activity> activities);
+
+        SlotsState slotsState;
+        vector<Activity> activities;
+    };
+
+    void commitToHistory(HistoryEntry entry);
+
 private:
     SlotsState _slotsState;
-
+    vector<HistoryEntry> undoStack;
+    vector<HistoryEntry> redoStack;
 };
 
 #endif // STRATEGY_H

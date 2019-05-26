@@ -40,8 +40,6 @@ private:
     void selectGroupAtIndex(int selectedGroupIndex);
     void deselectAllGroups();
 
-
-
     ActivityGroupWidget *groupWidgetAtIndex(int index);
 
     const int SLOT_HEIGHT = 50;
@@ -65,9 +63,16 @@ private:
     QAction *deleteActivityAction;
     QAction *clearSelectionAction;
 
+    QAction *undoAction;
+    QAction *redoAction;
+
+    std::optional<Strategy::HistoryEntry> historyEntry;
+
     void openActivitiesWindow();
     void deleteActivityInSelection();
     void clearCurrentSelection();
+    void undo();
+    void redo();
 };
 
 #endif // SLOTBOARD_H
