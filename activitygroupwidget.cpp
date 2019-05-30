@@ -10,16 +10,16 @@ ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent)
     setAttribute(Qt::WA_TransparentForMouseEvents);
     mainWidget = new QWidget(this);
 
-    label = new QLabel();
-    label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    label->setMaximumWidth(30);
+//    label = new QLabel();
+//    label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+//    label->setMaximumWidth(30);
 
     titleLabel = new QLabel();
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("font-weight: bold;");
 
     mainWidget->setLayout(new QHBoxLayout());
-    mainWidget->layout()->addWidget(label);
+//    mainWidget->layout()->addWidget(label);
     mainWidget->layout()->addWidget(titleLabel);
 
     selectionWidget = new QWidget(this);
@@ -193,5 +193,5 @@ int ActivityGroupWidget::number() const
 void ActivityGroupWidget::setNumber(int number)
 {
     _number = number;
-    label->setText(QString::number(number));
+//    label->setText(QString::number(number));
 }

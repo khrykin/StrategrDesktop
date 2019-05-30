@@ -31,10 +31,12 @@ SOURCES += \
         activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
+        groupslist.cpp \
         main.cpp \
         mainwindow.cpp \
         navbar.cpp \
         slotboard.cpp \
+        slotruler.cpp \
         stacklayout.cpp \
         strategy.cpp
 
@@ -45,9 +47,11 @@ HEADERS += \
         activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
+        groupslist.h \
         mainwindow.h \
         navbar.h \
         slotboard.h \
+        slotruler.h \
         stacklayout.h \
         strategy.h
 

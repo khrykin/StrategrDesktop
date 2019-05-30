@@ -13,8 +13,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-    setMinimumWidth(250);
-    resize(300, QDesktopWidget().availableGeometry(this).size().height() * 0.7);
+    setMinimumWidth(300);
+    setMaximumWidth(350);
+    resize(350, QDesktopWidget().availableGeometry(this).size().height() * 0.8);
 
     slotBoardScrollArea = new QScrollArea();
     slotBoardScrollArea->setWidgetResizable(true);
@@ -67,8 +68,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     slotBoard->setStrategy(strategy);
-    connect(slotBoard,
-            &SlotBoard::wantToSetActivtyForSelection,
+    connect(slotBoard->groupsList(),
+            &GroupsList::wantToSetActivtyForSelection,
             this,
             &MainWindow::showActivitiesListForSelection);
 
@@ -146,7 +147,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew)
         strategy->editActivity(activityBeingEdited.value(), activity);
         stackedWidget->setCurrentIndex(1);
         activitiesListWidget->updateList();
-        slotBoard->updateUI();
+        slotBoard->groupsList()->updateUI();
         activityBeingEdited = std::nullopt;
         return;
     }
@@ -162,7 +163,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew)
 
 void MainWindow::removeActivityFromSlots(const Activity &activity)
 {
-    slotBoard->updateUI();
+    slotBoard->groupsList()->updateUI();
 }
 
 void MainWindow::editActivity(const Activity &activity)
@@ -179,10 +180,10 @@ void MainWindow::showActivitiesListForSelection(QVector <int> selection)
 
 void MainWindow::setActivity(const Activity &activity)
 {
-    auto selection = slotBoard->selectionSlots();
+    auto selection = slotBoard->groupsList()->selectionSlots();
     strategy->setSlotAtIndices(selection.toStdVector(), activity);
-    slotBoard->deselectAllSlots();
+    slotBoard->groupsList()->deselectAllSlots();
     stackedWidget->setCurrentIndex(0);
-    slotBoard->updateUI();
+    slotBoard->groupsList()->updateUI();
 }
 
