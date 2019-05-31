@@ -9,7 +9,6 @@
 #include <QDebug>
 #include <QDesktopWidget>
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
@@ -74,6 +73,8 @@ MainWindow::MainWindow(QWidget *parent) :
             &MainWindow::showActivitiesListForSelection);
 
     setCentralWidget(stackedWidget);
+    notifier = new Notifier(strategy, this);
+
     createMenus();
 }
 

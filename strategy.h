@@ -59,8 +59,6 @@ struct Strategy
     };
 
     void commitToHistory(HistoryEntry entry);
-
-
 public:
     unsigned int numberOfSlots() const;
     void setNumberOfSlots(unsigned int numberOfSlots);
@@ -79,7 +77,7 @@ private:
     SlotsState _slotsState;
     Duration _slotDuration = 15;
     Duration _startTime = 6 * 60; // 6:00
-    unsigned int _numberOfSlots = 48;
+    unsigned int _numberOfSlots = 68;
 
     vector<HistoryEntry> undoStack;
     vector<HistoryEntry> redoStack;

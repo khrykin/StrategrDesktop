@@ -35,10 +35,12 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         navbar.cpp \
+        notifier.cpp \
         slotboard.cpp \
         slotruler.cpp \
         stacklayout.cpp \
-        strategy.cpp
+        strategy.cpp \
+        utils.cpp
 
 HEADERS += \
         activitieslistitem.h \
@@ -50,10 +52,12 @@ HEADERS += \
         groupslist.h \
         mainwindow.h \
         navbar.h \
+        notifier.h \
         slotboard.h \
         slotruler.h \
         stacklayout.h \
-        strategy.h
+        strategy.h \
+        utils.h
 
 FORMS +=
 
@@ -73,3 +77,6 @@ PRE_TARGETDEPS += .beforebuild
 before_build.target = .beforebuild
 before_build.depends = FORCE
 before_build.commands = chcp 1251
+
+RESOURCES += \
+    icons.qrc

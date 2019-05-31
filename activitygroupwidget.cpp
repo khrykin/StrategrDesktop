@@ -4,22 +4,23 @@
 #include <QLayout>
 #include <QDebug>
 #include "stacklayout.h"
+#include "utils.h"
 
 ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent)
 {
     setAttribute(Qt::WA_TransparentForMouseEvents);
     mainWidget = new QWidget(this);
 
-//    label = new QLabel();
-//    label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-//    label->setMaximumWidth(30);
+    //    label = new QLabel();
+    //    label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    //    label->setMaximumWidth(30);
 
     titleLabel = new QLabel();
     titleLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setStyleSheet("font-weight: bold;");
 
     mainWidget->setLayout(new QHBoxLayout());
-//    mainWidget->layout()->addWidget(label);
+    //    mainWidget->layout()->addWidget(label);
     mainWidget->layout()->addWidget(titleLabel);
 
     selectionWidget = new QWidget(this);
@@ -68,6 +69,17 @@ void ActivityGroupWidget::updateStyleSheet()
     }
 }
 
+int ActivityGroupWidget::slotDuration() const
+{
+    return _slotDuration;
+}
+
+void ActivityGroupWidget::setSlotDuration(int slotDuration)
+{
+    _slotDuration = slotDuration;
+    setTitle(title());
+}
+
 QMap<int, QWidget *> ActivityGroupWidget::selectionSlots() const
 {
     return _selectionSlots;
@@ -99,7 +111,7 @@ void ActivityGroupWidget::setSlotHeight(int height)
 
 void ActivityGroupWidget::selectSlotAtIndex(int slotIndex)
 {
-//    selectionWidget->repaint();
+    //    selectionWidget->repaint();
     if (!_selectionSlots.contains(slotIndex)) {
         auto *selectionSlot = new QWidget(selectionWidget);
         selectionSlot->setFixedHeight(50);
@@ -153,24 +165,10 @@ int ActivityGroupWidget::length() const
     return _length;
 }
 
-void ActivityGroupWidget::setLength(int length)
+void ActivityGroupWidget::setLength(unsigned int length)
 {
-    _length = length;
-}
-
-void ActivityGroupWidget::grow()
-{
-    setLength(length() + 1);
-}
-
-void ActivityGroupWidget::shrink()
-{
-    auto newLength = length() - 1;
-    if (newLength < 1) {
-        newLength = 1;
-    }
-
-    setLength(newLength);
+    _length = static_cast<int>(length);
+    setTitle(title());
 }
 
 QString ActivityGroupWidget::title() const
@@ -181,7 +179,13 @@ QString ActivityGroupWidget::title() const
 void ActivityGroupWidget::setTitle(QString title)
 {
     _title = title;
-    titleLabel->setText(title);
+
+    if (!title.isEmpty()) {
+        titleLabel->setText(title + " " + timeStringForMins(length() * slotDuration()));
+    } else {
+        titleLabel->setText("");
+    }
+
     updateStyleSheet();
 }
 
@@ -193,5 +197,5 @@ int ActivityGroupWidget::number() const
 void ActivityGroupWidget::setNumber(int number)
 {
     _number = number;
-//    label->setText(QString::number(number));
+    //    label->setText(QString::number(number));
 }

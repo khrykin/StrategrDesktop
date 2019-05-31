@@ -18,10 +18,7 @@ public:
     void setTitle(QString title);
 
     int length() const;
-    void setLength(int length);
-
-    void grow();
-    void shrink();
+    void setLength(unsigned int length);
 
     bool isSelected() const;
     void setIsSelected(bool isSelected);
@@ -36,6 +33,9 @@ public:
 
     QMap<int, QWidget *> selectionSlots() const;
 
+    int slotDuration() const;
+    void setSlotDuration(int slotDuration);
+
 private:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
@@ -43,6 +43,7 @@ private:
     void updateStyleSheet();
     int _number;
     int _length = 1;
+    int _slotDuration;
 
     bool _isSelected = false;
 

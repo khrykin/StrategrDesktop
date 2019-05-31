@@ -72,14 +72,15 @@ void GroupsList::updateUI()
 
         auto activityGroup = state[i];
 
+
+        if (groupWidget->slotDuration() != strategy()->slotDuration()) {
+            groupWidget->setSlotDuration(strategy()->slotDuration());
+        }
+
         auto groupHeight = SLOT_HEIGHT * static_cast<int>(activityGroup.length);
         if (groupWidget->minimumHeight() != groupHeight) {
             groupWidget->setSlotHeight(groupHeight);
-        }
-
-        auto groupNumber = static_cast<int>(i);
-        if (groupWidget->number() != groupNumber) {
-            groupWidget->setNumber(groupNumber);
+            groupWidget->setLength(activityGroup.length);
         }
 
         if (activityGroup.activity.has_value()) {
@@ -92,6 +93,13 @@ void GroupsList::updateUI()
                 groupWidget->setTitle("");
             }
         }
+
+        auto groupNumber = static_cast<int>(i);
+        if (groupWidget->number() != groupNumber) {
+            groupWidget->setNumber(groupNumber);
+        }
+
+
     }
 
     qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());

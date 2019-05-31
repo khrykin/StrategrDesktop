@@ -9,6 +9,7 @@
 #include "strategy.h"
 #include "activitieslistwidget.h"
 #include "activityeditor.h"
+#include "notifier.h"
 
 class MainWindow : public QMainWindow
 {
@@ -40,7 +41,7 @@ private:
     void showActivitiesListForSelection(QVector<int> selection);
     void setActivity(const Activity &activity);
 
-
+    Notifier *notifier;
 };
 
 #endif // MAINWINDOW_H
