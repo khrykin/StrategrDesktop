@@ -187,12 +187,12 @@ Strategy *Strategy::createEmtpty()
 
     SlotsState slotsState;
 
-    for (unsigned int i = 0; i < strategy->numberOfSlots; i++) {
-        if (i < strategy->numberOfSlots / 4) {
+    for (unsigned int i = 0; i < strategy->_numberOfSlots; i++) {
+        if (i < strategy->_numberOfSlots / 4) {
             slotsState.push_back(strategy->activities[0]);
-        } else if (i < 2 * strategy->numberOfSlots / 4) {
+        } else if (i < 2 * strategy->_numberOfSlots / 4) {
             slotsState.push_back(strategy->activities[1]);
-        } else if (i < 3 * strategy->numberOfSlots / 4) {
+        } else if (i < 3 * strategy->_numberOfSlots / 4) {
             slotsState.push_back(strategy->activities[2]);
         } else {
             slotsState.push_back(nullopt);
@@ -273,16 +273,66 @@ void Strategy::commitToHistory(Strategy::HistoryEntry entry)
     redoStack = {};
 }
 
+unsigned int Strategy::numberOfSlots() const
+{
+    return _numberOfSlots;
+}
+
+void Strategy::setNumberOfSlots(unsigned int numberOfSlots)
+{
+    _numberOfSlots = numberOfSlots;
+}
+
+Duration Strategy::startTime() const
+{
+    return _startTime;
+}
+
+void Strategy::setStartTime(const Duration &startTime)
+{
+    _startTime = startTime;
+}
+
+Duration Strategy::slotDuration() const
+{
+    return _slotDuration;
+}
+
+void Strategy::setSlotDuration(const Duration &slotDuration)
+{
+    _slotDuration = slotDuration;
+}
+
+Duration Strategy::startTimeForSlotIndex(int index)
+{
+    return index * slotDuration() + startTime();
+}
+
+Duration Strategy::endTime()
+{
+    return startTimes().back() + slotDuration();
+}
+
+vector<Duration> Strategy::startTimes()
+{
+    vector<Duration> result;
+
+    for (int i = 0; i < static_cast<int>(numberOfSlots()); i++) {
+        result.push_back(startTimeForSlotIndex(i));
+    }
+
+    return result;
+}
 
 void Strategy::undo()
 {
     if (undoStack.empty()) {
         return;
     }
-
+    
     auto newEntry = HistoryEntry(this);
     redoStack.push_back(newEntry);
-
+    
     auto prevEntry = undoStack.back();
 
     _slotsState = prevEntry.slotsState;

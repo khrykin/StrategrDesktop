@@ -13,12 +13,12 @@ using namespace std;
 using Slot = optional<Activity>;
 using SlotsState = vector<Slot>;
 using ActivityGroupsState = vector<ActivityGroup>;
+using Duration = int;
 
 struct Strategy
 {
     optional<string> title;
     vector<Activity> activities;
-    unsigned int numberOfSlots = 48;
 
     ActivityGroupsState group();
 
@@ -60,8 +60,27 @@ struct Strategy
 
     void commitToHistory(HistoryEntry entry);
 
+
+public:
+    unsigned int numberOfSlots() const;
+    void setNumberOfSlots(unsigned int numberOfSlots);
+
+    Duration startTime() const;
+    void setStartTime(const Duration &startTime);
+
+    Duration slotDuration() const;
+    void setSlotDuration(const Duration &slotDuration);
+
+    Duration startTimeForSlotIndex(int index);
+    Duration endTime();
+
+    vector<Duration> startTimes();
 private:
     SlotsState _slotsState;
+    Duration _slotDuration = 15;
+    Duration _startTime = 6 * 60; // 6:00
+    unsigned int _numberOfSlots = 48;
+
     vector<HistoryEntry> undoStack;
     vector<HistoryEntry> redoStack;
 };

@@ -86,8 +86,13 @@ void MainWindow::createMenus()
 {
     auto *menuBar = new QMenuBar();
     auto *fileMenu = new QMenu("File");
+    auto *editMenu = new QMenu("Edit");
+    auto *notificationsMenu = new QMenu("Notifications");
 
     menuBar->addMenu(fileMenu);
+    menuBar->addMenu(editMenu);
+    menuBar->addMenu(notificationsMenu);
+
     fileMenu->addAction("New",
                         this,
                         &MainWindow::newWindow,
@@ -109,6 +114,9 @@ void MainWindow::createMenus()
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
 
     setMenuBar(menuBar);
+
+    editMenu->addAction(slotBoard->groupsList()->getUndoAction());
+    editMenu->addAction(slotBoard->groupsList()->getRedoAction());
 }
 
 

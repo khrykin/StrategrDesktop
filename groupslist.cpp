@@ -34,7 +34,7 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent)
     addAction(undoAction);
     connect(undoAction, &QAction::triggered, this, &GroupsList::undo);
 
-    redoAction = new QAction(tr("Undo"), this);
+    redoAction = new QAction(tr("Redo"), this);
     redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
     addAction(redoAction);
     connect(redoAction, &QAction::triggered, this, &GroupsList::redo);
@@ -280,6 +280,16 @@ void GroupsList::paintEvent(QPaintEvent *)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+
+QAction *GroupsList::getUndoAction() const
+{
+    return undoAction;
+}
+
+QAction *GroupsList::getRedoAction() const
+{
+    return redoAction;
 }
 
 QVector<int> GroupsList::selectionSlots()

@@ -2,6 +2,7 @@
 #define SLOTRULER_H
 
 #include <QWidget>
+#include <QVector>
 
 class SlotRuler:  public QWidget
 {
@@ -10,14 +11,12 @@ class SlotRuler:  public QWidget
 public:
     explicit SlotRuler(QWidget *parent = nullptr);
 
-    int numberOfSlots() const;
-    void setNumberOfSlots(int numberOfSlots);
+    QVector<QString> labels() const;
+    void setLabels(QVector<QString> labels);
 
 private:
     void paintEvent(QPaintEvent *) override;
-
-
-    int _numberOfSlots;
+    QVector<QString> _labels;
     void updateUI();
 };
 

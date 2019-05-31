@@ -26,6 +26,11 @@ public:
     bool hasSelection();
     void selectSlotAtIndex(int slotIndex);
     void deselectAllSlots();
+    void undo();
+    void redo();
+
+    QAction *getUndoAction() const;
+    QAction *getRedoAction() const;
 
 signals:
     void wantToSetActivtyForSelection(QVector <int> selection);
@@ -75,8 +80,7 @@ private:
     void openActivitiesWindow();
     void deleteActivityInSelection();
     void clearCurrentSelection();
-    void undo();
-    void redo();
+
 };
 
 #endif // GROUPSLIST_H

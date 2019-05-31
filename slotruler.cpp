@@ -21,16 +21,17 @@ SlotRuler::SlotRuler(QWidget *parent) : QWidget(parent)
     updateUI();
 }
 
-int SlotRuler::numberOfSlots() const
+QVector<QString> SlotRuler::labels() const
 {
-    return _numberOfSlots;
+    return _labels;
 }
 
-void SlotRuler::setNumberOfSlots(int numberOfSlots)
+void SlotRuler::setLabels(QVector<QString> labels)
 {
-    _numberOfSlots = numberOfSlots;
+    _labels = labels;
     updateUI();
 }
+
 
 void SlotRuler::paintEvent(QPaintEvent *)
 {
@@ -42,28 +43,33 @@ void SlotRuler::paintEvent(QPaintEvent *)
 
 void SlotRuler::updateUI()
 {
-    auto indexOfExtraCell = numberOfSlots();
+    auto indexOfExtraCell = 0; //labels().count();
     if (!!layout()->count()) {
         while (layout()->itemAt(indexOfExtraCell) != nullptr) {
-            layout()->itemAt(indexOfExtraCell)->widget()->hide();
-            layout()->removeWidget(layout()->itemAt(indexOfExtraCell)->widget());
+            if (layout()->itemAt(indexOfExtraCell)->widget() != nullptr) {
+                layout()->itemAt(indexOfExtraCell)->widget()->hide();
+            }
+            layout()->removeItem(layout()->itemAt(indexOfExtraCell));
         }
     }
 
 
-    for (int i = 0; i < numberOfSlots(); i++) {
+    for (int i = 0; i < labels().count(); i++) {
         QLabel *cell;
         if (layout()->itemAt(i) == nullptr) {
             cell = new QLabel();
-            cell->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+            cell->setAlignment(Qt::AlignCenter);
             cell->setFixedHeight(50);
-            cell->setStyleSheet("border-bottom: 1px solid #000;");
-
             layout()->addWidget(cell);
         } else {
-            cell = static_cast<QLabel *>(layout()->itemAt(i)->widget());
+            cell = dynamic_cast<QLabel *>(layout()->itemAt(i)->widget());
         }
 
-        cell->setText(QString::number(i));
+        if (cell != nullptr) {
+            cell->setText(labels()[i]);
+        }
     }
+
+    auto *mainLayout = static_cast<QVBoxLayout *>(layout());
+    mainLayout->addStretch();
 }
