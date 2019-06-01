@@ -56,16 +56,23 @@ void ActivityGroupWidget::resizeEvent(QResizeEvent *event)
 
 void ActivityGroupWidget::updateStyleSheet()
 {
-    if (title().length()) {
+    if (isSelected()) {
         setStyleSheet("ActivityGroupWidget { "
-                      "background-color: white;"
+                      "background-color: #efefef;"
                       "border-bottom: 1px solid #ccc;"
                       "}");
     } else {
-        setStyleSheet("ActivityGroupWidget { "
-                      "background-color: #dedede;"
-                      "border-bottom: 1px solid #ccc;"
-                      "}");
+        if (title().length()) {
+            setStyleSheet("ActivityGroupWidget { "
+                          "background-color: white;"
+                          "border-bottom: 1px solid #ccc;"
+                          "}");
+        } else {
+            setStyleSheet("ActivityGroupWidget { "
+                          "background-color: #dedede;"
+                          "border-bottom: 1px solid #ccc;"
+                          "}");
+        }
     }
 }
 
@@ -94,14 +101,7 @@ void ActivityGroupWidget::setIsSelected(bool isSelected)
 {
     _isSelected = isSelected;
 
-    if (isSelected) {
-        setStyleSheet("ActivityGroupWidget { "
-                      "background-color: #efefef;"
-                      "border-bottom: 1px solid #ccc;"
-                      "}");
-    } else {
-        updateStyleSheet();
-    }
+    updateStyleSheet();
 }
 
 void ActivityGroupWidget::setSlotHeight(int height)

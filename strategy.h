@@ -25,6 +25,7 @@ struct Strategy
     void appendActivity(const Activity activity);
     void removeActivity(const Activity &activity);
     void editActivity(const Activity &from, const Activity &to);
+    optional<unsigned int> indexOfActivity(const Activity &activity) const;
 
     Slot slotAtIndex(int index);
     void setSlotAtIndex(int index, Slot slot);
@@ -59,7 +60,7 @@ struct Strategy
     };
 
     void commitToHistory(HistoryEntry entry);
-public:
+
     unsigned int numberOfSlots() const;
     void setNumberOfSlots(unsigned int numberOfSlots);
 

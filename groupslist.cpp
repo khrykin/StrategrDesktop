@@ -72,7 +72,6 @@ void GroupsList::updateUI()
 
         auto activityGroup = state[i];
 
-
         if (groupWidget->slotDuration() != strategy()->slotDuration()) {
             groupWidget->setSlotDuration(strategy()->slotDuration());
         }
@@ -120,7 +119,7 @@ void GroupsList::mousePressEvent(QMouseEvent *event)
     } else if (event->buttons() == Qt::LeftButton) {
         // Slot pulling event
         _isPulling = true;
-        selectGroupAtIndex(_pulledFrom);
+        selectGroupAtSlotIndex(_pulledFrom);
         historyEntry = Strategy::HistoryEntry(strategy());
         deselectAllSlots();
     }
@@ -145,7 +144,7 @@ void GroupsList::mouseMoveEvent(QMouseEvent *event)
     if (_isPulling) {
         _pulledTo = slotIndexForEvent(event);
         fillSlots(_pulledFrom, _pulledTo);
-        selectGroupAtIndex(_pulledTo);
+        selectGroupAtSlotIndex(_pulledTo);
     }
 }
 
@@ -203,14 +202,17 @@ void GroupsList::fillSlots(int fromIndex, int toIndex)
     updateUI();
 }
 
-void GroupsList::selectGroupAtIndex(int selectedGroupIndex)
+void GroupsList::selectGroupAtSlotIndex(int selectedSlotIndex)
 {
-    if (_selectedGroupIndex.has_value() && _selectedGroupIndex.value() == selectedGroupIndex) {
+    if (_selectedGroupIndex.has_value() && _selectedGroupIndex.value() == selectedSlotIndex) {
         return;
     }
 
-    _selectedGroupIndex = make_optional(selectedGroupIndex);
-    auto groupIndex = strategy()->groupIndexForSlotIndex(selectedGroupIndex);
+
+    _selectedGroupIndex = selectedSlotIndex;
+    auto groupIndex = strategy()->groupIndexForSlotIndex(selectedSlotIndex);
+
+
     if (groupIndex.has_value()) {
         for (int i = 0; i < layout()->count(); i++) {
             auto *group = groupWidgetAtIndex(i);
@@ -280,6 +282,8 @@ void GroupsList::setStrategy(Strategy *strategy)
 {
     _strategy = strategy;
     updateUI();
+    deselectAllSlots();
+    deselectAllGroups();
 }
 
 void GroupsList::paintEvent(QPaintEvent *)

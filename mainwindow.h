@@ -10,6 +10,8 @@
 #include "activitieslistwidget.h"
 #include "activityeditor.h"
 #include "notifier.h"
+#include "filesystemiomanager.h"
+
 
 class MainWindow : public QMainWindow
 {
@@ -34,6 +36,7 @@ private:
     void save();
     void saveAs();
     void openActivityEditor();
+    void updateWindowTitle(bool isSaved = true);
     void activityEdited(const Activity &activity, bool isNew);
     void removeActivityFromSlots(const Activity &activity);
     void editActivity(const Activity &activity);
@@ -42,6 +45,7 @@ private:
     void setActivity(const Activity &activity);
 
     Notifier *notifier;
+    FileSystemIOManager *fsIOManager;
 };
 
 #endif // MAINWINDOW_H

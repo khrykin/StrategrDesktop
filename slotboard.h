@@ -16,7 +16,6 @@ public:
     void setStrategy(Strategy *strategy);
 
     GroupsList *groupsList() const;
-
     SlotRuler *slotRuler() const;
 
 signals:

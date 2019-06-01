@@ -1,18 +1,20 @@
 #ifndef NOTIFIER_H
 #define NOTIFIER_H
 
-#include <QWidget>
+#include <QObject>
 #include <QTimer>
 #include <QSystemTrayIcon>
 #include <QMenu>
 
 #include "strategy.h"
 
-class Notifier : public QWidget
+class Notifier : public QObject
 {
     Q_OBJECT
 public:
-    explicit Notifier(Strategy *strategy, QWidget *parent = nullptr);
+    explicit Notifier(Strategy *strategy, QObject *parent = nullptr);
+
+    void setStrategy(Strategy *value);
 
 signals:
 
@@ -24,7 +26,7 @@ private:
     int currentMinute;
     std::optional<Activity> targetActivity;
 
-    void timertTick();
+    void timerTick();
     Strategy *strategy;
 
     bool getReadySent = false;

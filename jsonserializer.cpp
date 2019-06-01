@@ -1,0 +1,108 @@
+#include "jsonserializer.h"
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QDebug>
+
+JSONSerializer::JSONSerializer(const Strategy &strategy) : strategy(strategy)
+{
+
+}
+
+QByteArray JSONSerializer::write() const
+{
+    QJsonObject json;
+    json[Keys::slotDuration] = strategy.slotDuration();
+    json[Keys::startTime] = strategy.startTime();
+
+    QJsonArray activities;
+    for (auto &activity : strategy.activities) {
+        activities.append(activityToJson(activity));
+    }
+
+    json[Keys::activities] = activities;
+
+    QJsonArray slotsState;
+    for (auto &slot : strategy.slotsState()) {
+        if (slot.has_value()) {
+            auto activityIndex = strategy.indexOfActivity(slot.value());
+            slotsState.append(activityIndex.has_value()
+                              ? QJsonValue(static_cast<int>(activityIndex.value()))
+                              : QJsonValue());
+        } else {
+            slotsState.append(QJsonValue());
+        }
+
+    }
+
+    json["slots"] = slotsState;
+
+    return QJsonDocument(json).toJson();
+}
+
+std::optional<Strategy> JSONSerializer::read(const QString &json)
+{
+    auto document = QJsonDocument::fromJson(json.toUtf8());
+    if (!document.isObject()) {
+        // TODO: Wrong format, show alert
+        return std::nullopt;
+    }
+
+    auto obj = document.object();
+    auto strategy = Strategy();
+    if (obj.contains(Keys::slotDuration) && obj[Keys::slotDuration].isDouble()) {
+        strategy.setSlotDuration(static_cast<int>(obj[Keys::slotDuration].toDouble()));
+    }
+
+    if (obj.contains(Keys::startTime) && obj[Keys::startTime].isDouble()) {
+        strategy.setStartTime(static_cast<int>(obj[Keys::startTime].toDouble()));
+    }
+
+    if (obj.contains(Keys::activities) && obj[Keys::activities].isArray()) {
+        std::vector<Activity> activities;
+
+        for(auto activityJsonRef : obj[Keys::activities].toArray()) {
+            auto activityJson = activityJsonRef.toObject();
+            if (activityJson.contains(Keys::name) && activityJson[Keys::name].isString()) {
+                activities.push_back(Activity(activityJson[Keys::name].toString().toStdString()));
+            }
+        };
+
+        strategy.activities = activities;
+    }
+
+    if (obj.contains(Keys::slotsKey) && obj[Keys::slotsKey].isArray()) {
+        SlotsState slotsState;
+
+        for(auto slotsJsonRef : obj[Keys::slotsKey].toArray()) {
+            if (slotsJsonRef.isNull()) {
+                slotsState.push_back(std::nullopt);
+                continue;
+            }
+
+            auto activityIndex = static_cast<unsigned int>(slotsJsonRef.toDouble());
+            try {
+                auto slot = strategy.activities.at(activityIndex);
+                slotsState.push_back(slot);
+            } catch (const std::out_of_range&) {
+                slotsState.push_back(std::nullopt);
+            }
+        };
+
+        strategy.setSlotsState(slotsState);
+    }
+
+    for (auto &activity : strategy.activities) {
+        qDebug() << QString::fromStdString(activity.name);
+    }
+
+    qDebug().noquote() << QString::fromStdString(strategy.debugSlots());
+
+    return strategy;
+}
+
+QJsonObject JSONSerializer::activityToJson(const Activity &activity)
+{
+    QJsonObject activityJson;
+    activityJson["name"] = QString::fromStdString(activity.name);
+    return activityJson;
+}

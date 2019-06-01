@@ -31,7 +31,9 @@ SOURCES += \
         activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
+        filesystemiomanager.cpp \
         groupslist.cpp \
+        jsonserializer.cpp \
         main.cpp \
         mainwindow.cpp \
         navbar.cpp \
@@ -49,7 +51,9 @@ HEADERS += \
         activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
+        filesystemiomanager.h \
         groupslist.h \
+        jsonserializer.h \
         mainwindow.h \
         navbar.h \
         notifier.h \

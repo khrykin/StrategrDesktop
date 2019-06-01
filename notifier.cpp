@@ -3,7 +3,7 @@
 #include <QDebug>
 #include "utils.h"
 
-Notifier::Notifier(Strategy *strategy, QWidget *parent) : QWidget(parent), strategy(strategy)
+Notifier::Notifier(Strategy *strategy, QObject *parent) : QObject(parent), strategy(strategy)
 {
 
     trayIcon = new QSystemTrayIcon(this);
@@ -13,21 +13,20 @@ Notifier::Notifier(Strategy *strategy, QWidget *parent) : QWidget(parent), strat
 
     timer = new QTimer(this);
     QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Notifier::timertTick);
+    connect(timer, &QTimer::timeout, this, &Notifier::timerTick);
     timer->start(1000);
-    timertTick();
+    timerTick();
 
     contextMenu = new QMenu();
 }
 
-void Notifier::timertTick()
+void Notifier::timerTick()
 {
     auto currentTime = QTime::currentTime().msecsSinceStartOfDay() / 1000;
     if (currentTime / 60 == currentMinute) {
 //       return;
     }
 
-    qDebug() << currentTime;
     currentMinute = currentTime / 60;
     auto currentSlotIndex = findSlotIndexForTime(currentMinute);
     if (currentSlotIndex < 0) {
@@ -74,10 +73,11 @@ void Notifier::timertTick()
     auto nextActivityName = QString::fromStdString(nextGroup.activity.value().name);
     if (countdown < 5 * 60 && !getReadySent) {
         if (QSystemTrayIcon::supportsMessages()) {
+            qDebug() << "showMessage" <<"Coming up in 5 minutes";
             trayIcon->showMessage(titleForGroup(nextGroup),
                                   "Coming up in 5 minutes",
                                   QIcon(),
-                                  1000);
+                                  10000);
         }
 
         getReadySent = true;
@@ -86,10 +86,11 @@ void Notifier::timertTick()
 
     if (countdown < 10 && !startSent) {
         if (QSystemTrayIcon::supportsMessages()) {
+            qDebug() << "showMessage" <<"Starts right now";
             trayIcon->showMessage(titleForGroup(nextGroup),
                                   "Starts right now",
                                   QIcon(),
-                                  1000);
+                                  10000);
         }
 
         startSent = true;
@@ -97,6 +98,11 @@ void Notifier::timertTick()
     }
 
 
+}
+
+void Notifier::setStrategy(Strategy *value)
+{
+    strategy = value;
 }
 
 int Notifier::findSlotIndexForTime(int mins)

@@ -17,7 +17,6 @@ QString timeStringForMins(int mins) {
     }
 
     if (minsRemainder != 0)  {
-
         if (hours > 0) {
             if (minsRemainder == 30) {
                 return result;

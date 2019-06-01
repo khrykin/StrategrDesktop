@@ -8,6 +8,10 @@
 #include <functional>
 #include <QDebug>
 #include <QDesktopWidget>
+#include <QFileDialog>
+#include <QStandardPaths>
+
+#include "jsonserializer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -62,9 +66,6 @@ MainWindow::MainWindow(QWidget *parent) :
     slotBoardScrollArea->setWidget(slotBoard);
     slotBoardScrollArea->setMouseTracking(true);
 
-    if (strategy->title.has_value()) {
-        setWindowTitle(QString::fromStdString(strategy->title.value()));
-    }
 
     slotBoard->setStrategy(strategy);
     connect(slotBoard->groupsList(),
@@ -74,6 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(stackedWidget);
     notifier = new Notifier(strategy, this);
+    fsIOManager = new FileSystemIOManager(this);
+
+    updateWindowTitle();
 
     createMenus();
 }
@@ -123,7 +127,17 @@ void MainWindow::createMenus()
 
 void MainWindow::open()
 {
-    qDebug() << "open";
+    auto newStrategy = fsIOManager->open();
+    if (!newStrategy.has_value()) {
+        qDebug() << "Can't open";
+        return;
+    }
+
+    strategy = new Strategy(newStrategy.value());
+    slotBoard->setStrategy(strategy);
+    activitiesListWidget->setStrategy(strategy);
+    notifier->setStrategy(strategy);
+    updateWindowTitle();
 }
 
 void MainWindow::newWindow()
@@ -135,13 +149,15 @@ void MainWindow::newWindow()
 
 void MainWindow::save()
 {
-    qDebug() << "save";
+    fsIOManager->save(*strategy);
+    updateWindowTitle();
 }
 
 
 void MainWindow::saveAs()
 {
-    qDebug() << "save as";
+    fsIOManager->saveAs(*strategy);
+    updateWindowTitle();
 }
 
 void MainWindow::openActivityEditor()
@@ -150,8 +166,20 @@ void MainWindow::openActivityEditor()
     activityEditorWidget->reset();
 }
 
+void MainWindow::updateWindowTitle(bool isSaved)
+{
+    auto title = fsIOManager->fileInfo().baseName();
+    qDebug() << "baseName" << title;
+    qDebug() << "filename" << fsIOManager->fileInfo().fileName();
+    if (!title.isEmpty()) {
+        setWindowTitle(title + (isSaved ? "" : "*") + " - Strategr");
+    }
+}
+
 void MainWindow::activityEdited(const Activity &activity, bool isNew)
 {
+    updateWindowTitle(false);
+
     if (!isNew && activityBeingEdited.has_value()) {
         strategy->editActivity(activityBeingEdited.value(), activity);
         stackedWidget->setCurrentIndex(1);
@@ -168,6 +196,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew)
     } else {
         activityEditorWidget->showError("Name", "Already exists");
     }
+
 }
 
 void MainWindow::removeActivityFromSlots(const Activity &activity)

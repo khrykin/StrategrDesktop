@@ -86,6 +86,17 @@ void Strategy::editActivity(const Activity &from, const Activity &to)
     }
 }
 
+optional<unsigned int> Strategy::indexOfActivity(const Activity &activity) const
+{
+    for (unsigned int i = 0; i < activities.size(); i++) {
+        if (activities[i] == activity) {
+            return i;
+        }
+    }
+
+    return nullopt;
+}
+
 Slot Strategy::slotAtIndex(int index)
 {
     if (!hasSlotIndex(index)) {

@@ -46,7 +46,7 @@ private:
 
     void copySlot(int fromIndex, int toIndex);
     void fillSlots(int fromIndex, int toIndex);
-    void selectGroupAtIndex(int selectedGroupIndex);
+    void selectGroupAtSlotIndex(int selectedSlotIndex);
     void deselectAllGroups();
 
     ActivityGroupWidget *groupWidgetAtIndex(int index);
