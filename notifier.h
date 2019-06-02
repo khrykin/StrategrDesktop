@@ -13,7 +13,7 @@ class Notifier : public QObject
     Q_OBJECT
 public:
     explicit Notifier(Strategy *strategy, QObject *parent = nullptr);
-
+        ~Notifier();
     void setStrategy(Strategy *value);
 
 signals:

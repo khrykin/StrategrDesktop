@@ -10,10 +10,11 @@
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QSettings>
 
 #include "jsonserializer.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(bool createEmtpty, QWidget *parent) :
     QMainWindow(parent)
 {
     setMinimumWidth(300);
@@ -23,8 +24,15 @@ MainWindow::MainWindow(QWidget *parent) :
     slotBoardScrollArea = new QScrollArea();
     slotBoardScrollArea->setWidgetResizable(true);
 
-    strategy = Strategy::createEmtpty();
-    strategy->title = "Morning Training";
+    fsIOManager = new FileSystemIOManager(this);
+
+    auto lastOpened = fsIOManager->lastOpened();
+    if (!createEmtpty && lastOpened.has_value()) {
+        strategy = new Strategy(lastOpened.value());
+    } else {
+        strategy = Strategy::createEmpty();
+        fsIOManager->resetFilepath();
+    }
 
     activitiesListWidget = new ActivitiesListWidget();
     activitiesListWidget->setStrategy(strategy);
@@ -75,7 +83,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(stackedWidget);
     notifier = new Notifier(strategy, this);
-    fsIOManager = new FileSystemIOManager(this);
 
     updateWindowTitle();
 
@@ -133,18 +140,13 @@ void MainWindow::open()
         return;
     }
 
-    strategy = new Strategy(newStrategy.value());
-    slotBoard->setStrategy(strategy);
-    activitiesListWidget->setStrategy(strategy);
-    notifier->setStrategy(strategy);
-    updateWindowTitle();
+    setStrategy(new Strategy(newStrategy.value()));
 }
 
 void MainWindow::newWindow()
 {
-    auto *newWindow =new MainWindow();
+    auto *newWindow =new MainWindow(true);
     newWindow->show();
-    newWindow->setWindowTitle("Empty Strategy");
 }
 
 void MainWindow::save()
@@ -171,9 +173,11 @@ void MainWindow::updateWindowTitle(bool isSaved)
     auto title = fsIOManager->fileInfo().baseName();
     qDebug() << "baseName" << title;
     qDebug() << "filename" << fsIOManager->fileInfo().fileName();
-    if (!title.isEmpty()) {
-        setWindowTitle(title + (isSaved ? "" : "*") + " - Strategr");
-    }
+    auto currentTitle = title.isEmpty()
+            ? "Untitled"
+            : title  + (isSaved ? "" : "*");
+
+    setWindowTitle(currentTitle + " - Strategr");
 }
 
 void MainWindow::activityEdited(const Activity &activity, bool isNew)
@@ -223,5 +227,14 @@ void MainWindow::setActivity(const Activity &activity)
     slotBoard->groupsList()->deselectAllSlots();
     stackedWidget->setCurrentIndex(0);
     slotBoard->groupsList()->updateUI();
+}
+
+void MainWindow::setStrategy(Strategy *strategy)
+{
+    this->strategy = strategy;
+    slotBoard->setStrategy(strategy);
+    activitiesListWidget->setStrategy(strategy);
+    notifier->setStrategy(strategy);
+    updateWindowTitle();
 }
 

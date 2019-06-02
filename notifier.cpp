@@ -6,6 +6,7 @@
 Notifier::Notifier(Strategy *strategy, QObject *parent) : QObject(parent), strategy(strategy)
 {
 
+    contextMenu = new QMenu();
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(contextMenu);
     trayIcon->setIcon(QIcon(":/icons/icon.png"));
@@ -17,7 +18,11 @@ Notifier::Notifier(Strategy *strategy, QObject *parent) : QObject(parent), strat
     timer->start(1000);
     timerTick();
 
-    contextMenu = new QMenu();
+}
+
+Notifier::~Notifier()
+{
+    delete contextMenu;
 }
 
 void Notifier::timerTick()

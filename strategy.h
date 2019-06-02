@@ -36,7 +36,7 @@ struct Strategy
     optional<int> startSlotIndexForGroupIndex(int groupIndex);
     optional<int> groupIndexForSlotIndex(int slotIndex);
 
-    static Strategy *createEmtpty();
+    static Strategy *createEmpty();
 
     SlotsState slotsState() const;
     void setSlotsState(const SlotsState &slotsState);

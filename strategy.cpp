@@ -186,28 +186,14 @@ optional<int> Strategy::groupIndexForSlotIndex(int slotIndex)
     return nullopt;
 }
 
-Strategy *Strategy::createEmtpty()
+Strategy *Strategy::createEmpty()
 {
     auto strategy = new Strategy();
-    strategy->activities = {
-        Activity("Training"),
-        Activity("Work 1"),
-        Activity("Nap"),
-        Activity("Commute")
-    };
+    strategy->activities = {};
 
     SlotsState slotsState;
-
     for (unsigned int i = 0; i < strategy->_numberOfSlots; i++) {
-        if (i < strategy->_numberOfSlots / 4) {
-            slotsState.push_back(strategy->activities[0]);
-        } else if (i < 2 * strategy->_numberOfSlots / 4) {
-            slotsState.push_back(strategy->activities[1]);
-        } else if (i < 3 * strategy->_numberOfSlots / 4) {
-            slotsState.push_back(strategy->activities[2]);
-        } else {
-            slotsState.push_back(nullopt);
-        }
+        slotsState.push_back(nullopt);
     }
 
     strategy->setSlotsState(slotsState);

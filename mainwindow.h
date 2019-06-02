@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(bool createEmtpty = false, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
@@ -43,6 +43,8 @@ private:
 
     void showActivitiesListForSelection(QVector<int> selection);
     void setActivity(const Activity &activity);
+
+    void setStrategy(Strategy *strategy);
 
     Notifier *notifier;
     FileSystemIOManager *fsIOManager;
