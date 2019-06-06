@@ -11,30 +11,33 @@
 #include "activityeditor.h"
 #include "notifier.h"
 #include "filesystemiomanager.h"
-
+#include <memory>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(bool createEmtpty = false, QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(bool createEmpty = false, QWidget *parent = nullptr);
 
+    void updateRecentFileActions();
 private:
     QScrollArea *slotBoardScrollArea;
     SlotBoard *slotBoard;
-    Strategy *strategy;
+    std::unique_ptr<Strategy> strategy;
     QStackedWidget *stackedWidget;
     ActivitiesListWidget *activitiesListWidget;
     ActivityEditor *activityEditorWidget;
     std::optional<Activity> activityBeingEdited;
 
+    void createActions();
     void createMenus();
     void newWindow();
     void open();
     void save();
     void saveAs();
+    void openRecentFile();
+    void load(QString path);
     void openActivityEditor();
     void updateWindowTitle(bool isSaved = true);
     void activityEdited(const Activity &activity, bool isNew);
@@ -44,10 +47,12 @@ private:
     void showActivitiesListForSelection(QVector<int> selection);
     void setActivity(const Activity &activity);
 
-    void setStrategy(Strategy *strategy);
+    void setStrategy(Strategy *newStrategy);
 
     Notifier *notifier;
-    FileSystemIOManager *fsIOManager;
+    std::unique_ptr<FileSystemIOManager> fsIOManager;
+
+    QVector<QAction *> recentFileActions;
 };
 
 #endif // MAINWINDOW_H

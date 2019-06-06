@@ -14,28 +14,36 @@
 
 #include "jsonserializer.h"
 
-MainWindow::MainWindow(bool createEmtpty, QWidget *parent) :
+MainWindow::MainWindow(bool createEmpty, QWidget *parent) :
     QMainWindow(parent)
 {
     setMinimumWidth(300);
     setMaximumWidth(350);
     resize(350, QDesktopWidget().availableGeometry(this).size().height() * 0.8);
+    fsIOManager = std::make_unique<FileSystemIOManager>(this);
 
     slotBoardScrollArea = new QScrollArea();
     slotBoardScrollArea->setWidgetResizable(true);
+    slotBoardScrollArea->setMouseTracking(true);
 
-    fsIOManager = new FileSystemIOManager(this);
+    slotBoard = new SlotBoard();
+    slotBoardScrollArea->setWidget(slotBoard);
+
+    createActions();
+    createMenus();
 
     auto lastOpened = fsIOManager->lastOpened();
-    if (!createEmtpty && lastOpened.has_value()) {
-        strategy = new Strategy(lastOpened.value());
+    if (!createEmpty && lastOpened.has_value()) {
+        strategy = std::make_unique<Strategy>(lastOpened.value());
     } else {
-        strategy = Strategy::createEmpty();
+        strategy = std::unique_ptr<Strategy>(Strategy::createEmpty());
         fsIOManager->resetFilepath();
     }
 
+    notifier = new Notifier(strategy.get(), this);
+
     activitiesListWidget = new ActivitiesListWidget();
-    activitiesListWidget->setStrategy(strategy);
+    activitiesListWidget->setStrategy(strategy.get());
 
     connect(activitiesListWidget,
             &ActivitiesListWidget::selectActivity,
@@ -57,42 +65,34 @@ MainWindow::MainWindow(bool createEmtpty, QWidget *parent) :
             this,
             &MainWindow::editActivity);
 
-    stackedWidget = new QStackedWidget();
-    stackedWidget->addWidget(slotBoardScrollArea);
-    stackedWidget->addWidget(activitiesListWidget);
-
     activityEditorWidget = new ActivityEditor();
     connect(activityEditorWidget,
             &ActivityEditor::done,
             this,
             &MainWindow::activityEdited);
 
+    stackedWidget = new QStackedWidget();
+    stackedWidget->addWidget(slotBoardScrollArea);
+    stackedWidget->addWidget(activitiesListWidget);
     stackedWidget->addWidget(activityEditorWidget);
 
-    slotBoard = new SlotBoard();
 
-    slotBoardScrollArea->setWidget(slotBoard);
-    slotBoardScrollArea->setMouseTracking(true);
+    slotBoard->setStrategy(strategy.get());
 
-
-    slotBoard->setStrategy(strategy);
     connect(slotBoard->groupsList(),
             &GroupsList::wantToSetActivtyForSelection,
             this,
             &MainWindow::showActivitiesListForSelection);
 
     setCentralWidget(stackedWidget);
-    notifier = new Notifier(strategy, this);
-
     updateWindowTitle();
-
-    createMenus();
 }
 
-MainWindow::~MainWindow()
-{
-    delete strategy;
-}
+//MainWindow::~MainWindow()
+//{
+//    QWidget::~QWidget();
+////    delete strategy;
+//}
 
 void MainWindow::createMenus()
 {
@@ -124,6 +124,13 @@ void MainWindow::createMenus()
                         this,
                         &MainWindow::saveAs,
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
+
+    for (int i = 0; i < FileSystemIOManager::Settings::numberOfRecent; ++i) {
+        fileMenu->addAction(recentFileActions[i]);
+    }
+
+    fileMenu->addSeparator();
+    updateRecentFileActions();
 
     setMenuBar(menuBar);
 
@@ -160,6 +167,25 @@ void MainWindow::saveAs()
 {
     fsIOManager->saveAs(*strategy);
     updateWindowTitle();
+}
+
+void MainWindow::openRecentFile()
+{
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action) {
+        load(action->data().toString());
+    }
+}
+
+void MainWindow::load(QString path)
+{
+    auto loadedStrategy = fsIOManager->read(path);
+    if (!loadedStrategy.has_value()) {
+        qDebug() << "Can't open";
+        return;
+    }
+
+    setStrategy(new Strategy(loadedStrategy.value()));
 }
 
 void MainWindow::openActivityEditor()
@@ -229,12 +255,42 @@ void MainWindow::setActivity(const Activity &activity)
     slotBoard->groupsList()->updateUI();
 }
 
-void MainWindow::setStrategy(Strategy *strategy)
+void MainWindow::setStrategy(Strategy *newStrategy)
 {
-    this->strategy = strategy;
-    slotBoard->setStrategy(strategy);
-    activitiesListWidget->setStrategy(strategy);
-    notifier->setStrategy(strategy);
+    this->strategy = std::unique_ptr<Strategy>(newStrategy);
+    slotBoard->setStrategy(newStrategy);
+    activitiesListWidget->setStrategy(newStrategy);
+    notifier->setStrategy(newStrategy);
     updateWindowTitle();
+}
+
+void MainWindow::updateRecentFileActions()
+{
+    QSettings settings;
+    auto files = fsIOManager->recentPahts();
+
+    int numRecentFiles = qMin(files.size(), FileSystemIOManager::Settings::numberOfRecent);
+    auto recentFileNames = fsIOManager->recentFileNames();
+
+    for (int i = 0; i < numRecentFiles; ++i) {
+        QString text = tr("&%1 %2").arg(i + 1).arg(recentFileNames[i]);
+        recentFileActions[i]->setText(text);
+        recentFileActions[i]->setData(files[i]);
+        recentFileActions[i]->setVisible(true);
+    }
+
+    for (int j = numRecentFiles; j < FileSystemIOManager::Settings::numberOfRecent; ++j)
+        recentFileActions[j]->setVisible(false);
+}
+
+void MainWindow::createActions()
+{
+    for (int i = 0; i < FileSystemIOManager::Settings::numberOfRecent; ++i) {
+        auto *action = new QAction(this);
+        action->setVisible(false);
+        connect(action, &QAction::triggered,
+                this, &MainWindow::openRecentFile);
+        recentFileActions.append(action);
+    }
 }
 

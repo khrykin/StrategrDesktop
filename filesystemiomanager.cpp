@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QSettings>
+#include <QApplication>
+#include "mainwindow.h"
 
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : parent(parent)
 {
@@ -119,6 +121,23 @@ QFileInfo FileSystemIOManager::fileInfo()
     return QFileInfo(filepath);
 }
 
+QStringList FileSystemIOManager::recentPahts()
+{
+    auto recentFilesSetting = QSettings().value(Settings::recentKey);
+    qDebug() << "RECENT" << recentFilesSetting.toStringList();
+    return recentFilesSetting.toStringList();
+}
+
+QStringList FileSystemIOManager::recentFileNames()
+{
+    QStringList result;
+    for (auto &path : recentPahts()) {
+        result.append(QFileInfo(path).baseName());
+    }
+
+    return result;
+}
+
 void FileSystemIOManager::write(const Strategy &strategy)
 {
     auto json = JSONSerializer(strategy).write();
@@ -152,8 +171,27 @@ QString FileSystemIOManager::destinationDir()
 }
 
 void FileSystemIOManager::updateLastOpened()
-{
+{  
+    auto absoluteFilePath = fileInfo().absoluteFilePath();
+
     QSettings settings;
-    settings.setValue(Settings::lastOpenedStrategyKey, fileInfo().absoluteFilePath());
+    settings.setValue(Settings::lastOpenedStrategyKey, absoluteFilePath);
     settings.setValue(Settings::lastOpenedDirectoryKey, fileInfo().absolutePath());
+
+    auto files = recentPahts();
+    files.removeAll(absoluteFilePath);
+    files.prepend(absoluteFilePath);
+
+    while (files.size() > Settings::numberOfRecent) {
+        files.removeLast();
+    }
+
+    settings.setValue(Settings::recentKey, files);
+
+    foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+        MainWindow *mainWindow = qobject_cast<MainWindow *>(widget);
+        if (mainWindow) {
+            mainWindow->updateRecentFileActions();
+        }
+    }
 }

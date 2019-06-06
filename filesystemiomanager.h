@@ -20,9 +20,14 @@ public:
     bool isSaved() const;
     void setIsSaved(bool isSaved);
     QFileInfo fileInfo();
+    QStringList recentPahts();
+    QStringList recentFileNames();
+
     struct Settings {
         inline static const QString lastOpenedDirectoryKey = "lastOpenedDirectory";
         inline static const QString lastOpenedStrategyKey = "lastOpenedStrategy";
+        inline static const QString recentKey = "recent";
+        static const int numberOfRecent = 5;
     };
 
 private:
