@@ -2,47 +2,46 @@
 #define FILESYSTEMIOMANAGER_H
 
 #include "strategy.h"
-#include <QObject>
 #include <QFileInfo>
+#include <QObject>
 
-class FileSystemIOManager
-{
+class FileSystemIOManager {
 public:
-    FileSystemIOManager(QWidget *parent);
+  FileSystemIOManager(QWidget *parent);
 
-    std::optional<Strategy> open();
-    void save(const Strategy &strategy);
-    void saveAs(const Strategy &strategy);
-    std::optional<Strategy> read(QString readFilepath);
-    std::optional<Strategy> lastOpened();
-    void resetFilepath();
+  std::optional<Strategy> open();
+  void save(const Strategy &strategy);
+  void saveAs(const Strategy &strategy);
+  std::optional<Strategy> read(QString readFilepath);
+  std::optional<Strategy> lastOpened();
+  void resetFilepath();
+  void clearRecent();
 
-    bool isSaved() const;
-    void setIsSaved(bool isSaved);
-    QFileInfo fileInfo();
-    QStringList recentPahts();
-    QStringList recentFileNames();
+  bool isSaved() const;
+  void setIsSaved(bool isSaved);
+  QFileInfo fileInfo();
+  QStringList recentPaths();
+  QStringList recentFileNames();
 
-    struct Settings {
-        inline static const QString lastOpenedDirectoryKey = "lastOpenedDirectory";
-        inline static const QString lastOpenedStrategyKey = "lastOpenedStrategy";
-        inline static const QString recentKey = "recent";
-        static const int numberOfRecent = 5;
-    };
+  struct Settings {
+    inline static const QString lastOpenedDirectoryKey = "lastOpenedDirectory";
+    inline static const QString lastOpenedStrategyKey = "lastOpenedStrategy";
+    inline static const QString recentKey = "recent";
+    inline static const int numberOfRecent = 5;
+  };
 
 private:
-    void write(const Strategy &strategy);
-    bool _isSaved = true;
-    QString destinationDir();
-    QString filepath;
+  void write(const Strategy &strategy);
+  bool _isSaved = true;
+  QString destinationDir();
+  QString filepath;
 
-    QWidget *parent;
+  QWidget *parent;
 
-    void updateLastOpened();
+  void updateLastOpened();
 
-    inline static const QString searchPattern = QObject::tr("Strategy files (*.stg)");
-
+  inline static const QString searchPattern =
+      QObject::tr("Strategy files (*.stg)");
 };
-
 
 #endif // FILESYSTEMIOMANAGER_H

@@ -1,197 +1,176 @@
 #include "filesystemiomanager.h"
 #include "jsonserializer.h"
-#include <QFileDialog>
-#include <QStandardPaths>
-#include <QFile>
-#include <QTextStream>
-#include <QFileInfo>
+#include "mainwindow.h"
+#include <QApplication>
 #include <QDebug>
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
-#include <QApplication>
-#include "mainwindow.h"
+#include <QStandardPaths>
+#include <QTextStream>
 
-FileSystemIOManager::FileSystemIOManager(QWidget *parent) : parent(parent)
-{
+FileSystemIOManager::FileSystemIOManager(QWidget *parent) : parent(parent) {}
 
+std::optional<Strategy> FileSystemIOManager::open() {
+  auto openFilepath = QFileDialog::getOpenFileName(
+      parent, QObject::tr("Open Strategy"), destinationDir(), searchPattern);
+
+  QSettings().setValue(Settings::lastOpenedDirectoryKey, openFilepath);
+  return read(openFilepath);
 }
 
-std::optional<Strategy> FileSystemIOManager::open()
-{
-    auto openFilepath = QFileDialog::getOpenFileName(parent, QObject::tr("Open Strategy"),
-                                                     destinationDir(),
-                                                     searchPattern);
+void FileSystemIOManager::save(const Strategy &strategy) {
+  if (filepath.isEmpty()) {
+    saveAs(strategy);
+    return;
+  }
 
-    QSettings().setValue(Settings::lastOpenedDirectoryKey, openFilepath);
-    return read(openFilepath);
+  write(strategy);
 }
 
+void FileSystemIOManager::saveAs(const Strategy &strategy) {
+  auto saveAsFilepath = QFileDialog::getSaveFileName(
+      parent, QObject::tr("Save Strategy As"), destinationDir(), searchPattern);
 
-void FileSystemIOManager::save(const Strategy &strategy)
-{
-    if (filepath.isEmpty()) {
-        saveAs(strategy);
-        return;
-    }
+  QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
 
-    write(strategy);
+  if (saveAsFilepath.isEmpty()) {
+    return;
+  }
+
+  filepath = saveAsFilepath;
+  QSettings().setValue(Settings::lastOpenedDirectoryKey,
+                       fileInfo().absolutePath());
+  write(strategy);
 }
 
-void FileSystemIOManager::saveAs(const Strategy &strategy)
-{
-    auto saveAsFilepath = QFileDialog::getSaveFileName(parent, QObject::tr("Save Strategy As"),
-                                                       destinationDir(),
-                                                       searchPattern);
-
-    QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
-
-    if (saveAsFilepath.isEmpty()) {
-        return;
-    }
-
-    filepath = saveAsFilepath;
-    QSettings().setValue(Settings::lastOpenedDirectoryKey, fileInfo().absolutePath());
-    write(strategy);
-}
-
-std::optional<Strategy> FileSystemIOManager::read(QString readFilepath)
-{
-    if (readFilepath.isEmpty()) {
-        return std::nullopt;
-    }
-
-    filepath = readFilepath;
-
-    qDebug() << "Open filepath" << filepath;
-    QFile file(filepath);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        qDebug() << "!file.open";
-
-        QMessageBox::warning(parent, QObject::tr("Open Strategy"),
-                             QObject::tr("Cannot read file %1:\n%2.")
-                             .arg(filepath)
-                             .arg(file.errorString()));
-        return std::nullopt;
-    };
-
-    QTextStream in(&file);
-    auto strategy = JSONSerializer::read(in.readAll());
-    file.close();
-
-    if (!strategy.has_value()) {
-        QMessageBox::warning(parent, QObject::tr("Open Strategy"),
-                             QObject::tr("Cannot read file %1:\n%2.")
-                             .arg(filepath)
-                             .arg(file.errorString()));
-    } else {
-        updateLastOpened();
-    }
-
-    return strategy;
-}
-
-std::optional<Strategy> FileSystemIOManager::lastOpened()
-{
-    QSettings settings;
-    if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
-        auto filepath = settings.value(Settings::lastOpenedStrategyKey).toString();
-        return read(filepath);
-    }
-
+std::optional<Strategy> FileSystemIOManager::read(QString readFilepath) {
+  if (readFilepath.isEmpty()) {
     return std::nullopt;
-}
+  }
 
-void FileSystemIOManager::resetFilepath()
-{
-    filepath = "";
-}
+  filepath = readFilepath;
 
-bool FileSystemIOManager::isSaved() const
-{
-    return _isSaved;
-}
+  qDebug() << "Open filepath" << filepath;
+  QFile file(filepath);
+  if (!file.open(QFile::ReadOnly | QFile::Text)) {
+    qDebug() << "!file.open";
 
-void FileSystemIOManager::setIsSaved(bool isSaved)
-{
-    _isSaved = isSaved;
-}
-
-QFileInfo FileSystemIOManager::fileInfo()
-{
-    return QFileInfo(filepath);
-}
-
-QStringList FileSystemIOManager::recentPahts()
-{
-    auto recentFilesSetting = QSettings().value(Settings::recentKey);
-    qDebug() << "RECENT" << recentFilesSetting.toStringList();
-    return recentFilesSetting.toStringList();
-}
-
-QStringList FileSystemIOManager::recentFileNames()
-{
-    QStringList result;
-    for (auto &path : recentPahts()) {
-        result.append(QFileInfo(path).baseName());
-    }
-
-    return result;
-}
-
-void FileSystemIOManager::write(const Strategy &strategy)
-{
-    auto json = JSONSerializer(strategy).write();
-    QFile file(filepath);
-    if (file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
-        QTextStream stream(&file);
-        stream << json << endl;
-        updateLastOpened();
-    } else {
-        QMessageBox::warning(parent, QObject::tr("Save Strategy"),
-                             QObject::tr("Cannot write to file %1:\n%2.")
+    QMessageBox::warning(parent, QObject::tr("Open Strategy"),
+                         QObject::tr("Cannot read file %1:\n%2.")
                              .arg(filepath)
                              .arg(file.errorString()));
-    }
+    return std::nullopt;
+  };
 
-    setIsSaved(true);
+  QTextStream in(&file);
+  auto strategy = JSONSerializer::read(in.readAll());
+  file.close();
 
-    file.close();
+  if (!strategy.has_value()) {
+    QMessageBox::warning(parent, QObject::tr("Open Strategy"),
+                         QObject::tr("Cannot read file %1:\n%2.")
+                             .arg(filepath)
+                             .arg(file.errorString()));
+  } else {
+    updateLastOpened();
+  }
+
+  return strategy;
 }
 
-QString FileSystemIOManager::destinationDir()
-{
-    QSettings settings;
-    if (!settings.value(Settings::lastOpenedDirectoryKey).isNull()) {
-        auto lastOpenedDirectory = settings.value(Settings::lastOpenedDirectoryKey).toString();
+std::optional<Strategy> FileSystemIOManager::lastOpened() {
+  QSettings settings;
+  if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
+    auto filepath = settings.value(Settings::lastOpenedStrategyKey).toString();
+    return read(filepath);
+  }
 
-        return lastOpenedDirectory;
-    }
-
-    return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+  return std::nullopt;
 }
 
-void FileSystemIOManager::updateLastOpened()
-{  
-    auto absoluteFilePath = fileInfo().absoluteFilePath();
+void FileSystemIOManager::resetFilepath() { filepath = ""; }
 
-    QSettings settings;
-    settings.setValue(Settings::lastOpenedStrategyKey, absoluteFilePath);
-    settings.setValue(Settings::lastOpenedDirectoryKey, fileInfo().absolutePath());
+void FileSystemIOManager::clearRecent() {
+  QSettings().setValue(Settings::recentKey, QStringList());
+}
 
-    auto files = recentPahts();
-    files.removeAll(absoluteFilePath);
-    files.prepend(absoluteFilePath);
+bool FileSystemIOManager::isSaved() const { return _isSaved; }
 
-    while (files.size() > Settings::numberOfRecent) {
-        files.removeLast();
+void FileSystemIOManager::setIsSaved(bool isSaved) { _isSaved = isSaved; }
+
+QFileInfo FileSystemIOManager::fileInfo() { return QFileInfo(filepath); }
+
+QStringList FileSystemIOManager::recentPaths() {
+  auto recentFilesSetting = QSettings().value(Settings::recentKey);
+  qDebug() << "RECENT" << recentFilesSetting.toStringList();
+  return recentFilesSetting.toStringList();
+}
+
+QStringList FileSystemIOManager::recentFileNames() {
+  QStringList result;
+  for (auto &path : recentPaths()) {
+    result.append(QFileInfo(path).baseName());
+  }
+
+  return result;
+}
+
+void FileSystemIOManager::write(const Strategy &strategy) {
+  auto json = JSONSerializer(strategy).write();
+  QFile file(filepath);
+  if (file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
+    QTextStream stream(&file);
+    stream << json << endl;
+    updateLastOpened();
+  } else {
+    QMessageBox::warning(parent, QObject::tr("Save Strategy"),
+                         QObject::tr("Cannot write to file %1:\n%2.")
+                             .arg(filepath)
+                             .arg(file.errorString()));
+  }
+
+  setIsSaved(true);
+
+  file.close();
+}
+
+QString FileSystemIOManager::destinationDir() {
+  QSettings settings;
+  if (!settings.value(Settings::lastOpenedDirectoryKey).isNull()) {
+    auto lastOpenedDirectory =
+        settings.value(Settings::lastOpenedDirectoryKey).toString();
+
+    return lastOpenedDirectory;
+  }
+
+  return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+}
+
+void FileSystemIOManager::updateLastOpened() {
+  auto absoluteFilePath = fileInfo().absoluteFilePath();
+
+  QSettings settings;
+  settings.setValue(Settings::lastOpenedStrategyKey, absoluteFilePath);
+  settings.setValue(Settings::lastOpenedDirectoryKey,
+                    fileInfo().absolutePath());
+
+  auto files = recentPaths();
+  files.removeAll(absoluteFilePath);
+  files.prepend(absoluteFilePath);
+
+  while (files.size() > Settings::numberOfRecent) {
+    files.removeLast();
+  }
+
+  settings.setValue(Settings::recentKey, files);
+
+  foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+    MainWindow *mainWindow = qobject_cast<MainWindow *>(widget);
+    if (mainWindow) {
+      mainWindow->updateRecentFileActions();
     }
-
-    settings.setValue(Settings::recentKey, files);
-
-    foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-        MainWindow *mainWindow = qobject_cast<MainWindow *>(widget);
-        if (mainWindow) {
-            mainWindow->updateRecentFileActions();
-        }
-    }
+  }
 }
