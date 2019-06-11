@@ -1,60 +1,61 @@
 #ifndef SLOT_H
 #define SLOT_H
 
-#include <QWidget>
+#include "activity.h"
 #include <QLabel>
 #include <QMap>
+#include <QWidget>
 
-class ActivityGroupWidget : public QWidget
-{
-    Q_OBJECT
+class ActivityGroupWidget : public QWidget {
+  Q_OBJECT
 
 public:
-    explicit ActivityGroupWidget(QWidget *parent = nullptr);
-    int number() const;
-    void setNumber(int number);
+  explicit ActivityGroupWidget(QWidget *parent = nullptr);
+  int number() const;
+  void setNumber(int number);
 
-    QString title() const;
-    void setTitle(QString title);
+  std::optional<Activity> activity() const;
+  void setActivity(std::optional<Activity> activity);
 
-    int length() const;
-    void setLength(unsigned int length);
+  int length() const;
+  void setLength(unsigned int length);
 
-    bool isSelected() const;
-    void setIsSelected(bool isSelected);
+  bool isSelected() const;
+  void setIsSelected(bool isSelected);
 
-    void setSlotHeight(int height);
+  void setSlotHeight(int height);
+  void updateUI();
 
-    void selectSlotAtIndex(int slotIndex);
-    void deselectSlotAtIndex(int slotIndex);
-    void deselectAllSlots();
+  void selectSlotAtIndex(int slotIndex);
+  void deselectSlotAtIndex(int slotIndex);
+  void deselectAllSlots();
 
-    bool hasSelection();
+  bool hasSelection();
 
-    QMap<int, QWidget *> selectionSlots() const;
+  QMap<int, QWidget *> selectionSlots() const;
 
-    int slotDuration() const;
-    void setSlotDuration(int slotDuration);
+  int slotDuration() const;
+  void setSlotDuration(int slotDuration);
 
 private:
-    void paintEvent(QPaintEvent *) override;
-    void resizeEvent(QResizeEvent *event) override;
+  void paintEvent(QPaintEvent *) override;
+  void resizeEvent(QResizeEvent *event) override;
 
-    void updateStyleSheet();
-    int _number;
-    int _length = 1;
-    int _slotDuration;
+  void updateStyleSheet();
+  int _number;
+  int _length = 1;
+  int _slotDuration;
 
-    bool _isSelected = false;
+  bool _isSelected = false;
 
-    QString _title;
+  std::optional<Activity> _activity;
 
-    QLabel *label;
-    QLabel *titleLabel;
-    QWidget *selectionWidget;
-    QMap<int, QWidget *> _selectionSlots;
+  QLabel *label;
+  QLabel *titleLabel;
+  QWidget *selectionWidget;
+  QMap<int, QWidget *> _selectionSlots;
 
-    QWidget *mainWidget;
+  QWidget *mainWidget;
 };
 
 #endif // SLOT_H

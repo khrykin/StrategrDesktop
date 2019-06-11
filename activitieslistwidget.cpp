@@ -1,119 +1,123 @@
 #include "activitieslistwidget.h"
-#include <QLayout>
-#include <QLabel>
+#include "activitieslistitem.h"
 #include <QAction>
+#include <QDebug>
+#include <QLabel>
+#include <QLayout>
+#include <QPainter>
+#include <QPushButton>
 #include <QStyle>
 #include <QStyleOption>
-#include <QPainter>
-#include "activitieslistitem.h"
-#include <QDebug>
-#include <QPushButton>
 
-ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent)
-{
-    setLayout(new QVBoxLayout());
-    layout()->setSpacing(0);
-    layout()->setMargin(0);
+ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent) {
+  setLayout(new QVBoxLayout());
+  layout()->setSpacing(0);
+  layout()->setMargin(0);
 
-    auto *navBar = new Navbar();
+  auto *navBar = new Navbar();
 
-    layout()->addWidget(navBar);
+  layout()->addWidget(navBar);
 
-    navBar->setTitle("Activities");
-    navBar->setLeftButton("‹ Back", this, &ActivitiesListWidget::getBack);
-    navBar->setRightButton("New", this, &ActivitiesListWidget::sendWantNewActivity);
+  navBar->setTitle("Activities");
+  navBar->setLeftButton("‹ Back", this, &ActivitiesListWidget::getBack);
+  navBar->setRightButton("New", this,
+                         &ActivitiesListWidget::sendWantNewActivity);
 
-    listWidget = new QWidget();
-    listWidget->setLayout(new QVBoxLayout());
-    listWidget->layout()->setSpacing(0);
-    listWidget->layout()->setMargin(0);
+  listWidget = new QWidget();
+  listWidget->setLayout(new QVBoxLayout());
+  listWidget->layout()->setSpacing(0);
+  listWidget->layout()->setMargin(0);
 
-    scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setWidget(listWidget);
-    scrollArea->setStyleSheet("QScrollArea {"
-                              "border: none;"
-                              "}");
+  scrollArea = new QScrollArea(this);
+  scrollArea->setWidgetResizable(true);
+  scrollArea->setWidget(listWidget);
+  scrollArea->setStyleSheet("QScrollArea {"
+                            "border: none;"
+                            "}");
 
-    layout()->addWidget(scrollArea);
+  layout()->addWidget(scrollArea);
 
-    auto *getBackAction = new QAction("Back", this);
-    getBackAction->setShortcut(QKeySequence(Qt::Key_Escape));
-    addAction(getBackAction);
+  auto *getBackAction = new QAction("Back", this);
+  getBackAction->setShortcut(QKeySequence(Qt::Key_Escape));
+  addAction(getBackAction);
 
-    connect(getBackAction,
-            &QAction::triggered,
-            this,
-            &ActivitiesListWidget::getBack);
+  connect(getBackAction, &QAction::triggered, this,
+          &ActivitiesListWidget::getBack);
 
-    setStyleSheet("ActivitiesListWidget {"
-                  "background: white;"
-                  "}");
+  setStyleSheet("ActivitiesListWidget {"
+                "background: white;"
+                "}");
 }
 
-void ActivitiesListWidget::paintEvent(QPaintEvent *)
-{
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+void ActivitiesListWidget::paintEvent(QPaintEvent *) {
+  QStyleOption opt;
+  opt.init(this);
+  QPainter p(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-
-
-QStackedWidget *ActivitiesListWidget::parentStackedWidget()
-{
-    return static_cast<QStackedWidget *>(parentWidget());
+QStackedWidget *ActivitiesListWidget::parentStackedWidget() {
+  return static_cast<QStackedWidget *>(parentWidget());
 }
 
-void ActivitiesListWidget::getBack()
-{
-    parentStackedWidget()->setCurrentIndex(0);
+void ActivitiesListWidget::getBack() {
+  parentStackedWidget()->setCurrentIndex(0);
 }
 
-void ActivitiesListWidget::updateList()
-{
-    while (listWidget->layout()->itemAt(0) != nullptr) {
-        listWidget->layout()->removeItem(listWidget->layout()->itemAt(0));
+void ActivitiesListWidget::updateList() {
+  auto activitiesCount = static_cast<int>(strategy()->activities.size());
+
+  for (auto i = 0; i < listWidget->layout()->count(); i++) {
+    auto stretch = dynamic_cast<QSpacerItem *>(listWidget->layout()->itemAt(i));
+    if (stretch != nullptr) {
+      listWidget->layout()->removeItem(stretch);
+    }
+  }
+
+  for (int index = 0; index < activitiesCount; index++) {
+    auto activity = strategy()->activities[static_cast<unsigned int>(index)];
+
+    auto *currentItem = listWidget->layout()->itemAt(index);
+    ActivitiesListItem *item;
+
+    if (currentItem == nullptr) {
+      item = new ActivitiesListItem(activity);
+      listWidget->layout()->addWidget(item);
+    } else {
+      item = static_cast<ActivitiesListItem *>(currentItem->widget());
+      item->setActivity(activity);
     }
 
-    for (unsigned int index = 0; index < strategy()->activities.size(); index++) {
-        auto activity = strategy()->activities[index];
-        auto *item = new ActivitiesListItem(QString::fromStdString(activity.name));
+    item->disconnect();
 
-        connect(item, &ActivitiesListItem::selected, [=] () {
-            emit selectActivity(activity);
-        });
+    connect(item, &ActivitiesListItem::selected,
+            [=]() { emit selectActivity(activity); });
 
-        connect(item, &ActivitiesListItem::wantToDelete, [=] () {
-           this->strategy()->removeActivity(activity);
-           item->hide();
-           this->listWidget->layout()->removeWidget(item);
-           emit activityRemoved(activity);
-        });
+    connect(item, &ActivitiesListItem::wantToDelete, [=]() {
+      this->strategy()->removeActivity(activity);
+      item->hide();
+      this->listWidget->layout()->removeWidget(item);
+      emit activityRemoved(activity);
+    });
 
-        connect(item, &ActivitiesListItem::wantToEdit, [=] () {
-          emit wantToEditActivity(activity);
-        });
+    connect(item, &ActivitiesListItem::wantToEdit,
+            [=]() { emit wantToEditActivity(activity); });
+  }
 
-        listWidget->layout()->addWidget(item);
-    }
+  while (listWidget->layout()->itemAt(activitiesCount) != nullptr) {
+    listWidget->layout()->itemAt(activitiesCount)->widget()->hide();
+    listWidget->layout()->removeItem(
+        listWidget->layout()->itemAt(activitiesCount));
+  }
 
-    listWidget->layout()->addWidget(new QWidget());
+  static_cast<QVBoxLayout *>(listWidget->layout())->addStretch();
 }
 
-void ActivitiesListWidget::sendWantNewActivity()
-{
-    emit wantNewActivity();
-}
+void ActivitiesListWidget::sendWantNewActivity() { emit wantNewActivity(); }
 
-Strategy *ActivitiesListWidget::strategy() const
-{
-    return _strategy;
-}
+Strategy *ActivitiesListWidget::strategy() const { return _strategy; }
 
-void ActivitiesListWidget::setStrategy(Strategy *strategy)
-{
-    _strategy = strategy;
-    updateList();
+void ActivitiesListWidget::setStrategy(Strategy *strategy) {
+  _strategy = strategy;
+  updateList();
 }
