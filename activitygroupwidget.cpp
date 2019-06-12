@@ -3,6 +3,7 @@
 #include "utils.h"
 #include <QDebug>
 #include <QLayout>
+#include <QPaintEvent>
 #include <QPainter>
 #include <QStyleOption>
 
@@ -18,7 +19,11 @@ ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent) {
   titleLabel->setAlignment(Qt::AlignCenter);
   titleLabel->setStyleSheet("font-weight: bold;");
 
-  mainWidget->setLayout(new QHBoxLayout());
+  auto *mainLayout = new QHBoxLayout();
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->setSpacing(0);
+
+  mainWidget->setLayout(mainLayout);
   //    mainWidget->layout()->addWidget(label);
   mainWidget->layout()->addWidget(titleLabel);
 
@@ -33,11 +38,28 @@ ActivityGroupWidget::ActivityGroupWidget(QWidget *parent) : QWidget(parent) {
   updateStyleSheet();
 }
 
-void ActivityGroupWidget::paintEvent(QPaintEvent *) {
+void ActivityGroupWidget::paintEvent(QPaintEvent *event) {
   QStyleOption opt;
   opt.init(this);
-  QPainter p(this);
-  style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+  QPainter painter(this);
+  style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+
+  //  // Workaround for double rendering under scrollbar
+  //  if (event->rect().width() < 30) {
+  //    return;
+  //  }
+
+  //  auto height =
+  //      event->rect().height() > slotHeight ? event->rect().height() :
+  //      slotHeight;
+  //  auto y = event->rect().y() < geometry().height() - slotHeight
+  //               ? event->rect().y()
+  //               : geometry().height() - slotHeight;
+  //  auto textRect = QRect(0, y, geometry().width(), height);
+
+  //  painter.drawText(textRect, Qt::AlignCenter,
+  //                   activity() ? QString::fromStdString(activity()->name) :
+  //                   "");
 }
 
 void ActivityGroupWidget::resizeEvent(QResizeEvent *event) {
@@ -45,20 +67,29 @@ void ActivityGroupWidget::resizeEvent(QResizeEvent *event) {
   for (auto selectionIndex : _selectionSlots.keys()) {
     auto *selectionSlot = _selectionSlots[selectionIndex];
     selectionSlot->setGeometry(
-        QRect(0, selectionIndex * 50, geometry().width(), 50));
+        QRect(0, selectionIndex * slotHeight, geometry().width(), slotHeight));
   }
+
+  update();
 }
 
 void ActivityGroupWidget::updateStyleSheet() {
+  auto leftBorderStyle =
+      activity() ? "border-left: 3px solid " +
+                       QString::fromStdString(activity()->color) + ";"
+                 : "";
+
   if (isSelected()) {
     setStyleSheet("ActivityGroupWidget { "
-                  "background-color: #efefef;"
+                  "background-color: #efefef;" +
+                  leftBorderStyle +
                   "border-bottom: 1px solid #ccc;"
                   "}");
   } else {
     if (activity()) {
       setStyleSheet("ActivityGroupWidget { "
-                    "background-color: white;"
+                    "background-color: white;" +
+                    leftBorderStyle +
                     "border-bottom: 1px solid #ccc;"
                     "}");
     } else {
@@ -69,6 +100,8 @@ void ActivityGroupWidget::updateStyleSheet() {
     }
   }
 }
+
+void ActivityGroupWidget::setSlotHeight(int value) { slotHeight = value; }
 
 int ActivityGroupWidget::slotDuration() const { return _slotDuration; }
 
@@ -89,22 +122,24 @@ void ActivityGroupWidget::setIsSelected(bool isSelected) {
   updateStyleSheet();
 }
 
-void ActivityGroupWidget::setSlotHeight(int height) { setFixedHeight(height); }
+void ActivityGroupWidget::setHeight(int height) { setFixedHeight(height); }
 
 void ActivityGroupWidget::updateUI() {
   if (activity()) {
     auto name = QString::fromStdString(activity()->name);
     auto color = QString::fromStdString(activity()->color);
 
-    titleLabel->setText(name + " " +
-                        timeStringForMins(length() * slotDuration()));
-    titleLabel->setStyleSheet("color: " + color);
-    qDebug() << "titleLabel" << QString::fromStdString(activity()->name)
-             << QString::fromStdString(activity()->color);
+    titleLabel->setText("<font color=\"" + color + "\"><b>" + name +
+                        "</b></font> <font color=\"#888\">" +
+                        timeStringForMins(length() * slotDuration()) +
+                        "</font>");
+    //    titleLabel->setStyleSheet("color: " + color);
+
   } else {
     titleLabel->setText("");
   }
 
+  update();
   updateStyleSheet();
 }
 
@@ -112,10 +147,10 @@ void ActivityGroupWidget::selectSlotAtIndex(int slotIndex) {
   //    selectionWidget->repaint();
   if (!_selectionSlots.contains(slotIndex)) {
     auto *selectionSlot = new QWidget(selectionWidget);
-    selectionSlot->setFixedHeight(50);
+    selectionSlot->setFixedHeight(slotHeight);
     selectionSlot->setStyleSheet("background-color: rgba(255, 255, 0, 0.5)");
     selectionSlot->setGeometry(
-        QRect(0, slotIndex * 50, geometry().width(), 50));
+        QRect(0, slotIndex * slotHeight, geometry().width(), slotHeight));
     selectionSlot->show();
 
     _selectionSlots.insert(slotIndex, selectionSlot);

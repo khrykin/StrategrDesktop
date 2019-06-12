@@ -25,7 +25,9 @@ ActivitiesListItem::ActivitiesListItem(Activity activity, QWidget *parent)
 
   label = new QLabel();
   label->setAlignment(Qt::AlignCenter);
-  label->setStyleSheet("font-weight: bold");
+  label->setStyleSheet("QLabel {"
+                       "font-weight: bold;"
+                       "}");
 
   layout()->addWidget(label);
 
@@ -56,7 +58,9 @@ void ActivitiesListItem::wantEditActivity() { emit wantToEdit(); }
 
 void ActivitiesListItem::updateUI() {
   label->setText(QString::fromStdString(activity().name));
-  label->setStyleSheet("color: " + QString::fromStdString(activity().color));
+  label->setStyleSheet("font-weight: bold;"
+                       "color: " +
+                       QString::fromStdString(activity().color));
 }
 
 Activity ActivitiesListItem::activity() const { return _activity; }

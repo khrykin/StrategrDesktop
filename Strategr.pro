@@ -31,6 +31,7 @@ SOURCES += \
         activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
+        currenttimemarker.cpp \
         filesystemiomanager.cpp \
         groupslist.cpp \
         jsonserializer.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
         activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
+        currenttimemarker.h \
         filesystemiomanager.h \
         groupslist.h \
         jsonserializer.h \

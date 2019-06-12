@@ -17,7 +17,7 @@
 MainWindow::MainWindow(bool createEmpty, QWidget *parent)
     : QMainWindow(parent) {
   setMinimumWidth(300);
-  setMaximumWidth(400);
+  //  setMaximumWidth(400);
   resize(400, QDesktopWidget().availableGeometry(this).size().height() * 1);
 
   fsIOManager = std::make_unique<FileSystemIOManager>(this);

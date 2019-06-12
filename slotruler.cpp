@@ -5,12 +5,13 @@
 #include <QStyleOption>
 #include <QVBoxLayout>
 
-SlotRuler::SlotRuler(QWidget *parent) : QWidget(parent) {
+SlotRuler::SlotRuler(int cellHeight, QWidget *parent)
+    : QWidget(parent), _cellHeight(cellHeight) {
   auto *layout = new QVBoxLayout();
-  layout->setMargin(0);
+  layout->setContentsMargins(0, cellHeight / 2, 0, 0);
   layout->setSpacing(0);
 
-  setFixedWidth(65);
+  setFixedWidth(defaultRulerWidth);
 
   setStyleSheet("SlotRuler {"
                 "border-right: 1px solid #aaa;"
@@ -50,7 +51,7 @@ void SlotRuler::updateUI() {
     if (layout()->itemAt(i) == nullptr) {
       cell = new QLabel();
       cell->setAlignment(Qt::AlignCenter);
-      cell->setFixedHeight(50);
+      cell->setFixedHeight(cellHeight());
       layout()->addWidget(cell);
     } else {
       cell = dynamic_cast<QLabel *>(layout()->itemAt(i)->widget());
@@ -63,4 +64,11 @@ void SlotRuler::updateUI() {
 
   auto *mainLayout = static_cast<QVBoxLayout *>(layout());
   mainLayout->addStretch();
+}
+
+int SlotRuler::cellHeight() const { return _cellHeight; }
+
+void SlotRuler::setCellHeight(int cellHeight) {
+  _cellHeight = cellHeight;
+  updateUI();
 }

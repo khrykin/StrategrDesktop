@@ -23,7 +23,7 @@ public:
   bool isSelected() const;
   void setIsSelected(bool isSelected);
 
-  void setSlotHeight(int height);
+  void setHeight(int height);
   void updateUI();
 
   void selectSlotAtIndex(int slotIndex);
@@ -37,14 +37,17 @@ public:
   int slotDuration() const;
   void setSlotDuration(int slotDuration);
 
+  void setSlotHeight(int value);
+
 private:
-  void paintEvent(QPaintEvent *) override;
+  void paintEvent(QPaintEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
 
   void updateStyleSheet();
   int _number;
   int _length = 1;
   int _slotDuration;
+  int slotHeight;
 
   bool _isSelected = false;
 

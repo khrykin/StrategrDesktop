@@ -31,6 +31,8 @@ public:
   QAction *getUndoAction() const;
   QAction *getRedoAction() const;
 
+  int slotHeight() const;
+
 signals:
   void wantToSetActivtyForSelection(QVector<int> selection);
   void wantToUpdateActivitiesList();
@@ -52,7 +54,7 @@ private:
 
   ActivityGroupWidget *groupWidgetAtIndex(int index);
 
-  const int SLOT_HEIGHT = 50;
+  int _slotHeight = 35;
 
   void paintEvent(QPaintEvent *) override;
 

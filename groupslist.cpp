@@ -11,7 +11,7 @@
 GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   setLayout(new QVBoxLayout());
   layout()->setSpacing(0);
-  layout()->setMargin(0);
+  layout()->setContentsMargins(0, 1, 0, 0);
 
   setActivityAction = new QAction(tr("Set Activity"), this);
   connect(setActivityAction, &QAction::triggered, this,
@@ -40,6 +40,10 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
   addAction(redoAction);
   connect(redoAction, &QAction::triggered, this, &GroupsList::redo);
+
+  setStyleSheet("GroupsList {"
+                "border-top: 1px solid #ccc;"
+                "}");
 }
 
 void GroupsList::updateUI() {
@@ -68,6 +72,7 @@ void GroupsList::updateUI() {
       }
     } else {
       groupWidget = new ActivityGroupWidget();
+      groupWidget->setSlotHeight(slotHeight());
       layout()->addWidget(groupWidget);
     }
 
@@ -77,9 +82,9 @@ void GroupsList::updateUI() {
       groupWidget->setSlotDuration(strategy()->slotDuration());
     }
 
-    auto groupHeight = SLOT_HEIGHT * static_cast<int>(activityGroup.length);
+    auto groupHeight = _slotHeight * static_cast<int>(activityGroup.length);
     if (groupWidget->minimumHeight() != groupHeight) {
-      groupWidget->setSlotHeight(groupHeight);
+      groupWidget->setHeight(groupHeight);
       groupWidget->setLength(activityGroup.length);
     }
 
@@ -160,11 +165,11 @@ void GroupsList::contextMenuEvent(QContextMenuEvent *event) {
 }
 
 int GroupsList::slotIndexForEvent(QContextMenuEvent *event) {
-  return event->pos().y() / SLOT_HEIGHT;
+  return event->pos().y() / _slotHeight;
 }
 
 int GroupsList::slotIndexForEvent(QMouseEvent *event) {
-  return event->pos().y() / SLOT_HEIGHT;
+  return event->pos().y() / _slotHeight;
 }
 
 void GroupsList::copySlot(int fromIndex, int toIndex) {
@@ -258,6 +263,8 @@ void GroupsList::deselectAllSlots() {
 ActivityGroupWidget *GroupsList::groupWidgetAtIndex(int index) {
   return static_cast<ActivityGroupWidget *>(layout()->itemAt(index)->widget());
 }
+
+int GroupsList::slotHeight() const { return _slotHeight; }
 
 Strategy *GroupsList::strategy() const { return _strategy; }
 
