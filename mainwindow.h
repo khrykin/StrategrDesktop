@@ -20,6 +20,7 @@ public:
   explicit MainWindow(bool createEmpty = false, QWidget *parent = nullptr);
 
   void updateRecentFileActions();
+  void updateWindowTitle(bool isSaved = true);
 
 private:
   QScrollArea *slotBoardScrollArea;
@@ -47,7 +48,6 @@ private:
   void clearRecent();
   void load(QString path);
   void openActivityEditor();
-  void updateWindowTitle(bool isSaved = true);
   void activityEdited(const Activity &activity, bool isNew);
   void removeActivityFromSlots(const Activity &activity);
   void editActivity(const Activity &activity);

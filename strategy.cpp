@@ -18,8 +18,8 @@ ActivityGroupsState Strategy::group()
                 ? slotsState[index - 1]
                 : nullopt;
 
-        if (!activity.has_value()) {
-            if (cachedActivityGroup.has_value()) {
+        if (!activity) {
+            if (cachedActivityGroup) {
                 result.push_back(cachedActivityGroup.value());
             }
 
@@ -27,19 +27,19 @@ ActivityGroupsState Strategy::group()
 
             cachedActivityGroup = nullopt;
         } else {
-            if (!prevActivity.has_value() || prevActivity.value() != activity.value()) {
-                if (cachedActivityGroup.has_value()) {
+            if (!prevActivity || prevActivity.value() != activity.value()) {
+                if (cachedActivityGroup) {
                     result.push_back(cachedActivityGroup.value());
                 }
 
                 cachedActivityGroup = defaultActivityGroup;
             } else {
-                if (cachedActivityGroup.has_value()) {
+                if (cachedActivityGroup) {
                     cachedActivityGroup.value().length++;
                 }
             }
 
-            if (cachedActivityGroup.has_value() && index == slotsState.size() - 1) {
+            if (cachedActivityGroup && index == slotsState.size() - 1) {
                 result.push_back(cachedActivityGroup.value());
             }
         }
@@ -61,7 +61,7 @@ void Strategy::removeActivity(const Activity &activity)
     for (unsigned int i = 0; i < slotsState().size(); i++) {
         auto slot = slotAtIndex(static_cast<int>(i));
 
-        if (slot.has_value() && slot.value() == activity) {
+        if (slot && slot.value() == activity) {
             _slotsState[i] = nullopt;
         }
     }
@@ -79,7 +79,7 @@ void Strategy::editActivity(const Activity &from, const Activity &to)
         activities[index] = to;
 
         for (unsigned int i = 0; i < slotsState().size(); i++) {
-            if (slotsState()[i].has_value() && slotsState()[i].value() == from) {
+            if (slotsState()[i] && slotsState()[i].value() == from) {
                 _slotsState[i] = to;
             }
         }
@@ -216,7 +216,7 @@ string Strategy::debugSlots()
     string result = "-Slots------------------\n";
     for (unsigned int i = 0; i < slotsState().size(); i++) {
         auto slot = slotsState()[i];
-        if (slot.has_value()) {
+        if (slot) {
             result += static_cast<string>("Slot " + to_string(i) + "\t" + slot.value().name + "\n");
         } else {
             result += static_cast<string>("Slot " + to_string(i) + "\t" + "None" + "\n");
@@ -233,7 +233,7 @@ string Strategy::debugGroups()
     auto groups = group();
     for (unsigned int i = 0; i < groups.size(); i++) {
         auto group = groups[i];
-        if (group.activity.has_value()) {
+        if (group.activity) {
             result += static_cast<string>("Group " + to_string(i) + "\t" + group.activity.value().name + "\n");
         } else {
             result += static_cast<string>("Group " + to_string(i) + "\t" + "None" + "\n");

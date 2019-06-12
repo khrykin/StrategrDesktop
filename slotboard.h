@@ -1,30 +1,29 @@
 #ifndef SLOTBOARD_H
 #define SLOTBOARD_H
 
-#include <QWidget>
-#include "strategy.h"
 #include "groupslist.h"
 #include "slotruler.h"
+#include "strategy.h"
+#include <QWidget>
 
-class SlotBoard : public QWidget
-{
-    Q_OBJECT
+class SlotBoard : public QWidget {
+  Q_OBJECT
 public:
-    explicit SlotBoard(QWidget *parent = nullptr);
+  explicit SlotBoard(QWidget *parent = nullptr);
 
-    Strategy *strategy() const;
-    void setStrategy(Strategy *strategy);
+  Strategy *strategy() const;
+  void setStrategy(Strategy *strategy);
 
-    GroupsList *groupsList() const;
-    SlotRuler *slotRuler() const;
+  GroupsList *groupsList() const;
+  SlotRuler *slotRuler() const;
 
 signals:
 
 public slots:
 private:
-    Strategy *_strategy;
-    GroupsList *_groupsList;
-    SlotRuler *_slotRuler;
+  Strategy *_strategy;
+  GroupsList *_groupsList;
+  SlotRuler *_slotRuler;
 };
 
 #endif // SLOTBOARD_H

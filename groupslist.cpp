@@ -83,12 +83,12 @@ void GroupsList::updateUI() {
       groupWidget->setLength(activityGroup.length);
     }
 
-    if (activityGroup.activity.has_value()) {
+    if (activityGroup.activity) {
       if (groupWidget->activity() != activityGroup.activity) {
         groupWidget->setActivity(activityGroup.activity);
       }
     } else {
-      if (groupWidget->activity().has_value()) {
+      if (groupWidget->activity()) {
         groupWidget->setActivity(std::nullopt);
       }
     }
@@ -127,9 +127,10 @@ void GroupsList::mouseReleaseEvent(QMouseEvent *event) {
   _pulledTo = slotIndexForEvent(event);
   deselectAllGroups();
 
-  if (historyEntry.has_value()) {
+  if (historyEntry) {
     strategy()->commitToHistory(historyEntry.value());
     historyEntry = std::nullopt;
+    emit slotsStateChanged();
   }
 
   qDebug() << "mouseReleaseEvent";
@@ -149,7 +150,7 @@ void GroupsList::contextMenuEvent(QContextMenuEvent *event) {
 
   QMenu menu(this);
   menu.addAction(setActivityAction);
-  if (currentSlot.has_value()) {
+  if (currentSlot) {
     menu.addAction(deleteActivityAction);
   }
   menu.addAction(clearSelectionAction);
@@ -193,15 +194,14 @@ void GroupsList::fillSlots(int fromIndex, int toIndex) {
 }
 
 void GroupsList::selectGroupAtSlotIndex(int selectedSlotIndex) {
-  if (_selectedGroupIndex.has_value() &&
-      _selectedGroupIndex.value() == selectedSlotIndex) {
+  if (_selectedGroupIndex && _selectedGroupIndex.value() == selectedSlotIndex) {
     return;
   }
 
   _selectedGroupIndex = selectedSlotIndex;
   auto groupIndex = strategy()->groupIndexForSlotIndex(selectedSlotIndex);
 
-  if (groupIndex.has_value()) {
+  if (groupIndex) {
     for (int i = 0; i < layout()->count(); i++) {
       auto *group = groupWidgetAtIndex(i);
       auto isSelected = i == groupIndex.value() ? true : false;
@@ -226,7 +226,7 @@ void GroupsList::deselectAllGroups() {
 void GroupsList::selectSlotAtIndex(int slotIndex) {
   auto groupIndex = strategy()->groupIndexForSlotIndex(slotIndex);
 
-  if (!groupIndex.has_value()) {
+  if (!groupIndex) {
     return;
   }
 
@@ -234,7 +234,7 @@ void GroupsList::selectSlotAtIndex(int slotIndex) {
   auto startSlotIndex =
       strategy()->startSlotIndexForGroupIndex(groupIndex.value());
 
-  if (!startSlotIndex.has_value()) {
+  if (!startSlotIndex) {
     return;
   }
 
@@ -286,7 +286,7 @@ QVector<int> GroupsList::selectionSlots() {
     auto selectionSlotsRelativeIndices = groupWidget->selectionSlots().keys();
     for (auto relativeIndex : selectionSlotsRelativeIndices) {
       auto startSlotIndex = strategy()->startSlotIndexForGroupIndex(i);
-      if (startSlotIndex.has_value()) {
+      if (startSlotIndex) {
         result.append(startSlotIndex.value() + relativeIndex);
       }
     }
@@ -316,9 +316,13 @@ void GroupsList::clearCurrentSelection() { deselectAllSlots(); }
 void GroupsList::undo() {
   strategy()->undo();
   updateUI();
+  emit slotsStateChanged();
+  emit wantToUpdateActivitiesList();
 }
 
 void GroupsList::redo() {
   strategy()->redo();
   updateUI();
+  emit slotsStateChanged();
+  emit wantToUpdateActivitiesList();
 }

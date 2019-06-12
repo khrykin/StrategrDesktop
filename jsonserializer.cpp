@@ -19,9 +19,9 @@ QByteArray JSONSerializer::write() const {
 
   QJsonArray slotsState;
   for (auto &slot : strategy.slotsState()) {
-    if (slot.has_value()) {
+    if (slot) {
       auto activityIndex = strategy.indexOfActivity(slot.value());
-      slotsState.append(activityIndex.has_value() ? QJsonValue(static_cast<int>(
+      slotsState.append(activityIndex ? QJsonValue(static_cast<int>(
                                                         activityIndex.value()))
                                                   : QJsonValue());
     } else {

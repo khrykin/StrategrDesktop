@@ -1,86 +1,86 @@
 #ifndef GROUPSLIST_H
 #define GROUPSLIST_H
 
-#include <QWidget>
-#include <QMouseEvent>
-#include <QTimer>
 #include <QAction>
 #include <QHBoxLayout>
+#include <QMouseEvent>
+#include <QTimer>
 #include <QVBoxLayout>
+#include <QWidget>
 
 #include "activitygroupwidget.h"
-#include "strategy.h"
 #include "slotruler.h"
+#include "strategy.h"
 
-class GroupsList : public QWidget
-{
-    Q_OBJECT
+class GroupsList : public QWidget {
+  Q_OBJECT
 public:
-    explicit GroupsList(QWidget *parent = nullptr);
+  explicit GroupsList(QWidget *parent = nullptr);
 
-    void updateUI();
-    Strategy *strategy() const;
-    void setStrategy(Strategy *strategy);
+  void updateUI();
+  Strategy *strategy() const;
+  void setStrategy(Strategy *strategy);
 
-    QVector<int> selectionSlots();
-    bool hasSelection();
-    void selectSlotAtIndex(int slotIndex);
-    void deselectAllSlots();
-    void undo();
-    void redo();
+  QVector<int> selectionSlots();
+  bool hasSelection();
+  void selectSlotAtIndex(int slotIndex);
+  void deselectAllSlots();
+  void undo();
+  void redo();
 
-    QAction *getUndoAction() const;
-    QAction *getRedoAction() const;
+  QAction *getUndoAction() const;
+  QAction *getRedoAction() const;
 
 signals:
-    void wantToSetActivtyForSelection(QVector <int> selection);
+  void wantToSetActivtyForSelection(QVector<int> selection);
+  void wantToUpdateActivitiesList();
+  void slotsStateChanged();
 
 private:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+  void mouseMoveEvent(QMouseEvent *event) override;
+  void contextMenuEvent(QContextMenuEvent *event) override;
 
-    int slotIndexForEvent(QContextMenuEvent *event);
-    int slotIndexForEvent(QMouseEvent *event);
+  int slotIndexForEvent(QContextMenuEvent *event);
+  int slotIndexForEvent(QMouseEvent *event);
 
-    void copySlot(int fromIndex, int toIndex);
-    void fillSlots(int fromIndex, int toIndex);
-    void selectGroupAtSlotIndex(int selectedSlotIndex);
-    void deselectAllGroups();
+  void copySlot(int fromIndex, int toIndex);
+  void fillSlots(int fromIndex, int toIndex);
+  void selectGroupAtSlotIndex(int selectedSlotIndex);
+  void deselectAllGroups();
 
-    ActivityGroupWidget *groupWidgetAtIndex(int index);
+  ActivityGroupWidget *groupWidgetAtIndex(int index);
 
-    const int SLOT_HEIGHT = 50;
+  const int SLOT_HEIGHT = 50;
 
-    void paintEvent(QPaintEvent *) override;
+  void paintEvent(QPaintEvent *) override;
 
-    Strategy *_strategy;
+  Strategy *_strategy;
 
-    std::optional<int> _selectedGroupIndex;
+  std::optional<int> _selectedGroupIndex;
 
-    int _pulledFrom;
-    int _pulledTo;
+  int _pulledFrom;
+  int _pulledTo;
 
-    bool _isPulling = false;
+  bool _isPulling = false;
 
-    QTimer *_longPressTimer;
+  QTimer *_longPressTimer;
 
-    QWidget *selectionWidget;
+  QWidget *selectionWidget;
 
-    QAction *setActivityAction;
-    QAction *deleteActivityAction;
-    QAction *clearSelectionAction;
+  QAction *setActivityAction;
+  QAction *deleteActivityAction;
+  QAction *clearSelectionAction;
 
-    QAction *undoAction;
-    QAction *redoAction;
+  QAction *undoAction;
+  QAction *redoAction;
 
-    std::optional<Strategy::HistoryEntry> historyEntry;
+  std::optional<Strategy::HistoryEntry> historyEntry;
 
-    void openActivitiesWindow();
-    void deleteActivityInSelection();
-    void clearCurrentSelection();
-
+  void openActivitiesWindow();
+  void deleteActivityInSelection();
+  void clearCurrentSelection();
 };
 
 #endif // GROUPSLIST_H

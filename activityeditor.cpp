@@ -72,7 +72,7 @@ void ActivityEditor::getBack() { parentStackedWidget()->setCurrentIndex(1); }
 
 void ActivityEditor::save() {
   if (!titleEditor->text().isEmpty()) {
-    if (_activity.has_value()) {
+    if (_activity) {
       _activity->name = titleEditor->text().toStdString();
       _activity->color = colorEditor->text().toStdString();
       emit done(_activity.value(), false);
@@ -88,14 +88,14 @@ std::optional<Activity> &ActivityEditor::getActivity() { return _activity; }
 
 void ActivityEditor::setActivity(const std::optional<Activity> &activity) {
   _activity = activity;
-  titleEditor->setText(activity.has_value()
+  titleEditor->setText(activity
                            ? QString::fromStdString(activity.value().name)
                            : "");
-  colorEditor->setText(activity.has_value()
+  colorEditor->setText(activity
                            ? QString::fromStdString(activity.value().color)
                            : "#000000");
 
-  navBar->setTitle(activity.has_value() ? "Edit Activity" : "New Activity");
+  navBar->setTitle(activity ? "Edit Activity" : "New Activity");
 }
 
 void ActivityEditor::showError(QString key, QString message) {
@@ -108,7 +108,7 @@ void ActivityEditor::showError(QString key, QString message) {
 void ActivityEditor::reset(std::optional<Activity> activity) {
   titleError->hide();
   setActivity(std::nullopt);
-  titleEditor->setText(activity.has_value()
+  titleEditor->setText(activity
                            ? QString::fromStdString(activity.value().name)
                            : "");
   titleEditor->setFocus();

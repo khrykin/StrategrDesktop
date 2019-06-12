@@ -69,7 +69,7 @@ std::optional<Strategy> FileSystemIOManager::read(QString readFilepath) {
   auto strategy = JSONSerializer::read(in.readAll());
   file.close();
 
-  if (!strategy.has_value()) {
+  if (!strategy) {
     QMessageBox::warning(parent, QObject::tr("Open Strategy"),
                          QObject::tr("Cannot read file %1:\n%2.")
                              .arg(filepath)

@@ -17,8 +17,8 @@
 MainWindow::MainWindow(bool createEmpty, QWidget *parent)
     : QMainWindow(parent) {
   setMinimumWidth(300);
-  setMaximumWidth(350);
-  resize(350, QDesktopWidget().availableGeometry(this).size().height() * 1);
+  setMaximumWidth(400);
+  resize(400, QDesktopWidget().availableGeometry(this).size().height() * 1);
 
   fsIOManager = std::make_unique<FileSystemIOManager>(this);
   strategy = std::unique_ptr<Strategy>(openRecentOrNew(createEmpty));
@@ -93,6 +93,12 @@ void MainWindow::createSlotBoard() {
   connect(slotBoard->groupsList(), &GroupsList::wantToSetActivtyForSelection,
           this, &MainWindow::showActivitiesListForSelection);
 
+  connect(slotBoard->groupsList(), &GroupsList::wantToUpdateActivitiesList,
+          [=]() { activitiesListWidget->updateList(); });
+
+  connect(slotBoard->groupsList(), &GroupsList::slotsStateChanged,
+          [=]() { updateWindowTitle(false); });
+
   editMenu->addAction(slotBoard->groupsList()->getUndoAction());
   editMenu->addAction(slotBoard->groupsList()->getRedoAction());
 }
@@ -129,7 +135,7 @@ void MainWindow::createStackedWidget() {
 
 void MainWindow::open() {
   auto newStrategy = fsIOManager->open();
-  if (!newStrategy.has_value()) {
+  if (!newStrategy) {
     qDebug() << "Can't open";
     return;
   }
@@ -163,7 +169,7 @@ void MainWindow::clearRecent() {
 
 void MainWindow::load(QString path) {
   auto loadedStrategy = fsIOManager->read(path);
-  if (!loadedStrategy.has_value()) {
+  if (!loadedStrategy) {
     qDebug() << "Can't open";
     return;
   }
@@ -183,13 +189,13 @@ void MainWindow::updateWindowTitle(bool isSaved) {
   auto currentTitle =
       title.isEmpty() ? "Untitled" : title + (isSaved ? "" : "*");
 
-  setWindowTitle(currentTitle + " - Strategr");
+  setWindowTitle(currentTitle);
 }
 
 void MainWindow::activityEdited(const Activity &activity, bool isNew) {
   updateWindowTitle(false);
 
-  if (!isNew && activityBeingEdited.has_value()) {
+  if (!isNew && activityBeingEdited) {
     strategy->editActivity(activityBeingEdited.value(), activity);
     stackedWidget->setCurrentIndex(1);
     activitiesListWidget->updateList();
@@ -208,6 +214,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew) {
 }
 
 void MainWindow::removeActivityFromSlots(const Activity &activity) {
+  updateWindowTitle(false);
   slotBoard->groupsList()->updateUI();
 }
 
@@ -239,7 +246,7 @@ void MainWindow::setStrategy(Strategy *newStrategy) {
 
 Strategy *MainWindow::openRecentOrNew(bool forceNew) {
   auto lastOpened = fsIOManager->lastOpened();
-  if (!forceNew && lastOpened.has_value()) {
+  if (!forceNew && lastOpened) {
     return new Strategy(lastOpened.value());
   } else {
     fsIOManager->resetFilepath();

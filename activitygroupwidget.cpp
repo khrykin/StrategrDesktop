@@ -92,7 +92,7 @@ void ActivityGroupWidget::setIsSelected(bool isSelected) {
 void ActivityGroupWidget::setSlotHeight(int height) { setFixedHeight(height); }
 
 void ActivityGroupWidget::updateUI() {
-  if (activity().has_value()) {
+  if (activity()) {
     auto name = QString::fromStdString(activity()->name);
     auto color = QString::fromStdString(activity()->color);
 
