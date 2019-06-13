@@ -11,6 +11,7 @@
 #include "notifier.h"
 #include "slotboard.h"
 #include "strategy.h"
+#include "strategysettings.h"
 #include <memory>
 
 class MainWindow : public QMainWindow {
@@ -22,13 +23,18 @@ public:
   void updateRecentFileActions();
   void updateWindowTitle(bool isSaved = true);
 
+  QStackedWidget *stackedWidget() const;
+
+  QScrollArea *slotBoardScrollArea() const;
+
 private:
-  QScrollArea *slotBoardScrollArea;
+  QScrollArea *_slotBoardScrollArea;
   SlotBoard *slotBoard;
   std::unique_ptr<Strategy> strategy;
-  QStackedWidget *stackedWidget;
+  QStackedWidget *_stackedWidget;
   ActivitiesListWidget *activitiesListWidget;
   ActivityEditor *activityEditorWidget;
+  StrategySettings *strategySettingsWidget;
   std::optional<Activity> activityBeingEdited;
 
   QMenu *recentMenu = nullptr;
@@ -40,6 +46,8 @@ private:
   void createActivitiesListWidget();
   void createActivityEditorWidget();
   void createStackedWidget();
+  void createStrategySettingsWidget();
+
   void newWindow();
   void open();
   void save();
@@ -48,6 +56,7 @@ private:
   void clearRecent();
   void load(QString path);
   void openActivityEditor();
+  void openStrategySettings();
   void activityEdited(const Activity &activity, bool isNew);
   void removeActivityFromSlots(const Activity &activity);
   void editActivity(const Activity &activity);
@@ -56,6 +65,7 @@ private:
   void setActivity(const Activity &activity);
 
   void setStrategy(Strategy *newStrategy);
+  void updateUI();
 
   Strategy *openRecentOrNew(bool forceNew = false);
 

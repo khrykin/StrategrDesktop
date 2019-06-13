@@ -31,10 +31,10 @@ MainWindow::MainWindow(bool createEmpty, QWidget *parent)
   createSlotBoard();
   createActivitiesListWidget();
   createActivityEditorWidget();
-
+  createStrategySettingsWidget();
   createStackedWidget();
 
-  setCentralWidget(stackedWidget);
+  setCentralWidget(_stackedWidget);
   updateWindowTitle();
 }
 
@@ -77,17 +77,21 @@ void MainWindow::createMenus() {
   fileMenu->addAction("Save As", this, &MainWindow::saveAs,
                       QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
 
+  fileMenu->addSeparator();
+  fileMenu->addAction("Settings", this, &MainWindow::openStrategySettings,
+                      QKeySequence(Qt::CTRL + Qt::Key_Comma));
+
   setMenuBar(menuBar);
 }
 
 void MainWindow::createSlotBoard() {
-  slotBoardScrollArea = new QScrollArea();
-  slotBoardScrollArea->setWidgetResizable(true);
-  slotBoardScrollArea->setMouseTracking(true);
-  slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
+  _slotBoardScrollArea = new QScrollArea();
+  _slotBoardScrollArea->setWidgetResizable(true);
+  _slotBoardScrollArea->setMouseTracking(true);
+  _slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
   slotBoard = new SlotBoard();
-  slotBoardScrollArea->setWidget(slotBoard);
+  _slotBoardScrollArea->setWidget(slotBoard);
   slotBoard->setStrategy(strategy.get());
 
   connect(slotBoard->groupsList(), &GroupsList::wantToSetActivtyForSelection,
@@ -127,10 +131,18 @@ void MainWindow::createActivityEditorWidget() {
 }
 
 void MainWindow::createStackedWidget() {
-  stackedWidget = new QStackedWidget();
-  stackedWidget->addWidget(slotBoardScrollArea);
-  stackedWidget->addWidget(activitiesListWidget);
-  stackedWidget->addWidget(activityEditorWidget);
+  _stackedWidget = new QStackedWidget();
+  _stackedWidget->addWidget(_slotBoardScrollArea);
+  _stackedWidget->addWidget(activitiesListWidget);
+  _stackedWidget->addWidget(activityEditorWidget);
+  _stackedWidget->addWidget(strategySettingsWidget);
+}
+
+void MainWindow::createStrategySettingsWidget() {
+  strategySettingsWidget = new StrategySettings();
+  strategySettingsWidget->setStrategy(strategy.get());
+  connect(strategySettingsWidget, &StrategySettings::strategySettingsUpdated,
+          this, &MainWindow::updateUI);
 }
 
 void MainWindow::open() {
@@ -178,18 +190,32 @@ void MainWindow::load(QString path) {
 }
 
 void MainWindow::openActivityEditor() {
-  stackedWidget->setCurrentIndex(2);
+  _stackedWidget->setCurrentWidget(activityEditorWidget);
   activityEditorWidget->reset();
+}
+
+void MainWindow::openStrategySettings() {
+  strategySettingsWidget->setGetBackTo(_stackedWidget->currentWidget());
+  _stackedWidget->setCurrentWidget(strategySettingsWidget);
 }
 
 void MainWindow::updateWindowTitle(bool isSaved) {
   auto title = fsIOManager->fileInfo().baseName();
   qDebug() << "baseName" << title;
   qDebug() << "filename" << fsIOManager->fileInfo().fileName();
+
+  fsIOManager->setIsSaved(isSaved);
+
   auto currentTitle =
       title.isEmpty() ? "Untitled" : title + (isSaved ? "" : "*");
 
   setWindowTitle(currentTitle);
+}
+
+QStackedWidget *MainWindow::stackedWidget() const { return _stackedWidget; }
+
+QScrollArea *MainWindow::slotBoardScrollArea() const {
+  return _slotBoardScrollArea;
 }
 
 void MainWindow::activityEdited(const Activity &activity, bool isNew) {
@@ -197,7 +223,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew) {
 
   if (!isNew && activityBeingEdited) {
     strategy->editActivity(activityBeingEdited.value(), activity);
-    stackedWidget->setCurrentIndex(1);
+    _stackedWidget->setCurrentWidget(_slotBoardScrollArea);
     activitiesListWidget->updateList();
     slotBoard->groupsList()->updateUI();
     activityBeingEdited = std::nullopt;
@@ -206,7 +232,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew) {
 
   if (!strategy->hasActivity(activity)) {
     strategy->appendActivity(activity);
-    stackedWidget->setCurrentIndex(1);
+    _stackedWidget->setCurrentWidget(_slotBoardScrollArea);
     activitiesListWidget->updateList();
   } else {
     activityEditorWidget->showError("Name", "Already exists");
@@ -220,27 +246,33 @@ void MainWindow::removeActivityFromSlots(const Activity &activity) {
 
 void MainWindow::editActivity(const Activity &activity) {
   activityEditorWidget->setActivity(activity);
-  stackedWidget->setCurrentIndex(2);
+  _stackedWidget->setCurrentWidget(activityEditorWidget);
   activityBeingEdited = activity;
 }
 
 void MainWindow::showActivitiesListForSelection(QVector<int> selection) {
-  stackedWidget->setCurrentIndex(1);
+  _stackedWidget->setCurrentWidget(activitiesListWidget);
 }
 
 void MainWindow::setActivity(const Activity &activity) {
   auto selection = slotBoard->groupsList()->selectionSlots();
   strategy->setSlotAtIndices(selection.toStdVector(), activity);
   slotBoard->groupsList()->deselectAllSlots();
-  stackedWidget->setCurrentIndex(0);
+  _stackedWidget->setCurrentWidget(_slotBoardScrollArea);
   slotBoard->groupsList()->updateUI();
 }
 
 void MainWindow::setStrategy(Strategy *newStrategy) {
   this->strategy = std::unique_ptr<Strategy>(newStrategy);
-  slotBoard->setStrategy(newStrategy);
-  activitiesListWidget->setStrategy(newStrategy);
-  notifier->setStrategy(newStrategy);
+  updateUI();
+}
+
+void MainWindow::updateUI() {
+  auto strategyPtr = strategy.get();
+  slotBoard->setStrategy(strategyPtr);
+  activitiesListWidget->setStrategy(strategyPtr);
+  notifier->setStrategy(strategyPtr);
+  strategySettingsWidget->setStrategy(strategyPtr);
   updateWindowTitle();
 }
 

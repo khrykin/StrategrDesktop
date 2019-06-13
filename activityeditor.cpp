@@ -53,7 +53,7 @@ ActivityEditor::ActivityEditor(QWidget *parent) : QWidget(parent) {
 
   mainLayout->addLayout(formLayout);
 
-  layout()->addWidget(new QWidget());
+  mainLayout->addStretch();
 
   auto *saveAction = new QAction("Save", this);
   saveAction->setShortcut(QKeySequence(Qt::Key_Return));
@@ -88,12 +88,10 @@ std::optional<Activity> &ActivityEditor::getActivity() { return _activity; }
 
 void ActivityEditor::setActivity(const std::optional<Activity> &activity) {
   _activity = activity;
-  titleEditor->setText(activity
-                           ? QString::fromStdString(activity.value().name)
-                           : "");
-  colorEditor->setText(activity
-                           ? QString::fromStdString(activity.value().color)
-                           : "#000000");
+  titleEditor->setText(activity ? QString::fromStdString(activity.value().name)
+                                : "");
+  colorEditor->setText(activity ? QString::fromStdString(activity.value().color)
+                                : "#000000");
 
   navBar->setTitle(activity ? "Edit Activity" : "New Activity");
 }
@@ -108,9 +106,8 @@ void ActivityEditor::showError(QString key, QString message) {
 void ActivityEditor::reset(std::optional<Activity> activity) {
   titleError->hide();
   setActivity(std::nullopt);
-  titleEditor->setText(activity
-                           ? QString::fromStdString(activity.value().name)
-                           : "");
+  titleEditor->setText(activity ? QString::fromStdString(activity.value().name)
+                                : "");
   titleEditor->setFocus();
 }
 

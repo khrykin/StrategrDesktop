@@ -52,6 +52,9 @@ void SlotRuler::updateUI() {
       cell = new QLabel();
       cell->setAlignment(Qt::AlignCenter);
       cell->setFixedHeight(cellHeight());
+      cell->setStyleSheet("font-size: 10pt;"
+                          "font-weight: bold;"
+                          "color: #777");
       layout()->addWidget(cell);
     } else {
       cell = dynamic_cast<QLabel *>(layout()->itemAt(i)->widget());

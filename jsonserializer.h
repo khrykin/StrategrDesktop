@@ -21,6 +21,7 @@ namespace Keys {
 const QString slotDuration = "slotDuration";
 const QString startTime = "startTime";
 const QString activities = "activities";
+const QString numberOfSlots = "numberOfSlots";
 const QString name = "name";
 const QString color = "color";
 const QString slotsKey = "slots";

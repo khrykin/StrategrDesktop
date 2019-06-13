@@ -129,11 +129,12 @@ void ActivityGroupWidget::updateUI() {
     auto name = QString::fromStdString(activity()->name);
     auto color = QString::fromStdString(activity()->color);
 
-    titleLabel->setText("<font color=\"" + color + "\"><b>" + name +
-                        "</b></font> <font color=\"#888\">" +
+    titleLabel->setText("<font color=\"#888\"><b>" +
                         timeStringForMins(length() * slotDuration()) +
-                        "</font>");
-    //    titleLabel->setStyleSheet("color: " + color);
+                        "</b></font> <font color=\"" + color + "\"><b>" + name +
+                        "</b></font>");
+
+    titleLabel->setStyleSheet("font-size: 15pt;");
 
   } else {
     titleLabel->setText("");

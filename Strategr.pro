@@ -42,7 +42,9 @@ SOURCES += \
         slotboard.cpp \
         slotruler.cpp \
         stacklayout.cpp \
+        steppedtimeedit.cpp \
         strategy.cpp \
+        strategysettings.cpp \
         utils.cpp
 
 HEADERS += \
@@ -62,7 +64,9 @@ HEADERS += \
         slotboard.h \
         slotruler.h \
         stacklayout.h \
+        steppedtimeedit.h \
         strategy.h \
+        strategysettings.h \
         utils.h
 
 FORMS +=

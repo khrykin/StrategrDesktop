@@ -1,6 +1,7 @@
 #include "slotboard.h"
 #include <QDebug>
 #include <QHBoxLayout>
+#include <QLocale>
 #include <QTime>
 #include <algorithm>
 #include <cmath>
@@ -35,6 +36,7 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent) {
   slotsLayout->addWidget(header);
   slotsLayout->addWidget(_groupsList);
   slotsLayout->addWidget(footer);
+  slotsLayout->addStretch();
 
   mainLayout->addLayout(rulerLayout);
   mainLayout->addLayout(slotsLayout);
@@ -56,12 +58,14 @@ void SlotBoard::setStrategy(Strategy *strategy) {
 
   QVector<QString> labels;
 
+  auto timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
+
   for (auto &mins : strategy->startTimes()) {
-    labels.append(QTime(0, 0, 0).addSecs(mins * 60).toString("hh:mm"));
+    labels.append(QTime(0, 0, 0).addSecs(mins * 60).toString(timeFormat));
   }
 
   labels.append(
-      QTime(0, 0, 0).addSecs(strategy->endTime() * 60).toString("hh:mm"));
+      QTime(0, 0, 0).addSecs(strategy->endTime() * 60).toString(timeFormat));
 
   _slotRuler->setLabels(labels);
 

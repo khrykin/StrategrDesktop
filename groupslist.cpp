@@ -20,7 +20,10 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   addAction(setActivityAction);
 
   deleteActivityAction = new QAction(tr("Make Empty"), this);
-  deleteActivityAction->setShortcut(QKeySequence(Qt::Key_Delete));
+  QList<QKeySequence> deleteShortcuts;
+  deleteShortcuts << QKeySequence(Qt::Key_Delete)
+                  << QKeySequence(Qt::Key_Backspace);
+  deleteActivityAction->setShortcuts(deleteShortcuts);
   addAction(deleteActivityAction);
   connect(deleteActivityAction, &QAction::triggered, this,
           &GroupsList::deleteActivityInSelection);
@@ -47,30 +50,26 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
 }
 
 void GroupsList::updateUI() {
-  qDebug() << "setState";
-
   auto state = strategy()->group();
-
-  int stateSize = static_cast<int>(state.size());
-  int hideAtIndex = stateSize;
-  while (layout()->itemAt(hideAtIndex) != nullptr) {
-    auto *widgetToHide = layout()->itemAt(hideAtIndex)->widget();
-    if (widgetToHide->isVisible()) {
-      widgetToHide->hide();
-    }
-
-    hideAtIndex++;
-  }
+  qDebug() << "setState" << state.size();
 
   for (unsigned int i = 0; i < state.size(); i++) {
     ActivityGroupWidget *groupWidget;
     auto *laytoutItem = layout()->itemAt(static_cast<int>(i));
     if (laytoutItem != nullptr) {
-      groupWidget = static_cast<ActivityGroupWidget *>(laytoutItem->widget());
+      groupWidget = qobject_cast<ActivityGroupWidget *>(laytoutItem->widget());
+      qDebug() << "-- setup group widget" << (groupWidget != nullptr);
+
+      if (!groupWidget) {
+        layout()->removeItem(laytoutItem);
+        return;
+      }
+
       if (groupWidget->isHidden()) {
         groupWidget->show();
       }
     } else {
+      qDebug() << "-- create group widget";
       groupWidget = new ActivityGroupWidget();
       groupWidget->setSlotHeight(slotHeight());
       layout()->addWidget(groupWidget);
@@ -104,12 +103,22 @@ void GroupsList::updateUI() {
     }
   }
 
-  qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
+  int stateSize = static_cast<int>(state.size());
+  int hideAtIndex = stateSize;
+  qDebug() << "Item to hide" << layout()->itemAt(hideAtIndex);
 
-  for (int i = 0; i < layout()->count(); i++) {
-    qDebug() << "layout item" << i << "visible?"
-             << layout()->itemAt(i)->widget()->isVisible();
+  while (layout()->itemAt(hideAtIndex) != nullptr) {
+    auto itemToHide = layout()->itemAt(hideAtIndex);
+    if (itemToHide->widget() != nullptr) {
+      itemToHide->widget()->hide();
+    }
+
+    hideAtIndex++;
   }
+
+  //  static_cast<QVBoxLayout *>(layout())->addStretch();
+
+  qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
 }
 
 void GroupsList::mousePressEvent(QMouseEvent *event) {
