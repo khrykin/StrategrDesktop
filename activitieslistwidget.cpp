@@ -102,6 +102,11 @@ void ActivitiesListWidget::updateList() {
 
     connect(item, &ActivitiesListItem::wantToEdit,
             [=]() { emit wantToEditActivity(activity); });
+
+    connect(item, &ActivitiesListItem::activityEdited,
+            [=](const Activity &activity) {
+              emit activityEditedAtIndex(index, activity);
+            });
   }
 
   while (listWidget->layout()->itemAt(activitiesCount) != nullptr) {

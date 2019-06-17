@@ -1,41 +1,41 @@
 #ifndef ACTIVITIESLISTWIDGET_H
 #define ACTIVITIESLISTWIDGET_H
 
-#include <QWidget>
-#include <QStackedWidget>
 #include <QScrollArea>
+#include <QStackedWidget>
+#include <QWidget>
 
-#include "strategy.h"
 #include "navbar.h"
+#include "strategy.h"
 
-class ActivitiesListWidget : public QWidget
-{
-    Q_OBJECT
+class ActivitiesListWidget : public QWidget {
+  Q_OBJECT
 public:
-    explicit ActivitiesListWidget(QWidget *parent = nullptr);
+  explicit ActivitiesListWidget(QWidget *parent = nullptr);
 
-    Strategy *strategy() const;
-    void setStrategy(Strategy *strategy);
-    void updateList();
+  Strategy *strategy() const;
+  void setStrategy(Strategy *strategy);
+  void updateList();
 
 signals:
-    void selectActivity(const Activity &activity);
-    void wantNewActivity();
-    void activityRemoved(const Activity &activity);
-    void wantToEditActivity(const Activity &activity);
+  void selectActivity(const Activity &activity);
+  void wantNewActivity();
+  void activityRemoved(const Activity &activity);
+  void activityEditedAtIndex(int index, const Activity &activity);
+  void wantToEditActivity(const Activity &activity);
 public slots:
 
 private:
-    void paintEvent(QPaintEvent *) override;
+  void paintEvent(QPaintEvent *) override;
 
-    QStackedWidget *parentStackedWidget();
-    void getBack();
-    void sendWantNewActivity();
+  QStackedWidget *parentStackedWidget();
+  void getBack();
+  void sendWantNewActivity();
 
-    QScrollArea *scrollArea;
-    QWidget *listWidget;
-    QWidget *navWidget;
-    Strategy *_strategy;
+  QScrollArea *scrollArea;
+  QWidget *listWidget;
+  QWidget *navWidget;
+  Strategy *_strategy;
 };
 
 #endif // ACTIVITIESLISTWIDGET_H

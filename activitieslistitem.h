@@ -2,8 +2,13 @@
 #define ACTIVITIESLISTITEM_H
 
 #include "activity.h"
+#include "colorpicker.h"
+#include <QColorDialog>
 #include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
 #include <QWidget>
+#include <QWidgetAction>
 
 class ActivitiesListItem : public QWidget {
   Q_OBJECT
@@ -17,6 +22,7 @@ signals:
   void selected();
   void wantToDelete();
   void wantToEdit();
+  void activityEdited(const Activity &activity);
 
 public slots:
 
@@ -29,15 +35,35 @@ private:
 
   void wantDeleteActivity();
   void wantEditActivity();
+  void wantToSetCustomColor();
+  void customColorSet(const QColor &color);
 
+  void createLineEditWidgetAction();
+  void createColorWidgetAction();
+
+  void editActivityColor(const QColor &color);
+  void editActivityNameFromLineEdit();
+
+  void colorPickerColorChanged(const std::optional<QColor> &color);
+  void colorDialogRejected();
   void updateUI();
 
   Activity _activity;
 
   QAction *editActivityAction;
   QAction *deleteActivityAction;
+  QAction *customColorAction;
 
+  QWidgetAction *colorWidgetAction = nullptr;
+  QWidgetAction *lineEditWidgetAction = nullptr;
+
+  QMenu *contextMenu = nullptr;
+  QColorDialog *colorDialog = nullptr;
+  QLineEdit *lineEdit = nullptr;
+  QColor previousColor;
+  ColorPicker *colorPicker = nullptr;
   QLabel *label;
+
   bool _isClicked = false;
 };
 

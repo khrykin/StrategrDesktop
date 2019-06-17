@@ -31,6 +31,8 @@ SOURCES += \
         activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
+        colorpicker.cpp \
+        colorpickeritem.cpp \
         currenttimemarker.cpp \
         filesystemiomanager.cpp \
         groupslist.cpp \
@@ -54,6 +56,9 @@ HEADERS += \
         activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
+        colorpicker.h \
+        colorpickeritem.h \
+        colorutils.h \
         currenttimemarker.h \
         filesystemiomanager.h \
         groupslist.h \

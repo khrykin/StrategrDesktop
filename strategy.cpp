@@ -82,6 +82,23 @@ void Strategy::editActivity(const Activity &from, const Activity &to) {
   }
 }
 
+void Strategy::editActivityAtIndex(int index, const Activity &to) {
+  auto uindex = static_cast<unsigned int>(index);
+  if (index < 0 || uindex >= activities.size()) {
+    return;
+  }
+
+  commitToHistory(_slotsState, activities);
+
+  auto oldActivity = activities[uindex];
+  activities[uindex] = to;
+  for (unsigned int i = 0; i < slotsState().size(); i++) {
+    if (slotsState()[i] && slotsState()[i].value() == oldActivity) {
+      _slotsState[i] = to;
+    }
+  }
+}
+
 optional<unsigned int>
 Strategy::indexOfActivity(const Activity &activity) const {
   for (unsigned int i = 0; i < activities.size(); i++) {
@@ -218,18 +235,19 @@ string Strategy::debugSlots() {
 }
 
 string Strategy::debugGroups() {
-  string result = "-Groups--------------------\n";
+  string result = "-Groups-------------------------\n";
   auto groups = group();
   for (unsigned int i = 0; i < groups.size(); i++) {
     auto group = groups[i];
     if (group.activity) {
       result += static_cast<string>("Group " + to_string(i) + "\t" +
-                                    group.activity.value().name + "\n");
+                                    group.activity->name + "\t" +
+                                    group.activity->color + "\n");
     } else {
       result +=
           static_cast<string>("Group " + to_string(i) + "\t" + "None" + "\n");
     }
-    result += "---------------------------\n";
+    result += "--------------------------------\n";
   }
 
   return result;

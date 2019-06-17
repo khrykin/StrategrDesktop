@@ -1,9 +1,10 @@
 #include "activitieslistitem.h"
+#include "colorutils.h"
 #include <QDebug>
 #include <QLayout>
-#include <QMenu>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QSpinBox>
 #include <QStyle>
 #include <QStyleOption>
 
@@ -25,7 +26,9 @@ ActivitiesListItem::ActivitiesListItem(Activity activity, QWidget *parent)
 
   label = new QLabel();
   label->setAlignment(Qt::AlignCenter);
-  label->setStyleSheet("QLabel {"
+  label->setStyleSheet("QLineEdit {"
+                       "border: none;"
+                       "background-color: none;"
                        "font-weight: bold;"
                        "}");
 
@@ -42,6 +45,25 @@ ActivitiesListItem::ActivitiesListItem(Activity activity, QWidget *parent)
   connect(editActivityAction, &QAction::triggered, this,
           &ActivitiesListItem::wantEditActivity);
 
+  customColorAction = new QAction(tr("Custom Color"));
+  customColorAction->setCheckable(true);
+  addAction(customColorAction);
+  connect(customColorAction, &QAction::triggered, this,
+          &ActivitiesListItem::wantToSetCustomColor);
+
+  colorDialog = new QColorDialog(this);
+  colorDialog->setOptions(QColorDialog::NoButtons);
+  connect(colorDialog, &QColorDialog::currentColorChanged,
+          [=](const QColor &color) {
+            editActivityColor(color);
+            colorPicker->setColor(color);
+          });
+  connect(colorDialog, &QColorDialog::reject, this,
+          &ActivitiesListItem::colorDialogRejected);
+
+  createColorWidgetAction();
+  createLineEditWidgetAction();
+
   updateUI();
 }
 
@@ -55,6 +77,91 @@ void ActivitiesListItem::paintEvent(QPaintEvent *) {
 void ActivitiesListItem::wantDeleteActivity() { emit wantToDelete(); }
 
 void ActivitiesListItem::wantEditActivity() { emit wantToEdit(); }
+
+void ActivitiesListItem::wantToSetCustomColor() {
+  previousColor = ColorUtils::qColorFromStdString(activity().color);
+  colorDialog->setCurrentColor(previousColor);
+  colorDialog->close(); // this is a dirty fix, since exec() glitches
+  colorDialog->show();
+}
+
+void ActivitiesListItem::customColorSet(const QColor &color) {}
+
+void ActivitiesListItem::createLineEditWidgetAction() {
+  lineEditWidgetAction = new QWidgetAction(this);
+  auto *lineEditWrapper = new QWidget(this);
+  auto *lineEditLayout = new QVBoxLayout(lineEditWrapper);
+  lineEditLayout->setSpacing(0);
+  lineEditWrapper->setLayout(lineEditLayout);
+  lineEdit = new QLineEdit(lineEditWrapper);
+  lineEdit->setStyleSheet("font-weight: bold;"
+                          "font-size: 18pt;"
+                          "border: transparent;"
+                          "background: transparent;");
+  lineEdit->setText(QString::fromStdString(activity().name));
+  lineEdit->setFocus();
+  lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
+  connect(lineEdit, &QLineEdit::editingFinished, [=]() {
+    if (contextMenu != nullptr && contextMenu->isVisible()) {
+      contextMenu->close();
+    }
+  });
+
+  lineEditLayout->addWidget(lineEdit);
+  lineEditLayout->setContentsMargins(
+      lineEditLayout->contentsMargins().left(), 0,
+      lineEditLayout->contentsMargins().right(), 0);
+
+  lineEditWidgetAction->setDefaultWidget(lineEditWrapper);
+}
+
+void ActivitiesListItem::createColorWidgetAction() {
+  colorPicker = new ColorPicker(this);
+  colorPicker->setColor(QColor(QString::fromStdString(activity().color)));
+  connect(colorPicker, &ColorPicker::colorChanged, this,
+          &ActivitiesListItem::colorPickerColorChanged);
+
+  colorWidgetAction = new QWidgetAction(this);
+  colorWidgetAction->setDefaultWidget(colorPicker);
+}
+
+void ActivitiesListItem::editActivityColor(const QColor &color) {
+  auto newActivity = Activity(activity().name, color.name().toStdString());
+  emit activityEdited(newActivity);
+}
+
+void ActivitiesListItem::editActivityNameFromLineEdit() {
+  auto newName = lineEdit->text().toStdString();
+  if (newName.empty()) {
+    lineEdit->setText(QString::fromStdString(activity().name));
+    return;
+  }
+
+  if (activity().name == newName) {
+    return;
+  }
+
+  auto newActivity = Activity(newName, activity().color);
+  emit activityEdited(newActivity);
+}
+
+void ActivitiesListItem::colorPickerColorChanged(
+    const std::optional<QColor> &color) {
+  if (!color) {
+    return;
+  }
+
+  editActivityColor(color.value());
+
+  if (contextMenu) {
+    contextMenu->close();
+  }
+}
+
+void ActivitiesListItem::colorDialogRejected() {
+  qDebug() << "Rejected!!!";
+  editActivityColor(previousColor);
+}
 
 void ActivitiesListItem::updateUI() {
   label->setText(QString::fromStdString(activity().name));
@@ -92,9 +199,26 @@ void ActivitiesListItem::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void ActivitiesListItem::contextMenuEvent(QContextMenuEvent *event) {
-  QMenu menu(this);
-  menu.addAction(editActivityAction);
-  menu.addAction(deleteActivityAction);
-  menu.exec(event->globalPos());
+  if (contextMenu != nullptr) {
+    //    contextMenu->close();
+    delete contextMenu;
+  }
+
+  contextMenu = new QMenu(this);
+  contextMenu->addAction(lineEditWidgetAction);
+  contextMenu->addSeparator();
+  contextMenu->addAction(colorWidgetAction);
+
+  customColorAction->setChecked(!colorPicker->color());
+
+  contextMenu->addAction(customColorAction);
+  contextMenu->addSeparator();
+  contextMenu->addAction(deleteActivityAction);
+
+  connect(contextMenu, &QMenu::aboutToHide,
+          [=]() { editActivityNameFromLineEdit(); });
+
+  contextMenu->exec(event->globalPos());
+
   qDebug() << "contextMenuEvent";
 }

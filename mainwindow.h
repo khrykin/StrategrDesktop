@@ -63,6 +63,7 @@ private:
 
   void showActivitiesListForSelection(QVector<int> selection);
   void setActivity(const Activity &activity);
+  void editActivityAtIndex(int index, const Activity &activity);
 
   void setStrategy(Strategy *newStrategy);
   void updateUI();

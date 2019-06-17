@@ -122,6 +122,9 @@ void MainWindow::createActivitiesListWidget() {
 
   connect(activitiesListWidget, &ActivitiesListWidget::wantToEditActivity, this,
           &MainWindow::editActivity);
+
+  connect(activitiesListWidget, &ActivitiesListWidget::activityEditedAtIndex,
+          this, &MainWindow::editActivityAtIndex);
 }
 
 void MainWindow::createActivityEditorWidget() {
@@ -262,8 +265,25 @@ void MainWindow::setActivity(const Activity &activity) {
   slotBoard->groupsList()->updateUI();
 }
 
+void MainWindow::editActivityAtIndex(int index, const Activity &activity) {
+  updateWindowTitle(false);
+
+  strategy->editActivityAtIndex(index, activity);
+  activitiesListWidget->updateList();
+  slotBoard->groupsList()->updateUI();
+  qDebug() << "Edit activity at index" << index
+           << QString::fromStdString(activity.name)
+           << QString::fromStdString(activity.color);
+
+  qDebug() << "in strategy" << index
+           << QString::fromStdString(strategy->activities[index].name)
+           << QString::fromStdString(strategy->activities[index].color);
+
+  qDebug().noquote() << QString::fromStdString(strategy->debugSlots());
+}
+
 void MainWindow::setStrategy(Strategy *newStrategy) {
-  this->strategy = std::unique_ptr<Strategy>(newStrategy);
+  strategy = std::unique_ptr<Strategy>(newStrategy);
   updateUI();
 }
 

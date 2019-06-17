@@ -8,7 +8,7 @@ ActivityEditor::ActivityEditor(QWidget *parent) : QWidget(parent) {
   auto *mainLayout = new QVBoxLayout();
   setLayout(mainLayout);
   layout()->setSpacing(0);
-  layout()->setMargin(0);
+  layout()->setContentsMargins(0, 0, 0, 0);
 
   setStyleSheet("ActivityEditor {"
                 "background-color: white;"

@@ -45,6 +45,11 @@ StrategySettings::StrategySettings(QWidget *parent) : QWidget(parent) {
   connect(endTimeEdit, &QTimeEdit::timeChanged, this,
           &StrategySettings::endTimeChanged);
 
+  auto *saveAction = new QAction("Save", this);
+  saveAction->setShortcut(QKeySequence(Qt::Key_Return));
+  connect(saveAction, &QAction::triggered, this, &StrategySettings::save);
+  addAction(saveAction);
+
   //  titleError = new QLabel("Already exists");
   //  titleError->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   //  titleError->setStyleSheet("font-weight: bold; color: red;");
