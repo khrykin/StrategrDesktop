@@ -53,11 +53,8 @@ std::optional<Strategy> FileSystemIOManager::read(QString readFilepath) {
 
   filepath = readFilepath;
 
-  qDebug() << "Open filepath" << filepath;
   QFile file(filepath);
   if (!file.open(QFile::ReadOnly | QFile::Text)) {
-    qDebug() << "!file.open";
-
     QMessageBox::warning(parent, QObject::tr("Open Strategy"),
                          QObject::tr("Cannot read file %1:\n%2.")
                              .arg(filepath)
@@ -105,7 +102,6 @@ QFileInfo FileSystemIOManager::fileInfo() { return QFileInfo(filepath); }
 
 QStringList FileSystemIOManager::recentPaths() {
   auto recentFilesSetting = QSettings().value(Settings::recentKey);
-  qDebug() << "RECENT" << recentFilesSetting.toStringList();
   return recentFilesSetting.toStringList();
 }
 

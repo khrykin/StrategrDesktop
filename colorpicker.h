@@ -12,6 +12,7 @@ public:
 
   std::optional<QColor> color() const;
   void setColor(const std::optional<QColor> &color);
+  void setRandomColor();
 
 signals:
   void colorChanged(const std::optional<QColor> &color);

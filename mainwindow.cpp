@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QGraphicsScene>
@@ -30,7 +29,6 @@ MainWindow::MainWindow(bool createEmpty, QWidget *parent)
 
   createSlotBoard();
   createActivitiesListWidget();
-  createActivityEditorWidget();
   createStrategySettingsWidget();
   createStackedWidget();
 
@@ -114,30 +112,20 @@ void MainWindow::createActivitiesListWidget() {
   connect(activitiesListWidget, &ActivitiesListWidget::selectActivity, this,
           &MainWindow::setActivity);
 
-  connect(activitiesListWidget, &ActivitiesListWidget::wantNewActivity, this,
-          &MainWindow::openActivityEditor);
-
   connect(activitiesListWidget, &ActivitiesListWidget::activityRemoved, this,
           &MainWindow::removeActivityFromSlots);
 
-  connect(activitiesListWidget, &ActivitiesListWidget::wantToEditActivity, this,
-          &MainWindow::editActivity);
-
   connect(activitiesListWidget, &ActivitiesListWidget::activityEditedAtIndex,
           this, &MainWindow::editActivityAtIndex);
-}
 
-void MainWindow::createActivityEditorWidget() {
-  activityEditorWidget = new ActivityEditor();
-  connect(activityEditorWidget, &ActivityEditor::done, this,
-          &MainWindow::activityEdited);
+  connect(activitiesListWidget, &ActivitiesListWidget::activityAppended, this,
+          &MainWindow::appendActivity);
 }
 
 void MainWindow::createStackedWidget() {
   _stackedWidget = new QStackedWidget();
   _stackedWidget->addWidget(_slotBoardScrollArea);
   _stackedWidget->addWidget(activitiesListWidget);
-  _stackedWidget->addWidget(activityEditorWidget);
   _stackedWidget->addWidget(strategySettingsWidget);
 }
 
@@ -151,7 +139,7 @@ void MainWindow::createStrategySettingsWidget() {
 void MainWindow::open() {
   auto newStrategy = fsIOManager->open();
   if (!newStrategy) {
-    qDebug() << "Can't open";
+    // TODO: "Can't open";
     return;
   }
 
@@ -185,16 +173,11 @@ void MainWindow::clearRecent() {
 void MainWindow::load(QString path) {
   auto loadedStrategy = fsIOManager->read(path);
   if (!loadedStrategy) {
-    qDebug() << "Can't open";
+    // TODO: "Can't open";
     return;
   }
 
   setStrategy(new Strategy(loadedStrategy.value()));
-}
-
-void MainWindow::openActivityEditor() {
-  _stackedWidget->setCurrentWidget(activityEditorWidget);
-  activityEditorWidget->reset();
 }
 
 void MainWindow::openStrategySettings() {
@@ -204,8 +187,6 @@ void MainWindow::openStrategySettings() {
 
 void MainWindow::updateWindowTitle(bool isSaved) {
   auto title = fsIOManager->fileInfo().baseName();
-  qDebug() << "baseName" << title;
-  qDebug() << "filename" << fsIOManager->fileInfo().fileName();
 
   fsIOManager->setIsSaved(isSaved);
 
@@ -238,7 +219,7 @@ void MainWindow::activityEdited(const Activity &activity, bool isNew) {
     _stackedWidget->setCurrentWidget(_slotBoardScrollArea);
     activitiesListWidget->updateList();
   } else {
-    activityEditorWidget->showError("Name", "Already exists");
+    //    activityEditorWidget->showError("Name", "Already exists");
   }
 }
 
@@ -247,10 +228,10 @@ void MainWindow::removeActivityFromSlots(const Activity &activity) {
   slotBoard->groupsList()->updateUI();
 }
 
-void MainWindow::editActivity(const Activity &activity) {
-  activityEditorWidget->setActivity(activity);
-  _stackedWidget->setCurrentWidget(activityEditorWidget);
-  activityBeingEdited = activity;
+void MainWindow::appendActivity(const Activity &activity) {
+  strategy->appendActivity(activity);
+  activitiesListWidget->updateList();
+  updateWindowTitle(false);
 }
 
 void MainWindow::showActivitiesListForSelection(QVector<int> selection) {
@@ -271,15 +252,6 @@ void MainWindow::editActivityAtIndex(int index, const Activity &activity) {
   strategy->editActivityAtIndex(index, activity);
   activitiesListWidget->updateList();
   slotBoard->groupsList()->updateUI();
-  qDebug() << "Edit activity at index" << index
-           << QString::fromStdString(activity.name)
-           << QString::fromStdString(activity.color);
-
-  qDebug() << "in strategy" << index
-           << QString::fromStdString(strategy->activities[index].name)
-           << QString::fromStdString(strategy->activities[index].color);
-
-  qDebug().noquote() << QString::fromStdString(strategy->debugSlots());
 }
 
 void MainWindow::setStrategy(Strategy *newStrategy) {

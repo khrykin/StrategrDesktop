@@ -70,21 +70,21 @@ void Notifier::timerTick() {
     targetActivity = nextGroup.activity;
   }
 
-  qDebug() << "currentGroup"
-           << QString::fromStdString(
-                  currentGroup.activity.value_or(Activity("None")).name);
-  qDebug() << "nextGroup"
-           << QString::fromStdString(
-                  nextGroup.activity.value_or(Activity("None")).name);
+  //  qDebug() << "currentGroup"
+  //           << QString::fromStdString(
+  //                  currentGroup.activity.value_or(Activity("None")).name);
+  //  qDebug() << "nextGroup"
+  //           << QString::fromStdString(
+  //                  nextGroup.activity.value_or(Activity("None")).name);
 
   auto countdown = nextGroupStartTime * 60 - currentTime;
 
-  qDebug() << "countdown" << countdown;
+  //  qDebug() << "countdown" << countdown;
   auto nextActivityName = QString::fromStdString(nextGroup.activity->name);
   if (countdown < 5 * 60 && !getReadySent) {
     if (QSystemTrayIcon::supportsMessages()) {
-      qDebug() << "showMessage"
-               << "Coming up in 5 minutes";
+      //      qDebug() << "showMessage"
+      //               << "Coming up in 5 minutes";
       trayIcon->showMessage(titleForGroup(nextGroup), "Coming up in 5 minutes",
                             QIcon(), 10000);
     }
@@ -95,8 +95,8 @@ void Notifier::timerTick() {
 
   if (countdown < 10 && !startSent) {
     if (QSystemTrayIcon::supportsMessages()) {
-      qDebug() << "showMessage"
-               << "Starts right now";
+      //      qDebug() << "showMessage"
+      //               << "Starts right now";
       trayIcon->showMessage(titleForGroup(nextGroup), "Starts right now",
                             QIcon(), 10000);
     }

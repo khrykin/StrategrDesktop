@@ -1,5 +1,4 @@
 #include "groupslist.h"
-#include <QDebug>
 #include <QLayout>
 #include <QMenu>
 #include <QPainter>
@@ -51,14 +50,11 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
 
 void GroupsList::updateUI() {
   auto state = strategy()->group();
-  qDebug() << "setState" << state.size();
-
   for (unsigned int i = 0; i < state.size(); i++) {
     ActivityGroupWidget *groupWidget;
     auto *laytoutItem = layout()->itemAt(static_cast<int>(i));
     if (laytoutItem != nullptr) {
       groupWidget = qobject_cast<ActivityGroupWidget *>(laytoutItem->widget());
-      qDebug() << "-- setup group widget" << (groupWidget != nullptr);
 
       if (!groupWidget) {
         layout()->removeItem(laytoutItem);
@@ -69,7 +65,6 @@ void GroupsList::updateUI() {
         groupWidget->show();
       }
     } else {
-      qDebug() << "-- create group widget";
       groupWidget = new ActivityGroupWidget();
       groupWidget->setSlotHeight(slotHeight());
       layout()->addWidget(groupWidget);
@@ -105,7 +100,6 @@ void GroupsList::updateUI() {
 
   int stateSize = static_cast<int>(state.size());
   int hideAtIndex = stateSize;
-  qDebug() << "Item to hide" << layout()->itemAt(hideAtIndex);
 
   while (layout()->itemAt(hideAtIndex) != nullptr) {
     auto itemToHide = layout()->itemAt(hideAtIndex);
@@ -115,10 +109,6 @@ void GroupsList::updateUI() {
 
     hideAtIndex++;
   }
-
-  //  static_cast<QVBoxLayout *>(layout())->addStretch();
-
-  qDebug().noquote() << QString::fromStdString(strategy()->debugGroups());
 }
 
 void GroupsList::mousePressEvent(QMouseEvent *event) {
@@ -146,8 +136,6 @@ void GroupsList::mouseReleaseEvent(QMouseEvent *event) {
     historyEntry = std::nullopt;
     emit slotsStateChanged();
   }
-
-  qDebug() << "mouseReleaseEvent";
 }
 
 void GroupsList::mouseMoveEvent(QMouseEvent *event) {
@@ -169,8 +157,6 @@ void GroupsList::contextMenuEvent(QContextMenuEvent *event) {
   }
   menu.addAction(clearSelectionAction);
   menu.exec(event->globalPos());
-
-  qDebug() << "context menu event" << selectionSlots();
 }
 
 int GroupsList::slotIndexForEvent(QContextMenuEvent *event) {
@@ -253,11 +239,7 @@ void GroupsList::selectSlotAtIndex(int slotIndex) {
   }
 
   auto relativeIndex = slotIndex - startSlotIndex.value();
-
   selectedGroupWidget->selectSlotAtIndex(relativeIndex);
-
-  qDebug() << "startSlotIndex" << startSlotIndex.value() << "relativeIndex"
-           << relativeIndex;
 }
 
 void GroupsList::deselectAllSlots() {
@@ -315,7 +297,6 @@ bool GroupsList::hasSelection() { return selectionSlots().length() > 0; }
 
 void GroupsList::openActivitiesWindow() {
   emit wantToSetActivtyForSelection(selectionSlots());
-  qDebug() << "open activities window";
 }
 
 void GroupsList::deleteActivityInSelection() {
@@ -323,7 +304,6 @@ void GroupsList::deleteActivityInSelection() {
     strategy()->setSlotAtIndices(selectionSlots().toStdVector(), nullopt);
     updateUI();
     deselectAllSlots();
-    qDebug() << "Delete activity";
   }
 }
 

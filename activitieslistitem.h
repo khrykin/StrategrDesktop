@@ -3,6 +3,7 @@
 
 #include "activity.h"
 #include "colorpicker.h"
+#include "newactivitymenu.h"
 #include <QColorDialog>
 #include <QLabel>
 #include <QLineEdit>

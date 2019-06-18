@@ -33,7 +33,6 @@ private:
   std::unique_ptr<Strategy> strategy;
   QStackedWidget *_stackedWidget;
   ActivitiesListWidget *activitiesListWidget;
-  ActivityEditor *activityEditorWidget;
   StrategySettings *strategySettingsWidget;
   std::optional<Activity> activityBeingEdited;
 
@@ -55,11 +54,10 @@ private:
   void openRecentFile();
   void clearRecent();
   void load(QString path);
-  void openActivityEditor();
   void openStrategySettings();
   void activityEdited(const Activity &activity, bool isNew);
   void removeActivityFromSlots(const Activity &activity);
-  void editActivity(const Activity &activity);
+  void appendActivity(const Activity &activity);
 
   void showActivitiesListForSelection(QVector<int> selection);
   void setActivity(const Activity &activity);

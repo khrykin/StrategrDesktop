@@ -6,6 +6,7 @@
 #include <QWidget>
 
 #include "navbar.h"
+#include "newactivitymenu.h"
 #include "strategy.h"
 
 class ActivitiesListWidget : public QWidget {
@@ -23,6 +24,7 @@ signals:
   void activityRemoved(const Activity &activity);
   void activityEditedAtIndex(int index, const Activity &activity);
   void wantToEditActivity(const Activity &activity);
+  void activityAppended(const Activity &activity);
 public slots:
 
 private:
@@ -36,6 +38,8 @@ private:
   QWidget *listWidget;
   QWidget *navWidget;
   Strategy *_strategy;
+  Navbar *navBar;
+  NewActivityMenu *newActivityMenu;
 };
 
 #endif // ACTIVITIESLISTWIDGET_H

@@ -28,18 +28,19 @@ SOURCES += \
         activitieslistitem.cpp \
         activitieslistwidget.cpp \
         activity.cpp \
-        activityeditor.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
         colorpicker.cpp \
         colorpickeritem.cpp \
         currenttimemarker.cpp \
+        enterpresseater.cpp \
         filesystemiomanager.cpp \
         groupslist.cpp \
         jsonserializer.cpp \
         main.cpp \
         mainwindow.cpp \
         navbar.cpp \
+        newactivitymenu.cpp \
         notifier.cpp \
         slotboard.cpp \
         slotruler.cpp \
@@ -53,18 +54,19 @@ HEADERS += \
         activitieslistitem.h \
         activitieslistwidget.h \
         activity.h \
-        activityeditor.h \
         activitygroup.h \
         activitygroupwidget.h \
         colorpicker.h \
         colorpickeritem.h \
         colorutils.h \
         currenttimemarker.h \
+        enterpresseater.h \
         filesystemiomanager.h \
         groupslist.h \
         jsonserializer.h \
         mainwindow.h \
         navbar.h \
+        newactivitymenu.h \
         notifier.h \
         slotboard.h \
         slotruler.h \

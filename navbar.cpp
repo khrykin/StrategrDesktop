@@ -61,6 +61,21 @@ void Navbar::setTitle(const QString &title)
     _titleLabel->setText(title);
 }
 
+QPushButton *Navbar::leftButton() const
+{
+    return _leftButton;
+}
+
+QPushButton *Navbar::rightButton() const
+{
+    return _rightButton;
+}
+
+QLabel *Navbar::titleLabel() const
+{
+    return _titleLabel;
+}
+
 void Navbar::paintEvent(QPaintEvent *)
 {
     QStyleOption opt;

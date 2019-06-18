@@ -1,6 +1,5 @@
 #include "colorpickeritem.h"
 #include "colorutils.h"
-#include <QDebug>
 #include <QPaintEvent>
 #include <QPainter>
 
@@ -33,26 +32,23 @@ void ColorPickerItem::paintEvent(QPaintEvent *event) {
   painter.end();
 }
 
-void ColorPickerItem::mousePressEvent(QMouseEvent *event) {
+void ColorPickerItem::mousePressEvent(QMouseEvent *) {
   isClicked = true;
   update();
 }
 
-void ColorPickerItem::enterEvent(QEvent *event) {
-  qDebug() << "ENTER";
+void ColorPickerItem::enterEvent(QEvent *) {
   isHovered = true;
   update();
 }
 
-void ColorPickerItem::leaveEvent(QEvent *event) {
-  qDebug() << "LEAVE";
+void ColorPickerItem::leaveEvent(QEvent *) {
   isHovered = false;
   update();
 }
 
-void ColorPickerItem::mouseReleaseEvent(QMouseEvent *event) {
+void ColorPickerItem::mouseReleaseEvent(QMouseEvent *) {
   if (isClicked) {
-    qDebug() << "Clicked color";
     isClicked = false;
     toggleIsSelected();
     emit clicked(_color);

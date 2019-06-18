@@ -100,8 +100,6 @@ std::optional<Strategy> JSONSerializer::read(const QString &json) {
     qDebug() << QString::fromStdString(activity.name);
   }
 
-  qDebug().noquote() << QString::fromStdString(strategy.debugSlots());
-
   return std::make_optional<Strategy>(strategy);
 }
 

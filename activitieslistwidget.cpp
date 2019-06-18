@@ -14,7 +14,7 @@ ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent) {
   layout()->setSpacing(0);
   layout()->setMargin(0);
 
-  auto *navBar = new Navbar();
+  navBar = new Navbar();
 
   layout()->addWidget(navBar);
 
@@ -47,6 +47,11 @@ ActivitiesListWidget::ActivitiesListWidget(QWidget *parent) : QWidget(parent) {
   setStyleSheet("ActivitiesListWidget {"
                 "background: white;"
                 "}");
+
+  newActivityMenu = new NewActivityMenu(this);
+
+  connect(newActivityMenu, &NewActivityMenu::addNewActivity,
+          [=](const Activity &activity) { emit activityAppended(activity); });
 }
 
 void ActivitiesListWidget::paintEvent(QPaintEvent *) {
@@ -118,7 +123,15 @@ void ActivitiesListWidget::updateList() {
   static_cast<QVBoxLayout *>(listWidget->layout())->addStretch();
 }
 
-void ActivitiesListWidget::sendWantNewActivity() { emit wantNewActivity(); }
+void ActivitiesListWidget::sendWantNewActivity() {
+  auto center =
+      QPoint(/*navBar->rightButton()->geometry().center().x()*/
+             mapToGlobal(geometry().topRight()).x() -
+                 newActivityMenu->sizeHint().width() - 11,
+             mapToGlobal(navBar->rightButton()->geometry().bottomLeft()).y() +
+                 11);
+  newActivityMenu->exec(center);
+}
 
 Strategy *ActivitiesListWidget::strategy() const { return _strategy; }
 

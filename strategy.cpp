@@ -46,7 +46,9 @@ ActivityGroupsState Strategy::group() {
 }
 
 void Strategy::appendActivity(const Activity activity) {
-  activities.push_back(activity);
+  if (!hasActivity(activity)) {
+    activities.push_back(activity);
+  }
 }
 
 void Strategy::removeActivity(const Activity &activity) {
@@ -64,6 +66,10 @@ void Strategy::removeActivity(const Activity &activity) {
 }
 
 void Strategy::editActivity(const Activity &from, const Activity &to) {
+  if (hasActivity(to)) {
+    return;
+  }
+
   auto it = std::find(activities.begin(), activities.end(), from);
   if (it == activities.end()) {
     return;
@@ -83,6 +89,10 @@ void Strategy::editActivity(const Activity &from, const Activity &to) {
 }
 
 void Strategy::editActivityAtIndex(int index, const Activity &to) {
+  if (hasActivity(to)) {
+    return;
+  }
+
   auto uindex = static_cast<unsigned int>(index);
   if (index < 0 || uindex >= activities.size()) {
     return;

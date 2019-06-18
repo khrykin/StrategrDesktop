@@ -4,6 +4,7 @@
 #include <QLayout>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QRegExpValidator>
 #include <QSpinBox>
 #include <QStyle>
 #include <QStyleOption>
@@ -58,8 +59,6 @@ ActivitiesListItem::ActivitiesListItem(Activity activity, QWidget *parent)
             editActivityColor(color);
             colorPicker->setColor(color);
           });
-  connect(colorDialog, &QColorDialog::reject, this,
-          &ActivitiesListItem::colorDialogRejected);
 
   createColorWidgetAction();
   createLineEditWidgetAction();
@@ -93,6 +92,7 @@ void ActivitiesListItem::createLineEditWidgetAction() {
   auto *lineEditLayout = new QVBoxLayout(lineEditWrapper);
   lineEditLayout->setSpacing(0);
   lineEditWrapper->setLayout(lineEditLayout);
+
   lineEdit = new QLineEdit(lineEditWrapper);
   lineEdit->setStyleSheet("font-weight: bold;"
                           "font-size: 18pt;"
@@ -126,7 +126,12 @@ void ActivitiesListItem::createColorWidgetAction() {
 }
 
 void ActivitiesListItem::editActivityColor(const QColor &color) {
-  auto newActivity = Activity(activity().name, color.name().toStdString());
+  auto newColor = color.name().toStdString();
+  if (newColor == activity().color) {
+    return;
+  }
+
+  auto newActivity = Activity(activity().name, newColor);
   emit activityEdited(newActivity);
 }
 
@@ -209,14 +214,20 @@ void ActivitiesListItem::contextMenuEvent(QContextMenuEvent *event) {
   contextMenu->addSeparator();
   contextMenu->addAction(colorWidgetAction);
 
-  customColorAction->setChecked(!colorPicker->color());
-
   contextMenu->addAction(customColorAction);
   contextMenu->addSeparator();
   contextMenu->addAction(deleteActivityAction);
 
-  connect(contextMenu, &QMenu::aboutToHide,
-          [=]() { editActivityNameFromLineEdit(); });
+  lineEdit->setText(QString::fromStdString(activity().name));
+  colorPicker->setColor(ColorUtils::qColorFromStdString(activity().color));
+  customColorAction->setChecked(!colorPicker->color());
+
+  connect(contextMenu, &QMenu::aboutToHide, [=]() {
+    editActivityNameFromLineEdit();
+    if (colorPicker->color()) {
+      editActivityColor(colorPicker->color().value());
+    }
+  });
 
   contextMenu->exec(event->globalPos());
 

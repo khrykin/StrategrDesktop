@@ -2,6 +2,7 @@
 #include "colorpickeritem.h"
 #include <QDebug>
 #include <QHBoxLayout>
+#include <random>
 
 ColorPicker::ColorPicker(QWidget *parent) : QWidget(parent) {
   auto *mainLayout = new QHBoxLayout(this);
@@ -28,7 +29,6 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
   }
 
   auto indexOfColor = colors.indexOf(color.value());
-  qDebug() << "indexOfColor" << indexOfColor;
 
   if (indexOfColor < 0) {
     return deselectAll();
@@ -48,6 +48,14 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
   //    item->setIsSelected(true);
   //  }
   emit colorChanged(color);
+}
+
+void ColorPicker::setRandomColor() {
+  std::random_device seeder;
+  std::mt19937 engine(seeder());
+  std::uniform_int_distribution<int> dist(0, colors.length() - 1);
+  int index = dist(engine);
+  setColor(colors[index]);
 }
 
 void ColorPicker::deselectAll() {
