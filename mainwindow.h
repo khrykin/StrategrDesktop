@@ -6,7 +6,6 @@
 #include <QStackedWidget>
 
 #include "activitieslistwidget.h"
-#include "activityeditor.h"
 #include "filesystemiomanager.h"
 #include "notifier.h"
 #include "slotboard.h"
@@ -65,6 +64,8 @@ private:
 
   void setStrategy(Strategy *newStrategy);
   void updateUI();
+
+  bool showAreYouSureDialog(FileSystemIOManager *fsIOManager);
 
   Strategy *openRecentOrNew(bool forceNew = false);
 

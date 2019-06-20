@@ -11,6 +11,8 @@ Notifier::Notifier(Strategy *strategy, QObject *parent)
   trayIcon->setContextMenu(contextMenu);
   trayIcon->show();
 
+  backend = new NotifierBackend(trayIcon, this);
+
   timer = new QTimer(this);
   QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &Notifier::timerTick);
@@ -85,8 +87,10 @@ void Notifier::timerTick() {
     if (QSystemTrayIcon::supportsMessages()) {
       //      qDebug() << "showMessage"
       //               << "Coming up in 5 minutes";
-      trayIcon->showMessage(titleForGroup(nextGroup), "Coming up in 5 minutes",
-                            QIcon(), 10000);
+      backend->sendMessage(titleForGroup(nextGroup), "Coming up in 5 minutes");
+      //      trayIcon->showMessage(titleForGroup(nextGroup), "Coming up in 5
+      //      minutes",
+      //                            QIcon(), 10000);
     }
 
     getReadySent = true;
@@ -97,8 +101,10 @@ void Notifier::timerTick() {
     if (QSystemTrayIcon::supportsMessages()) {
       //      qDebug() << "showMessage"
       //               << "Starts right now";
-      trayIcon->showMessage(titleForGroup(nextGroup), "Starts right now",
-                            QIcon(), 10000);
+      backend->sendMessage(titleForGroup(nextGroup), "Starts right now");
+      //      trayIcon->showMessage(titleForGroup(nextGroup), "Starts right
+      //      now",
+      //                            QIcon(), 10000);
     }
 
     startSent = true;

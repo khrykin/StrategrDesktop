@@ -1,6 +1,7 @@
 #include "filesystemiomanager.h"
 #include "jsonserializer.h"
 #include "mainwindow.h"
+#include "notifierbackend.h"
 #include <QApplication>
 #include <QDebug>
 #include <QFile>

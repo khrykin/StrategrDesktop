@@ -6,6 +6,7 @@
 #include <QLayout>
 #include <QMenu>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextEdit>
@@ -137,16 +138,35 @@ void MainWindow::createStrategySettingsWidget() {
 }
 
 void MainWindow::open() {
+  auto oldFsIOManger = FileSystemIOManager(*fsIOManager.get());
   auto newStrategy = fsIOManager->open();
   if (!newStrategy) {
     // TODO: "Can't open";
     return;
   }
 
+  if (!fsIOManager->isSaved()) {
+    bool wantToContinue = showAreYouSureDialog(&oldFsIOManger);
+    if (!wantToContinue) {
+      return;
+    }
+  }
+
   setStrategy(new Strategy(newStrategy.value()));
 }
 
-void MainWindow::newWindow() { setStrategy(openRecentOrNew(true)); }
+void MainWindow::newWindow() {
+  auto oldFsIOManger = FileSystemIOManager(*fsIOManager.get());
+  auto *strategy = openRecentOrNew(true);
+  if (!fsIOManager->isSaved()) {
+    bool wantToContinue = showAreYouSureDialog(&oldFsIOManger);
+    if (!wantToContinue) {
+      return;
+    }
+  }
+
+  setStrategy(strategy);
+}
 
 void MainWindow::save() {
   fsIOManager->save(*strategy);
@@ -266,6 +286,28 @@ void MainWindow::updateUI() {
   notifier->setStrategy(strategyPtr);
   strategySettingsWidget->setStrategy(strategyPtr);
   updateWindowTitle();
+}
+
+bool MainWindow::showAreYouSureDialog(FileSystemIOManager *fsIOManager) {
+  QMessageBox msgBox;
+  msgBox.setText("Document " + fsIOManager->fileInfo().fileName() +
+                 " has been modified.");
+  msgBox.setInformativeText("Do you want to save your changes?");
+  msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard |
+                            QMessageBox::Cancel);
+  msgBox.setDefaultButton(QMessageBox::Save);
+  int ret = msgBox.exec();
+  switch (ret) {
+  case QMessageBox::Save:
+    fsIOManager->save(*strategy);
+    break;
+  case QMessageBox::Cancel:
+    return false;
+  default:
+    return true;
+  }
+
+  return true;
 }
 
 Strategy *MainWindow::openRecentOrNew(bool forceNew) {

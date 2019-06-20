@@ -68,6 +68,7 @@ HEADERS += \
         navbar.h \
         newactivitymenu.h \
         notifier.h \
+        notifierbackend.h \
         slotboard.h \
         slotruler.h \
         stacklayout.h \
@@ -77,6 +78,12 @@ HEADERS += \
         utils.h
 
 FORMS +=
+macx {
+  LIBS += -framework Foundation
+  OBJECTIVE_SOURCES += notifierbackend.mm
+} else {
+  SOURCES += notifierbackend.mm
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -84,16 +91,16 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 win32 {
-QMAKE_EXTRA_TARGETS += before_build makefilehook
+  QMAKE_EXTRA_TARGETS += before_build makefilehook
 
-makefilehook.target = $(MAKEFILE)
-makefilehook.depends = .beforebuild
+  makefilehook.target = $(MAKEFILE)
+  makefilehook.depends = .beforebuild
 
-PRE_TARGETDEPS += .beforebuild
+  PRE_TARGETDEPS += .beforebuild
 
-before_build.target = .beforebuild
-before_build.depends = FORCE
-before_build.commands = chcp 1251
+  before_build.target = .beforebuild
+  before_build.depends = FORCE
+  before_build.commands = chcp 1251
 }
 
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
