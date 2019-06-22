@@ -61,6 +61,8 @@ private:
   void showActivitiesListForSelection(QVector<int> selection);
   void setActivity(const Activity &activity);
   void editActivityAtIndex(int index, const Activity &activity);
+  void saveCurrentActivitiesAsDefault();
+  void saveCurrentStrategyAsDefault();
 
   void setStrategy(Strategy *newStrategy);
   void updateUI();
@@ -68,6 +70,7 @@ private:
   bool showAreYouSureDialog(FileSystemIOManager *fsIOManager);
 
   Strategy *openRecentOrNew(bool forceNew = false);
+  Strategy *openDefaultOrNew();
 
   Notifier *notifier;
   std::unique_ptr<FileSystemIOManager> fsIOManager;

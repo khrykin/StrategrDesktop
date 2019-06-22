@@ -11,10 +11,15 @@ public:
 
   QByteArray write() const;
   static std::optional<Strategy> read(const QString &json);
+  static QByteArray writeActivities(const std::vector<Activity> &activities);
+  static std::optional<std::vector<Activity>>
+  readActivities(const QString &json);
 
 private:
   const Strategy &strategy;
   static QJsonObject activityToJson(const Activity &activity);
+  static std::optional<std::vector<Activity>>
+  readActivities(const QJsonArray &jsonArray);
 };
 
 namespace Keys {

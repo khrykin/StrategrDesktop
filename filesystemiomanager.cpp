@@ -47,6 +47,21 @@ void FileSystemIOManager::saveAs(const Strategy &strategy) {
   write(strategy);
 }
 
+void FileSystemIOManager::saveAsDefault(const Strategy &strategy) {
+  QSettings().setValue(Settings::defaultStrategyKey,
+                       JSONSerializer(strategy).write());
+  QMessageBox msgBox(parent);
+  msgBox.setText("Current strategy has been saved as your default.");
+  msgBox.setWindowModality(Qt::WindowModal);
+  msgBox.exec();
+}
+
+void FileSystemIOManager::saveActivitiesAsDefault(
+    const std::vector<Activity> &activities) {
+  QSettings().setValue(Settings::defaultActivitiesKey,
+                       JSONSerializer::writeActivities(activities));
+}
+
 std::optional<Strategy> FileSystemIOManager::read(QString readFilepath) {
   if (readFilepath.isEmpty()) {
     return std::nullopt;
@@ -98,6 +113,19 @@ void FileSystemIOManager::clearRecent() {
 bool FileSystemIOManager::isSaved() const { return _isSaved; }
 
 void FileSystemIOManager::setIsSaved(bool isSaved) { _isSaved = isSaved; }
+
+std::optional<Strategy> FileSystemIOManager::defaultStrategy() {
+  if (!defaultStrategyIsSet()) {
+    return std::nullopt;
+  }
+
+  return JSONSerializer::read(
+      QSettings().value(Settings::defaultStrategyKey).toString());
+}
+
+bool FileSystemIOManager::defaultStrategyIsSet() {
+  return !QSettings().value(Settings::defaultStrategyKey).isNull();
+}
 
 QFileInfo FileSystemIOManager::fileInfo() { return QFileInfo(filepath); }
 

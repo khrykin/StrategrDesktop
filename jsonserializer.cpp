@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QVector>
 
 JSONSerializer::JSONSerializer(const Strategy &strategy) : strategy(strategy) {}
 
@@ -60,19 +61,9 @@ std::optional<Strategy> JSONSerializer::read(const QString &json) {
   }
 
   if (obj.contains(Keys::activities) && obj[Keys::activities].isArray()) {
-    std::vector<Activity> activities;
-
-    for (auto activityJsonRef : obj[Keys::activities].toArray()) {
-      auto activityJson = activityJsonRef.toObject();
-      if (activityJson.contains(Keys::name) &&
-          activityJson[Keys::name].isString()) {
-        activities.push_back(
-            Activity(activityJson[Keys::name].toString().toStdString(),
-                     activityJson[Keys::color].toString().toStdString()));
-      }
-    };
-
-    strategy.activities = activities;
+    auto activities = readActivities(obj[Keys::activities].toArray());
+    strategy.activities =
+        activities ? activities.value() : std::vector<Activity>();
   }
 
   if (obj.contains(Keys::slotsKey) && obj[Keys::slotsKey].isArray()) {
@@ -103,9 +94,47 @@ std::optional<Strategy> JSONSerializer::read(const QString &json) {
   return std::make_optional<Strategy>(strategy);
 }
 
+QByteArray
+JSONSerializer::writeActivities(const std::vector<Activity> &activities) {
+  QJsonArray jsonActivities;
+  for (auto &activity : activities) {
+    jsonActivities.append(activityToJson(activity));
+  }
+
+  return QJsonDocument(jsonActivities).toJson();
+}
+
+std::optional<std::vector<Activity>>
+JSONSerializer::readActivities(const QString &json) {
+  auto document = QJsonDocument::fromJson(json.toUtf8());
+  if (!document.isArray()) {
+    // TODO: Wrong format, show alert
+    return std::nullopt;
+  }
+
+  auto activities = readActivities(document.array());
+  return activities ? activities.value() : std::vector<Activity>();
+}
+
 QJsonObject JSONSerializer::activityToJson(const Activity &activity) {
   QJsonObject activityJson;
   activityJson["name"] = QString::fromStdString(activity.name);
   activityJson["color"] = QString::fromStdString(activity.color);
   return activityJson;
+}
+
+std::optional<std::vector<Activity>>
+JSONSerializer::readActivities(const QJsonArray &jsonArray) {
+  std::vector<Activity> activities;
+  for (auto activityJsonRef : jsonArray) {
+    auto activityJson = activityJsonRef.toObject();
+    if (activityJson.contains(Keys::name) &&
+        activityJson[Keys::name].isString()) {
+      activities.push_back(
+          Activity(activityJson[Keys::name].toString().toStdString(),
+                   activityJson[Keys::color].toString().toStdString()));
+    }
+  };
+
+  return std::move(activities);
 }

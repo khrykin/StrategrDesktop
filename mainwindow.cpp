@@ -79,7 +79,9 @@ void MainWindow::createMenus() {
   fileMenu->addSeparator();
   fileMenu->addAction("Settings", this, &MainWindow::openStrategySettings,
                       QKeySequence(Qt::CTRL + Qt::Key_Comma));
-
+  fileMenu->addAction("Save Current Strategy as Default", this,
+                      &MainWindow::saveCurrentStrategyAsDefault,
+                      QKeySequence(Qt::CTRL + Qt::Key_D));
   setMenuBar(menuBar);
 }
 
@@ -274,6 +276,12 @@ void MainWindow::editActivityAtIndex(int index, const Activity &activity) {
   slotBoard->groupsList()->updateUI();
 }
 
+void MainWindow::saveCurrentActivitiesAsDefault() {}
+
+void MainWindow::saveCurrentStrategyAsDefault() {
+  fsIOManager->saveAsDefault(*strategy);
+}
+
 void MainWindow::setStrategy(Strategy *newStrategy) {
   strategy = std::unique_ptr<Strategy>(newStrategy);
   updateUI();
@@ -316,8 +324,19 @@ Strategy *MainWindow::openRecentOrNew(bool forceNew) {
     return new Strategy(lastOpened.value());
   } else {
     fsIOManager->resetFilepath();
-    return Strategy::createEmpty();
+    return openDefaultOrNew();
   }
+}
+
+Strategy *MainWindow::openDefaultOrNew() {
+  if (fsIOManager->defaultStrategyIsSet()) {
+    auto defaultStrategy = fsIOManager->defaultStrategy();
+    if (defaultStrategy) {
+      return new Strategy(defaultStrategy.value());
+    }
+  }
+
+  return Strategy::createEmpty();
 }
 
 void MainWindow::updateRecentFileActions() {
