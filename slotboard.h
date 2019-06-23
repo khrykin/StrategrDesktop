@@ -21,6 +21,8 @@ public:
 
   CurrentTimeMarker *currentTimeMarker() const;
 
+  int currentTimeMarkerTopOffset() const;
+
 signals:
 
 public slots:
@@ -30,6 +32,7 @@ private:
   SlotRuler *_slotRuler;
   CurrentTimeMarker *_currentTimeMarker;
   QTimer *currentTimeTimer;
+  int _currentTimeMarkerTopOffset;
 
   void resizeEvent(QResizeEvent *event);
   void updateCurrentTimeMarker();

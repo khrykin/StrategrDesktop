@@ -5,7 +5,7 @@
 
 #include <QDebug>
 
-ActivityGroupsState Strategy::group() {
+ActivityGroupsState Strategy::calculateGroups() {
   auto slotsState = this->slotsState();
   ActivityGroupsState result;
   optional<ActivityGroup> cachedActivityGroup;
@@ -167,7 +167,7 @@ void Strategy::fillSlots(int fromIndex, int toIndex) {
 }
 
 optional<int> Strategy::startSlotIndexForGroupIndex(int groupIndex) {
-  auto activityGroups = group();
+  auto activityGroups = calculateGroups();
   if (groupIndex < 0 ||
       static_cast<unsigned int>(groupIndex) >= activityGroups.size()) {
     return nullopt;
@@ -189,7 +189,7 @@ optional<int> Strategy::startSlotIndexForGroupIndex(int groupIndex) {
 }
 
 optional<int> Strategy::groupIndexForSlotIndex(int slotIndex) {
-  auto activityGroups = group();
+  auto activityGroups = calculateGroups();
   int lastSlotIndex = -1;
   for (unsigned int i = 0; i < activityGroups.size(); i++) {
     auto activityGroup = activityGroups[i];
@@ -246,7 +246,7 @@ string Strategy::debugSlots() {
 
 string Strategy::debugGroups() {
   string result = "-Groups-------------------------\n";
-  auto groups = group();
+  auto groups = calculateGroups();
   for (unsigned int i = 0; i < groups.size(); i++) {
     auto group = groups[i];
     if (group.activity) {

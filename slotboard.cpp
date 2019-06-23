@@ -80,6 +80,10 @@ CurrentTimeMarker *SlotBoard::currentTimeMarker() const {
   return _currentTimeMarker;
 }
 
+int SlotBoard::currentTimeMarkerTopOffset() const {
+  return _currentTimeMarkerTopOffset;
+}
+
 void SlotBoard::resizeEvent(QResizeEvent *event) {
   QWidget::resizeEvent(event);
   updateCurrentTimeMarker();
@@ -100,6 +104,8 @@ void SlotBoard::updateCurrentTimeMarker() {
   auto topOffset = std::round(pxInMins * (currentTime - startTime)) +
                    _groupsList->geometry().top();
 
+  _currentTimeMarkerTopOffset = static_cast<int>(topOffset);
+
   if (topOffset < 0 || topOffset > groupsList()->height()) {
     if (_currentTimeMarker->isVisible()) {
       _currentTimeMarker->hide();
@@ -112,7 +118,7 @@ void SlotBoard::updateCurrentTimeMarker() {
 
   _currentTimeMarker->setGeometry(
       SlotRuler::defaultRulerWidth - CurrentTimeMarker::markerSize,
-      static_cast<int>(topOffset) - CurrentTimeMarker::markerSize,
+      _currentTimeMarkerTopOffset - CurrentTimeMarker::markerSize,
       _groupsList->geometry().width() + CurrentTimeMarker::markerSize,
       2 * CurrentTimeMarker::markerSize);
 }

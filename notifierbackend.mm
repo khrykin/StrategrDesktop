@@ -32,10 +32,12 @@ void NotifierBackend::sendMessage(QString title, QString message) {
   nc.delegate = delegate;
   [nc deliverNotification:notification];
   [notification autorelease];
-  [pool release];
+  [pool drain];
 }
 #else
 void NotifierBackend::sendMessage(QString title, QString message) {
-  trayIcon->showMessage(title, message, QIcon(), 10000);
+  if (QSystemTrayIcon::supportsMessages()) {
+    trayIcon->showMessage(title, message, QIcon(), 10000);
+  }
 }
 #endif

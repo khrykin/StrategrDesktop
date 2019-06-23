@@ -42,7 +42,7 @@ void Notifier::timerTick() {
     return;
   }
 
-  auto groups = strategy->group();
+  auto groups = strategy->calculateGroups();
   auto currentGroup =
       groups[static_cast<unsigned int>(currentGroupIndex.value())];
 
@@ -72,41 +72,17 @@ void Notifier::timerTick() {
     targetActivity = nextGroup.activity;
   }
 
-  //  qDebug() << "currentGroup"
-  //           << QString::fromStdString(
-  //                  currentGroup.activity.value_or(Activity("None")).name);
-  //  qDebug() << "nextGroup"
-  //           << QString::fromStdString(
-  //                  nextGroup.activity.value_or(Activity("None")).name);
-
   auto countdown = nextGroupStartTime * 60 - currentTime;
-
-  //  qDebug() << "countdown" << countdown;
   auto nextActivityName = QString::fromStdString(nextGroup.activity->name);
   if (countdown < 5 * 60 && !getReadySent) {
-    if (QSystemTrayIcon::supportsMessages()) {
-      //      qDebug() << "showMessage"
-      //               << "Coming up in 5 minutes";
-      backend->sendMessage(titleForGroup(nextGroup), "Coming up in 5 minutes");
-      //      trayIcon->showMessage(titleForGroup(nextGroup), "Coming up in 5
-      //      minutes",
-      //                            QIcon(), 10000);
-    }
-
+    backend->sendMessage(titleForGroup(nextGroup),
+                         tr("Coming up in 5 minutes"));
     getReadySent = true;
     return;
   }
 
   if (countdown < 10 && !startSent) {
-    if (QSystemTrayIcon::supportsMessages()) {
-      //      qDebug() << "showMessage"
-      //               << "Starts right now";
-      backend->sendMessage(titleForGroup(nextGroup), "Starts right now");
-      //      trayIcon->showMessage(titleForGroup(nextGroup), "Starts right
-      //      now",
-      //                            QIcon(), 10000);
-    }
-
+    backend->sendMessage(titleForGroup(nextGroup), tr("Starts right now"));
     startSent = true;
     return;
   }

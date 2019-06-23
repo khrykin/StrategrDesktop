@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPropertyAnimation>
+#include <QScrollBar>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextEdit>
@@ -49,10 +51,11 @@ void MainWindow::createMenus() {
   editMenu = new QMenu("Edit");
   auto *notificationsMenu = new QMenu("Notifications");
   recentMenu = new QMenu("Open Recent");
+  viewMenu = new QMenu("View");
 
   menuBar->addMenu(fileMenu);
   menuBar->addMenu(editMenu);
-  menuBar->addMenu(notificationsMenu);
+  menuBar->addMenu(viewMenu);
 
   fileMenu->addAction("New", this, &MainWindow::newWindow,
                       QKeySequence(Qt::CTRL + Qt::Key_N));
@@ -82,6 +85,15 @@ void MainWindow::createMenus() {
   fileMenu->addAction("Save Current Strategy as Default", this,
                       &MainWindow::saveCurrentStrategyAsDefault,
                       QKeySequence(Qt::CTRL + Qt::Key_D));
+
+  viewMenu->addSeparator();
+  viewMenu->addAction("Edit Activities", this, &MainWindow::showActivitiesList,
+                      QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
+  viewMenu->addSeparator();
+  viewMenu->addAction("Go to Current Time", this,
+                      &MainWindow::focusOnCurrentTime,
+                      QKeySequence(Qt::CTRL + Qt::Key_Slash));
+  viewMenu->addSeparator();
 
   setMenuBar(menuBar);
 }
@@ -141,6 +153,28 @@ void MainWindow::createStrategySettingsWidget() {
   strategySettingsWidget->setStrategy(strategy.get());
   connect(strategySettingsWidget, &StrategySettings::strategySettingsUpdated,
           this, &MainWindow::updateUI);
+}
+
+void MainWindow::focusOnCurrentTime() {
+  auto topOffset =
+      slotBoard->currentTimeMarkerTopOffset() - geometry().height() / 2;
+
+  if (topOffset < 0) {
+    topOffset = 0;
+  } else if (topOffset > slotBoard->groupsList()->geometry().height()) {
+    topOffset = slotBoard->groupsList()->geometry().height();
+  }
+
+  auto scrollBar = slotBoardScrollArea()->verticalScrollBar();
+  //  scrollBar->setValue(topOffset);
+
+  QPropertyAnimation *animation = new QPropertyAnimation(scrollBar, "value");
+  animation->setDuration(200);
+  animation->setStartValue(scrollBar->value());
+  animation->setEndValue(topOffset);
+  animation->setEasingCurve(QEasingCurve::OutCubic);
+
+  animation->start();
 }
 
 void MainWindow::open() {
@@ -261,6 +295,10 @@ void MainWindow::appendActivity(const Activity &activity) {
 }
 
 void MainWindow::showActivitiesListForSelection(QVector<int> selection) {
+  _stackedWidget->slideToWidget(activitiesListWidget);
+}
+
+void MainWindow::showActivitiesList() {
   _stackedWidget->slideToWidget(activitiesListWidget);
 }
 

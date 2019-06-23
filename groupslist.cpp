@@ -27,7 +27,7 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   connect(deleteActivityAction, &QAction::triggered, this,
           &GroupsList::deleteActivityInSelection);
 
-  clearSelectionAction = new QAction(tr("Undo Slots Selection"), this);
+  clearSelectionAction = new QAction(tr("Deselect All Slots"), this);
   clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
   addAction(clearSelectionAction);
   connect(clearSelectionAction, &QAction::triggered, this,
@@ -54,7 +54,7 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
 }
 
 void GroupsList::updateUI() {
-  auto state = strategy()->group();
+  auto state = strategy()->calculateGroups();
   for (unsigned int i = 0; i < state.size(); i++) {
     ActivityGroupWidget *groupWidget;
     auto *laytoutItem = layout()->itemAt(static_cast<int>(i));
@@ -245,6 +245,7 @@ void GroupsList::selectSlotAtIndex(int slotIndex) {
 
   auto relativeIndex = slotIndex - startSlotIndex.value();
   selectedGroupWidget->selectSlotAtIndex(relativeIndex);
+  clearSelectionAction->setEnabled(selectedGroupWidget->hasSelection());
 }
 
 void GroupsList::deselectAllSlots() {
@@ -254,6 +255,8 @@ void GroupsList::deselectAllSlots() {
       groupWidget->deselectAllSlots();
     }
   }
+
+  clearSelectionAction->setDisabled(true);
 }
 
 void GroupsList::selectAllSlots() {
@@ -261,6 +264,7 @@ void GroupsList::selectAllSlots() {
     auto *groupWidget = groupWidgetAtIndex(i);
     groupWidget->selectAllSlots();
   }
+  clearSelectionAction->setEnabled(true);
 }
 
 ActivityGroupWidget *GroupsList::groupWidgetAtIndex(int index) {

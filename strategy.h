@@ -19,7 +19,7 @@ struct Strategy {
   optional<string> title;
   vector<Activity> activities;
 
-  ActivityGroupsState group();
+  ActivityGroupsState calculateGroups();
 
   void appendActivity(const Activity activity);
   void removeActivity(const Activity &activity);

@@ -38,6 +38,7 @@ private:
 
   QMenu *recentMenu = nullptr;
   QMenu *editMenu = nullptr;
+  QMenu *viewMenu = nullptr;
 
   void createActions();
   void createMenus();
@@ -46,6 +47,7 @@ private:
   void createActivityEditorWidget();
   void createStackedWidget();
   void createStrategySettingsWidget();
+  void focusOnCurrentTime();
 
   void newWindow();
   void open();
@@ -60,6 +62,7 @@ private:
   void appendActivity(const Activity &activity);
 
   void showActivitiesListForSelection(QVector<int> selection);
+  void showActivitiesList();
   void setActivity(const Activity &activity);
   void editActivityAtIndex(int index, const Activity &activity);
   void saveCurrentActivitiesAsDefault();
