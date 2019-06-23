@@ -27,11 +27,16 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   connect(deleteActivityAction, &QAction::triggered, this,
           &GroupsList::deleteActivityInSelection);
 
-  clearSelectionAction = new QAction(tr("Clear Selection"), this);
+  clearSelectionAction = new QAction(tr("Undo Slots Selection"), this);
   clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
   addAction(clearSelectionAction);
   connect(clearSelectionAction, &QAction::triggered, this,
           &GroupsList::clearCurrentSelection);
+
+  selectAllAction = new QAction(tr("Select All Slots"), this);
+  selectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
+  connect(selectAllAction, &QAction::triggered, this,
+          &GroupsList::selectAllSlots);
 
   undoAction = new QAction(tr("Undo"), this);
   undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
@@ -251,6 +256,13 @@ void GroupsList::deselectAllSlots() {
   }
 }
 
+void GroupsList::selectAllSlots() {
+  for (auto i = 0; i < layout()->count(); i++) {
+    auto *groupWidget = groupWidgetAtIndex(i);
+    groupWidget->selectAllSlots();
+  }
+}
+
 ActivityGroupWidget *GroupsList::groupWidgetAtIndex(int index) {
   return static_cast<ActivityGroupWidget *>(layout()->itemAt(index)->widget());
 }
@@ -272,6 +284,12 @@ void GroupsList::paintEvent(QPaintEvent *) {
   QPainter p(this);
   style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
+
+QAction *GroupsList::getClearSelectionAction() const {
+  return clearSelectionAction;
+}
+
+QAction *GroupsList::getSelectAllAction() const { return selectAllAction; }
 
 QAction *GroupsList::getUndoAction() const { return undoAction; }
 

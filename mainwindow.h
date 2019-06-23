@@ -64,6 +64,8 @@ private:
   void saveCurrentActivitiesAsDefault();
   void saveCurrentStrategyAsDefault();
 
+  void selectAllSlots();
+
   void setStrategy(Strategy *newStrategy);
   void updateUI();
 

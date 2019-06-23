@@ -1,5 +1,6 @@
 #include "activitieslistwidget.h"
 #include "activitieslistitem.h"
+#include "slotboard.h"
 #include <QAction>
 #include <QDebug>
 #include <QLabel>
@@ -67,6 +68,10 @@ QStackedWidget *ActivitiesListWidget::parentStackedWidget() {
 
 void ActivitiesListWidget::getBack() {
   parentStackedWidget()->setCurrentIndex(0);
+  auto *slotBoardScrollArea =
+      static_cast<QScrollArea *>(parentStackedWidget()->widget(0));
+  auto *slotBoard = static_cast<SlotBoard *>(slotBoardScrollArea->widget());
+  slotBoard->groupsList()->deselectAllSlots();
 }
 
 void ActivitiesListWidget::updateList() {

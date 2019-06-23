@@ -29,6 +29,7 @@ public:
   void selectSlotAtIndex(int slotIndex);
   void deselectSlotAtIndex(int slotIndex);
   void deselectAllSlots();
+  void selectAllSlots();
 
   bool hasSelection();
 

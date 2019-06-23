@@ -185,6 +185,16 @@ void ActivityGroupWidget::deselectAllSlots() {
   selectionWidget->hide();
 }
 
+void ActivityGroupWidget::selectAllSlots() {
+  for (auto selectionIndex = 0; selectionIndex < length(); selectionIndex++) {
+    selectSlotAtIndex(selectionIndex);
+  }
+
+  if (selectionWidget->isHidden()) {
+    selectionWidget->show();
+  }
+}
+
 bool ActivityGroupWidget::hasSelection() { return _selectionSlots.count() > 0; }
 
 int ActivityGroupWidget::length() const { return _length; }

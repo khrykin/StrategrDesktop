@@ -25,13 +25,16 @@ public:
   bool hasSelection();
   void selectSlotAtIndex(int slotIndex);
   void deselectAllSlots();
+  void selectAllSlots();
   void undo();
   void redo();
 
   QAction *getUndoAction() const;
   QAction *getRedoAction() const;
+  QAction *getSelectAllAction() const;
 
   int slotHeight() const;
+  QAction *getClearSelectionAction() const;
 
 signals:
   void wantToSetActivtyForSelection(QVector<int> selection);
@@ -77,6 +80,7 @@ private:
 
   QAction *undoAction;
   QAction *redoAction;
+  QAction *selectAllAction;
 
   std::optional<Strategy::HistoryEntry> historyEntry;
 

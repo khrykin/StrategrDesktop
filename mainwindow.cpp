@@ -82,6 +82,7 @@ void MainWindow::createMenus() {
   fileMenu->addAction("Save Current Strategy as Default", this,
                       &MainWindow::saveCurrentStrategyAsDefault,
                       QKeySequence(Qt::CTRL + Qt::Key_D));
+
   setMenuBar(menuBar);
 }
 
@@ -106,6 +107,9 @@ void MainWindow::createSlotBoard() {
 
   editMenu->addAction(slotBoard->groupsList()->getUndoAction());
   editMenu->addAction(slotBoard->groupsList()->getRedoAction());
+  editMenu->addSeparator();
+  editMenu->addAction(slotBoard->groupsList()->getSelectAllAction());
+  editMenu->addAction(slotBoard->groupsList()->getClearSelectionAction());
 }
 
 void MainWindow::createActivitiesListWidget() {
