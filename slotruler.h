@@ -12,7 +12,7 @@ public:
 
   QVector<QString> labels() const;
   void setLabels(QVector<QString> labels);
-  static const auto defaultRulerWidth = 65;
+  static const auto defaultRulerWidth = 60;
 
   int cellHeight() const;
   void setCellHeight(int cellHeight);

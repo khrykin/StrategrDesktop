@@ -35,6 +35,7 @@ struct Strategy {
 
   optional<int> startSlotIndexForGroupIndex(int groupIndex);
   optional<int> groupIndexForSlotIndex(int slotIndex);
+  optional<int> findSlotIndexForTime(int time);
 
   static Strategy *createEmpty();
 
@@ -71,6 +72,7 @@ struct Strategy {
   void setSlotDuration(const Duration &slotDuration);
 
   Duration startTimeForSlotIndex(int index);
+  Duration startTimeForGroupIndex(int groupIndex);
   Duration endTime();
 
   vector<Duration> startTimes();

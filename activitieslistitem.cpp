@@ -17,7 +17,7 @@ ActivitiesListItem::ActivitiesListItem(Activity activity, QWidget *parent)
                 "border-bottom: 1px solid #ddd;"
                 "}"
                 "ActivitiesListItem::hover {"
-                "background-color: #eee;"
+                "background-color: #d8d8d8;"
                 "border-bottom: 1px solid #ddd;"
                 "}");
 

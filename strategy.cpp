@@ -56,6 +56,7 @@ void Strategy::removeActivity(const Activity &activity) {
 
   activities.erase(std::remove(activities.begin(), activities.end(), activity),
                    activities.end());
+
   for (unsigned int i = 0; i < slotsState().size(); i++) {
     auto slot = slotAtIndex(static_cast<int>(i));
 
@@ -207,6 +208,20 @@ optional<int> Strategy::groupIndexForSlotIndex(int slotIndex) {
   return nullopt;
 }
 
+optional<int> Strategy::findSlotIndexForTime(int time) {
+  auto startTimes = this->startTimes();
+  for (unsigned int i = 0; i < numberOfSlots(); i++) {
+    auto startTime = startTimes[i];
+    auto endTime = startTime + slotDuration();
+
+    if (time >= startTime && time < endTime) {
+      return static_cast<int>(i);
+    }
+  }
+
+  return nullopt;
+}
+
 Strategy *Strategy::createEmpty() {
   auto strategy = new Strategy();
   strategy->activities = {};
@@ -316,6 +331,15 @@ void Strategy::setSlotDuration(const Duration &slotDuration) {
 
 Duration Strategy::startTimeForSlotIndex(int index) {
   return index * slotDuration() + startTime();
+}
+
+Duration Strategy::startTimeForGroupIndex(int groupIndex) {
+  auto startSlotIndex = startSlotIndexForGroupIndex(groupIndex);
+  if (!startSlotIndex) {
+    return 0;
+  }
+
+  return startTimeForSlotIndex(startSlotIndex.value());
 }
 
 Duration Strategy::endTime() { return startTimes().back() + slotDuration(); }

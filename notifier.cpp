@@ -32,77 +32,83 @@ void Notifier::timerTick() {
   }
 
   currentMinute = currentTime / 60;
-  auto currentSlotIndex = findSlotIndexForTime(currentMinute);
-  if (currentSlotIndex < 0) {
+  auto currentSlotIndex = strategy->findSlotIndexForTime(currentMinute);
+  if (!currentSlotIndex) {
     return;
   }
 
-  auto currentGroupIndex = strategy->groupIndexForSlotIndex(currentSlotIndex);
-  if (!currentGroupIndex) {
+  _currentGroupIndex =
+      strategy->groupIndexForSlotIndex(currentSlotIndex.value());
+  if (!_currentGroupIndex) {
     return;
   }
 
   auto groups = strategy->calculateGroups();
-  auto currentGroup =
-      groups[static_cast<unsigned int>(currentGroupIndex.value())];
+  _currentGroup = groups[static_cast<unsigned int>(_currentGroupIndex.value())];
 
   auto nextGroupIndex =
-      static_cast<unsigned int>(currentGroupIndex.value()) + 1;
+      static_cast<unsigned int>(_currentGroupIndex.value()) + 1;
 
-  if (nextGroupIndex >= groups.size()) {
-    // TODO: Go to bed!
-    return;
-  }
+  std::optional<ActivityGroup> nextGroup;
+  int nextGroupStartTime;
+  QString messageTitle;
+  const char *prepareText;
+  const char *startsText;
 
-  auto nextGroup = groups[nextGroupIndex];
+  if (nextGroupIndex < groups.size()) {
 
-  if (!nextGroup.activity ||
-      currentGroup.activity->name == nextGroup.activity->name) {
-    return;
-  }
+    nextGroup = groups[nextGroupIndex];
 
-  auto nextGroupStartSlotIndex =
-      strategy->startSlotIndexForGroupIndex(static_cast<int>(nextGroupIndex));
-  auto nextGroupStartTime =
-      strategy->startTimeForSlotIndex(nextGroupStartSlotIndex.value());
+    if (!nextGroup->activity ||
+        _currentGroup->activity->name == nextGroup->activity->name) {
+      return;
+    }
 
-  if (nextGroup.activity->name != targetActivity->name) {
-    getReadySent = false;
-    startSent = false;
-    targetActivity = nextGroup.activity;
+    auto nextGroupStartSlotIndex =
+        strategy->startSlotIndexForGroupIndex(static_cast<int>(nextGroupIndex));
+    nextGroupStartTime =
+        strategy->startTimeForSlotIndex(nextGroupStartSlotIndex.value());
+
+    if (nextGroup->activity->name != targetActivity->name) {
+      getReadySent = false;
+      startSent = false;
+      targetActivity = nextGroup->activity;
+    }
+
+    auto nextActivityName = QString::fromStdString(nextGroup->activity->name);
+    messageTitle = titleForGroup(nextGroup.value());
+    prepareText = "Coming up in 5 minutes";
+    startsText = "Starts right now";
+  } else {
+    nextGroupStartTime = strategy->endTime();
+    messageTitle = "End Of Strategy";
+    prepareText = "Coming up in 5 minutes";
+    startsText = "Strategy ends right now";
   }
 
   auto countdown = nextGroupStartTime * 60 - currentTime;
-  auto nextActivityName = QString::fromStdString(nextGroup.activity->name);
   if (countdown < 5 * 60 && !getReadySent) {
-    backend->sendMessage(titleForGroup(nextGroup),
-                         tr("Coming up in 5 minutes"));
+    backend->sendMessage(messageTitle, tr(prepareText));
     getReadySent = true;
     return;
   }
 
   if (countdown < 10 && !startSent) {
-    backend->sendMessage(titleForGroup(nextGroup), tr("Starts right now"));
+    backend->sendMessage(messageTitle, tr(startsText));
     startSent = true;
     return;
   }
 }
 
-void Notifier::setStrategy(Strategy *value) { strategy = value; }
-
-int Notifier::findSlotIndexForTime(int mins) {
-  auto startTimes = strategy->startTimes();
-  for (unsigned int i = 0; i < strategy->numberOfSlots(); i++) {
-    auto startTime = startTimes[i];
-    auto endTime = startTime + strategy->slotDuration();
-
-    if (mins >= startTime && mins < endTime) {
-      return static_cast<int>(i);
-    }
-  }
-
-  return -1;
+std::optional<int> Notifier::currentGroupIndex() const {
+  return _currentGroupIndex;
 }
+
+std::optional<ActivityGroup> Notifier::currentGroup() const {
+  return _currentGroup;
+}
+
+void Notifier::setStrategy(Strategy *value) { strategy = value; }
 
 QString Notifier::titleForGroup(ActivityGroup &activityGroup) {
   return QString::fromStdString(activityGroup.activity->name) + " (" +

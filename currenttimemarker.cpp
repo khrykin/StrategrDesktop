@@ -14,8 +14,6 @@ void CurrentTimeMarker::paintEvent(QPaintEvent *event) {
   auto background = QBrush(QColor("#FF725C"));
   auto rulerRect = QRect(0, markerSize, geometry().width(), 1);
   painter.fillRect(rulerRect, background);
-  //  painter.setPen(QColor("#FFFF00"));
-  //  painter.drawRect(event->rect());
   painter.setBrush(background);
   painter.setPen(Qt::NoPen);
   painter.drawEllipse(QPoint(markerSize, markerSize), markerSize, markerSize);

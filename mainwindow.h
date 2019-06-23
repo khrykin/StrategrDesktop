@@ -6,6 +6,7 @@
 #include <QStackedWidget>
 
 #include "activitieslistwidget.h"
+#include "currentactivitywidget.h"
 #include "filesystemiomanager.h"
 #include "notifier.h"
 #include "slidingstackedwidget.h"
@@ -29,11 +30,13 @@ public:
 
 private:
   QScrollArea *_slotBoardScrollArea;
+  QWidget *mainWidget;
   SlotBoard *slotBoard;
   std::unique_ptr<Strategy> strategy;
   SlidingStackedWidget *_stackedWidget;
   ActivitiesListWidget *activitiesListWidget;
   StrategySettings *strategySettingsWidget;
+  CurrentActivityWidget *currentActivityWidget;
   std::optional<Activity> activityBeingEdited;
 
   QMenu *recentMenu = nullptr;
@@ -47,6 +50,7 @@ private:
   void createActivityEditorWidget();
   void createStackedWidget();
   void createStrategySettingsWidget();
+  void createMainWidget();
   void focusOnCurrentTime();
 
   void newWindow();
@@ -67,6 +71,7 @@ private:
   void editActivityAtIndex(int index, const Activity &activity);
   void saveCurrentActivitiesAsDefault();
   void saveCurrentStrategyAsDefault();
+  void updateCurrentActivityWidget();
 
   void selectAllSlots();
 

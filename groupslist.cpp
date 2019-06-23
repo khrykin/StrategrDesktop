@@ -49,7 +49,7 @@ GroupsList::GroupsList(QWidget *parent) : QWidget(parent) {
   connect(redoAction, &QAction::triggered, this, &GroupsList::redo);
 
   setStyleSheet("GroupsList {"
-                "border-top: 1px solid #ccc;"
+                "border-top: 1px solid #d8d8d8;"
                 "}");
 }
 
@@ -323,9 +323,15 @@ void GroupsList::openActivitiesWindow() {
 
 void GroupsList::deleteActivityInSelection() {
   if (hasSelection()) {
+    historyEntry = Strategy::HistoryEntry(strategy());
     strategy()->setSlotAtIndices(selectionSlots().toStdVector(), nullopt);
     updateUI();
     deselectAllSlots();
+    if (historyEntry) {
+      strategy()->commitToHistory(historyEntry.value());
+      historyEntry = std::nullopt;
+      emit slotsStateChanged();
+    }
   }
 }
 

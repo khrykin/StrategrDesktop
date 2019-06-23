@@ -1,4 +1,4 @@
-#ifndef NAVSCREEN_H
+﻿#ifndef NAVSCREEN_H
 #define NAVSCREEN_H
 
 #include <QLabel>
@@ -8,11 +8,6 @@
 class Navbar : public QWidget {
   Q_OBJECT
 
-signals:
-
-public slots:
-
-private:
   QString _title;
 
   QPushButton *_leftButton;
@@ -23,6 +18,14 @@ private:
   QWidget *contentWidget;
 
   void paintEvent(QPaintEvent *) override;
+
+  void setupWidgets();
+  void setupLayout();
+  void setupTitleLabel();
+  void setupLeftButton();
+  void setupRightButton();
+
+  void addWidgetsToLayout();
 
 public:
   explicit Navbar(QWidget *parent = nullptr);

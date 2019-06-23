@@ -14,6 +14,8 @@
 #include <QTextEdit>
 #include <functional>
 
+#include "animatablelayout.h"
+#include "colorutils.h"
 #include "jsonserializer.h"
 
 MainWindow::MainWindow(bool createEmpty, QWidget *parent)
@@ -33,29 +35,22 @@ MainWindow::MainWindow(bool createEmpty, QWidget *parent)
   createSlotBoard();
   createActivitiesListWidget();
   createStrategySettingsWidget();
+  createMainWidget();
   createStackedWidget();
 
   setCentralWidget(_stackedWidget);
   updateWindowTitle();
 }
 
-// MainWindow::~MainWindow()
-//{
-//    QWidget::~QWidget();
-////    delete strategy;
-//}
-
 void MainWindow::createMenus() {
   auto *menuBar = new QMenuBar();
   auto *fileMenu = new QMenu("File");
   editMenu = new QMenu("Edit");
-  auto *notificationsMenu = new QMenu("Notifications");
   recentMenu = new QMenu("Open Recent");
   viewMenu = new QMenu("View");
 
   menuBar->addMenu(fileMenu);
   menuBar->addMenu(editMenu);
-  menuBar->addMenu(viewMenu);
 
   fileMenu->addAction("New", this, &MainWindow::newWindow,
                       QKeySequence(Qt::CTRL + Qt::Key_N));
@@ -114,8 +109,13 @@ void MainWindow::createSlotBoard() {
   connect(slotBoard->groupsList(), &GroupsList::wantToUpdateActivitiesList,
           [=]() { activitiesListWidget->updateList(); });
 
-  connect(slotBoard->groupsList(), &GroupsList::slotsStateChanged,
-          [=]() { updateWindowTitle(false); });
+  connect(slotBoard->groupsList(), &GroupsList::slotsStateChanged, [=]() {
+    updateCurrentActivityWidget();
+    updateWindowTitle(false);
+  });
+
+  connect(slotBoard, &SlotBoard::timerTick, this,
+          &MainWindow::updateCurrentActivityWidget);
 
   editMenu->addAction(slotBoard->groupsList()->getUndoAction());
   editMenu->addAction(slotBoard->groupsList()->getRedoAction());
@@ -143,7 +143,7 @@ void MainWindow::createActivitiesListWidget() {
 
 void MainWindow::createStackedWidget() {
   _stackedWidget = new SlidingStackedWidget(this);
-  _stackedWidget->addWidget(_slotBoardScrollArea);
+  _stackedWidget->addWidget(mainWidget);
   _stackedWidget->addWidget(activitiesListWidget);
   _stackedWidget->addWidget(strategySettingsWidget);
 }
@@ -153,6 +153,24 @@ void MainWindow::createStrategySettingsWidget() {
   strategySettingsWidget->setStrategy(strategy.get());
   connect(strategySettingsWidget, &StrategySettings::strategySettingsUpdated,
           this, &MainWindow::updateUI);
+}
+
+void MainWindow::createMainWidget() {
+  mainWidget = new QWidget(this);
+  auto *mainLayout = new QVBoxLayout();
+  mainLayout->setContentsMargins(0, 0, 0, 0);
+  mainLayout->setSpacing(0);
+  mainWidget->setLayout(mainLayout);
+
+  currentActivityWidget = new CurrentActivityWidget(this);
+  currentActivityWidget->setProgress(0.75);
+  currentActivityWidget->hide();
+
+  connect(currentActivityWidget, &CurrentActivityWidget::clicked, this,
+          &MainWindow::focusOnCurrentTime);
+
+  mainLayout->addWidget(currentActivityWidget);
+  mainLayout->addWidget(_slotBoardScrollArea);
 }
 
 void MainWindow::focusOnCurrentTime() {
@@ -306,8 +324,9 @@ void MainWindow::setActivity(const Activity &activity) {
   auto selection = slotBoard->groupsList()->selectionSlots();
   strategy->setSlotAtIndices(selection.toStdVector(), activity);
   slotBoard->groupsList()->deselectAllSlots();
-  _stackedWidget->slideToWidget(_slotBoardScrollArea);
+  _stackedWidget->slideToWidget(mainWidget);
   slotBoard->groupsList()->updateUI();
+  updateCurrentActivityWidget();
 }
 
 void MainWindow::editActivityAtIndex(int index, const Activity &activity) {
@@ -316,12 +335,70 @@ void MainWindow::editActivityAtIndex(int index, const Activity &activity) {
   strategy->editActivityAtIndex(index, activity);
   activitiesListWidget->updateList();
   slotBoard->groupsList()->updateUI();
+  updateCurrentActivityWidget();
 }
 
 void MainWindow::saveCurrentActivitiesAsDefault() {}
 
 void MainWindow::saveCurrentStrategyAsDefault() {
   fsIOManager->saveAsDefault(*strategy);
+}
+
+void MainWindow::updateCurrentActivityWidget() {
+  if (currentActivityWidget == nullptr) {
+    return;
+  }
+
+  auto currentTime = QTime::currentTime().msecsSinceStartOfDay() / 60 / 1000;
+  auto currentSlotIndex = strategy->findSlotIndexForTime(currentTime);
+
+  if (!currentSlotIndex) {
+    if (currentActivityWidget->isVisible()) {
+      currentActivityWidget->hide();
+    }
+    return;
+  }
+
+  auto currentGroupIndex =
+      strategy->groupIndexForSlotIndex(currentSlotIndex.value());
+
+  if (!currentGroupIndex) {
+    return;
+  }
+
+  auto groups = strategy->calculateGroups();
+  const auto &currentGroup =
+      groups[static_cast<unsigned int>(currentGroupIndex.value())];
+
+  if (!currentGroup.activity) {
+    if (currentActivityWidget->isVisible()) {
+      currentActivityWidget->hide();
+    }
+    return;
+  }
+
+  auto state = CurrentActivityWidget::State();
+  state.activityName = QString::fromStdString(currentGroup.activity->name);
+  state.activityColor =
+      ColorUtils::qColorFromStdString(currentGroup.activity->color);
+  state.activityDuration =
+      static_cast<int>(currentGroup.length) * strategy->slotDuration();
+  state.startTime = strategy->startTimeForGroupIndex(currentGroupIndex.value());
+  state.endTime = state.startTime + static_cast<int>(currentGroup.length) *
+                                        strategy->slotDuration();
+  state.passedTime = currentTime - state.startTime;
+  state.leftTime = state.endTime - currentTime;
+
+  currentActivityWidget->setState(state);
+
+  double progress =
+      static_cast<double>(state.passedTime) / (state.endTime - state.startTime);
+
+  currentActivityWidget->setProgress(progress);
+
+  if (currentActivityWidget->isHidden()) {
+    currentActivityWidget->show();
+  }
 }
 
 void MainWindow::setStrategy(Strategy *newStrategy) {
@@ -336,6 +413,7 @@ void MainWindow::updateUI() {
   notifier->setStrategy(strategyPtr);
   strategySettingsWidget->setStrategy(strategyPtr);
   updateWindowTitle();
+  updateCurrentActivityWidget();
 }
 
 bool MainWindow::showAreYouSureDialog(FileSystemIOManager *fsIOManager) {

@@ -83,19 +83,19 @@ void ActivityGroupWidget::updateStyleSheet() {
     setStyleSheet("ActivityGroupWidget { "
                   "background-color: #efefef;" +
                   leftBorderStyle +
-                  "border-bottom: 1px solid #ccc;"
+                  "border-bottom: 1px solid #d8d8d8;"
                   "}");
   } else {
     if (activity()) {
       setStyleSheet("ActivityGroupWidget { "
                     "background-color: white;" +
                     leftBorderStyle +
-                    "border-bottom: 1px solid #ccc;"
+                    "border-bottom: 1px solid #d8d8d8;"
                     "}");
     } else {
       setStyleSheet("ActivityGroupWidget { "
-                    "background-color: #dedede;"
-                    "border-bottom: 1px solid #ccc;"
+                    "background-color: #f4f4f4;"
+                    "border-bottom: 1px solid #d8d8d8;"
                     "}");
     }
   }
@@ -146,10 +146,20 @@ void ActivityGroupWidget::updateUI() {
 
 void ActivityGroupWidget::selectSlotAtIndex(int slotIndex) {
   //    selectionWidget->repaint();
+  auto color = QColor("#BDD6F1");
+  auto bgColorStyle = QString("background-color: rgba(%1, %2, %3, 0.5);")
+                          .arg(color.red())
+                          .arg(color.green())
+                          .arg(color.blue());
+  auto borderTopStyle = QString("border-top: 1px solid #007AFF");
+  auto borderBottomStyle = QString("border-bottom: 1px solid #007AFF");
+
   if (!_selectionSlots.contains(slotIndex)) {
     auto *selectionSlot = new QWidget(selectionWidget);
     selectionSlot->setFixedHeight(slotHeight);
-    selectionSlot->setStyleSheet("background-color: rgba(255, 255, 0, 0.5)");
+
+    selectionSlot->setStyleSheet(bgColorStyle);
+
     selectionSlot->setGeometry(
         QRect(0, slotIndex * slotHeight, geometry().width(), slotHeight));
     selectionSlot->show();

@@ -28,10 +28,16 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent) {
   auto *header = new QLabel("Start");
   header->setAlignment(Qt::AlignCenter);
   header->setFixedHeight(_groupsList->slotHeight());
+  header->setStyleSheet("color: #c3c3c3;"
+                        "font-weight: bold;"
+                        "background: #f4f4f4;");
 
   auto *footer = new QLabel("End");
   footer->setAlignment(Qt::AlignCenter);
   footer->setFixedHeight(_groupsList->slotHeight());
+  footer->setStyleSheet("color: #c3c3c3;"
+                        "font-weight: bold;"
+                        "background: #f4f4f4;");
 
   slotsLayout->addWidget(header);
   slotsLayout->addWidget(_groupsList);
@@ -59,7 +65,6 @@ void SlotBoard::setStrategy(Strategy *strategy) {
   QVector<QString> labels;
 
   auto timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
-
   for (auto &mins : strategy->startTimes()) {
     labels.append(QTime(0, 0, 0).addSecs(mins * 60).toString(timeFormat));
   }
@@ -94,6 +99,8 @@ void SlotBoard::updateCurrentTimeMarker() {
     return;
   }
 
+  emit timerTick();
+
   auto currentTime = QTime::currentTime().msecsSinceStartOfDay() / 60 / 1000;
   auto startTime = strategy()->startTime();
   auto slotDuration = strategy()->slotDuration();
@@ -106,7 +113,9 @@ void SlotBoard::updateCurrentTimeMarker() {
 
   _currentTimeMarkerTopOffset = static_cast<int>(topOffset);
 
-  if (topOffset < 0 || topOffset > groupsList()->height()) {
+  if (topOffset < 0 ||
+      _currentTimeMarkerTopOffset >
+          _groupsList->geometry().top() + groupsList()->height()) {
     if (_currentTimeMarker->isVisible()) {
       _currentTimeMarker->hide();
     }

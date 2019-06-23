@@ -30,8 +30,10 @@ SOURCES += \
         activity.cpp \
         activitygroup.cpp \
         activitygroupwidget.cpp \
+        animatablelayout.cpp \
         colorpicker.cpp \
         colorpickeritem.cpp \
+        currentactivitywidget.cpp \
         currenttimemarker.cpp \
         enterpresseater.cpp \
         filesystemiomanager.cpp \
@@ -57,9 +59,11 @@ HEADERS += \
         activity.h \
         activitygroup.h \
         activitygroupwidget.h \
+        animatablelayout.h \
         colorpicker.h \
         colorpickeritem.h \
         colorutils.h \
+        currentactivitywidget.h \
         currenttimemarker.h \
         enterpresseater.h \
         filesystemiomanager.h \

@@ -14,7 +14,7 @@ SlotRuler::SlotRuler(int cellHeight, QWidget *parent)
   setFixedWidth(defaultRulerWidth);
 
   setStyleSheet("SlotRuler {"
-                "border-right: 1px solid #aaa;"
+                "border-right: 1px solid #ccc;"
                 "}");
 
   setLayout(layout);

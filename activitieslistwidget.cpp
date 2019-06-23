@@ -68,8 +68,8 @@ SlidingStackedWidget *ActivitiesListWidget::parentStackedWidget() {
 
 void ActivitiesListWidget::getBack() {
   parentStackedWidget()->slideToIndex(0);
-  auto *slotBoardScrollArea =
-      static_cast<QScrollArea *>(parentStackedWidget()->widget(0));
+  auto *slotBoardScrollArea = static_cast<QScrollArea *>(
+      parentStackedWidget()->widget(0)->layout()->itemAt(1)->widget());
   auto *slotBoard = static_cast<SlotBoard *>(slotBoardScrollArea->widget());
   slotBoard->groupsList()->deselectAllSlots();
 }

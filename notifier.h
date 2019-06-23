@@ -16,6 +16,10 @@ public:
   ~Notifier();
   void setStrategy(Strategy *value);
 
+  std::optional<ActivityGroup> currentGroup() const;
+  std::optional<int> currentGroupIndex() const;
+  void timerTick();
+
 signals:
 
 public slots:
@@ -26,17 +30,16 @@ private:
   int currentMinute;
   std::optional<Activity> targetActivity;
 
-  void timerTick();
   Strategy *strategy;
 
   bool getReadySent = false;
   bool startSent = false;
 
-  int findSlotIndexForTime(int mins);
-
   QSystemTrayIcon *trayIcon;
   QMenu *contextMenu;
   NotifierBackend *backend;
+  std::optional<ActivityGroup> _currentGroup;
+  std::optional<int> _currentGroupIndex;
 
   QString titleForGroup(ActivityGroup &activityGroup);
 };

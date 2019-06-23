@@ -25,6 +25,8 @@ public:
 
 signals:
 
+  void timerTick();
+
 public slots:
 private:
   Strategy *_strategy;
