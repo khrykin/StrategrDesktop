@@ -42,6 +42,7 @@ SOURCES += \
         navbar.cpp \
         newactivitymenu.cpp \
         notifier.cpp \
+        slidingstackedwidget.cpp \
         slotboard.cpp \
         slotruler.cpp \
         stacklayout.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
         newactivitymenu.h \
         notifier.h \
         notifierbackend.h \
+        slidingstackedwidget.h \
         slotboard.h \
         slotruler.h \
         stacklayout.h \

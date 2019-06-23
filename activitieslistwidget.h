@@ -2,11 +2,11 @@
 #define ACTIVITIESLISTWIDGET_H
 
 #include <QScrollArea>
-#include <QStackedWidget>
 #include <QWidget>
 
 #include "navbar.h"
 #include "newactivitymenu.h"
+#include "slidingstackedwidget.h"
 #include "strategy.h"
 
 class ActivitiesListWidget : public QWidget {
@@ -30,7 +30,7 @@ public slots:
 private:
   void paintEvent(QPaintEvent *) override;
 
-  QStackedWidget *parentStackedWidget();
+  SlidingStackedWidget *parentStackedWidget();
   void getBack();
   void sendWantNewActivity();
 

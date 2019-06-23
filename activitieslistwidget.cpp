@@ -62,12 +62,12 @@ void ActivitiesListWidget::paintEvent(QPaintEvent *) {
   style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
-QStackedWidget *ActivitiesListWidget::parentStackedWidget() {
-  return static_cast<QStackedWidget *>(parentWidget());
+SlidingStackedWidget *ActivitiesListWidget::parentStackedWidget() {
+  return static_cast<SlidingStackedWidget *>(parentWidget());
 }
 
 void ActivitiesListWidget::getBack() {
-  parentStackedWidget()->setCurrentIndex(0);
+  parentStackedWidget()->slideToIndex(0);
   auto *slotBoardScrollArea =
       static_cast<QScrollArea *>(parentStackedWidget()->widget(0));
   auto *slotBoard = static_cast<SlotBoard *>(slotBoardScrollArea->widget());

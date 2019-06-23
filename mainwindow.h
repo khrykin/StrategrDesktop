@@ -8,6 +8,7 @@
 #include "activitieslistwidget.h"
 #include "filesystemiomanager.h"
 #include "notifier.h"
+#include "slidingstackedwidget.h"
 #include "slotboard.h"
 #include "strategy.h"
 #include "strategysettings.h"
@@ -30,7 +31,7 @@ private:
   QScrollArea *_slotBoardScrollArea;
   SlotBoard *slotBoard;
   std::unique_ptr<Strategy> strategy;
-  QStackedWidget *_stackedWidget;
+  SlidingStackedWidget *_stackedWidget;
   ActivitiesListWidget *activitiesListWidget;
   StrategySettings *strategySettingsWidget;
   std::optional<Activity> activityBeingEdited;

@@ -130,7 +130,7 @@ void MainWindow::createActivitiesListWidget() {
 }
 
 void MainWindow::createStackedWidget() {
-  _stackedWidget = new QStackedWidget();
+  _stackedWidget = new SlidingStackedWidget(this);
   _stackedWidget->addWidget(_slotBoardScrollArea);
   _stackedWidget->addWidget(activitiesListWidget);
   _stackedWidget->addWidget(strategySettingsWidget);
@@ -261,14 +261,14 @@ void MainWindow::appendActivity(const Activity &activity) {
 }
 
 void MainWindow::showActivitiesListForSelection(QVector<int> selection) {
-  _stackedWidget->setCurrentWidget(activitiesListWidget);
+  _stackedWidget->slideToWidget(activitiesListWidget);
 }
 
 void MainWindow::setActivity(const Activity &activity) {
   auto selection = slotBoard->groupsList()->selectionSlots();
   strategy->setSlotAtIndices(selection.toStdVector(), activity);
   slotBoard->groupsList()->deselectAllSlots();
-  _stackedWidget->setCurrentWidget(_slotBoardScrollArea);
+  _stackedWidget->slideToWidget(_slotBoardScrollArea);
   slotBoard->groupsList()->updateUI();
 }
 
