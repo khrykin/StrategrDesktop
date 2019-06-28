@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++17
 
 SOURCES += \
+        abstractspinboxdecorator.cpp \
         activitieslistitem.cpp \
         activitieslistwidget.cpp \
         activity.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
         utils.cpp
 
 HEADERS += \
+        abstractspinboxdecorator.h \
         activitieslistitem.h \
         activitieslistwidget.h \
         activity.h \
@@ -112,4 +114,4 @@ win32 {
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.14
 
 RESOURCES += \
-    icons.qrc
+    fonts/fonts.qrc
