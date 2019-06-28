@@ -1,75 +1,22 @@
 #include "strategysettings.h"
+#include "abstractspinboxdecorator.h"
 #include "mainwindow.h"
 #include <QPainter>
 #include <QStyleOption>
-#include <QVBoxLayout>
 
 StrategySettings::StrategySettings(QWidget *parent) : QWidget(parent) {
-  auto *mainLayout = new QVBoxLayout();
-  setLayout(mainLayout);
-
-  layout()->setSpacing(0);
-  layout()->setContentsMargins(0, 0, 0, 0);
 
   setStyleSheet("StrategySettings {"
-                //                "background-color: white;"
+                "background-color: white;"
                 "}");
 
-  navBar = new Navbar();
+  createLayout();
+  createNavbar();
 
-  layout()->addWidget(navBar);
+  createSlotDurationForm();
+  createStartTimeForm();
+  createEndTimeForm();
 
-  navBar->setTitle("Settings");
-  navBar->setLeftButton("‹ Back", this, &StrategySettings::getBack);
-  navBar->setRightButton("Done", this, &StrategySettings::save);
-
-  auto *formLayout = new QVBoxLayout();
-  formLayout->setSpacing(5);
-
-  slotDurationEdit = new QSpinBox(this);
-  slotDurationEdit->setRange(5, 60);
-  slotDurationEdit->setSingleStep(5);
-  slotDurationEdit->setSuffix(" min");
-
-  formLayout->addWidget(createFormLabel("Slot Duration"));
-  formLayout->addWidget(slotDurationEdit);
-
-  startTimeEdit = new SteppedTimeEdit(this);
-  formLayout->addWidget(createFormLabel("Start Time"));
-  formLayout->addWidget(startTimeEdit);
-
-  endTimeEdit = new SteppedTimeEdit(this);
-  formLayout->addWidget(createFormLabel("End Time"));
-  formLayout->addWidget(endTimeEdit);
-
-  connect(endTimeEdit, &QTimeEdit::timeChanged, this,
-          &StrategySettings::endTimeChanged);
-
-  auto *saveAction = new QAction("Save", this);
-  saveAction->setShortcut(QKeySequence(Qt::Key_Return));
-  connect(saveAction, &QAction::triggered, this, &StrategySettings::save);
-  addAction(saveAction);
-
-  //  titleError = new QLabel("Already exists");
-  //  titleError->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //  titleError->setStyleSheet("font-weight: bold; color: red;");
-  //  titleError->hide();
-
-  //  colorEditor = new QLineEdit("#000000");
-
-  //  auto *colorLabel = new QLabel("Color");
-  //  colorLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  //  colorLabel->setStyleSheet("font-weight: bold;");
-
-  //  formLayout->addWidget(titleEditor);
-  //  formLayout->addWidget(titleError);
-
-  //  formLayout->addWidget(colorLabel);
-  //  formLayout->addWidget(colorEditor);
-
-  formLayout->setContentsMargins(8, 8, 8, 8);
-
-  mainLayout->addLayout(formLayout);
   mainLayout->addStretch();
 }
 
@@ -78,6 +25,81 @@ Strategy *StrategySettings::getStrategy() const { return _strategy; }
 void StrategySettings::setStrategy(Strategy *strategy) {
   _strategy = strategy;
   updateUI();
+}
+
+void StrategySettings::createLayout() {
+  mainLayout = new QVBoxLayout(this);
+  layout()->setSpacing(0);
+  layout()->setContentsMargins(0, 0, 0, 0);
+
+  setLayout(mainLayout);
+}
+
+void StrategySettings::createNavbar() {
+  navBar = new Navbar();
+
+  layout()->addWidget(navBar);
+
+  navBar->setTitle("Settings");
+  navBar->setLeftButton("‹ Back", this, &StrategySettings::getBack);
+  navBar->setRightButton("Done", this, &StrategySettings::save);
+}
+
+void StrategySettings::createSlotDurationForm() {
+  auto *formWidget = makeFormRowWidget();
+
+  slotDurationEdit = new QSpinBox();
+  slotDurationEdit->setRange(5, 60);
+  slotDurationEdit->setSingleStep(5);
+  slotDurationEdit->setSuffix(" min");
+
+  auto slotDurationEditDecorator = new SpinBoxDecorator(slotDurationEdit, this);
+
+  formWidget->layout()->addWidget(createFormLabel("Slot Duration"));
+  formWidget->layout()->addWidget(slotDurationEditDecorator);
+
+  mainLayout->addWidget(formWidget);
+}
+
+void StrategySettings::createStartTimeForm() {
+  auto *formWidget = makeFormRowWidget();
+
+  startTimeEdit = new SteppedTimeEdit();
+  auto *startTimeEditDecorator = new TimeEditDecorator(startTimeEdit, this);
+
+  formWidget->layout()->addWidget(createFormLabel("Start Time"));
+  formWidget->layout()->addWidget(startTimeEditDecorator);
+
+  mainLayout->addWidget(formWidget);
+}
+
+void StrategySettings::createEndTimeForm() {
+  auto *formWidget = makeFormRowWidget();
+
+  endTimeEdit = new SteppedTimeEdit();
+  auto *endTimeEditDecorator = new TimeEditDecorator(endTimeEdit, this);
+
+  formWidget->layout()->addWidget(createFormLabel("End Time"));
+  formWidget->layout()->addWidget(endTimeEditDecorator);
+
+  mainLayout->addWidget(formWidget);
+
+  connect(endTimeEdit, &QTimeEdit::timeChanged, this,
+          &StrategySettings::endTimeChanged);
+}
+
+QWidget *StrategySettings::makeFormRowWidget() {
+  auto formRowWidget = new QWidget(this);
+  formRowWidget->setProperty("FormRow", true);
+  formRowWidget->setStyleSheet("[FormRow] { border-bottom: 1px solid #eee; }");
+
+  auto *formLayout = new QHBoxLayout();
+  formLayout->setSpacing(5);
+  formLayout->setContentsMargins(8, 8, 8, 8);
+
+  formRowWidget->setLayout(formLayout);
+
+  return formRowWidget;
 }
 
 void StrategySettings::paintEvent(QPaintEvent *) {
@@ -91,6 +113,7 @@ QLabel *StrategySettings::createFormLabel(QString text) {
   auto label = new QLabel(text);
   label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
   label->setStyleSheet("font-weight: bold;");
+
   return label;
 }
 
@@ -98,6 +121,7 @@ void StrategySettings::updateUI() {
   slotDurationEdit->setValue(_strategy->slotDuration());
   startTimeEdit->setTime(QTime(0, 0).addSecs(_strategy->startTime() * 60));
   endTimeEdit->setTime(QTime(0, 0).addSecs(_strategy->endTime() * 60));
+
   startTimeEdit->minuteStepSize = _strategy->slotDuration();
   endTimeEdit->minuteStepSize = _strategy->slotDuration();
 }
