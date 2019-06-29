@@ -5,18 +5,8 @@
 
 QVector<QWidget *> SlidingAnimator::widgetsInOperation = QVector<QWidget *>();
 
-QWidget *SlidingAnimator::widget() const { return _widget; }
-
-SlidingAnimator::Orientation SlidingAnimator::orientation() const {
-  return _orientation;
-}
-
-void SlidingAnimator::setOrientation(const Orientation &orientation) {
-  _orientation = orientation;
-}
-
 void SlidingAnimator::setWidgetSize(int value) {
-  (widget()->*fixedSizeSetter())(value);
+  (widget->*fixedSizeSetter())(value);
 }
 
 int SlidingAnimator::stubSize() { return (stub->*sizeGetter<QWidget>())(); }
@@ -37,17 +27,18 @@ void SlidingAnimator::setInitialStubSize() {
 
 void SlidingAnimator::setInitialWidgetPosition() {
   if (operation == Operation::Hide) {
-    widget()->setGeometry(stub->geometry());
+    widget->setGeometry(stub->geometry());
   } else if (operation == Operation::Show) {
     // Enforce initial size on the widget for show operation.
     // Otherwise it will resize along with the stub, which is not what we want.
 
-    auto geometry = widget()->geometry();
-    auto origin = makePointBySustraction(geometry.topLeft(), initialWidgetSize);
+    auto geometry = widget->geometry();
+    auto origin = makePointByTranslation(geometry.topLeft(), initialWidgetSize);
     auto size = applyInitialSizeToRect(geometry, initialWidgetSize);
     auto rect = QRect(origin, size);
 
-    widget()->setGeometry(rect);
+    setWidgetSize(initialWidgetSize);
+    widget->setGeometry(rect);
   }
 }
 
@@ -75,14 +66,39 @@ SlidingAnimator::WidgetSizeSetterPointer SlidingAnimator::minimumSizeSetter() {
   }
 }
 
-QPoint SlidingAnimator::makePointBySustraction(QPoint point, int translation) {
+SlidingAnimator::Orientation SlidingAnimator::orientation() {
+  switch (direction) {
+  case Direction::ShowsFromTop:
+  case Direction::ShowsFromBottom:
+    return Orientation::Vertical;
+  case Direction::ShowsFromLeft:
+  case Direction::ShowsFromRight:
+    return Orientation::Horizontal;
+  }
+}
+
+QPoint SlidingAnimator::makePointByTranslation(QPoint point, int translation) {
+  auto sign = translationSign();
   if (orientation() == Orientation::Vertical) {
-    point.setY(point.y() - translation);
+    point.setY(point.y() + sign * translation);
   } else {
-    point.setX(point.x() - translation);
+    point.setX(point.x() + sign * translation);
   }
 
   return point;
+}
+
+int SlidingAnimator::translationSign() {
+  switch (direction) {
+  case Direction::ShowsFromTop:
+  case Direction::ShowsFromLeft: {
+    return -1;
+  }
+  case Direction::ShowsFromBottom:
+  case Direction::ShowsFromRight: {
+    return 1;
+  }
+  }
 }
 
 QSize SlidingAnimator::applyInitialSizeToRect(QRect rect, int initialSize) {
@@ -94,32 +110,31 @@ QSize SlidingAnimator::applyInitialSizeToRect(QRect rect, int initialSize) {
 }
 
 void SlidingAnimator::setWidgetMaximumSize() {
-  (widget()->*maximumSizeSetter())(widgetSizeHintDimension());
+  (widget->*maximumSizeSetter())(widgetSizeHintDimension());
 };
 
 int SlidingAnimator::widgetSizeHintDimension() {
   if (orientation() == Orientation::Vertical) {
-    return widget()->sizeHint().height();
+    return widget->sizeHint().height();
   } else {
-    return widget()->sizeHint().width();
+    return widget->sizeHint().width();
   }
 }
 
 void SlidingAnimator::resetWidgetMaximumSize() {
-  (widget()->*maximumSizeSetter())(QWIDGETSIZE_MAX);
+  (widget->*maximumSizeSetter())(QWIDGETSIZE_MAX);
 }
 
 int SlidingAnimator::widgetRelativeCoordinate() {
   return initialWidgetSize - stubSize();
 }
 
-int SlidingAnimator::widgetSize() {
-  return (widget()->*sizeGetter<QWidget>())();
-}
+int SlidingAnimator::widgetSize() { return (widget->*sizeGetter<QWidget>())(); }
 
 QTimeLine *SlidingAnimator::makeTimeLine() {
   QTimeLine *timeLine = new QTimeLine(duration, this);
   timeLine->setUpdateInterval(updateInterval);
+  timeLine->setCurveShape(curveShape);
   return timeLine;
 }
 
@@ -139,12 +154,12 @@ void SlidingAnimator::hideFrame(qreal value) {
 }
 
 void SlidingAnimator::hideFinished() {
-  widget()->hide();
+  widget->hide();
   teardown();
 }
 
 int SlidingAnimator::indexOfWidgetInParentLayout() {
-  return widgetParentLayout()->indexOf(widget());
+  return widgetParentLayout()->indexOf(widget);
 }
 
 QBoxLayout *SlidingAnimator::widgetParentLayout() {
@@ -166,7 +181,7 @@ void SlidingAnimator::createStub() {
 
 void SlidingAnimator::removeStub() {
   setWidgetSize(initialWidgetSize);
-  widgetParentLayout()->insertWidget(indexInParentLayout, widget());
+  widgetParentLayout()->insertWidget(indexInParentLayout, widget);
   widgetParentLayout()->removeWidget(stub);
   delete stub;
 }
@@ -183,47 +198,45 @@ void SlidingAnimator::addWidgetToStub() {
 
   stub->setLayout(stubLayout);
 
-  stub->layout()->addWidget(widget());
+  stub->layout()->addWidget(widget);
 }
 
 void SlidingAnimator::updateWidgetGeometryOnStubResize() {
-  auto geometry = widget()->geometry();
+  if (direction == Direction::ShowsFromBottom ||
+      direction == Direction::ShowsFromRight) {
+    return;
+  }
+
+  auto geometry = widget->geometry();
   auto translation = widgetRelativeCoordinate();
-  auto origin = makePointBySustraction(geometry.topLeft(), translation);
+  auto origin = makePointByTranslation(geometry.topLeft(), translation);
   auto rect = QRect(origin, geometry.size());
 
-  widget()->setGeometry(rect);
+  widget->setGeometry(rect);
 }
 
 void SlidingAnimator::prepareOperation() {
+  _widgetParentLayout =
+      static_cast<QBoxLayout *>(widget->parentWidget()->layout());
+
+  setWidgetMaximumSize();
   initialWidgetSize = widgetSize();
 
   createStub();
   commitWidget();
 
   if (operation == Operation::Show) {
-    widget()->show();
+    widget->show();
   }
 
   timeLine = makeTimeLine();
   timeLine->start();
 }
 
-SlidingAnimator::SlidingAnimator(QWidget *widget)
-    : QObject(widget), _widget(widget) {
-
-  if (widgetIsInOperation()) {
-    emit done();
-    return;
-  }
-
-  _widgetParentLayout =
-      static_cast<QBoxLayout *>(widget->parentWidget()->layout());
-
-  setWidgetMaximumSize();
-}
-
-SlidingAnimator::~SlidingAnimator() {}
+SlidingAnimator::SlidingAnimator(QWidget *widget, Options options)
+    : QObject(widget), widget(widget), direction(options.direction),
+      duration(options.duration), updateInterval(options.updateInterval),
+      curveShape(options.curveShape) {}
 
 void SlidingAnimator::show() {
   if (widgetIsInOperation()) {
@@ -242,12 +255,12 @@ void SlidingAnimator::show() {
 
 void SlidingAnimator::commitWidget() {
   if (!widgetIsInOperation()) {
-    widgetsInOperation.append(widget());
+    widgetsInOperation.append(widget);
   }
 }
 
 void SlidingAnimator::decomissionWidget() {
-  auto indexOfWidget = widgetsInOperation.indexOf(widget());
+  auto indexOfWidget = widgetsInOperation.indexOf(widget);
   if (indexOfWidget < 0) {
     return;
   }
@@ -256,7 +269,7 @@ void SlidingAnimator::decomissionWidget() {
 }
 
 bool SlidingAnimator::widgetIsInOperation() {
-  return widgetsInOperation.indexOf(widget()) >= 0;
+  return widgetsInOperation.indexOf(widget) >= 0;
 }
 
 void SlidingAnimator::teardown() {
@@ -280,14 +293,14 @@ void SlidingAnimator::hide() {
   connect(timeLine, &QTimeLine::finished, this, &SlidingAnimator::hideFinished);
 }
 
-void SlidingAnimator::hideWidget(QWidget *widget) {
-  auto *animator = new SlidingAnimator(widget);
+void SlidingAnimator::hideWidget(QWidget *widget, Options options) {
+  auto *animator = new SlidingAnimator(widget, options);
   connect(animator, &SlidingAnimator::done, [animator]() { delete animator; });
   animator->hide();
 }
 
-void SlidingAnimator::showWidget(QWidget *widget) {
-  auto *animator = new SlidingAnimator(widget);
+void SlidingAnimator::showWidget(QWidget *widget, Options options) {
+  auto *animator = new SlidingAnimator(widget, options);
   connect(animator, &SlidingAnimator::done, [animator]() { delete animator; });
   animator->show();
 }

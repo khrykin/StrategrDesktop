@@ -7,24 +7,52 @@
 
 class SlidingAnimator : public QObject {
   Q_OBJECT
+private:
+  static const auto defaultDuration = 150;
+  static const auto defaultUpdateInterval = 20;
+  static const auto defaultCurveShape = QTimeLine::EaseInOutCurve;
 
+public:
+  enum class Direction {
+    ShowsFromTop,
+    ShowsFromBottom,
+    ShowsFromLeft,
+    ShowsFromRight
+  };
+
+  struct Options {
+    Direction direction = Direction::ShowsFromTop;
+    int duration = defaultDuration;
+    int updateInterval = defaultUpdateInterval;
+    QTimeLine::CurveShape curveShape = defaultCurveShape;
+
+    // Explicit constructor definition is needed here because of clang bug.
+    // See: https://stackoverflow.com/questions/53408962
+    Options() {}
+  };
+
+  static void hideWidget(QWidget *widget, Options options = Options());
+  static void showWidget(QWidget *widget, Options options = Options());
+
+private:
   class ResizeAwareWidget;
-  enum class Orientation { Horizontal, Vertical };
   enum class Operation { Show, Hide };
+  enum class Orientation { Horizontal, Vertical };
 
   using WidgetSizeSetterPointer = void (QWidget::*)(int);
   template <class T> using SizeGetterPointer = int (T::*)() const;
 
-  static const auto duration = 150;
-  static const auto updateInterval = 20;
-
   static QVector<QWidget *> widgetsInOperation;
 
-  QWidget *_widget;
+  QWidget *widget;
   QBoxLayout *_widgetParentLayout;
   QTimeLine *timeLine;
 
-  Orientation _orientation = Orientation::Vertical;
+  Direction direction;
+  int duration;
+  int updateInterval;
+  QTimeLine::CurveShape curveShape;
+
   Operation operation;
 
   int initialWidgetMinimumSize;
@@ -32,6 +60,8 @@ class SlidingAnimator : public QObject {
 
   int initialWidgetSize;
   int indexInParentLayout;
+
+  SlidingAnimator(QWidget *widget = nullptr, Options options = Options());
 
   WidgetSizeSetterPointer fixedSizeSetter();
   WidgetSizeSetterPointer maximumSizeSetter();
@@ -45,7 +75,11 @@ class SlidingAnimator : public QObject {
     }
   }
 
-  QPoint makePointBySustraction(QPoint point, int translation);
+  Orientation orientation();
+
+  QPoint makePointByTranslation(QPoint point, int translation);
+  int translationSign();
+
   QSize applyInitialSizeToRect(QRect rect, int initialSize);
 
   void setWidgetMaximumSize();
@@ -87,9 +121,6 @@ class SlidingAnimator : public QObject {
   void updateWidgetGeometryOnStubResize();
   void prepareOperation();
 
-  SlidingAnimator(QWidget *widget = nullptr);
-  ~SlidingAnimator();
-
   void hide();
   void show();
 
@@ -98,21 +129,8 @@ class SlidingAnimator : public QObject {
   bool widgetIsInOperation();
 
   void teardown();
-
 signals:
   void done();
-
-public:
-  static void hideWidget(QWidget *widget);
-  static void showWidget(QWidget *widget);
-
-  QWidget *widget() const;
-
-  Orientation orientation() const;
-  void setOrientation(const Orientation &orientation);
-signals:
-
-public slots:
 };
 
 class SlidingAnimator::ResizeAwareWidget : public QWidget {
