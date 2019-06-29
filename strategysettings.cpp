@@ -1,18 +1,18 @@
 #include "strategysettings.h"
 #include "abstractspinboxdecorator.h"
 #include "mainwindow.h"
+#include "slidinganimator.h"
 #include <QPainter>
 #include <QStyleOption>
 
 StrategySettings::StrategySettings(QWidget *parent) : QWidget(parent) {
-
   setStyleSheet("StrategySettings {"
                 "background-color: white;"
                 "}");
 
-  createLayout();
-  createNavbar();
+  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
+  createLayout();
   createSlotDurationForm();
   createStartTimeForm();
   createEndTimeForm();
@@ -58,6 +58,13 @@ void StrategySettings::createSlotDurationForm() {
   formWidget->layout()->addWidget(createFormLabel("Slot Duration"));
   formWidget->layout()->addWidget(slotDurationEditDecorator);
 
+  connect(slotDurationEdit, QOverload<int>::of(&QSpinBox::valueChanged),
+          [this](int value) {
+            startTimeEdit->minuteStepSize = value;
+            endTimeEdit->minuteStepSize = value;
+            save();
+          });
+
   mainLayout->addWidget(formWidget);
 }
 
@@ -75,6 +82,7 @@ void StrategySettings::createStartTimeForm() {
 
 void StrategySettings::createEndTimeForm() {
   auto *formWidget = makeFormRowWidget();
+  formWidget->setStyleSheet("[FormRow] { border-bottom: 1px solid #ccc; }");
 
   endTimeEdit = new SteppedTimeEdit();
   auto *endTimeEditDecorator = new TimeEditDecorator(endTimeEdit, this);
@@ -127,8 +135,9 @@ void StrategySettings::updateUI() {
 }
 
 void StrategySettings::getBack() {
-  mainWindow()->stackedWidget()->setCurrentWidget(getBackTo());
-  setGetBackTo(nullptr);
+  //  mainWindow()->stackedWidget()->setCurrentWidget(getBackTo());
+  //  setGetBackTo(nullptr);
+  slideAndHide();
 }
 
 void StrategySettings::save() {
@@ -138,12 +147,16 @@ void StrategySettings::save() {
   auto numberOfSlots =
       static_cast<unsigned int>((endTime - startTime) / slotDuration);
 
+  if (!_strategy) {
+    return;
+  }
+
   _strategy->setSlotDuration(slotDuration);
   _strategy->setStartTime(startTime);
-  _strategy->setNumberOfSlots(numberOfSlots);
+  //  _strategy->setNumberOfSlots(numberOfSlots);
 
-  emit strategySettingsUpdated();
-  getBack();
+  //  emit strategySettingsUpdated();
+  //  getBack();
 }
 
 void StrategySettings::endTimeChanged(const QTime &time) {
@@ -166,6 +179,10 @@ void StrategySettings::endTimeChanged(const QTime &time) {
 QWidget *StrategySettings::getBackTo() const {
   return _getBackTo != nullptr ? _getBackTo : mainWindow();
 }
+
+void StrategySettings::slideAndHide() { SlidingAnimator::hideWidget(this); }
+
+void StrategySettings::slideAndShow() { SlidingAnimator::showWidget(this); }
 
 void StrategySettings::setGetBackTo(QWidget *value) { _getBackTo = value; }
 

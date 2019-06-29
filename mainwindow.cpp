@@ -51,6 +51,7 @@ void MainWindow::createMenus() {
 
   menuBar->addMenu(fileMenu);
   menuBar->addMenu(editMenu);
+  menuBar->addMenu(viewMenu);
 
   fileMenu->addAction("New", this, &MainWindow::newWindow,
                       QKeySequence(Qt::CTRL + Qt::Key_N));
@@ -145,18 +146,21 @@ void MainWindow::createStackedWidget() {
   _stackedWidget = new SlidingStackedWidget(this);
   _stackedWidget->addWidget(mainWidget);
   _stackedWidget->addWidget(activitiesListWidget);
-  _stackedWidget->addWidget(strategySettingsWidget);
 }
 
 void MainWindow::createStrategySettingsWidget() {
   strategySettingsWidget = new StrategySettings();
   strategySettingsWidget->setStrategy(strategy.get());
+
+  strategySettingsWidget->hide();
+
   connect(strategySettingsWidget, &StrategySettings::strategySettingsUpdated,
           this, &MainWindow::updateUI);
 }
 
 void MainWindow::createMainWidget() {
   mainWidget = new QWidget(this);
+
   auto *mainLayout = new QVBoxLayout();
   mainLayout->setContentsMargins(0, 0, 0, 0);
   mainLayout->setSpacing(0);
@@ -169,6 +173,7 @@ void MainWindow::createMainWidget() {
   connect(currentActivityWidget, &CurrentActivityWidget::clicked, this,
           &MainWindow::focusOnCurrentTime);
 
+  mainLayout->addWidget(strategySettingsWidget);
   mainLayout->addWidget(currentActivityWidget);
   mainLayout->addWidget(_slotBoardScrollArea);
 }
@@ -260,7 +265,12 @@ void MainWindow::load(QString path) {
 
 void MainWindow::openStrategySettings() {
   strategySettingsWidget->setGetBackTo(_stackedWidget->currentWidget());
-  _stackedWidget->setCurrentWidget(strategySettingsWidget);
+
+  if (strategySettingsWidget->isHidden()) {
+    strategySettingsWidget->slideAndShow();
+  } else {
+    strategySettingsWidget->slideAndHide();
+  }
 }
 
 void MainWindow::updateWindowTitle(bool isSaved) {
@@ -354,7 +364,7 @@ void MainWindow::updateCurrentActivityWidget() {
 
   if (!currentSlotIndex) {
     if (currentActivityWidget->isVisible()) {
-      currentActivityWidget->hide();
+      currentActivityWidget->slideAndHide();
     }
     return;
   }
@@ -372,7 +382,7 @@ void MainWindow::updateCurrentActivityWidget() {
 
   if (!currentGroup.activity) {
     if (currentActivityWidget->isVisible()) {
-      currentActivityWidget->hide();
+      currentActivityWidget->slideAndHide();
     }
     return;
   }
@@ -397,7 +407,7 @@ void MainWindow::updateCurrentActivityWidget() {
   currentActivityWidget->setProgress(progress);
 
   if (currentActivityWidget->isHidden()) {
-    currentActivityWidget->show();
+    currentActivityWidget->slideAndShow();
   }
 }
 

@@ -10,7 +10,6 @@ QByteArray JSONSerializer::write() const {
   QJsonObject json;
   json[Keys::slotDuration] = strategy.slotDuration();
   json[Keys::startTime] = strategy.startTime();
-  json[Keys::numberOfSlots] = static_cast<int>(strategy.numberOfSlots());
 
   QJsonArray activities;
   for (auto &activity : strategy.activities) {
@@ -52,12 +51,6 @@ std::optional<Strategy> JSONSerializer::read(const QString &json) {
 
   if (obj.contains(Keys::startTime) && obj[Keys::startTime].isDouble()) {
     strategy.setStartTime(static_cast<int>(obj[Keys::startTime].toDouble()));
-  }
-
-  if (obj.contains(Keys::numberOfSlots) &&
-      obj[Keys::numberOfSlots].isDouble()) {
-    strategy.setNumberOfSlots(
-        static_cast<unsigned int>(obj[Keys::numberOfSlots].toDouble()));
   }
 
   if (obj.contains(Keys::activities) && obj[Keys::activities].isArray()) {

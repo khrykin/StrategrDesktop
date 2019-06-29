@@ -52,6 +52,9 @@ public:
 
   QWidget *getBackTo() const;
 
+  void slideAndHide();
+  void slideAndShow();
+
 signals:
   void strategySettingsUpdated();
 

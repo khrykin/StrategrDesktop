@@ -1,10 +1,14 @@
 #include "currentactivitywidget.h"
+#include "slidinganimator.h"
 #include "utils.h"
+#include <QDebug>
 #include <QLayout>
 #include <QLocale>
+#include <QPaintEvent>
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QTime>
+#include <QTimeLine>
 
 CurrentActivityWidget::CurrentActivityWidget(QWidget *parent)
     : QWidget(parent) {
@@ -84,10 +88,13 @@ CurrentActivityWidget::CurrentActivityWidget(QWidget *parent)
 void CurrentActivityWidget::paintEvent(QPaintEvent *event) {
   QPainter painter;
   painter.begin(this);
-  auto borderRect = QRect(geometry().bottomLeft().x(),
-                          geometry().bottomLeft().y(), width(), 1);
-  auto progressRect = QRect(geometry().topLeft().x(), geometry().topLeft().y(),
-                            static_cast<int>(width() * progress()), height());
+  auto baseRect = QRect(QPoint(0, 0), geometry().size());
+  auto borderRect = QRect(baseRect.bottomLeft().x(), baseRect.bottomLeft().y(),
+                          baseRect.width(), 1);
+  auto progressRect =
+      QRect(baseRect.topLeft().x(), baseRect.topLeft().y(),
+            static_cast<int>(baseRect.width() * progress()), baseRect.height());
+
   auto borderColor = QColor("#ccc");
   auto bgColor = QColor("#F8F8F8");
   auto progressColor = QColor("#ECECEC");
@@ -97,7 +104,7 @@ void CurrentActivityWidget::paintEvent(QPaintEvent *event) {
   painter.setPen(Qt::NoPen);
 
   painter.setBrush(bgColor);
-  painter.drawRect(geometry());
+  painter.drawRect(baseRect);
 
   painter.setBrush(progressColor);
   painter.drawRect(progressRect);
@@ -156,20 +163,12 @@ void CurrentActivityWidget::setStrategy(Strategy *strategy) {
 }
 
 void CurrentActivityWidget::slideAndHide() {
-  QPropertyAnimation *animation = new QPropertyAnimation(this, "minimumHeight");
-  animation->setDuration(200);
-  animation->setStartValue(height());
-  animation->setEndValue(0);
-  animation->setEasingCurve(QEasingCurve::OutCubic);
-  animation->start();
-
-  connect(animation, &QPropertyAnimation::finished, [this]() {
-    this->hide();
-    this->setFixedHeight(40);
-  });
+  SlidingAnimator::hideWidget(this);
 }
 
-void CurrentActivityWidget::slideAndShow() {}
+void CurrentActivityWidget::slideAndShow() {
+  SlidingAnimator::showWidget(this);
+}
 
 CurrentActivityWidget::State CurrentActivityWidget::state() const {
   return _state;

@@ -16,6 +16,11 @@ using ActivityGroupsState = vector<ActivityGroup>;
 using Duration = int;
 
 struct Strategy {
+  static const auto defaultSlotDuration = 15;  // 15 min.
+  static const auto defaultStartTime = 6 * 60; // 6:00 AM
+  static const auto defaultNumberOfSlots = // (22:00 PM - 60.00 AM) / 15 min.
+      (22 * 60 - defaultStartTime) / defaultSlotDuration;
+
   optional<string> title;
   vector<Activity> activities;
 
@@ -79,9 +84,8 @@ struct Strategy {
 
 private:
   SlotsState _slotsState;
-  Duration _slotDuration = 15;
-  Duration _startTime = 6 * 60; // 6:00
-  unsigned int _numberOfSlots = 68;
+  Duration _slotDuration = defaultSlotDuration;
+  Duration _startTime = defaultStartTime;
 
   vector<HistoryEntry> undoStack;
   vector<HistoryEntry> redoStack;

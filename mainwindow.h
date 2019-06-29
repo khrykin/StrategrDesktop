@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QScrollArea>
+#include <QSplitter>
 #include <QStackedWidget>
 
 #include "activitieslistwidget.h"

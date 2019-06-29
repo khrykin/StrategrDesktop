@@ -227,7 +227,7 @@ Strategy *Strategy::createEmpty() {
   strategy->activities = {};
 
   SlotsState slotsState;
-  for (unsigned int i = 0; i < strategy->_numberOfSlots; i++) {
+  for (unsigned int i = 0; i < defaultNumberOfSlots; i++) {
     slotsState.push_back(nullopt);
   }
 
@@ -301,11 +301,11 @@ void Strategy::commitToHistory(Strategy::HistoryEntry entry) {
   redoStack = {};
 }
 
-unsigned int Strategy::numberOfSlots() const { return _numberOfSlots; }
+unsigned int Strategy::numberOfSlots() const {
+  return static_cast<uint>(_slotsState.size());
+}
 
 void Strategy::setNumberOfSlots(unsigned int numberOfSlots) {
-  _numberOfSlots = numberOfSlots;
-
   if (_slotsState.size() > numberOfSlots) {
     while (_slotsState.size() != numberOfSlots) {
       _slotsState.pop_back();

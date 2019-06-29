@@ -53,7 +53,7 @@ SlotBoard::SlotBoard(QWidget *parent) : QWidget(parent) {
   connect(currentTimeTimer, &QTimer::timeout, this,
           &SlotBoard::updateCurrentTimeMarker);
 
-  currentTimeTimer->start(30 * 1000);
+  currentTimeTimer->start(1 * 1000);
 }
 
 Strategy *SlotBoard::strategy() const { return _strategy; }
@@ -101,12 +101,14 @@ void SlotBoard::updateCurrentTimeMarker() {
 
   emit timerTick();
 
-  auto currentTime = QTime::currentTime().msecsSinceStartOfDay() / 60 / 1000;
+  auto currentTime =
+      static_cast<double>(QTime::currentTime().msecsSinceStartOfDay()) / 60 /
+      1000;
   auto startTime = strategy()->startTime();
   auto slotDuration = strategy()->slotDuration();
   auto slotHeight = _groupsList->slotHeight();
 
-  auto pxInMins = slotHeight / static_cast<float>(slotDuration);
+  auto pxInMins = static_cast<double>(slotHeight) / slotDuration;
 
   auto topOffset = std::round(pxInMins * (currentTime - startTime)) +
                    _groupsList->geometry().top();
