@@ -1,7 +1,7 @@
 #ifndef FILESYSTEMIOMANAGER_H
 #define FILESYSTEMIOMANAGER_H
 
-#include "strategy.h"
+#include "models/strategy.h"
 #include <QFileInfo>
 #include <QObject>
 

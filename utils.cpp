@@ -34,3 +34,11 @@ QString timeStringForMins(int mins) {
 
   return result;
 }
+
+int minutesFromQTime(const QTime &time) {
+  return time.msecsSinceStartOfDay() / 60 / 1000;
+}
+
+QTime qTimeFromMinutes(int minutes) {
+  return QTime(0, 0).addSecs(minutes * 60);
+}

@@ -6,8 +6,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
+#include "models/strategy.h"
 #include "notifierbackend.h"
-#include "strategy.h"
 
 class Notifier : public QObject {
   Q_OBJECT

@@ -1,7 +1,7 @@
 #ifndef JSONSERIALIZER_H
 #define JSONSERIALIZER_H
 
-#include "strategy.h"
+#include "models/strategy.h"
 #include <QByteArray>
 #include <QJsonObject>
 
