@@ -39,7 +39,10 @@ TEST_CASE("Strategy history", "[strategy][history]") {
         }
 
         SECTION("redo") {
-
+            strategy.undo();
+            strategy.undo();
+            strategy.redo();
+            REQUIRE(strategy.activities()[0] == initialActivity);
         }
     }
 
@@ -60,7 +63,27 @@ TEST_CASE("Strategy history", "[strategy][history]") {
 
             REQUIRE(strategy.activities().size() == 2);
         }
+
     }
 
+    SECTION("activity removal while present in slots") {
+        strategy.putActivityInTimeSlotsAtIndices(0, {0});
+        strategy.putActivityInTimeSlotsAtIndices(0, {1});
 
+        strategy.removeActivityAtIndex(0);
+
+        strategy.undo();
+        REQUIRE(strategy.activities()[0] == initialActivity);
+        REQUIRE(strategy.activitySessions()[0].length() == 2);
+
+    }
+
+    SECTION("time slots change") {
+        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1});
+        strategy.putActivityInTimeSlotsAtIndices(0, {2});
+
+        strategy.undo();
+
+        REQUIRE(strategy.activitySessions()[0].length() == 2);
+    }
 }

@@ -30,7 +30,10 @@ public:
 
     explicit ActivityList(const std::vector<Activity> &fromVector = {});
 
-    const Activity &operator[](Index itemIndex) const;
+    const Activity &operator[](ActivityIndex itemIndex) const;
+    const Activity *at(ActivityIndex itemIndex) const;
+
+    ActivityList &operator=(const ActivityList &newList);
 
 private:
     friend Strategy;

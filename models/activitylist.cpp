@@ -79,8 +79,19 @@ ActivityList::ActivityList(const std::vector<Activity> &fromVector) {
     }
 }
 
-const Activity &ActivityList::operator[](PrivateList::Index itemIndex) const {
+const Activity &ActivityList::operator[](ActivityIndex itemIndex) const {
     return *_vector[itemIndex];
+}
+
+const Activity *ActivityList::at(ActivityIndex itemIndex) const {
+    return &(operator[](itemIndex));
+}
+
+ActivityList &ActivityList::operator=(const ActivityList &newList) {
+    _vector = newList._vector;
+    onChangeEvent();
+
+    return *this;
 }
 
 const char *ActivityList::AlreadyPresentException::what() const noexcept {

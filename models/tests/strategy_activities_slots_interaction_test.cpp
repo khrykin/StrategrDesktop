@@ -12,7 +12,7 @@ TEST_CASE("Strategy activities and slots interaction") {
     strategy.addActivity(Activity("Some 1"));
     const auto &activity = strategy.activities()[0];
 
-    strategy.putActivityInTimeSlotsAtIndices(&activity, {0, 2});
+    strategy.putActivityInTimeSlotsAtIndices(0, {0, 2});
 
     SECTION("deleting activity should also remove it from slots") {
         strategy.removeActivityAtIndex(0);

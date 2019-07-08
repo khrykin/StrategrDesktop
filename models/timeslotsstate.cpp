@@ -8,7 +8,7 @@ TimeSlotsState::Time TimeSlotsState::beginTime() const {
     return _beginTime;
 }
 
-void TimeSlotsState::setBeginTime(TimeSlotsState::Time beginTime) {
+void TimeSlotsState::setBeginTime(Time beginTime) {
     _beginTime = beginTime;
 
     for (auto slotIndex = 0;
@@ -25,9 +25,15 @@ TimeSlotsState::Duration TimeSlotsState::slotDuration() const {
     return _slotDuration;
 }
 
-void TimeSlotsState::setSlotDuration(TimeSlotsState::Duration slotDuration) {
+void TimeSlotsState::setSlotDuration(Duration slotDuration) {
     _slotDuration = slotDuration;
-    // TODO: recalculate
+
+    for (auto slotIndex = 0; slotIndex < numberOfSlots(); slotIndex++) {
+        auto &slot = _vector[slotIndex];
+        slot.duration = slotDuration;
+        slot.beginTime = slotBeginTime(beginTime(), slotIndex);
+    }
+
     onChangeEvent();
 }
 
@@ -35,7 +41,7 @@ TimeSlotsState::StateSize TimeSlotsState::numberOfSlots() const {
     return _vector.size();
 }
 
-void TimeSlotsState::setNumberOfSlots(TimeSlotsState::StateSize newNumberOfSlots) {
+void TimeSlotsState::setNumberOfSlots(StateSize newNumberOfSlots) {
     if (newNumberOfSlots == numberOfSlots()) {
         return;
     }
@@ -51,9 +57,9 @@ void TimeSlotsState::setNumberOfSlots(TimeSlotsState::StateSize newNumberOfSlots
     onChangeEvent();
 }
 
-TimeSlotsState::TimeSlotsState(TimeSlotsState::Time startTime,
-                               TimeSlotsState::Duration slotDuration,
-                               TimeSlotsState::StateSize numberOfSlots)
+TimeSlotsState::TimeSlotsState(Time startTime,
+                               Duration slotDuration,
+                               StateSize numberOfSlots)
         : _beginTime(startTime),
           _slotDuration(slotDuration) {
     populateVector(startTime, numberOfSlots);
@@ -68,33 +74,31 @@ TimeSlotsState::TimeSlotsState(std::vector<TimeSlot> fromVector) {
     _vector = std::move(fromVector);
 }
 
-void TimeSlotsState::fillSlots(TimeSlotsState::Index fromIndex,
-                               TimeSlotsState::Index tillIndex) {
+void TimeSlotsState::fillSlots(Index fromIndex,
+                               Index tillIndex) {
     if (!hasIndices(fromIndex, tillIndex)) {
         return;
     }
+
+    auto sourceIndex = fromIndex;
 
     if (tillIndex < fromIndex) {
         std::swap(tillIndex, fromIndex);
     }
 
     for (auto copyIndex = fromIndex; copyIndex <= tillIndex; copyIndex++) {
-        _vector[copyIndex].activity = _vector[fromIndex].activity;
+        _vector[copyIndex].activity = _vector[sourceIndex].activity;
     }
 
     onChangeEvent();
 }
 
-bool TimeSlotsState::hasIndex(TimeSlotsState::Index slotIndex) {
-    return slotIndex >= 0 && slotIndex < _vector.size();
-}
-
-bool TimeSlotsState::hasIndices(TimeSlotsState::Index slotIndex) {
-    return hasIndex(slotIndex);
-}
-
 void TimeSlotsState::setActivityAtIndex(const Activity *activity,
-                                        PrivateList::Index slotIndex) {
+                                        Index slotIndex) {
+    if (!hasIndex(slotIndex)) {
+        return;
+    }
+
     _vector[slotIndex].activity = activity;
 }
 
@@ -117,22 +121,20 @@ std::string TimeSlotsState::classPrintName() const {
     return "TimeSlotsState";
 }
 
-void TimeSlotsState::populateVector(TimeSlotsState::Time startTime,
-                                    TimeSlotsState::StateSize numberOfSlots) {
+void TimeSlotsState::populateVector(Time startTime,
+                                    StateSize numberOfSlots) {
     for (auto slotIndex = 0; slotIndex < numberOfSlots; ++slotIndex) {
-        auto timeSlot = TimeSlot(
-                slotBeginTime(startTime, slotIndex),
-                slotDuration()
-        );
+        auto beginTime = slotBeginTime(startTime, slotIndex);
+        auto timeSlot = TimeSlot(beginTime, _slotDuration);
 
         _vector.emplace_back(timeSlot);
     }
 }
 
 TimeSlotsState::Time
-TimeSlotsState::slotBeginTime(TimeSlotsState::Time globalBeginTime,
-                              TimeSlotsState::Index slotIndex) {
-    return globalBeginTime + slotIndex * slotDuration();
+TimeSlotsState::slotBeginTime(Time globalBeginTime,
+                              Index slotIndex) {
+    return globalBeginTime + slotIndex * _slotDuration;
 }
 
 bool TimeSlotsState::hasActivity(const Activity *activity) {
@@ -164,4 +166,13 @@ void TimeSlotsState::editActivity(const Activity *oldActivity,
     if (activityChanged) {
         onChangeEvent();
     }
+}
+
+TimeSlotsState &TimeSlotsState::operator=(const TimeSlotsState &newState) {
+    _vector = newState._vector;
+    _beginTime = newState._beginTime;
+    _slotDuration = newState._slotDuration;
+
+    onChangeEvent();
+    return *this;
 }

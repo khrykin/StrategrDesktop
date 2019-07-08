@@ -58,8 +58,10 @@ public:
 
     void dragActivity(ActivityIndex fromIndex, ActivityIndex toIndex);
 
-    void putActivityInTimeSlotsAtIndices(const Activity *activity,
+    void putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
                                          const std::vector<TimeSlotIndex> &timeSlotIndices);
+
+    void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);;
 
     void fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex);
 

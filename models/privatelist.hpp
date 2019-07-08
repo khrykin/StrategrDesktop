@@ -56,6 +56,24 @@ public:
         return _vector.back();
     }
 
+    bool hasIndex(Index itemIndex) const {
+        if (_vector.empty()) {
+            return false;
+        }
+
+        return itemIndex >= 0
+               && itemIndex < _vector.size();
+    }
+
+    bool hasIndices(Index itemIndex) const {
+        hasIndex(itemIndex);
+    }
+
+    template<typename ...Indices>
+    bool hasIndices(Index itemIndex, Indices... indices) const {
+        return hasIndex(itemIndex) && hasIndices(indices...);
+    }
+
     friend bool operator==(const PrivateList<ItemType> &lhs,
                            const PrivateList<ItemType> &rhs) {
         if (lhs.size() != rhs.size()) {

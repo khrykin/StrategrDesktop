@@ -41,7 +41,7 @@ public:
 
     void fillSlots(Index fromIndex, Index tillIndex);
 
-    void populateVector(TimeSlotsState::Time startTime, TimeSlotsState::StateSize numberOfSlots);;
+    void populateVector(Time startTime, StateSize numberOfSlots);
 
     iterator findSlotWithActivity(const Activity *activity);
 
@@ -52,23 +52,16 @@ public:
 
     bool hasActivity(const Activity *activity);
 
+    TimeSlotsState &operator=(const TimeSlotsState &newState);
+
     std::string classPrintName() const override;
 private:
     Time _beginTime = 0;
     Duration _slotDuration = 0;
 
-
     void setActivityAtIndex(const Activity *activity,
                             Index slotIndex);
 
-    bool hasIndex(Index slotIndex);
-
-    bool hasIndices(Index slotIndex);
-
-    template<typename ...Indices>
-    bool hasIndices(Index index, Indices... indices) {
-        return hasIndex(index) && hasIndices(indices...);
-    }
 
     Time slotBeginTime(Time globalBeginTime, Index slotIndex);
 };

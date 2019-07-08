@@ -32,6 +32,13 @@ TEST_CASE("Strategy settings", "[strategy]") {
     }
 
     SECTION("change time slot duration") {
+        strategy.setTimeSlotDuration(1);
+
+        const auto expectedEndTime = strategy.beginTime()
+                                     + strategy.numberOfTimeSlots();
+
+        REQUIRE(strategy.activitySessions().first().duration() == 1);
+        REQUIRE(strategy.activitySessions().last().endTime() == expectedEndTime);
 
     }
 
