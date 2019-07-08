@@ -66,7 +66,7 @@ public:
     }
 
     bool hasIndices(Index itemIndex) const {
-        hasIndex(itemIndex);
+        return hasIndex(itemIndex);
     }
 
     template<typename ...Indices>

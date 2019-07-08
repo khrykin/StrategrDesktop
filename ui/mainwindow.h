@@ -1,93 +1,35 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+//
+// Created by Dmitry Khrykin on 2019-07-08.
+//
 
-#include <QMainWindow>
-#include <QScrollArea>
-#include <QSplitter>
-#include <QStackedWidget>
+#ifndef UI_MAINWINDOW_H
+#define UI_MAINWINDOW_H
 
-#include "activitieslistwidget.h"
-#include "currentactivitywidget.h"
-#include "filesystemiomanager.h"
-#include "models/strategy.h"
-#include "notifier.h"
-#include "slotboard.h"
-#include "strategysettings.h"
-#include "third-party/slidingstackedwidget.h"
-#include <memory>
+#include <QWidget>
+#include <QPushButton>
+#include <QHBoxLayout>
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
+class MainWindow : public QWidget {
+Q_OBJECT
 public:
-  explicit MainWindow(bool createEmpty = false, QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr) : QWidget(parent) {
+        setLayout(new QHBoxLayout());
 
-  void updateRecentFileActions();
-  void updateWindowTitle(bool isSaved = true);
+        _button = new QPushButton("click me fuckka");
+        layout()->addWidget(_button);
 
-  QStackedWidget *stackedWidget() const;
+        connect(_button, &QPushButton::click, [=]() {
+            _button->setText("bitch you did it");
+        });
+    }
 
-  QScrollArea *slotBoardScrollArea() const;
+    QPushButton *button() const {
+        return _button;
+    }
 
 private:
-  QScrollArea *_slotBoardScrollArea;
-  QWidget *mainWidget;
-  SlotBoard *slotBoard;
-  std::unique_ptr<Strategy> strategy;
-  SlidingStackedWidget *_stackedWidget;
-  ActivitiesListWidget *activitiesListWidget;
-  StrategySettings *strategySettingsWidget;
-  CurrentActivityWidget *currentActivityWidget;
-  std::optional<Activity> activityBeingEdited;
-
-  QMenu *recentMenu = nullptr;
-  QMenu *editMenu = nullptr;
-  QMenu *viewMenu = nullptr;
-
-  void createActions();
-  void createMenus();
-  void createSlotBoard();
-  void createActivitiesListWidget();
-  void createActivityEditorWidget();
-  void createStackedWidget();
-  void createStrategySettingsWidget();
-  void createMainWidget();
-  void focusOnCurrentTime();
-
-  void newWindow();
-  void open();
-  void save();
-  void saveAs();
-  void openRecentFile();
-  void clearRecent();
-  void load(QString path);
-  void openStrategySettings();
-  void activityEdited(const Activity &activity, bool isNew);
-  void removeActivityFromSlots(const Activity &activity);
-  void appendActivity(const Activity &activity);
-
-  void showActivitiesListForSelection(QVector<int> selection);
-  void showActivitiesList();
-  void setActivity(const Activity &activity);
-  void editActivityAtIndex(int index, const Activity &activity);
-  void saveCurrentActivitiesAsDefault();
-  void saveCurrentStrategyAsDefault();
-  void updateCurrentActivityWidget();
-
-  void selectAllSlots();
-
-  void setStrategy(Strategy *newStrategy);
-  void updateUI();
-
-  bool showAreYouSureDialog(FileSystemIOManager *fsIOManager);
-
-  Strategy *openRecentOrNew(bool forceNew = false);
-  Strategy *openDefaultOrNew();
-
-  Notifier *notifier;
-  std::unique_ptr<FileSystemIOManager> fsIOManager;
-
-  QVector<QAction *> recentFileActions;
+    QPushButton *_button;
 };
 
-#endif // MAINWINDOW_H
+
+#endif //UI_MAINWINDOW_H
