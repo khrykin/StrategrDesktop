@@ -18,7 +18,7 @@ public:
         _button = new QPushButton("click me fuckka");
         layout()->addWidget(_button);
 
-        connect(_button, &QPushButton::click, [=]() {
+        connect(_button, &QPushButton::clicked, [=]() {
             _button->setText("bitch you did it");
         });
     }
