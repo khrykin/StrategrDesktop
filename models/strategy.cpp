@@ -14,7 +14,7 @@ void Strategy::addActivity(const Activity &activity) {
 }
 
 void Strategy::removeActivityAtIndex(ActivityIndex activityIndex) {
-    timeSlots.removeActivity(&_activities[activityIndex]);
+    _timeSlots.removeActivity(&_activities[activityIndex]);
     _activities.removeAtIndex(activityIndex);
 
     commitToHistory();
@@ -26,39 +26,39 @@ void Strategy::editActivityAtIndex(ActivityIndex activityIndex,
     _activities.editAtIndex(activityIndex, newActivity);
 
     const auto updatedActivity = &_activities[activityIndex];
-    timeSlots.editActivity(oldActivity, updatedActivity);
+    _timeSlots.editActivity(oldActivity, updatedActivity);
 
     commitToHistory();
 }
 
 Strategy::Time Strategy::beginTime() const {
-    return timeSlots.beginTime();
+    return _timeSlots.beginTime();
 }
 
 void Strategy::setBeginTime(Time beginTime) {
-    timeSlots.setBeginTime(beginTime);
+    _timeSlots.setBeginTime(beginTime);
 }
 
 Strategy::Duration Strategy::timeSlotDuration() const {
-    return timeSlots.slotDuration();
+    return _timeSlots.slotDuration();
 }
 
 void Strategy::setTimeSlotDuration(Duration timeSlotDuration) {
-    timeSlots.setSlotDuration(timeSlotDuration);
+    _timeSlots.setSlotDuration(timeSlotDuration);
 }
 
 Strategy::Strategy(Time beginTime,
                    Duration timeSlotDuration,
                    StateSize numberOfTimeSlots)
-        : timeSlots(TimeSlotsState(beginTime,
-                                   timeSlotDuration,
-                                   numberOfTimeSlots)),
+        : _timeSlots(TimeSlotsState(beginTime,
+                                    timeSlotDuration,
+                                    numberOfTimeSlots)),
           history(makeHistoryEntry()) {
     setupTimeSlotsCallback();
 }
 
 void Strategy::timeSlotsChanged() {
-    _activitySessions.recalculateForTimeSlotsState(timeSlots);
+    _activitySessions.recalculateForTimeSlotsState(_timeSlots);
 }
 
 void Strategy::putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
@@ -68,14 +68,14 @@ void Strategy::putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
     }
 
     auto activity = activities().at(activityIndex);
-    timeSlots.setActivityAtIndices(activity, timeSlotIndices);
+    _timeSlots.setActivityAtIndices(activity, timeSlotIndices);
 
     commitToHistory();
 }
 
 void Strategy::emptyTimeSlotsAtIndices(
         const std::vector<TimeSlotIndex> &timeSlotIndices) {
-    timeSlots.setActivityAtIndices(Strategy::NoActivity, timeSlotIndices);
+    _timeSlots.setActivityAtIndices(Strategy::NoActivity, timeSlotIndices);
 
     commitToHistory();
 }
@@ -84,28 +84,28 @@ void Strategy::dragActivity(ActivityIndex fromIndex, ActivityIndex toIndex) {
     _activities.drag(fromIndex, toIndex);
 }
 
-Strategy::Strategy(const std::vector<TimeSlot> &timeSlotsVector,
-                   const std::vector<Activity> &activitiesVector) :
-        timeSlots(TimeSlotsState(timeSlotsVector)),
-        _activities(ActivityList(activitiesVector)),
+Strategy::Strategy(const TimeSlotsState &timeSlots,
+                   const ActivityList &activities) :
+        _timeSlots(timeSlots),
+        _activities(activities),
         history(makeHistoryEntry()) {
     setupTimeSlotsCallback();
 }
 
 void Strategy::fillTimeSlots(TimeSlotIndex fromIndex,
                              TimeSlotIndex tillIndex) {
-    timeSlots.fillSlots(fromIndex, tillIndex);
+    _timeSlots.fillSlots(fromIndex, tillIndex);
     // NB! We don't want to commit to history here,
     // because user may continue to drag session to next slot index!
     // So we'll commit from UI side.
 }
 
 Strategy::StateSize Strategy::numberOfTimeSlots() const {
-    return timeSlots.numberOfSlots();
+    return _timeSlots.numberOfSlots();
 }
 
 void Strategy::setNumberOfTimeSlots(StateSize numberOfTimeSlots) {
-    timeSlots.setNumberOfSlots(numberOfTimeSlots);
+    _timeSlots.setNumberOfSlots(numberOfTimeSlots);
 }
 
 const ActivitySessionsList &Strategy::activitySessions() const {
@@ -113,27 +113,28 @@ const ActivitySessionsList &Strategy::activitySessions() const {
 }
 
 Strategy::Time Strategy::endTime() const {
-    return timeSlots.last().endTime();
+    return _timeSlots.last().endTime();
 }
 
 void Strategy::setupTimeSlotsCallback() {
     timeSlotsChanged();
-    timeSlots.setOnChangeCallback(this, &Strategy::timeSlotsChanged);
+    _timeSlots.setOnChangeCallback(this, &Strategy::timeSlotsChanged);
 }
 
 StrategyHistory::Entry Strategy::makeHistoryEntry() {
-    return StrategyHistory::Entry{_activities, timeSlots};
+    return StrategyHistory::Entry{_activities, _timeSlots};
 }
 
 void Strategy::commitToHistory() {
     history.commit(makeHistoryEntry());
+    onChangeEvent();
 }
 
 void Strategy::undo() {
     auto historyEntry = history.undo();
     if (historyEntry) {
         _activities = historyEntry->activities;
-        timeSlots = historyEntry->timeSlots;
+        _timeSlots = historyEntry->timeSlots;
     }
 }
 
@@ -141,6 +142,10 @@ void Strategy::redo() {
     auto historyEntry = history.redo();
     if (historyEntry) {
         _activities = historyEntry->activities;
-        timeSlots = historyEntry->timeSlots;
+        _timeSlots = historyEntry->timeSlots;
     }
+}
+
+const TimeSlotsState &Strategy::timeSlots() const {
+    return _timeSlots;
 }

@@ -5,30 +5,56 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
-#include <QWidget>
-#include <QPushButton>
-#include <QHBoxLayout>
+#include <QMainWindow>
+#include <QDebug>
+#include <QMenu>
+#include <QCloseEvent>
 
-class MainWindow : public QWidget {
+#include "strategy.h"
+#include "filesystemiomanager.h"
+#include "windowgeometrymanager.h"
+#include "mainscene.h"
+#include "applicationmenu.h"
+
+class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = nullptr) : QWidget(parent) {
-        setLayout(new QHBoxLayout());
+    explicit MainWindow(QWidget *parent = nullptr);
 
-        _button = new QPushButton("click me fuckka");
-        layout()->addWidget(_button);
+    ~MainWindow() override;
 
-        connect(_button, &QPushButton::clicked, [=]() {
-            _button->setText("bitch you did it");
-        });
-    }
+    Strategy openRecentOrCreateNew();
 
-    QPushButton *button() const {
-        return _button;
-    }
+    MainScene *scene() const;
+    ApplicationMenu *menu() const;
 
+    void openNewWindow();
+    void openFile();
+
+    void saveFile();
+    void saveFileAs();
+
+    void saveCurrentStrategyAsDefault();
+    void clearRecentFilesList();
+
+    void openRecentFile();
+
+    void loadFile(const QString &path);
 private:
-    QPushButton *_button;
+    friend ApplicationMenu;
+
+    MainScene *_scene = nullptr;
+    ApplicationMenu *_menu = nullptr;
+    FileSystemIOManager fsIOManager = FileSystemIOManager(this);
+    Strategy strategy = fsIOManager.openDefaultStrategy();
+
+    void setIsSaved(bool isSaved);
+    void setStrategy(const Strategy &newStrategy);
+    void strategyStateChanged();
+    void updateWindowTitle();
+
+    bool wantToClose();
+    void closeEvent(QCloseEvent *event) override;
 };
 
 

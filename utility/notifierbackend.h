@@ -1,16 +1,20 @@
 #ifndef NOTIFIERBACKEND_H
 #define NOTIFIERBACKEND_H
+
 #include <QObject>
 #include <QString>
 #include <QSystemTrayIcon>
 
 class NotifierBackend : QObject {
-  Q_OBJECT
-  QSystemTrayIcon *trayIcon;
-
+Q_OBJECT
 public:
-  NotifierBackend(QSystemTrayIcon *trayIcon, QObject *parent = nullptr);
-  void sendMessage(QString title, QString message);
+    explicit NotifierBackend(QSystemTrayIcon *trayIcon,
+                             QObject *parent = nullptr);
+
+    void sendMessage(QString title, QString message);
+
+private:
+    QSystemTrayIcon *trayIcon;
 };
 
 #endif // NOTIFIERBACKEND_H

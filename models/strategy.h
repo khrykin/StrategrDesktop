@@ -12,8 +12,9 @@
 #include "timeslotsstate.h"
 #include "activitysessionslist.h"
 #include "strategyhistory.h"
+#include "notifiableonchange.h"
 
-struct Strategy {
+struct Strategy : public NotifiableOnChange {
 public:
     struct Defaults {
         static constexpr auto timeSlotDuration = 15;
@@ -30,13 +31,13 @@ public:
 
     const ActivityList &activities() const;
     const ActivitySessionsList &activitySessions() const;
+    const TimeSlotsState &timeSlots() const;
 
     explicit Strategy(Time beginTime = Defaults::beginTime,
                       Duration timeSlotDuration = Defaults::timeSlotDuration,
                       StateSize numberOfTimeSlots = Defaults::numberOfTimeSlots);
 
-    Strategy(const std::vector<TimeSlot> &timeSlotsVector,
-             const std::vector<Activity> &activitiesVector);
+    Strategy(const TimeSlotsState &timeSlots, const ActivityList &activities);
 
     Time beginTime() const;
     void setBeginTime(Time beginTime);
@@ -71,7 +72,7 @@ public:
 
 private:
     ActivityList _activities;
-    TimeSlotsState timeSlots;
+    TimeSlotsState _timeSlots;
     ActivitySessionsList _activitySessions;
     StrategyHistory history;
 

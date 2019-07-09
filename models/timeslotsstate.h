@@ -25,6 +25,9 @@ public:
                    Duration slotDuration,
                    StateSize numberOfSlots);
 
+    // NB! You can't create TimeSlotsState from empty vector,
+    // since there would be no way to find out slotDuration
+    // and beginTime
     explicit TimeSlotsState(std::vector<TimeSlot> fromVector);
 
     Time beginTime() const;

@@ -52,6 +52,9 @@ SOURCES += \
     ui/slotruler.cpp \
     ui/steppedtimeedit.cpp \
     ui/strategysettings.cpp \
+    ui/tests/main_window_test.cpp \
+    ui/v0/mainwindow.cpp \
+    ui/windowgeometrymanager.cpp \
     utils.cpp
 
 HEADERS += \
@@ -83,6 +86,8 @@ HEADERS += \
     ui/slotruler.h \
     ui/steppedtimeedit.h \
     ui/strategysettings.h \
+    ui/v0/mainwindow.h \
+    ui/windowgeometrymanager.h \
     utils.h
 
 FORMS +=

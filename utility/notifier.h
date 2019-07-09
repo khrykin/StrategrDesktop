@@ -6,42 +6,42 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
-#include "models/strategy.h"
+#include "strategy.h"
 #include "notifierbackend.h"
 
 class Notifier : public QObject {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit Notifier(Strategy *strategy, QObject *parent = nullptr);
-  ~Notifier();
-  void setStrategy(Strategy *value);
+    explicit Notifier(Strategy *strategy, QObject *parent = nullptr);
+    ~Notifier() override;
+    void setStrategy(Strategy *value);
 
-  std::optional<ActivityGroup> currentGroup() const;
-  std::optional<int> currentGroupIndex() const;
-  void timerTick();
+    std::optional<ActivityGroup> currentGroup() const;
+    std::optional<int> currentGroupIndex() const;
+    void timerTick();
 
 signals:
 
 public slots:
 
 private:
-  QTimer *timer;
-  int nextTime;
-  int currentMinute;
-  std::optional<Activity> targetActivity;
+    QTimer *timer;
+    int nextTime;
+    int currentMinute;
+    std::optional<Activity> targetActivity;
 
-  Strategy *strategy;
+    Strategy *strategy;
 
-  bool getReadySent = false;
-  bool startSent = false;
+    bool getReadySent = false;
+    bool startSent = false;
 
-  QSystemTrayIcon *trayIcon;
-  QMenu *contextMenu;
-  NotifierBackend *backend;
-  std::optional<ActivityGroup> _currentGroup;
-  std::optional<int> _currentGroupIndex;
+    QSystemTrayIcon *trayIcon;
+    QMenu *contextMenu;
+    NotifierBackend *backend;
+    std::optional<ActivityGroup> _currentGroup;
+    std::optional<int> _currentGroupIndex;
 
-  QString titleForGroup(ActivityGroup &activityGroup);
+    QString titleForGroup(ActivityGroup &activityGroup);
 };
 
 #endif // NOTIFIER_H

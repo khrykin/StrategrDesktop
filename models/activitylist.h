@@ -33,8 +33,12 @@ public:
     const Activity &operator[](ActivityIndex itemIndex) const;
     const Activity *at(ActivityIndex itemIndex) const;
 
+    std::optional<Index> indexOf(const Activity *activity) const;;
+
+
     ActivityList &operator=(const ActivityList &newList);
 
+    std::string classPrintName() const override;
 private:
     friend Strategy;
 
@@ -48,9 +52,6 @@ private:
 
     void rotateLeft(ActivityIndex fromIndex, ActivityIndex toIndex);
     void rotateRight(ActivityIndex fromIndex, ActivityIndex toIndex);
-
-    std::string classPrintName() const
-    override;
 };
 
 struct ActivityList::AlreadyPresentException : public std::exception {

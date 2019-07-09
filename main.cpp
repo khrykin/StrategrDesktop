@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
     setupFonts();
 
     MainWindow w;
+    w.openRecentOrCreateNew();
     w.show();
 
     return a.exec();

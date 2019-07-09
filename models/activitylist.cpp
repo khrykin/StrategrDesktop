@@ -94,6 +94,16 @@ ActivityList &ActivityList::operator=(const ActivityList &newList) {
     return *this;
 }
 
+std::optional<ActivityList::Index> ActivityList::indexOf(const Activity *activity) const {
+    for (auto activityIndex = 0; activityIndex < size(); activityIndex++) {
+        if (_vector[activityIndex].get() == activity) {
+            return activityIndex;
+        }
+    }
+
+    return std::nullopt;
+}
+
 const char *ActivityList::AlreadyPresentException::what() const noexcept {
     return message;
 }
