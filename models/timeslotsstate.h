@@ -39,7 +39,7 @@ public:
     StateSize numberOfSlots() const;
     void setNumberOfSlots(StateSize newNumberOfSlots);
 
-    void setActivityAtIndices(const Activity *activity,
+    void setActivityAtIndices(Activity *activity,
                               const std::vector<Index> &indices);
 
     void fillSlots(Index fromIndex, Index tillIndex);
@@ -48,10 +48,10 @@ public:
 
     iterator findSlotWithActivity(const Activity *activity);
 
-    void removeActivity(const Activity *activity);
+    void removeActivity(Activity *activity);
 
-    void editActivity(const Activity *oldActivity,
-                      const Activity *newActivity);
+    void editActivity(Activity *oldActivity,
+                      Activity *newActivity);
 
     bool hasActivity(const Activity *activity);
 
@@ -62,7 +62,7 @@ private:
     Time _beginTime = 0;
     Duration _slotDuration = 0;
 
-    void setActivityAtIndex(const Activity *activity,
+    void setActivityAtIndex(Activity *activity,
                             Index slotIndex);
 
 

@@ -13,25 +13,25 @@ public:
     using OnChangeCallback = std::function<void()>;
 
     void setOnChangeCallback(const std::optional<OnChangeCallback>
-                             &onChangeCallback) const {
-        _onChangeCallback = onChangeCallback;
-    };
+                             &callback) const {
+        onChangeCallback = callback;
+    }
 
     template<class Listener,
             typename Method = std::function<void(Listener *)>>
     void setOnChangeCallback(Listener *listener,
                              Method method) const {
-        _onChangeCallback = std::bind(method, listener);
-    };
+        onChangeCallback = std::bind(method, listener);
+    }
 
 protected:
-    mutable std::optional<OnChangeCallback> _onChangeCallback;
+    mutable std::optional<OnChangeCallback> onChangeCallback;
 
     void onChangeEvent() {
-        if (_onChangeCallback) {
-            (*_onChangeCallback)();
+        if (onChangeCallback) {
+            (*onChangeCallback)();
         }
-    };
+    }
 };
 
 #endif //MODELS_NOTIFIABLEONCHANGE_H

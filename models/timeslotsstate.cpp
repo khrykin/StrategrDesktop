@@ -76,7 +76,7 @@ TimeSlotsState::TimeSlotsState(std::vector<TimeSlot> fromVector) {
 
 void TimeSlotsState::fillSlots(Index fromIndex,
                                Index tillIndex) {
-    if (!hasIndices(fromIndex, tillIndex)) {
+    if (fromIndex == tillIndex || !hasIndices(fromIndex, tillIndex)) {
         return;
     }
 
@@ -93,7 +93,7 @@ void TimeSlotsState::fillSlots(Index fromIndex,
     onChangeEvent();
 }
 
-void TimeSlotsState::setActivityAtIndex(const Activity *activity,
+void TimeSlotsState::setActivityAtIndex(Activity *activity,
                                         Index slotIndex) {
     if (!hasIndex(slotIndex)) {
         return;
@@ -102,7 +102,7 @@ void TimeSlotsState::setActivityAtIndex(const Activity *activity,
     _vector[slotIndex].activity = activity;
 }
 
-void TimeSlotsState::setActivityAtIndices(const Activity *activity,
+void TimeSlotsState::setActivityAtIndices(Activity *activity,
                                           const std::vector<Index> &indices) {
     auto activityChanged = false;
     for (auto slotIndex : indices) {
@@ -149,12 +149,12 @@ TimeSlotsState::findSlotWithActivity(const Activity *activity) {
                         });
 }
 
-void TimeSlotsState::removeActivity(const Activity *activity) {
+void TimeSlotsState::removeActivity(Activity *activity) {
     editActivity(activity, TimeSlot::NoActivity);
 }
 
-void TimeSlotsState::editActivity(const Activity *oldActivity,
-                                  const Activity *newActivity) {
+void TimeSlotsState::editActivity(Activity *oldActivity,
+                                  Activity *newActivity) {
     auto activityChanged = false;
     for (auto &timeSlot : _vector) {
         if (timeSlot.activity == oldActivity) {

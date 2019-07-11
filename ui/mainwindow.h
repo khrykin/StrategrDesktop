@@ -5,6 +5,7 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
+
 #include <QMainWindow>
 #include <QDebug>
 #include <QMenu>
@@ -23,7 +24,7 @@ public:
 
     ~MainWindow() override;
 
-    Strategy openRecentOrCreateNew();
+    void loadRecent();
 
     MainScene *scene() const;
     ApplicationMenu *menu() const;
@@ -46,10 +47,10 @@ private:
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
-    Strategy strategy = fsIOManager.openDefaultStrategy();
+    std::unique_ptr<Strategy> strategy = fsIOManager.openDefaultStrategy();
 
     void setIsSaved(bool isSaved);
-    void setStrategy(const Strategy &newStrategy);
+    void setStrategy(std::unique_ptr<Strategy> newStrategy);
     void strategyStateChanged();
     void updateWindowTitle();
 

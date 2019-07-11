@@ -34,6 +34,7 @@ MainWindow::MainWindow(bool createEmpty, QWidget *parent)
   createSlotBoard();
   createActivitiesListWidget();
   createStrategySettingsWidget();
+
   createMainWidget();
   createStackedWidget();
 

@@ -100,7 +100,7 @@ public:
 protected:
     using iterator = typename std::vector<Item>::iterator;
 
-    std::vector<Item> _vector;
+    std::vector<Item> _vector = {};
 
     iterator find(const Item &item) {
         return std::find(_vector.begin(), _vector.end(), item);

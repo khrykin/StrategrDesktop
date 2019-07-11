@@ -4,6 +4,24 @@
 #include <string>
 #include <vector>
 
+Strategy::Strategy(Time beginTime,
+                   Duration timeSlotDuration,
+                   StateSize numberOfTimeSlots)
+        : _timeSlots(TimeSlotsState(beginTime,
+                                    timeSlotDuration,
+                                    numberOfTimeSlots)),
+          history(makeHistoryEntry()) {
+    setupTimeSlotsCallback();
+}
+
+Strategy::Strategy(const TimeSlotsState &timeSlots,
+                   const ActivityList &activities) :
+        _timeSlots(timeSlots),
+        _activities(activities),
+        history(makeHistoryEntry()) {
+    setupTimeSlotsCallback();
+}
+
 const ActivityList &Strategy::activities() const {
     return _activities;
 }
@@ -14,7 +32,7 @@ void Strategy::addActivity(const Activity &activity) {
 }
 
 void Strategy::removeActivityAtIndex(ActivityIndex activityIndex) {
-    _timeSlots.removeActivity(&_activities[activityIndex]);
+    _timeSlots.removeActivity(_activities.at(activityIndex));
     _activities.removeAtIndex(activityIndex);
 
     commitToHistory();
@@ -22,10 +40,10 @@ void Strategy::removeActivityAtIndex(ActivityIndex activityIndex) {
 
 void Strategy::editActivityAtIndex(ActivityIndex activityIndex,
                                    const Activity &newActivity) {
-    const auto oldActivity = &_activities[activityIndex];
+    const auto oldActivity = _activities.at(activityIndex);
     _activities.editAtIndex(activityIndex, newActivity);
 
-    const auto updatedActivity = &_activities[activityIndex];
+    const auto updatedActivity = _activities.at(activityIndex);
     _timeSlots.editActivity(oldActivity, updatedActivity);
 
     commitToHistory();
@@ -47,15 +65,6 @@ void Strategy::setTimeSlotDuration(Duration timeSlotDuration) {
     _timeSlots.setSlotDuration(timeSlotDuration);
 }
 
-Strategy::Strategy(Time beginTime,
-                   Duration timeSlotDuration,
-                   StateSize numberOfTimeSlots)
-        : _timeSlots(TimeSlotsState(beginTime,
-                                    timeSlotDuration,
-                                    numberOfTimeSlots)),
-          history(makeHistoryEntry()) {
-    setupTimeSlotsCallback();
-}
 
 void Strategy::timeSlotsChanged() {
     _activitySessions.recalculateForTimeSlotsState(_timeSlots);
@@ -82,14 +91,6 @@ void Strategy::emptyTimeSlotsAtIndices(
 
 void Strategy::dragActivity(ActivityIndex fromIndex, ActivityIndex toIndex) {
     _activities.drag(fromIndex, toIndex);
-}
-
-Strategy::Strategy(const TimeSlotsState &timeSlots,
-                   const ActivityList &activities) :
-        _timeSlots(timeSlots),
-        _activities(activities),
-        history(makeHistoryEntry()) {
-    setupTimeSlotsCallback();
 }
 
 void Strategy::fillTimeSlots(TimeSlotIndex fromIndex,
@@ -136,6 +137,8 @@ void Strategy::undo() {
         _activities = historyEntry->activities;
         _timeSlots = historyEntry->timeSlots;
     }
+
+    onChangeEvent();
 }
 
 void Strategy::redo() {
@@ -144,6 +147,8 @@ void Strategy::redo() {
         _activities = historyEntry->activities;
         _timeSlots = historyEntry->timeSlots;
     }
+
+    onChangeEvent();
 }
 
 const TimeSlotsState &Strategy::timeSlots() const {

@@ -9,8 +9,8 @@
 
 class FileSystemIOManager {
 public:
-    static const bool WantToDiscard = true;
-    static const bool WantToLeaveAsIs = false;
+    static const bool WantToDiscard = false;
+    static const bool WantToLeaveAsIs = true;
 
     static bool defaultStrategyIsSet();
     static QStringList recentPaths();
@@ -22,19 +22,19 @@ public:
     bool isSaved() const;
     void setIsSaved(bool isSaved);
 
-    std::optional<Strategy> open();
+    std::unique_ptr<Strategy> open();
 
     void save(const Strategy &strategy);
     void saveAs(const Strategy &strategy);
     void saveAsDefault(const Strategy &strategy);
 
-    std::optional<Strategy> read(const QString &readFilepath);
-    std::optional<Strategy> lastOpened();
+    std::unique_ptr<Strategy> read(const QString &readFilepath);
+    std::optional<std::unique_ptr<Strategy>> lastOpened();
 
-    Strategy openDefaultStrategy();
+    std::unique_ptr<Strategy> openDefaultStrategy();
 
     void resetFilepath();
-    bool askIfWantToDiscard(const Strategy &strategy);
+    bool askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy);
 
     QFileInfo fileInfo();
 

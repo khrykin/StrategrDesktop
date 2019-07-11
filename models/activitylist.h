@@ -31,7 +31,7 @@ public:
     explicit ActivityList(const std::vector<Activity> &fromVector = {});
 
     const Activity &operator[](ActivityIndex itemIndex) const;
-    const Activity *at(ActivityIndex itemIndex) const;
+    Activity *at(ActivityIndex itemIndex) const;
 
     std::optional<Index> indexOf(const Activity *activity) const;;
 

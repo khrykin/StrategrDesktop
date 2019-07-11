@@ -20,7 +20,7 @@ struct TimeSlot {
     Time beginTime;
     Duration duration;
 
-    const Activity *activity;
+    Activity *activity = NoActivity;
 
     TimeSlot(Time beginTime,
              Duration duration,

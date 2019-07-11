@@ -37,11 +37,11 @@ QByteArray JSONSerializer::write() const {
     return QJsonDocument(json).toJson();
 }
 
-std::optional<Strategy> JSONSerializer::read(const QString &json) {
+std::unique_ptr<Strategy>
+JSONSerializer::read(const QString &json) {
     auto document = QJsonDocument::fromJson(json.toUtf8());
     if (!document.isObject()) {
-        // TODO: Wrong format, show alert
-        return std::nullopt;
+        return nullptr;
     }
 
     auto obj = document.object();
@@ -81,10 +81,10 @@ std::optional<Strategy> JSONSerializer::read(const QString &json) {
                 timeSlotDuration,
                 activities);
 
-        return Strategy(timeSlots, activities);
+        return std::make_unique<Strategy>(timeSlots, activities);
     }
 
-    return std::nullopt;
+    return nullptr;
 }
 
 QByteArray

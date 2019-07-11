@@ -5,24 +5,31 @@
 #ifndef STRATEGR_MAINSCENE_H
 #define STRATEGR_MAINSCENE_H
 
-#include <QWidget>
+#include "third-party/slidingstackedwidget.h"
 #include "strategy.h"
 
-class MainScene : public QWidget {
+#include "sessionswidget.h"
+#include "activitieswidget.h"
+
+class MainScene : public SlidingStackedWidget {
 Q_OBJECT
 public:
-    explicit MainScene(Strategy &strategy,
+    explicit MainScene(Strategy *strategy,
                        QWidget *parent = nullptr);
 
-    void showActivitiesList();
+    void showActivities();
+    void showSessions();
+
     void focusOnCurrentTime();
     void openStrategySettings();
 
-    void setStrategy(const Strategy &newStrategy);
+    void clearSelection();
 
-    void updateUI();
+    void setStrategy(Strategy *newStrategy);
 private:
-    Strategy &strategy;
+    Strategy *strategy;
+    SessionsWidget *sessionsWidget;
+    ActivitiesWidget *activitiesWidget;
 };
 
 #endif //STRATEGR_MAINSCENE_H

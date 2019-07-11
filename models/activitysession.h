@@ -15,7 +15,7 @@ struct ActivitySession {
     using Duration = TimeSlot::Duration;
 
     std::vector<const TimeSlot *> timeSlots;
-    const Activity *activity = nullptr;
+    Activity *activity = nullptr;
 
     Length length() const {
         return timeSlots.size();

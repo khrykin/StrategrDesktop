@@ -48,7 +48,34 @@ set(UI
         ui/windowgeometrymanager.cpp
         ui/windowgeometrymanager.h
         ui/applicationmenu.cpp
-        ui/applicationmenu.h ui/mainscene.cpp ui/mainscene.cpp ui/mainscene.h)
+        ui/applicationmenu.h
+        ui/mainscene.cpp
+        ui/mainscene.cpp
+        ui/mainscene.h
+        third-party/slidingstackedwidget.cpp
+        third-party/slidingstackedwidget.h
+        third-party/stacklayout.cpp
+        third-party/stacklayout.h
+        ui/sessionswidget.cpp
+        ui/sessionswidget.h
+        ui/activitieswidget.cpp
+        ui/activitieswidget.h
+        ui/strategysettingswidget.cpp
+        ui/strategysettingswidget.h
+        ui/currentsessionwidget.cpp
+        ui/currentsessionwidget.h
+        ui/slotboard.cpp
+        ui/slotboard.h
+        ui/slidinganimator.cpp
+        ui/slidinganimator.h
+        ui/slotswidget.cpp
+        ui/slotboard.h
+        ui/slotruler.cpp
+        ui/slotruler.h
+        ui/activitysessionwidget.cpp
+        ui/activitysessionwidget.h
+        ui/slotsmousehandler.cpp
+        ui/slotsmousehandler.h ui/selectionwidget.cpp ui/selectionwidget.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -56,13 +83,16 @@ set(UTILITY
         utility/filesystemiomanager.cpp
         utility/filesystemiomanager.h
         utility/applicationsettings.h
+        utility/utils.cpp
+        utility/utils.h
         #        utility/notifier.cpp
         #        utility/notifier.h
         #        utility/notifierbackend.h
         )
 
 set(UI_TESTS
-        ui/tests/main_window_test.cpp utility/testutils.h)
+        ui/tests/main_window_test.cpp
+        utility/testutils.h)
 
 qt5_add_resources(RESOURCES
         resources/icons.qrc
@@ -108,7 +138,6 @@ target_link_libraries(ui_tests
         Qt5::Test)
 
 target_link_libraries(Strategr Qt5::Widgets)
-
 
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES

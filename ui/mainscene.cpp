@@ -7,32 +7,43 @@
 #include <QLabel>
 #include <QLayout>
 
-MainScene::MainScene(Strategy &strategy, QWidget *parent)
-        : QWidget(parent), strategy(strategy) {
-    setLayout(new QHBoxLayout());
-    auto label = new QLabel("MainScene");
-    label->setAlignment(Qt::AlignCenter);
+MainScene::MainScene(Strategy *strategy, QWidget *parent)
+        : SlidingStackedWidget(parent), strategy(strategy) {
 
-    layout()->addWidget(label);
+    sessionsWidget = new SessionsWidget(strategy);
+    activitiesWidget = new ActivitiesWidget(this);
+
+    addWidget(sessionsWidget);
+    addWidget(activitiesWidget);
+
+    connect(activitiesWidget,
+            &ActivitiesWidget::wantToGetBack,
+            this,
+            &MainScene::showSessions);
 }
 
-void MainScene::showActivitiesList() {
+void MainScene::showActivities() {
+    slideToWidget(activitiesWidget);
+}
 
+void MainScene::showSessions() {
+    sessionsWidget->clearSelection();
+    slideToWidget(sessionsWidget);
 }
 
 void MainScene::focusOnCurrentTime() {
-
+    sessionsWidget->focusOnCurrentTime();
 }
 
 void MainScene::openStrategySettings() {
-
+    sessionsWidget->toggleStrategySettingsOpen();
 }
 
-void MainScene::setStrategy(const Strategy &newStrategy) {
-    strategy = newStrategy;
-    updateUI();
+void MainScene::setStrategy(Strategy *newStrategy) {
+    strategy = std::ref(newStrategy);
+    sessionsWidget->setStrategy(newStrategy);
 }
 
-void MainScene::updateUI() {
-
+void MainScene::clearSelection() {
+    sessionsWidget->clearSelection();
 }

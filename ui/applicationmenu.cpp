@@ -19,7 +19,6 @@ void ApplicationMenu::setupEditMenu() {
     addMenu(editMenu);
 
     // TODO
-//    editMenu->addAction(slotBoard->groupsList()->getUndoAction());
 //
 //    editMenu->addAction(slotBoard->groupsList()->getRedoAction());
 //
@@ -37,7 +36,7 @@ void ApplicationMenu::setupViewMenu() {
 
     viewMenu->addAction("Edit Activities",
                         window->scene(),
-                        &MainScene::showActivitiesList,
+                        &MainScene::showActivities,
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
 
     viewMenu->addSeparator();

@@ -13,7 +13,8 @@
 
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : window(parent) {}
 
-std::optional<Strategy> FileSystemIOManager::open() {
+std::unique_ptr<Strategy>
+FileSystemIOManager::open() {
     auto openFilepath = QFileDialog::getOpenFileName(
             window, QObject::tr("Open Strategy"), destinationDir(), searchPattern);
 
@@ -58,9 +59,10 @@ void FileSystemIOManager::saveAsDefault(const Strategy &strategy) {
     msgBox.exec();
 }
 
-std::optional<Strategy> FileSystemIOManager::read(const QString &readFilepath) {
+std::unique_ptr<Strategy>
+FileSystemIOManager::read(const QString &readFilepath) {
     if (readFilepath.isEmpty()) {
-        return std::nullopt;
+        return nullptr;
     }
 
     filepath = readFilepath;
@@ -68,7 +70,7 @@ std::optional<Strategy> FileSystemIOManager::read(const QString &readFilepath) {
     QFile file(filepath);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         showCantOpenDialog(file);
-        return std::nullopt;
+        return nullptr;
     };
 
     QTextStream in(&file);
@@ -86,7 +88,8 @@ std::optional<Strategy> FileSystemIOManager::read(const QString &readFilepath) {
     return strategy;
 }
 
-std::optional<Strategy> FileSystemIOManager::lastOpened() {
+std::optional<std::unique_ptr<Strategy>>
+FileSystemIOManager::lastOpened() {
     QSettings settings;
     if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
         auto lastFilepath = settings
@@ -115,7 +118,7 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-Strategy FileSystemIOManager::openDefaultStrategy() {
+std::unique_ptr<Strategy> FileSystemIOManager::openDefaultStrategy() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
                 .value(Settings::defaultStrategyKey)
@@ -124,13 +127,13 @@ Strategy FileSystemIOManager::openDefaultStrategy() {
         auto defaultStrategy = JSONSerializer::read(defaultStrategyString);
 
         return defaultStrategy
-               ? *defaultStrategy
-               : Strategy();
+               ? std::move(defaultStrategy)
+               : std::make_unique<Strategy>();
     }
 
     resetFilepath();
 
-    return Strategy();
+    return std::make_unique<Strategy>();
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
@@ -227,7 +230,7 @@ void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
                                  .arg(file.errorString()));
 }
 
-bool FileSystemIOManager::askIfWantToDiscard(const Strategy &strategy) {
+bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy) {
     auto returnValue = showAreYouSureDialog();
 
     if (returnValue == QMessageBox::Save) {

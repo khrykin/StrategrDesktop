@@ -26,16 +26,13 @@ public:
         return "ActivitySessionsList";
     }
 
+    std::optional<Index>
+    sessionIndexForTimeSlotIndex(TimeSlotsState::Index timeSlotIndex) const;
+
 private:
     using ActivitySessionsListBase::ActivitySessionsListBase;
 
-    void recalculateForTimeSlotsState(const TimeSlotsState &timeSlotsState) {
-        _vector = ActivitySessionsCalculator::
-        calculateForTimeSlotsState(timeSlotsState);
-
-        onChangeEvent();
-    };
-
+    void recalculateForTimeSlotsState(const TimeSlotsState &timeSlotsState);
 
     friend Strategy;
 };

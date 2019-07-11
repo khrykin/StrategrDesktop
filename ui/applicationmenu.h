@@ -13,7 +13,7 @@ class MainWindow;
 class ApplicationMenu : public QMenuBar {
 Q_OBJECT
 public:
-    explicit ApplicationMenu(MainWindow *window);;
+    explicit ApplicationMenu(MainWindow *window);
 
     void updateRecentFilesActions();
 private:

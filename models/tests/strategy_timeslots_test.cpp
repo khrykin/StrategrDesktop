@@ -107,6 +107,13 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         }
 
     }
+
+    SECTION("activity session index for time slot index") {
+        strategy.putActivityInTimeSlotsAtIndices(1, {1, 2});
+
+        REQUIRE(strategy.activitySessions().sessionIndexForTimeSlotIndex(0) == 0);
+        REQUIRE(strategy.activitySessions().sessionIndexForTimeSlotIndex(2) == 1);
+    }
 }
 
 TEST_CASE("Strategy sessions on change notifications", "[strategy][sessions]") {

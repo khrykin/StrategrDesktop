@@ -1,43 +1,58 @@
 #ifndef SLOTBOARD_H
 #define SLOTBOARD_H
 
-#include "currenttimemarker.h"
-#include "groupslist.h"
-#include "models/strategy.h"
-#include "slotruler.h"
-#include <QTimer>
+
 #include <QWidget>
 
+#include "strategy.h"
+//#include "currenttimemarker.h"
+#include "slotswidget.h"
+#include "slotruler.h"
+
 class SlotBoard : public QWidget {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit SlotBoard(QWidget *parent = nullptr);
+    explicit SlotBoard(Strategy *strategy,
+                       QWidget *parent = nullptr);
 
-  Strategy *strategy() const;
-  void setStrategy(Strategy *strategy);
+    void setStrategy(Strategy *newStrategy);
 
-  GroupsList *groupsList() const;
-  SlotRuler *slotRuler() const;
-
-  CurrentTimeMarker *currentTimeMarker() const;
-
-  int currentTimeMarkerTopOffset() const;
-
-signals:
-
-  void timerTick();
-
-public slots:
+    void clearSelection();
+//
+//  Strategy *strategy() const;
+//  void setStrategy(Strategy *strategy);
+//
+//  GroupsList *groupsList() const;
+//  SlotRuler *slotRuler() const;
+//
+//  CurrentTimeMarker *currentTimeMarker() const;
+//
+//  int currentTimeMarkerTopOffset() const;
+//
+//signals:
+//
+//  void timerTick();
+//
+//public slots:
 private:
-  Strategy *_strategy;
-  GroupsList *_groupsList;
-  SlotRuler *_slotRuler;
-  CurrentTimeMarker *_currentTimeMarker;
-  QTimer *currentTimeTimer;
-  int _currentTimeMarkerTopOffset;
+    Strategy *strategy;
 
-  void resizeEvent(QResizeEvent *event);
-  void updateCurrentTimeMarker();
+    SlotsWidget *slotsWidget = nullptr;
+    SlotRuler *slotRuler = nullptr;
+//  CurrentTimeMarker *_currentTimeMarker;
+//  QTimer *currentTimeTimer;
+//  int _currentTimeMarkerTopOffset;
+//
+//  void resizeEvent(QResizeEvent *event);
+//  void updateCurrentTimeMarker();
+
+    QWidget *makeHeader();
+    QWidget *makeFooter();
+    QStringList makeLabelsForStrategy();;
+
+    void updateUI();
+
+    void layoutChildWidgets(QHBoxLayout *mainLayout);
 };
 
 #endif // SLOTBOARD_H

@@ -8,16 +8,12 @@
 #include <QDesktopWidget>
 
 namespace ApplicationSettings {
-    const auto windowMinimumWidth = 200;
+    const auto windowMinimumWidth = 300;
     const auto windowMinimumHeight = 200;
     const auto windowInitialWidth = 400;
 
-    const auto lastOpenedDirectoryKey = "lastOpenedDirectory";
-    const auto lastOpenedStrategyKey = "lastOpenedStrategy";
-    const auto recentFilesKey = "recentFiles";
-    const auto defaultStrategyKey = "defaultStrategy";
-    const auto defaultActivitiesKey = "defaultActivities";
-    const auto numberOfRecent = 5;
+    const auto defaultSlotHeight = 35;
+    static const auto defaultRulerWidth = 60;
 }
 
 #endif //APPLICATIONSETTINGS_H

@@ -10,31 +10,28 @@ public:
     explicit JSONSerializer(const Strategy &strategy);
 
     QByteArray write() const;
-    static std::optional<Strategy> read(const QString &json);
+    static std::unique_ptr<Strategy> read(const QString &json);
     static QByteArray writeActivities(const std::vector<Activity> &activities);
 
-
 private:
+    struct Keys {
+        static constexpr auto slotDuration = "slotDuration";
+        static constexpr auto startTime = "startTime";
+        static constexpr auto activities = "activities";
+        static constexpr auto name = "name";
+        static constexpr auto color = "color";
+        static constexpr auto timeSlotsKey = "slots";
+    };
+
     const Strategy &strategy;
+
     static QJsonObject activityToJson(const Activity &activity);
-
     static ActivityList readActivities(const QJsonArray &jsonArray);
-
     static TimeSlotsState readTimeSlots(const QJsonArray &jsonArray,
                                         Strategy::Time beginTime,
                                         Strategy::Duration timeSlotDuration,
                                         const ActivityList &activities);
-
 };
 
-namespace Keys {
-    const QString slotDuration = "slotDuration";
-    const QString startTime = "startTime";
-    const QString activities = "activities";
-    const QString numberOfSlots = "numberOfSlots";
-    const QString name = "name";
-    const QString color = "color";
-    const QString timeSlotsKey = "slots";
-}; // namespace Keys
 
 #endif // JSONSERIALIZER_H
