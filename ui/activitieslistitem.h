@@ -12,60 +12,62 @@
 #include <QWidgetAction>
 
 class ActivitiesListItem : public QWidget {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit ActivitiesListItem(Activity activity, QWidget *parent = nullptr);
+    explicit ActivitiesListItem(Activity *activity,
+                                QWidget *parent = nullptr);
 
-  Activity activity() const;
-  void setActivity(const Activity &activity);
+    Activity *activity() const;
+    void setActivity(Activity *activity);
 
 signals:
-  void selected();
-  void wantToDelete();
-  void wantToEdit();
-  void activityEdited(const Activity &activity);
-
-public slots:
+    void selected();
+    void wantToDelete();
+    void wantToEdit();
+    void activityEdited(const Activity &activity);
 
 private:
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
-  void mouseDoubleClickEvent(QMouseEvent *event) override;
-  void contextMenuEvent(QContextMenuEvent *event) override;
-  void paintEvent(QPaintEvent *) override;
+    Activity *_activity;
 
-  void wantDeleteActivity();
-  void wantEditActivity();
-  void wantToSetCustomColor();
-  void customColorSet(const QColor &color);
+    QAction *editActivityAction = nullptr;
+    QAction *deleteActivityAction = nullptr;
+    QAction *customColorAction = nullptr;
 
-  void createLineEditWidgetAction();
-  void createColorWidgetAction();
+    QWidgetAction *colorWidgetAction = nullptr;
+    QWidgetAction *lineEditWidgetAction = nullptr;
 
-  void editActivityColor(const QColor &color);
-  void editActivityNameFromLineEdit();
+    QMenu *contextMenu = nullptr;
+    QColorDialog *colorDialog = nullptr;
+    QLineEdit *lineEdit = nullptr;
+    ColorPicker *colorPicker = nullptr;
+    QLabel *label = nullptr;
 
-  void colorPickerColorChanged(const std::optional<QColor> &color);
-  void colorDialogRejected();
-  void updateUI();
+    QColor previousColor;
+    bool _isClicked = false;
 
-  Activity _activity;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
 
-  QAction *editActivityAction;
-  QAction *deleteActivityAction;
-  QAction *customColorAction;
+    void wantDeleteActivity();
+    void wantEditActivity();
+    void wantToSetCustomColor();
 
-  QWidgetAction *colorWidgetAction = nullptr;
-  QWidgetAction *lineEditWidgetAction = nullptr;
+    void createLineEditWidgetAction();
+    void createColorWidgetAction();
 
-  QMenu *contextMenu = nullptr;
-  QColorDialog *colorDialog = nullptr;
-  QLineEdit *lineEdit = nullptr;
-  QColor previousColor;
-  ColorPicker *colorPicker = nullptr;
-  QLabel *label;
+    void editActivityColor(const QColor &color);
+    void editActivityNameFromLineEdit();
 
-  bool _isClicked = false;
+    void colorPickerColorChanged(const std::optional<QColor> &color);
+    void colorDialogRejected();
+    void updateUI();
+
+    void layoutChildWidgets();
+    void setupActions();
+    QMenu *makeContextMenu();
 };
 
 #endif // ACTIVITIESLISTITEM_H

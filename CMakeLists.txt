@@ -56,10 +56,12 @@ set(UI
         third-party/slidingstackedwidget.h
         third-party/stacklayout.cpp
         third-party/stacklayout.h
-        ui/sessionswidget.cpp
-        ui/sessionswidget.h
-        ui/activitieswidget.cpp
-        ui/activitieswidget.h
+        ui/sessionsmainwidget.cpp
+        ui/sessionsmainwidget.h
+        ui/activitieslistwidget.cpp
+        ui/activitieslistwidget.h
+        ui/activitieslistitem.cpp
+        ui/activitieslistitem.h
         ui/strategysettingswidget.cpp
         ui/strategysettingswidget.h
         ui/currentsessionwidget.cpp
@@ -75,7 +77,19 @@ set(UI
         ui/activitysessionwidget.cpp
         ui/activitysessionwidget.h
         ui/slotsmousehandler.cpp
-        ui/slotsmousehandler.h ui/selectionwidget.cpp ui/selectionwidget.h)
+        ui/slotsmousehandler.h
+        ui/selectionwidget.cpp
+        ui/selectionwidget.h
+        ui/navbar.cpp
+        ui/navbar.h
+        ui/colorpicker.cpp
+        ui/colorpicker.h
+        ui/colorpickeritem.cpp
+        ui/colorpicker.h
+        ui/enterpresseater.cpp
+        ui/mainscene.h
+        ui/newactivitymenu.cpp
+        ui/newactivitymenu.h)
 
 set(UTILITY
         utility/jsonserializer.cpp

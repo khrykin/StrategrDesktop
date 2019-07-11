@@ -6,8 +6,8 @@
 
 ActivitiesWidget::ActivitiesWidget(QWidget *parent) : QWidget(parent) {
     setupActions();
-
-    setLayout(new QHBoxLayout());
+    setLayout(new QVBoxLayout());
+    layout()->setSpacing(0);
 
     auto label = new QLabel("ActivitiesWidget");
     label->setAlignment(Qt::AlignCenter);

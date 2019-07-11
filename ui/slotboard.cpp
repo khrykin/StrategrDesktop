@@ -101,6 +101,10 @@ QStringList SlotBoard::makeLabelsForStrategy() {
 void SlotBoard::clearSelection() {
     slotsWidget->deselectAllSlots();
 }
+
+const SelectionWidget::RawSelectionState &SlotBoard::selection() {
+    return slotsWidget->selection();
+}
 //
 //Strategy *SlotBoard::strategy() const { return _strategy; }
 //

@@ -18,10 +18,10 @@ public:
     void setStrategy(Strategy *newStrategy);
 
     void clearSelection();
-//
-//  Strategy *strategy() const;
-//  void setStrategy(Strategy *strategy);
-//
+
+    const SelectionWidget::RawSelectionState &selection();
+
+
 //  GroupsList *groupsList() const;
 //  SlotRuler *slotRuler() const;
 //

@@ -20,14 +20,9 @@ public:
     void mouseMoveEvent(QMouseEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
 
-    const std::optional<int> &selectedGroupIndex() const;
-
     void reset();
-
 private:
     SlotsWidget *slotsWidget;
-
-    QVector<int> selectionSlots;
     std::optional<int> _selectedGroupIndex;
 
     bool isPulling = false;

@@ -97,7 +97,7 @@ void SlotsMouseHandler::setSelectedForSessionIndex(int sessionIndex,
                                                    bool isSelected) {
     auto *sessionWidget = sessionWidgetAtIndex(sessionIndex);
 
-    if (sessionWidget->isSelected() != isSelected) {
+    if (sessionWidget && sessionWidget->isSelected() != isSelected) {
         sessionWidget->setIsSelected(isSelected);
     }
 }
@@ -118,15 +118,10 @@ ActivitySessionWidget
 
 void SlotsMouseHandler::fillSlots(int fromIndex, int toIndex) {
     strategy()->fillTimeSlots(fromIndex, toIndex);
-    slotsWidget->updateUI();
 }
 
 Strategy *SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
-}
-
-const std::optional<int> &SlotsMouseHandler::selectedGroupIndex() const {
-    return _selectedGroupIndex;
 }
 
 void SlotsMouseHandler::reset() {
@@ -134,8 +129,7 @@ void SlotsMouseHandler::reset() {
     pulledFrom = -1;
     pulledTo = -1;
     _selectedGroupIndex = std::nullopt;
-
-    selectionSlots = {};
+    slotsWidget->selectionWidget->deselectAll();
 
     deselectAllSessions();
 }

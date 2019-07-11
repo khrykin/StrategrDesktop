@@ -2,9 +2,9 @@
 // Created by Dmitry Khrykin on 2019-07-10.
 //
 
-#include "sessionswidget.h"
+#include "sessionsmainwidget.h"
 
-SessionsWidget::SessionsWidget(Strategy *strategy,
+SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
                                QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
@@ -24,13 +24,13 @@ SessionsWidget::SessionsWidget(Strategy *strategy,
 
 
 
-//        auto label = new QLabel("SessionsWidget");
+//        auto label = new QLabel("SessionsMainWidget");
 //        label->setAlignment(Qt::AlignCenter);
 //
 //        layout()->addWidget(label);
 }
 
-void SessionsWidget::toggleStrategySettingsOpen() {
+void SessionsMainWidget::toggleStrategySettingsOpen() {
     if (strategySettingsWidget->isHidden()) {
         strategySettingsWidget->slideAndShow();
     } else {
@@ -38,11 +38,11 @@ void SessionsWidget::toggleStrategySettingsOpen() {
     }
 }
 
-void SessionsWidget::focusOnCurrentTime() {
+void SessionsMainWidget::focusOnCurrentTime() {
 
 }
 
-void SessionsWidget::layoutChildWidgets() {
+void SessionsMainWidget::layoutChildWidgets() {
     strategySettingsWidget = new StrategySettingsWidget(nullptr, nullptr);
     layout()->addWidget(strategySettingsWidget);
 
@@ -62,11 +62,15 @@ void SessionsWidget::layoutChildWidgets() {
     layout()->addWidget(slotBoardScrollArea);
 }
 
-void SessionsWidget::setStrategy(Strategy *newStrategy) {
+void SessionsMainWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     slotBoard->setStrategy(newStrategy);
 }
 
-void SessionsWidget::clearSelection() {
+void SessionsMainWidget::clearSelection() {
     slotBoard->clearSelection();
+}
+
+const SelectionWidget::RawSelectionState &SessionsMainWidget::selection() {
+    return slotBoard->selection();
 }

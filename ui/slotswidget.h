@@ -26,6 +26,9 @@ public:
     int slotHeight() const;
 
     void deselectAllSlots();
+
+    const SelectionWidget::RawSelectionState &selection();
+
 private:
     friend SlotsMouseHandler;
     Strategy *strategy;
@@ -42,8 +45,6 @@ private:
     QAction *deleteActivityAction = nullptr;
     QAction *clearSelectionAction = nullptr;
 
-    QAction *undoAction = nullptr;
-    QAction *redoAction = nullptr;
     QAction *selectAllAction = nullptr;
 
     void mousePressEvent(QMouseEvent *event) override;
@@ -51,8 +52,6 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
 
-    void undo();
-    void redo();
     void openActivitiesWindow();
     void deleteActivityInSelection();
     void selectAllSlots();

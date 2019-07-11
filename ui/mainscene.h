@@ -8,8 +8,8 @@
 #include "third-party/slidingstackedwidget.h"
 #include "strategy.h"
 
-#include "sessionswidget.h"
-#include "activitieswidget.h"
+#include "sessionsmainwidget.h"
+#include "activitieslistwidget.h"
 
 class MainScene : public SlidingStackedWidget {
 Q_OBJECT
@@ -25,11 +25,13 @@ public:
 
     void clearSelection();
 
+    const SelectionWidget::RawSelectionState &selection();
+
     void setStrategy(Strategy *newStrategy);
 private:
     Strategy *strategy;
-    SessionsWidget *sessionsWidget;
-    ActivitiesWidget *activitiesWidget;
+    SessionsMainWidget *sessionsMainWidget;
+    ActivitiesListWidget *activitiesWidget;
 };
 
 #endif //STRATEGR_MAINSCENE_H

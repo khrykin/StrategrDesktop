@@ -118,7 +118,8 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-std::unique_ptr<Strategy> FileSystemIOManager::openDefaultStrategy() {
+std::unique_ptr<Strategy>
+FileSystemIOManager::openDefaultStrategy() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
                 .value(Settings::defaultStrategyKey)

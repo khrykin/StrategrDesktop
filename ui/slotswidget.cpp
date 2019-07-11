@@ -15,6 +15,9 @@ SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
         : strategy(strategy),
           QWidget(parent) {
 
+    strategy->activitySessions()
+            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+
     setLayout(new StackLayout());
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
@@ -50,39 +53,45 @@ void SlotsWidget::updateUI() {
     }
 
     removeExtraWidgets();
+    slotsLayout->addStretch();
 }
 
 void SlotsWidget::reuseSessionSlotAtIndex(int sessionIndex) const {
-    ActivitySessionWidget *groupWidget;
+    ActivitySessionWidget *sessionWidget;
     auto &activitySession = strategy->activitySessions()[sessionIndex];
 
     auto *layoutItem = slotsLayout->itemAt(sessionIndex);
     if (layoutItem) {
-        groupWidget = qobject_cast<ActivitySessionWidget *>(layoutItem->widget());
+        sessionWidget = qobject_cast<ActivitySessionWidget *>(layoutItem->widget());
 
-        if (!groupWidget) {
+        if (sessionWidget && sessionWidget->isHidden()) {
+            sessionWidget->show();
+        }
+
+        if (!sessionWidget) {
             slotsLayout->removeItem(layoutItem);
-            return;
         }
-
-        if (groupWidget->isHidden()) {
-            groupWidget->show();
-        }
-    } else {
-        groupWidget = new ActivitySessionWidget(&activitySession);
-        groupWidget->setSlotHeight(slotHeight());
-        slotsLayout->addWidget(groupWidget);
     }
 
-    groupWidget->setActivitySession(&activitySession);
+    if (!sessionWidget || !layoutItem) {
+        sessionWidget = new ActivitySessionWidget(&activitySession);
+        sessionWidget->setSlotHeight(slotHeight());
+        slotsLayout->addWidget(sessionWidget);
+    }
+
+    sessionWidget->setActivitySession(&activitySession);
 }
 
 void SlotsWidget::removeExtraWidgets() const {
     auto hideAtIndex = strategy->activitySessions().size();
     while (slotsLayout->itemAt(hideAtIndex) != nullptr) {
         auto itemToHide = slotsLayout->itemAt(hideAtIndex);
-        if (itemToHide->widget() != nullptr) {
+        if (itemToHide->widget()) {
             itemToHide->widget()->hide();
+            auto isSessionWidget = qobject_cast<ActivitySessionWidget *>(itemToHide->widget());
+            if (!isSessionWidget) {
+                layout()->removeItem(itemToHide);
+            }
         }
 
         hideAtIndex++;
@@ -126,22 +135,6 @@ void SlotsWidget::setupActions() {
             this,
             &SlotsWidget::selectAllSlots);
     addAction(selectAllAction);
-
-    undoAction = new QAction(tr("Undo"), this);
-    undoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z));
-    connect(undoAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::undo);
-    addAction(undoAction);
-
-    redoAction = new QAction(tr("Redo"), this);
-    redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-    connect(redoAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::redo);
-    addAction(redoAction);
 }
 
 void SlotsWidget::mousePressEvent(QMouseEvent *event) {
@@ -163,16 +156,6 @@ void SlotsWidget::contextMenuEvent(QContextMenuEvent *event) {
 
 int SlotsWidget::slotHeight() const { return _slotHeight; }
 
-void SlotsWidget::undo() {
-    strategy->undo();
-    updateUI();
-}
-
-void SlotsWidget::redo() {
-    strategy->redo();
-    updateUI();
-}
-
 void SlotsWidget::openActivitiesWindow() {
     if (!selectionWidget->selection().empty()) {
         mainScene()->showActivities();
@@ -183,7 +166,6 @@ void SlotsWidget::deleteActivityInSelection() {
 
     strategy->emptyTimeSlotsAtIndices(selectionWidget->selection());
     selectionWidget->deselectAll();
-    updateUI();
 }
 
 void SlotsWidget::deselectAllSlots() {
@@ -196,12 +178,19 @@ void SlotsWidget::selectAllSlots() {
 
 void SlotsWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
+    strategy->activitySessions()
+            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+
     updateUI();
     mouseHandler.reset();
 }
 
 MainScene *SlotsWidget::mainScene() {
     return findParentWidget<MainScene>(this);
+}
+
+const SelectionWidget::RawSelectionState &SlotsWidget::selection() {
+    return selectionWidget->selection();
 }
 
 

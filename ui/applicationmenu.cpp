@@ -18,6 +18,35 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 void ApplicationMenu::setupEditMenu() {
     addMenu(editMenu);
 
+    viewMenu->addAction(tr("Undo"),
+                        [=]() {
+                            window->strategy->undo();
+                        },
+                        QKeySequence(Qt::CTRL + Qt::Key_Z));
+
+    viewMenu->addAction(tr("Redo"),
+                        [=]() {
+                            window->strategy->redo();
+                        },
+                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+
+
+//    undoAction = new QAction(, this);
+//    undoAction->setShortcut(QKeySequence());
+//    connect(undoAction,
+//            &QAction::triggered,
+//            this,
+//            &SlotsWidget::undo);
+//    addAction(undoAction);
+//
+//    redoAction = new QAction(tr("Redo"), this);
+//    redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+//    connect(redoAction,
+//            &QAction::triggered,
+//            this,
+//            &SlotsWidget::redo);
+//    addAction(redoAction);
+
     // TODO
 //
 //    editMenu->addAction(slotBoard->groupsList()->getRedoAction());
@@ -34,14 +63,14 @@ void ApplicationMenu::setupViewMenu() {
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction("Edit Activities",
+    viewMenu->addAction(tr("Edit Activities"),
                         window->scene(),
                         &MainScene::showActivities,
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction("Go to Current Time",
+    viewMenu->addAction(tr("Go to Current Time"),
                         window->scene(),
                         &MainScene::focusOnCurrentTime,
                         QKeySequence(Qt::CTRL + Qt::Key_Slash));
@@ -52,12 +81,12 @@ void ApplicationMenu::setupViewMenu() {
 void ApplicationMenu::setupFileMenu() {
     addMenu(fileMenu);
 
-    fileMenu->addAction("New",
+    fileMenu->addAction(tr("New"),
                         window,
                         &MainWindow::openNewWindow,
                         QKeySequence(Qt::CTRL + Qt::Key_N));
 
-    fileMenu->addAction("Open",
+    fileMenu->addAction(tr("Open"),
                         window,
                         &MainWindow::openFile,
                         QKeySequence(Qt::CTRL + Qt::Key_O));
@@ -66,31 +95,31 @@ void ApplicationMenu::setupFileMenu() {
 
     fileMenu->addSeparator();
 
-    fileMenu->addAction("Save",
+    fileMenu->addAction(tr("Save"),
                         window,
                         &MainWindow::saveFile,
                         QKeySequence(Qt::CTRL + Qt::Key_S));
 
-    fileMenu->addAction("Save As",
+    fileMenu->addAction(tr("Save As"),
                         window,
                         &MainWindow::saveFileAs,
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
 
     fileMenu->addSeparator();
 
-    fileMenu->addAction("Close",
+    fileMenu->addAction(tr("Close"),
                         window,
                         &MainWindow::close,
                         QKeySequence(Qt::CTRL + Qt::Key_W));
 
     fileMenu->addSeparator();
 
-    fileMenu->addAction("Settings",
+    fileMenu->addAction(tr("Settings"),
                         window->scene(),
                         &MainScene::openStrategySettings,
                         QKeySequence(Qt::CTRL + Qt::Key_Comma));
 
-    fileMenu->addAction("Save Current Strategy as Default",
+    fileMenu->addAction(tr("Save Current Strategy as Default"),
                         window,
                         &MainWindow::saveCurrentStrategyAsDefault,
                         QKeySequence(Qt::CTRL + Qt::Key_D));
@@ -107,7 +136,7 @@ void ApplicationMenu::setupRecentMenu() {
 
     recentMenu->addSeparator();
 
-    recentMenu->addAction("Clear List",
+    recentMenu->addAction(tr("Clear List"),
                           window,
                           &MainWindow::clearRecentFilesList);
 

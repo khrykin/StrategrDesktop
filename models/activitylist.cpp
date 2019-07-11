@@ -10,6 +10,7 @@ void ActivityList::add(const Activity &activity) {
         throw AlreadyPresentException();
     }
 
+
     _vector.push_back(std::make_shared<Activity>(activity));
 
     onChangeEvent();

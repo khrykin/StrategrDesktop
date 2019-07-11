@@ -10,14 +10,14 @@
 MainScene::MainScene(Strategy *strategy, QWidget *parent)
         : SlidingStackedWidget(parent), strategy(strategy) {
 
-    sessionsWidget = new SessionsWidget(strategy);
-    activitiesWidget = new ActivitiesWidget(this);
+    sessionsMainWidget = new SessionsMainWidget(strategy);
+    activitiesWidget = new ActivitiesListWidget(strategy);
 
-    addWidget(sessionsWidget);
+    addWidget(sessionsMainWidget);
     addWidget(activitiesWidget);
 
     connect(activitiesWidget,
-            &ActivitiesWidget::wantToGetBack,
+            &ActivitiesListWidget::wantToGetBack,
             this,
             &MainScene::showSessions);
 }
@@ -27,23 +27,29 @@ void MainScene::showActivities() {
 }
 
 void MainScene::showSessions() {
-    sessionsWidget->clearSelection();
-    slideToWidget(sessionsWidget);
+    sessionsMainWidget->clearSelection();
+    slideToWidget(sessionsMainWidget);
 }
 
 void MainScene::focusOnCurrentTime() {
-    sessionsWidget->focusOnCurrentTime();
+    sessionsMainWidget->focusOnCurrentTime();
 }
 
 void MainScene::openStrategySettings() {
-    sessionsWidget->toggleStrategySettingsOpen();
+    sessionsMainWidget->toggleStrategySettingsOpen();
 }
 
 void MainScene::setStrategy(Strategy *newStrategy) {
-    strategy = std::ref(newStrategy);
-    sessionsWidget->setStrategy(newStrategy);
+    strategy = newStrategy;
+
+    sessionsMainWidget->setStrategy(newStrategy);
+    activitiesWidget->setStrategy(newStrategy);
 }
 
 void MainScene::clearSelection() {
-    sessionsWidget->clearSelection();
+    sessionsMainWidget->clearSelection();
+}
+
+const SelectionWidget::RawSelectionState &MainScene::selection() {
+    return sessionsMainWidget->selection();
 }

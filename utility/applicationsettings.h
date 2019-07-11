@@ -13,7 +13,8 @@ namespace ApplicationSettings {
     const auto windowInitialWidth = 400;
 
     const auto defaultSlotHeight = 35;
-    static const auto defaultRulerWidth = 60;
+    const auto defaultRulerWidth = 60;
+    const auto defaultActivityItemHeight = 40;
 }
 
 #endif //APPLICATIONSETTINGS_H
