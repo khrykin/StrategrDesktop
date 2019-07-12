@@ -14,9 +14,11 @@
 #include "applicationsettings.h"
 #include "slotsmousehandler.h"
 #include "selectionwidget.h"
+#include "reactivelist.hpp"
 
 class MainScene;
-class SlotsWidget : public QWidget {
+class SlotsWidget : public QWidget,
+                    public ReactiveList<ActivitySessionWidget> {
 Q_OBJECT
 public:
     explicit SlotsWidget(Strategy *strategy,
@@ -58,13 +60,16 @@ private:
 
     void setupActions();
 
-    void updateUI();
-
-    void removeExtraWidgets() const;
-    void reuseSessionSlotAtIndex(int sessionIndex) const;
     void layoutChildWidgets();
 
     MainScene *mainScene();
+
+    // ReactiveList
+
+    int numberOfItems() override;
+    QVBoxLayout *listLayout() override;;
+    void reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) override;
+    ActivitySessionWidget *makeNewItemAtIndex(int index) override;
 };
 
 #endif // GROUPSLIST_H

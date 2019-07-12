@@ -3,15 +3,18 @@
 
 #include <QScrollArea>
 #include <QWidget>
+#include <QVBoxLayout>
 
 #include "models/strategy.h"
 #include "navbar.h"
 #include "newactivitymenu.h"
 #include "third-party/slidingstackedwidget.h"
 #include "activitieslistitem.h"
+#include "reactivelist.hpp"
 
 class MainScene;
-class ActivitiesListWidget : public QWidget {
+class ActivitiesListWidget : public QWidget,
+                             public ReactiveList<ActivitiesListItem> {
 Q_OBJECT
 public:
     explicit ActivitiesListWidget(Strategy *strategy,
@@ -20,13 +23,6 @@ public:
     void setStrategy(Strategy *strategy);
 signals:
     void wantToGetBack();
-    void wantNewActivity();
-
-    void selectActivity(const Activity *activity);
-    void activityRemoved(const Activity *activity);
-    void activityEditedAtIndex(int index, Activity *activity);
-    void wantToEditActivity(const Activity *activity);
-    void activityAppended(const Activity *activity);
 private:
     QScrollArea *scrollArea = nullptr;
     QWidget *listWidget = nullptr;
@@ -42,16 +38,16 @@ private:
     void setupNavbar();
     void layoutChildWidgets();
 
-    void addActivity(const Activity &activity);
-
-    void updateUI();
     void paintEvent(QPaintEvent *) override;
     void setupActions();
-    void removeStretch();
-    void reuseItemAtIndex(int index);
-    void removeExtraRows();
-    void addStretch();
+
     void reconnectItemAtIndex(int index, ActivitiesListItem *item);
+
+    // ReactiveList
+    int numberOfItems() override;
+    QVBoxLayout *listLayout() override;
+    void reuseItemAtIndex(int index, ActivitiesListItem *itemWidget) override;
+    ActivitiesListItem *makeNewItemAtIndex(int index) override;
 };
 
 #endif // ACTIVITIESLISTWIDGET_H

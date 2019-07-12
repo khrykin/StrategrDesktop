@@ -127,10 +127,8 @@ QString ActivitySessionWidget::labelText() const {
 }
 
 void ActivitySessionWidget::setActivitySession(const ActivitySession *newActivitySession) {
-    if (newActivitySession != activitySession) {
-        activitySession = newActivitySession;
-        updateUI();
-    }
+    activitySession = newActivitySession;
+    updateUI();
 }
 
 void ActivitySessionWidget::setSlotHeight(int newSlotHeight) {

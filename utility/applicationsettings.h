@@ -15,6 +15,8 @@ namespace ApplicationSettings {
     const auto defaultSlotHeight = 35;
     const auto defaultRulerWidth = 60;
     const auto defaultActivityItemHeight = 40;
+
+    const auto currentTimeTimerInterval = 1 * 1000;
 }
 
 #endif //APPLICATIONSETTINGS_H

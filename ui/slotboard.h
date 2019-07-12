@@ -1,15 +1,19 @@
 #ifndef SLOTBOARD_H
 #define SLOTBOARD_H
 
-
 #include <QWidget>
+#include <QScrollArea>
 
 #include "strategy.h"
-//#include "currenttimemarker.h"
+#include "currenttimemarker.h"
 #include "slotswidget.h"
 #include "slotruler.h"
+#include "parentwindowaccessible.h"
 
-class SlotBoard : public QWidget {
+class MainWindow;
+class SlotBoard :
+        public QWidget,
+        public ParentWindowAccessible<SlotBoard> {
 Q_OBJECT
 public:
     explicit SlotBoard(Strategy *strategy,
@@ -18,33 +22,25 @@ public:
     void setStrategy(Strategy *newStrategy);
 
     void clearSelection();
+    void focusOnCurrentTime();
 
     const SelectionWidget::RawSelectionState &selection();
 
+signals:
+    void timerTick();
 
-//  GroupsList *groupsList() const;
-//  SlotRuler *slotRuler() const;
-//
-//  CurrentTimeMarker *currentTimeMarker() const;
-//
-//  int currentTimeMarkerTopOffset() const;
-//
-//signals:
-//
-//  void timerTick();
-//
-//public slots:
 private:
     Strategy *strategy;
 
     SlotsWidget *slotsWidget = nullptr;
     SlotRuler *slotRuler = nullptr;
-//  CurrentTimeMarker *_currentTimeMarker;
-//  QTimer *currentTimeTimer;
-//  int _currentTimeMarkerTopOffset;
-//
-//  void resizeEvent(QResizeEvent *event);
-//  void updateCurrentTimeMarker();
+
+    CurrentTimeMarker *currentTimeMarker;
+    QTimer *currentTimeTimer;
+    int currentTimeMarkerTopOffset;
+
+    void resizeEvent(QResizeEvent *event) override;
+    void updateCurrentTimeMarker();
 
     QWidget *makeHeader();
     QWidget *makeFooter();
@@ -53,6 +49,10 @@ private:
     void updateUI();
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
+    double calculateTimeMarkerTopOffset() const;
+    QRect calculateCurrentTimeMarkerGeometry() const;
+
+    QScrollArea *parentScrollArea();
 };
 
 #endif // SLOTBOARD_H

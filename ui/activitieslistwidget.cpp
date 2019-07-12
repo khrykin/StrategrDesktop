@@ -15,7 +15,7 @@ ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
                                            QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     strategy->activities()
-            .setOnChangeCallback(this, &ActivitiesListWidget::updateUI);
+            .setOnChangeCallback(this, &ActivitiesListWidget::updateList);
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
@@ -29,7 +29,7 @@ ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
                   "background: white;"
                   "}");
 
-    updateUI();
+    updateList();
 }
 
 void ActivitiesListWidget::setupActions() {
@@ -91,47 +91,6 @@ void ActivitiesListWidget::getBack() {
     emit wantToGetBack();
 }
 
-void ActivitiesListWidget::updateUI() {
-    auto activitiesCount = strategy->activities().size();
-
-    removeStretch();
-
-    for (int index = 0; index < activitiesCount; index++) {
-        reuseItemAtIndex(index);
-    }
-
-    removeExtraRows();
-    addStretch();
-}
-
-void ActivitiesListWidget::addStretch() {
-    qobject_cast<QVBoxLayout *>(listWidget->layout())->addStretch();
-}
-
-void ActivitiesListWidget::removeExtraRows() {
-    auto activitiesCount = strategy->activities().size();
-    while (listWidget->layout()->itemAt(activitiesCount) != nullptr) {
-        listWidget->layout()->itemAt(activitiesCount)->widget()->hide();
-        listWidget->layout()->removeItem(
-                listWidget->layout()->itemAt(activitiesCount));
-    }
-}
-
-void ActivitiesListWidget::reuseItemAtIndex(int index) {
-    auto activity = strategy->activities().at(index);
-    auto *currentItem = listWidget->layout()->itemAt(index);
-
-    ActivitiesListItem *item;
-    if (currentItem) {
-        item = qobject_cast<ActivitiesListItem *>(currentItem->widget());
-        item->setActivity(activity);
-    } else {
-        item = new ActivitiesListItem(activity);
-        listWidget->layout()->addWidget(item);
-    }
-
-    reconnectItemAtIndex(index, item);
-}
 
 void ActivitiesListWidget::reconnectItemAtIndex(int index,
                                                 ActivitiesListItem *item) {
@@ -152,8 +111,6 @@ void ActivitiesListWidget::reconnectItemAtIndex(int index,
             &ActivitiesListItem::wantToDelete,
             [=]() {
                 strategy->removeActivityAtIndex(index);
-                item->hide();
-                listWidget->layout()->removeWidget(item);
             });
 
     connect(item,
@@ -161,16 +118,6 @@ void ActivitiesListWidget::reconnectItemAtIndex(int index,
             [=](const Activity &newActivity) {
                 strategy->editActivityAtIndex(index, newActivity);
             });
-}
-
-void ActivitiesListWidget::removeStretch() {
-    for (auto i = 0; i < listWidget->layout()->count(); i++) {
-        auto *layoutItem = listWidget->layout()->itemAt(i);
-        auto stretch = dynamic_cast<QSpacerItem *>(layoutItem);
-        if (stretch) {
-            listWidget->layout()->removeItem(stretch);
-        }
-    }
 }
 
 void ActivitiesListWidget::sendWantNewActivity() {
@@ -187,11 +134,28 @@ void ActivitiesListWidget::sendWantNewActivity() {
 void ActivitiesListWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     strategy->activities()
-            .setOnChangeCallback(this, &ActivitiesListWidget::updateUI);
+            .setOnChangeCallback(this, &ActivitiesListWidget::updateList);
 
-    updateUI();
+    updateList();
 }
 
-void ActivitiesListWidget::addActivity(const Activity &activity) {
-    this->strategy->addActivity(activity);
+int ActivitiesListWidget::numberOfItems() {
+    return strategy->activities().size();
+}
+
+QVBoxLayout *ActivitiesListWidget::listLayout() {
+    return qobject_cast<QVBoxLayout *>(listWidget->layout());
+}
+
+void ActivitiesListWidget::reuseItemAtIndex(int index, ActivitiesListItem *itemWidget) {
+    auto activity = strategy->activities().at(index);
+    itemWidget->setActivity(activity);
+    reconnectItemAtIndex(index, itemWidget);
+}
+
+ActivitiesListItem *ActivitiesListWidget::makeNewItemAtIndex(int index) {
+    auto activity = strategy->activities().at(index);
+    auto itemWidget = new ActivitiesListItem(activity);
+    reconnectItemAtIndex(index, itemWidget);
+    return itemWidget;
 }

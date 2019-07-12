@@ -18,6 +18,7 @@ void ActivityList::add(const Activity &activity) {
 
 void ActivityList::removeAtIndex(ActivityIndex index) {
     _vector.erase(_vector.begin() + index);
+
     onChangeEvent();
 }
 
@@ -27,6 +28,7 @@ void ActivityList::editAtIndex(ActivityIndex index, const Activity &newActivity)
     }
 
     _vector[index] = std::make_shared<Activity>(newActivity);
+
     onChangeEvent();
 }
 
@@ -90,6 +92,7 @@ Activity *ActivityList::at(ActivityIndex itemIndex) const {
 
 ActivityList &ActivityList::operator=(const ActivityList &newList) {
     _vector = newList._vector;
+
     onChangeEvent();
 
     return *this;

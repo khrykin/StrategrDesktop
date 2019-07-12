@@ -16,7 +16,7 @@ SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
           QWidget(parent) {
 
     strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+            .setOnChangeCallback(this, &SlotsWidget::updateList);
 
     setLayout(new StackLayout());
     layout()->setSpacing(0);
@@ -30,7 +30,7 @@ SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
                   "border-top: 1px solid #d8d8d8;"
                   "}");
 
-    updateUI();
+    updateList();
 }
 
 void SlotsWidget::layoutChildWidgets() {
@@ -45,57 +45,6 @@ void SlotsWidget::layoutChildWidgets() {
 
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
-}
-
-void SlotsWidget::updateUI() {
-    for (auto i = 0; i < strategy->activitySessions().size(); i++) {
-        reuseSessionSlotAtIndex(i);
-    }
-
-    removeExtraWidgets();
-    slotsLayout->addStretch();
-}
-
-void SlotsWidget::reuseSessionSlotAtIndex(int sessionIndex) const {
-    ActivitySessionWidget *sessionWidget;
-    auto &activitySession = strategy->activitySessions()[sessionIndex];
-
-    auto *layoutItem = slotsLayout->itemAt(sessionIndex);
-    if (layoutItem) {
-        sessionWidget = qobject_cast<ActivitySessionWidget *>(layoutItem->widget());
-
-        if (sessionWidget && sessionWidget->isHidden()) {
-            sessionWidget->show();
-        }
-
-        if (!sessionWidget) {
-            slotsLayout->removeItem(layoutItem);
-        }
-    }
-
-    if (!sessionWidget || !layoutItem) {
-        sessionWidget = new ActivitySessionWidget(&activitySession);
-        sessionWidget->setSlotHeight(slotHeight());
-        slotsLayout->addWidget(sessionWidget);
-    }
-
-    sessionWidget->setActivitySession(&activitySession);
-}
-
-void SlotsWidget::removeExtraWidgets() const {
-    auto hideAtIndex = strategy->activitySessions().size();
-    while (slotsLayout->itemAt(hideAtIndex) != nullptr) {
-        auto itemToHide = slotsLayout->itemAt(hideAtIndex);
-        if (itemToHide->widget()) {
-            itemToHide->widget()->hide();
-            auto isSessionWidget = qobject_cast<ActivitySessionWidget *>(itemToHide->widget());
-            if (!isSessionWidget) {
-                layout()->removeItem(itemToHide);
-            }
-        }
-
-        hideAtIndex++;
-    }
 }
 
 
@@ -179,9 +128,9 @@ void SlotsWidget::selectAllSlots() {
 void SlotsWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+            .setOnChangeCallback(this, &SlotsWidget::updateList);
 
-    updateUI();
+    updateList();
     mouseHandler.reset();
 }
 
@@ -191,6 +140,27 @@ MainScene *SlotsWidget::mainScene() {
 
 const SelectionWidget::RawSelectionState &SlotsWidget::selection() {
     return selectionWidget->selection();
+}
+
+int SlotsWidget::numberOfItems() {
+    return strategy->activitySessions().size();
+}
+
+QVBoxLayout *SlotsWidget::listLayout() {
+    return slotsLayout;
+}
+
+void SlotsWidget::reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) {
+    const auto &session = strategy->activitySessions()[index];
+    itemWidget->setActivitySession(&session);
+}
+
+ActivitySessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
+    const auto &session = strategy->activitySessions()[index];
+    auto itemWidget = new ActivitySessionWidget(&session);
+    itemWidget->setSlotHeight(slotHeight());
+
+    return itemWidget;
 }
 
 

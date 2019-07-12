@@ -3,9 +3,13 @@
 
 #include <QStringList>
 #include <QWidget>
-#include "applicationsettings.h"
+#include <QLabel>
 
-class SlotRuler : public QWidget {
+#include "applicationsettings.h"
+#include "reactivelist.hpp"
+
+class SlotRuler : public QWidget,
+                  public ReactiveList<QLabel> {
 Q_OBJECT
 
 public:
@@ -24,10 +28,13 @@ private:
     int _cellHeight = ApplicationSettings::defaultSlotHeight;
 
     void paintEvent(QPaintEvent *) override;
-    void updateUI();
 
-    void removeExtraCells() const;
-    void reuseCellAtIndex(int cellIndex) const;
+    // ReactiveList
+
+    int numberOfItems() override;
+    QVBoxLayout *listLayout() override;
+    void reuseItemAtIndex(int index, QLabel *itemWidget) override;
+    QLabel *makeNewItemAtIndex(int index) override;
 };
 
 #endif // SLOTRULER_H

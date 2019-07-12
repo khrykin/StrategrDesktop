@@ -40,6 +40,7 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
         SECTION("at index") {
             strategy.removeActivityAtIndex(0);
             REQUIRE(strategy.activities()[0] == activity2);
+            REQUIRE(strategy.activities().size() == 1);
         }
     }
 

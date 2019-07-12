@@ -32,7 +32,7 @@ set(MODELS
         models/activitysessionscalculator.cpp
         models/activitysessionscalculator.h
         models/strategyhistory.cpp
-        models/strategyhistory.h)
+        models/strategyhistory.h models/currenttimesession.cpp models/currenttimesession.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -89,7 +89,12 @@ set(UI
         ui/enterpresseater.cpp
         ui/mainscene.h
         ui/newactivitymenu.cpp
-        ui/newactivitymenu.h)
+        ui/newactivitymenu.h
+        ui/currenttimemarker.cpp
+        ui/currenttimemarker.h
+        ui/parentwindowaccessible.cpp
+        ui/parentwindowaccessible.h
+        ui/reactivelist.hpp)
 
 set(UTILITY
         utility/jsonserializer.cpp

@@ -5,7 +5,7 @@
 #include "sessionsmainwidget.h"
 
 SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
-                               QWidget *parent)
+                                       QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -20,7 +20,7 @@ SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
 //        currentActivityWidget->hide();
 
 //        connect(currentActivityWidget, &CurrentActivityWidget::clicked, this,
-//                &MainWindow::focusOnCurrentTime);
+//                &SessionsMainWidget::focusOnCurrentTime);
 
 
 
@@ -39,7 +39,7 @@ void SessionsMainWidget::toggleStrategySettingsOpen() {
 }
 
 void SessionsMainWidget::focusOnCurrentTime() {
-
+    slotBoard->focusOnCurrentTime();
 }
 
 void SessionsMainWidget::layoutChildWidgets() {

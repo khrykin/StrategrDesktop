@@ -8,6 +8,8 @@
 #include <QSpinBox>
 #include <QStyle>
 #include <QStyleOption>
+#include <iostream>
+
 #include "applicationsettings.h"
 
 ActivitiesListItem::ActivitiesListItem(Activity *activity, QWidget *parent)
@@ -188,20 +190,20 @@ void ActivitiesListItem::updateUI() {
 Activity *ActivitiesListItem::activity() const { return _activity; }
 
 void ActivitiesListItem::setActivity(Activity *activity) {
-    _activity = activity;
-    updateUI();
+    if (activity != _activity) {
+        _activity = activity;
+        std::cout << "Activity update " << *activity << std::endl;
+        updateUI();
+    }
 }
 
 void ActivitiesListItem::mousePressEvent(QMouseEvent *event) {
     if (event->buttons() == Qt::LeftButton) {
         _isClicked = true;
     }
-
-    qDebug() << "mousePressEvent";
 }
 
 void ActivitiesListItem::mouseReleaseEvent(QMouseEvent *event) {
-    qDebug() << "mouseReleaseEvent";
     if (_isClicked) {
         emit selected();
     }
