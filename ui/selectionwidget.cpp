@@ -51,6 +51,8 @@ void SelectionWidget::selectAtIndex(int slotIndex) {
     }
 
     updateUI();
+
+    emit selectionChanged();
 }
 
 void SelectionWidget::setSlotHeight(int newSlotHeight) {
@@ -59,7 +61,7 @@ void SelectionWidget::setSlotHeight(int newSlotHeight) {
 }
 
 void SelectionWidget::updateUI() {
-    auto selectionState = makeSelectionState(rawSelectionState);
+    selectionState = makeSelectionState(rawSelectionState);
 
     for (auto *child : children()) {
         delete child;
@@ -100,15 +102,23 @@ void SelectionWidget::resizeEvent(QResizeEvent *event) {
 
 void SelectionWidget::deselectAll() {
     rawSelectionState = {};
+
     updateUI();
+    emit selectionChanged();
 }
 
 void SelectionWidget::selectAll(int numberOfSlots) {
     rawSelectionState = RawSelectionState(numberOfSlots);
     std::iota(rawSelectionState.begin(), rawSelectionState.end(), 0);
+
     updateUI();
+    emit selectionChanged();
 }
 
 const SelectionWidget::RawSelectionState &SelectionWidget::selection() const {
     return rawSelectionState;
+}
+
+bool SelectionWidget::selectionIsContinuous() const {
+    return selectionState.size() == 1;
 }

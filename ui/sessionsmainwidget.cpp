@@ -3,6 +3,8 @@
 //
 
 #include "sessionsmainwidget.h"
+#include "currentactivitysession.h"
+#include <QDebug>
 
 SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
                                        QWidget *parent)
@@ -14,20 +16,6 @@ SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
     setLayout(mainLayout);
 
     layoutChildWidgets();
-
-//        currentActivityWidget = new CurrentActivityWidget(this);
-//        currentActivityWidget->setProgress(0.75);
-//        currentActivityWidget->hide();
-
-//        connect(currentActivityWidget, &CurrentActivityWidget::clicked, this,
-//                &SessionsMainWidget::focusOnCurrentTime);
-
-
-
-//        auto label = new QLabel("SessionsMainWidget");
-//        label->setAlignment(Qt::AlignCenter);
-//
-//        layout()->addWidget(label);
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {
@@ -43,12 +31,16 @@ void SessionsMainWidget::focusOnCurrentTime() {
 }
 
 void SessionsMainWidget::layoutChildWidgets() {
-    strategySettingsWidget = new StrategySettingsWidget(nullptr, nullptr);
+    strategySettingsWidget = new StrategySettingsWidget(strategy);
     layout()->addWidget(strategySettingsWidget);
 
     currentSessionWidget = new CurrentSessionWidget();
+    currentSessionWidget->hide();
     layout()->addWidget(currentSessionWidget);
 
+    connect(currentSessionWidget,
+            &CurrentSessionWidget::clicked, this,
+            &SessionsMainWidget::focusOnCurrentTime);
 
     slotBoardScrollArea = new QScrollArea();
     slotBoardScrollArea->setWidgetResizable(true);
@@ -56,6 +48,11 @@ void SessionsMainWidget::layoutChildWidgets() {
     slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
     slotBoard = new SlotBoard(strategy);
+
+    connect(slotBoard,
+            &SlotBoard::timerTick,
+            this,
+            &SessionsMainWidget::updateCurrentSessionWidget);
 
     slotBoardScrollArea->setWidget(slotBoard);
 
@@ -65,6 +62,7 @@ void SessionsMainWidget::layoutChildWidgets() {
 void SessionsMainWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     slotBoard->setStrategy(newStrategy);
+    strategySettingsWidget->setStrategy(newStrategy);
 }
 
 void SessionsMainWidget::clearSelection() {
@@ -73,4 +71,22 @@ void SessionsMainWidget::clearSelection() {
 
 const SelectionWidget::RawSelectionState &SessionsMainWidget::selection() {
     return slotBoard->selection();
+}
+
+void SessionsMainWidget::updateCurrentSessionWidget() {
+    strategySettingsWidget->setStrategy(strategy);
+
+    auto currentSession = CurrentActivitySession::forStrategy(*strategy);
+    if (currentSession) {
+        currentSessionWidget->setActivitySession(*currentSession);
+        if (!currentSessionWidgetIsVisible) {
+            currentSessionWidgetIsVisible = true;
+            currentSessionWidget->slideAndShow();
+        }
+    } else {
+        if (currentSessionWidgetIsVisible) {
+            currentSessionWidgetIsVisible = false;
+            currentSessionWidget->slideAndHide();
+        }
+    }
 }

@@ -66,18 +66,11 @@ public:
 
     void fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex);
 
+    void shiftBelowTimeSlot(TimeSlotIndex fromIndex, int length);
+
     void commitToHistory();
     void undo();
     void redo();
-
-    // TODO
-//    std::optional<ActivitySession *> currentSession() {
-//
-//    }
-//
-//    std::optional<ActivitySession *> nextSession() {
-//
-//    }
 
 private:
     ActivityList _activities;

@@ -93,11 +93,11 @@ void ActivitiesListWidget::getBack() {
 
 
 void ActivitiesListWidget::reconnectItemAtIndex(int index,
-                                                ActivitiesListItem *item) {
+                                                ActivitiesListItemWidget *item) {
     item->disconnect();
 
     connect(item,
-            &ActivitiesListItem::selected,
+            &ActivitiesListItemWidget::selected,
             [=]() {
                 strategy->putActivityInTimeSlotsAtIndices(
                         index,
@@ -108,13 +108,13 @@ void ActivitiesListWidget::reconnectItemAtIndex(int index,
             });
 
     connect(item,
-            &ActivitiesListItem::wantToDelete,
+            &ActivitiesListItemWidget::wantToDelete,
             [=]() {
                 strategy->removeActivityAtIndex(index);
             });
 
     connect(item,
-            &ActivitiesListItem::activityEdited,
+            &ActivitiesListItemWidget::activityEdited,
             [=](const Activity &newActivity) {
                 strategy->editActivityAtIndex(index, newActivity);
             });
@@ -147,15 +147,15 @@ QVBoxLayout *ActivitiesListWidget::listLayout() {
     return qobject_cast<QVBoxLayout *>(listWidget->layout());
 }
 
-void ActivitiesListWidget::reuseItemAtIndex(int index, ActivitiesListItem *itemWidget) {
+void ActivitiesListWidget::reuseItemAtIndex(int index, ActivitiesListItemWidget *itemWidget) {
     auto activity = strategy->activities().at(index);
     itemWidget->setActivity(activity);
     reconnectItemAtIndex(index, itemWidget);
 }
 
-ActivitiesListItem *ActivitiesListWidget::makeNewItemAtIndex(int index) {
+ActivitiesListItemWidget *ActivitiesListWidget::makeNewItemAtIndex(int index) {
     auto activity = strategy->activities().at(index);
-    auto itemWidget = new ActivitiesListItem(activity);
+    auto itemWidget = new ActivitiesListItemWidget(activity);
     reconnectItemAtIndex(index, itemWidget);
     return itemWidget;
 }

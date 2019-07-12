@@ -21,14 +21,14 @@ protected:
         }
 
         for (int index = 0; index < numberOfItems(); index++) {
-            reuseItemAtIndex(index);
+            renderItemAtIndex(index);
         }
 
         removeExtraRows();
     }
 
 private:
-    void reuseItemAtIndex(int index) {
+    void renderItemAtIndex(int index) {
         auto *currentItem = listLayout()->itemAt(index);
         ItemWidget *itemWidget = nullptr;
 

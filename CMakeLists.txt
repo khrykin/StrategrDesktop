@@ -32,7 +32,9 @@ set(MODELS
         models/activitysessionscalculator.cpp
         models/activitysessionscalculator.h
         models/strategyhistory.cpp
-        models/strategyhistory.h models/currenttimesession.cpp models/currenttimesession.h)
+        models/strategyhistory.h
+        models/currentactivitysession.cpp
+        models/currentactivitysession.h models/activitysession.cpp)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -64,8 +66,6 @@ set(UI
         ui/activitieslistitem.h
         ui/strategysettingswidget.cpp
         ui/strategysettingswidget.h
-        ui/currentsessionwidget.cpp
-        ui/currentsessionwidget.h
         ui/slotboard.cpp
         ui/slotboard.h
         ui/slidinganimator.cpp
@@ -94,7 +94,11 @@ set(UI
         ui/currenttimemarker.h
         ui/parentwindowaccessible.cpp
         ui/parentwindowaccessible.h
-        ui/reactivelist.hpp)
+        ui/reactivelist.hpp
+        ui/currentsessionwidget.cpp
+        ui/currentsessionwidget.h
+        ui/abstractspinboxdecorator.cpp
+        ui/abstractspinboxdecorator.h)
 
 set(UTILITY
         utility/jsonserializer.cpp

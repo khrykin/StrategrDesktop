@@ -54,12 +54,17 @@ void SlotsMouseHandler::contextMenuEvent(QContextMenuEvent *event) {
 
     QMenu menu(slotsWidget);
     menu.addAction(slotsWidget->setActivityAction);
+    menu.addSeparator();
 
     if (currentSlot.activity) {
         menu.addAction(slotsWidget->deleteActivityAction);
     }
 
+    menu.addAction(slotsWidget->shiftSlotsBelowAction);
+    menu.addSeparator();
+
     menu.addAction(slotsWidget->clearSelectionAction);
+
     menu.exec(event->globalPos());
 }
 

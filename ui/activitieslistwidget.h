@@ -14,7 +14,7 @@
 
 class MainScene;
 class ActivitiesListWidget : public QWidget,
-                             public ReactiveList<ActivitiesListItem> {
+                             public ReactiveList<ActivitiesListItemWidget> {
 Q_OBJECT
 public:
     explicit ActivitiesListWidget(Strategy *strategy,
@@ -41,13 +41,13 @@ private:
     void paintEvent(QPaintEvent *) override;
     void setupActions();
 
-    void reconnectItemAtIndex(int index, ActivitiesListItem *item);
+    void reconnectItemAtIndex(int index, ActivitiesListItemWidget *item);
 
     // ReactiveList
     int numberOfItems() override;
     QVBoxLayout *listLayout() override;
-    void reuseItemAtIndex(int index, ActivitiesListItem *itemWidget) override;
-    ActivitiesListItem *makeNewItemAtIndex(int index) override;
+    void reuseItemAtIndex(int index, ActivitiesListItemWidget *itemWidget) override;
+    ActivitiesListItemWidget *makeNewItemAtIndex(int index) override;
 };
 
 #endif // ACTIVITIESLISTWIDGET_H

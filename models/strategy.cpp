@@ -154,3 +154,9 @@ void Strategy::redo() {
 const TimeSlotsState &Strategy::timeSlots() const {
     return _timeSlots;
 }
+
+void Strategy::shiftBelowTimeSlot(Strategy::TimeSlotIndex fromIndex, int length) {
+    _timeSlots.shiftBelow(fromIndex, length);
+
+    commitToHistory();
+}

@@ -7,12 +7,12 @@
 #include <QStackedWidget>
 
 #include "activitieslistwidget.h"
-#include "currentactivitywidget.h"
+#include "currentsessionwidget.h"
 #include "filesystemiomanager.h"
 #include "models/strategy.h"
 #include "notifier.h"
 #include "slotboard.h"
-#include "strategysettings.h"
+#include "strategysettingswidget.h"
 #include "third-party/slidingstackedwidget.h"
 #include <memory>
 

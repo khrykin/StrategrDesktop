@@ -2,10 +2,11 @@
 // Created by Dmitry Khrykin on 2019-07-11.
 //
 
-#include "currenttimesession.h"
+#include "currentactivitysession.h"
 #include "strategy.h"
 
-CurrentTimeSession::Timestamp CurrentTimeSession::startOfADayFromTimestamp(CurrentTimeSession::Timestamp timestamp) {
+CurrentActivitySession::Timestamp
+CurrentActivitySession::startOfADayFromTimestamp(CurrentActivitySession::Timestamp timestamp) {
     auto dayComponents = *dayComponentsFromTimestamp(&timestamp);
 
     dayComponents.tm_hour = 0;
@@ -17,7 +18,7 @@ CurrentTimeSession::Timestamp CurrentTimeSession::startOfADayFromTimestamp(Curre
     return timestamp;
 }
 
-CurrentTimeSession::Duration CurrentTimeSession::currentDayDuration() {
+CurrentActivitySession::Duration CurrentActivitySession::currentDayDuration() {
     using namespace std::chrono;
 
     auto clockNow = system_clock::now();
@@ -30,12 +31,14 @@ CurrentTimeSession::Duration CurrentTimeSession::currentDayDuration() {
 }
 
 std::optional<ActivitySession>
-CurrentTimeSession::forStrategy(const Strategy &strategy) {
-    auto currentMinutes = CurrentTimeSession::currentMinutes();
+CurrentActivitySession::forStrategy(const Strategy &strategy) {
+    auto currentMinutes = CurrentActivitySession::currentMinutes();
     for (auto &session : strategy.activitySessions()) {
         if (currentMinutes >= session.beginTime()
             && currentMinutes <= session.endTime()) {
-            return session;
+            return session.activity
+                   ? std::make_optional(session)
+                   : std::nullopt;
         }
     }
 
@@ -43,22 +46,24 @@ CurrentTimeSession::forStrategy(const Strategy &strategy) {
 }
 
 std::optional<ActivitySession>
-CurrentTimeSession::upcomingForStrategy(const Strategy &strategy,
-                                        Minutes inMinutes) {
-    auto currentMinutes = CurrentTimeSession::currentMinutes();
+CurrentActivitySession::upcomingForStrategy(const Strategy &strategy,
+                                            Minutes inMinutes) {
+    auto currentMinutes = CurrentActivitySession::currentMinutes();
     auto targetTime = currentMinutes + inMinutes;
 
     for (auto &session : strategy.activitySessions()) {
         if (targetTime >= session.beginTime()
             && targetTime << session.endTime()) {
-            return session;
+            return session.activity
+                   ? std::make_optional(session)
+                   : std::nullopt;
         }
     }
 
     return std::nullopt;
 }
 
-CurrentTimeSession::Minutes CurrentTimeSession::currentMinutes() {
+CurrentActivitySession::Minutes CurrentActivitySession::currentMinutes() {
     using namespace std::chrono;
     auto duration = currentDayDuration();
     return duration_cast<minutes>(duration).count();

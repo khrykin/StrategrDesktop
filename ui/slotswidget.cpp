@@ -16,7 +16,7 @@ SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
           QWidget(parent) {
 
     strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateList);
+            .setOnChangeCallback(this, &SlotsWidget::updateUI);
 
     setLayout(new StackLayout());
     layout()->setSpacing(0);
@@ -42,6 +42,10 @@ void SlotsWidget::layoutChildWidgets() {
     slotsWidget->setLayout(slotsLayout);
 
     selectionWidget = new SelectionWidget(_slotHeight);
+    connect(selectionWidget,
+            &SelectionWidget::selectionChanged,
+            this,
+            &SlotsWidget::onSelectionChange);
 
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
@@ -84,6 +88,16 @@ void SlotsWidget::setupActions() {
             this,
             &SlotsWidget::selectAllSlots);
     addAction(selectAllAction);
+
+    shiftSlotsBelowAction = new QAction(tr("Shift All Slots Below"), this);
+    shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
+    connect(shiftSlotsBelowAction,
+            &QAction::triggered,
+            this,
+            &SlotsWidget::shiftAllSlotsBelow);
+
+    shiftSlotsBelowAction->setEnabled(false);
+    addAction(shiftSlotsBelowAction);
 }
 
 void SlotsWidget::mousePressEvent(QMouseEvent *event) {
@@ -112,7 +126,6 @@ void SlotsWidget::openActivitiesWindow() {
 }
 
 void SlotsWidget::deleteActivityInSelection() {
-
     strategy->emptyTimeSlotsAtIndices(selectionWidget->selection());
     selectionWidget->deselectAll();
 }
@@ -128,7 +141,7 @@ void SlotsWidget::selectAllSlots() {
 void SlotsWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateList);
+            .setOnChangeCallback(this, &SlotsWidget::updateUI);
 
     updateList();
     mouseHandler.reset();
@@ -161,6 +174,41 @@ ActivitySessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
     itemWidget->setSlotHeight(slotHeight());
 
     return itemWidget;
+}
+
+void SlotsWidget::updateUI() {
+    updateList();
+    emit activitySessionsChanged();
+}
+
+void SlotsWidget::onSelectionChange() {
+    auto isEnabled = selectionWidget->selectionIsContinuous()
+                     && !onlyEmptySlotsSelected();
+
+    shiftSlotsBelowAction->setEnabled(isEnabled);
+}
+
+void SlotsWidget::shiftAllSlotsBelow() {
+    if (!selectionWidget->selectionIsContinuous()) {
+        return;
+    }
+
+    auto bottomTimeSlotIndex = selectionWidget->selection().front();
+    strategy->shiftBelowTimeSlot(bottomTimeSlotIndex,
+                                 selectionWidget->selection().size());
+
+    selectionWidget->deselectAll();
+}
+
+bool SlotsWidget::onlyEmptySlotsSelected() const {
+    for (auto slotIndex : selectionWidget->selection()) {
+        if (strategy->timeSlots()[slotIndex].activity
+            != Strategy::NoActivity) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

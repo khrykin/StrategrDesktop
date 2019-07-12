@@ -37,18 +37,21 @@ private:
 
     CurrentTimeMarker *currentTimeMarker;
     QTimer *currentTimeTimer;
-    int currentTimeMarkerTopOffset;
+
+    int currentTimeMarkerTopOffset = 0;
 
     void resizeEvent(QResizeEvent *event) override;
     void updateCurrentTimeMarker();
 
     QWidget *makeHeader();
     QWidget *makeFooter();
-    QStringList makeLabelsForStrategy();;
+    QStringList makeLabelsForStrategy();
 
+    void timeSlotsChange();
     void updateUI();
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
+
     double calculateTimeMarkerTopOffset() const;
     QRect calculateCurrentTimeMarkerGeometry() const;
 

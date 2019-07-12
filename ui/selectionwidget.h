@@ -10,8 +10,10 @@
 #include "strategy.h"
 
 class SelectionWidget : public QWidget {
+Q_OBJECT
 public:
     using RawSelectionState = std::vector<Strategy::TimeSlotIndex>;
+
     explicit SelectionWidget(int slotHeight,
                              QWidget *parent = nullptr);
 
@@ -20,17 +22,23 @@ public:
     void selectAll(int numberOfSlots);
 
     void setSlotHeight(int newSlotHeight);
+
     const RawSelectionState &selection() const;
+
+    bool selectionIsContinuous() const;
+signals:
+    void selectionChanged();
 private:
+    using SelectionState = std::vector<RawSelectionState>;
+
     int slotHeight = ApplicationSettings::defaultSlotHeight;
 
     void updateUI();
 
     void resizeEvent(QResizeEvent *event) override;
 
-    using SelectionState = std::vector<RawSelectionState>;
-
     RawSelectionState rawSelectionState;
+    SelectionState selectionState;
 
     static SelectionState makeSelectionState(RawSelectionState rawState);
 };

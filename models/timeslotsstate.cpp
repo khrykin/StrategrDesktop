@@ -11,14 +11,18 @@ TimeSlotsState::Time TimeSlotsState::beginTime() const {
 void TimeSlotsState::setBeginTime(Time beginTime) {
     _beginTime = beginTime;
 
+    updateBeginTimes();
+
+    onChangeEvent();
+}
+
+void TimeSlotsState::updateBeginTimes() {
     for (auto slotIndex = 0;
          slotIndex < numberOfSlots();
          slotIndex++) {
         _vector[slotIndex].beginTime
-                = slotBeginTime(beginTime, slotIndex);
+                = slotBeginTime(_beginTime, slotIndex);
     }
-
-    onChangeEvent();
 }
 
 TimeSlotsState::Duration TimeSlotsState::slotDuration() const {
@@ -106,9 +110,13 @@ void TimeSlotsState::setActivityAtIndices(Activity *activity,
                                           const std::vector<Index> &indices) {
     auto activityChanged = false;
     for (auto slotIndex : indices) {
-        activityChanged = _vector[slotIndex].activity != activity;
-        if (activityChanged) {
+        auto currentActivityChanged = _vector[slotIndex].activity != activity;
+        if (currentActivityChanged) {
             setActivityAtIndex(activity, slotIndex);
+        }
+
+        if (!activityChanged && currentActivityChanged) {
+            activityChanged = true;
         }
     }
 

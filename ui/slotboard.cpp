@@ -22,10 +22,10 @@ SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
 
     layoutChildWidgets(mainLayout);
 
-    currentTimeMarker = new CurrentTimeMarker(this);
     currentTimeTimer = new QTimer(this);
-
-    connect(currentTimeTimer, &QTimer::timeout, this,
+    connect(currentTimeTimer,
+            &QTimer::timeout,
+            this,
             &SlotBoard::updateCurrentTimeMarker);
 
     currentTimeTimer->start(ApplicationSettings::currentTimeTimerInterval);
@@ -33,6 +33,11 @@ SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
 
 void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     slotsWidget = new SlotsWidget(strategy);
+    connect(slotsWidget,
+            &SlotsWidget::activitySessionsChanged,
+            this,
+            &SlotBoard::timeSlotsChange);
+
     slotRuler = new SlotRuler(makeLabelsForStrategy(),
                               slotsWidget->slotHeight());
 
@@ -50,10 +55,12 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
 
     mainLayout->addWidget(slotRuler);
     mainLayout->addLayout(slotsLayout);
+
+    currentTimeMarker = new CurrentTimeMarker(this);
 }
 
 QWidget *SlotBoard::makeHeader() {
-    auto *header = new QLabel("Start");
+    auto *header = new QLabel(tr("Begin"));
     header->setAlignment(Qt::AlignCenter);
     header->setFixedHeight(slotsWidget->slotHeight());
     header->setStyleSheet("color: #c3c3c3;"
@@ -63,7 +70,7 @@ QWidget *SlotBoard::makeHeader() {
 }
 
 QWidget *SlotBoard::makeFooter() {
-    auto *footer = new QLabel("End");
+    auto *footer = new QLabel(tr("End"));
     footer->setAlignment(Qt::AlignCenter);
     footer->setFixedHeight(slotsWidget->slotHeight());
     footer->setStyleSheet("color: #c3c3c3;"
@@ -81,22 +88,18 @@ void SlotBoard::setStrategy(Strategy *newStrategy) {
 
 void SlotBoard::updateUI() {
     slotRuler->setLabels(makeLabelsForStrategy());
+    updateCurrentTimeMarker();
 }
 
 QStringList SlotBoard::makeLabelsForStrategy() {
     QStringList labels;
 
-    auto timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
     for (auto &timeSlot : strategy->timeSlots()) {
-        auto label = qTimeFromMinutes(timeSlot.beginTime)
-                .toString(timeFormat);
-
+        auto label = qStringForMinutes(timeSlot.beginTime);
         labels.append(label);
     }
 
-    auto endTimeLabel = qTimeFromMinutes(strategy->endTime())
-            .toString(timeFormat);
-
+    auto endTimeLabel = qStringForMinutes(strategy->endTime());
     labels.append(endTimeLabel);
 
     return labels;
@@ -150,11 +153,7 @@ QRect SlotBoard::calculateCurrentTimeMarkerGeometry() const {
 }
 
 double SlotBoard::calculateTimeMarkerTopOffset() const {
-    auto currentTime =
-            static_cast<double>(
-                    QTime::currentTime()
-                            .msecsSinceStartOfDay()
-            ) / 60 / 1000;
+    auto currentTime = static_cast<double>(currentMinutes());
 
     auto startTime = strategy->beginTime();
     auto slotDuration = strategy->timeSlotDuration();
@@ -189,5 +188,11 @@ void SlotBoard::focusOnCurrentTime() {
 
 QScrollArea *SlotBoard::parentScrollArea() {
     return qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
+}
+
+void SlotBoard::timeSlotsChange() {
+    updateCurrentTimeMarker();
+
+    slotRuler->setLabels(makeLabelsForStrategy());
 }
 

@@ -11,11 +11,11 @@
 #include <QWidget>
 #include <QWidgetAction>
 
-class ActivitiesListItem : public QWidget {
+class ActivitiesListItemWidget : public QWidget {
 Q_OBJECT
 public:
-    explicit ActivitiesListItem(Activity *activity,
-                                QWidget *parent = nullptr);
+    explicit ActivitiesListItemWidget(Activity *activity,
+                                      QWidget *parent = nullptr);
 
     Activity *activity() const;
     void setActivity(Activity *activity);

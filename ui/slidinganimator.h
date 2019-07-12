@@ -6,145 +6,150 @@
 #include <QWidget>
 
 class SlidingAnimator : public QObject {
-  Q_OBJECT
+Q_OBJECT
 private:
-  static const auto defaultDuration = 150;
-  static const auto defaultUpdateInterval = 20;
-  static const auto defaultCurveShape = QTimeLine::EaseInOutCurve;
+    static const auto defaultDuration = 150;
+    static const auto defaultUpdateInterval = 20;
+    static const auto defaultCurveShape = QTimeLine::EaseInOutCurve;
 
 public:
-  enum class Direction {
-    ShowsFromTop,
-    ShowsFromBottom,
-    ShowsFromLeft,
-    ShowsFromRight
-  };
+    enum class Direction {
+        ShowsFromTop,
+        ShowsFromBottom,
+        ShowsFromLeft,
+        ShowsFromRight
+    };
 
-  struct Options {
-    Direction direction = Direction::ShowsFromTop;
-    int duration = defaultDuration;
-    int updateInterval = defaultUpdateInterval;
-    QTimeLine::CurveShape curveShape = defaultCurveShape;
+    struct Options {
+        Direction direction = Direction::ShowsFromTop;
+        int duration = defaultDuration;
+        int updateInterval = defaultUpdateInterval;
+        QTimeLine::CurveShape curveShape = defaultCurveShape;
 
-    // Explicit constructor definition is needed here because of clang bug.
-    // See: https://stackoverflow.com/questions/53408962
-    Options() {}
-  };
+        // Explicit constructor definition is needed here because of clang bug.
+        // See: https://stackoverflow.com/questions/53408962
+        Options() {}
+    };
 
-  static void hideWidget(QWidget *widget, Options options = Options());
-  static void showWidget(QWidget *widget, Options options = Options());
+    static void hideWidget(QWidget *widget, Options options = Options());
+    static void showWidget(QWidget *widget, Options options = Options());
 
 private:
-  class ResizeAwareWidget;
-  enum class Operation { Show, Hide };
-  enum class Orientation { Horizontal, Vertical };
+    class ResizeAwareWidget;
+    enum class Operation {
+        Show, Hide
+    };
+    enum class Orientation {
+        Horizontal, Vertical
+    };
 
-  using WidgetSizeSetterPointer = void (QWidget::*)(int);
-  template <class T> using SizeGetterPointer = int (T::*)() const;
+    using WidgetSizeSetterPointer = void (QWidget::*)(int);
+    template<class T> using SizeGetterPointer = int (T::*)() const;
 
-  static QVector<QWidget *> widgetsInOperation;
+    static QVector<QWidget *> widgetsInOperation;
 
-  QWidget *widget;
-  QBoxLayout *_widgetParentLayout;
-  QTimeLine *timeLine;
+    QWidget *widget;
+    QBoxLayout *_widgetParentLayout;
+    QTimeLine *timeLine;
 
-  Direction direction;
-  int duration;
-  int updateInterval;
-  QTimeLine::CurveShape curveShape;
+    Direction direction;
+    int duration;
+    int updateInterval;
+    QTimeLine::CurveShape curveShape;
 
-  Operation operation;
+    Operation operation;
 
-  int initialWidgetMinimumSize;
-  int initialWidgetMaximumSize;
+    int initialWidgetMinimumSize;
+    int initialWidgetMaximumSize;
 
-  int initialWidgetSize;
-  int indexInParentLayout;
+    int initialWidgetSize;
+    int indexInParentLayout;
 
-  SlidingAnimator(QWidget *widget = nullptr, Options options = Options());
+    explicit SlidingAnimator(QWidget *widget = nullptr,
+                             Options options = Options());
 
-  WidgetSizeSetterPointer fixedSizeSetter();
-  WidgetSizeSetterPointer maximumSizeSetter();
-  WidgetSizeSetterPointer minimumSizeSetter();
+    WidgetSizeSetterPointer fixedSizeSetter();
+    WidgetSizeSetterPointer maximumSizeSetter();
 
-  template <class T> SizeGetterPointer<T> sizeGetter() {
-    if (orientation() == Orientation::Vertical) {
-      return &T::height;
-    } else {
-      return &T::width;
+    template<class T>
+    SizeGetterPointer<T> sizeGetter() {
+        if (orientation() == Orientation::Vertical) {
+            return &T::height;
+        } else {
+            return &T::width;
+        }
     }
-  }
 
-  Orientation orientation();
+    Orientation orientation();
 
-  QPoint makePointByTranslation(QPoint point, int translation);
-  int translationSign();
+    QPoint makePointByTranslation(QPoint point, int translation);
+    int translationSign();
 
-  QSize applyInitialSizeToRect(QRect rect, int initialSize);
+    QSize applyInitialSizeToRect(QRect rect, int initialSize);
 
-  void setWidgetMaximumSize();
-  void resetWidgetMaximumSize();
+    void setWidgetMaximumSize();
 
-  int widgetRelativeCoordinate();
+    int widgetRelativeCoordinate();
 
-  int widgetSize();
-  void setWidgetSize(int value);
+    int widgetSize();
+    void setWidgetSize(int value);
 
-  int stubSize();
-  void setStubSize(int value);
+    int stubSize();
+    void setStubSize(int value);
 
-  void setInitialStubSize();
-  void setInitialWidgetPosition();
+    void setInitialStubSize();
+    void setInitialWidgetPosition();
 
-  int widgetSizeHintDimension();
+    int widgetSizeHintDimension();
 
-  QTimeLine *makeTimeLine();
+    QTimeLine *makeTimeLine();
 
-  void showFrame(qreal value);
-  void showFinished();
+    void showFrame(qreal value);
+    void showFinished();
 
-  void hideFrame(qreal value);
-  void hideFinished();
+    void hideFrame(qreal value);
+    void hideFinished();
 
-  int indexOfWidgetInParentLayout();
+    int indexOfWidgetInParentLayout();
 
-  QBoxLayout *widgetParentLayout();
+    QBoxLayout *widgetParentLayout();
 
-  void createStub();
-  void removeStub();
+    void createStub();
+    void removeStub();
 
-  void placeStubInParentLayout();
-  void addWidgetToStub();
+    void placeStubInParentLayout();
+    void addWidgetToStub();
 
-  ResizeAwareWidget *stub;
+    ResizeAwareWidget *stub;
 
-  void updateWidgetGeometryOnStubResize();
-  void prepareOperation();
+    void updateWidgetGeometryOnStubResize();
+    void prepareOperation();
 
-  void hide();
-  void show();
+    void hide();
+    void show();
 
-  void commitWidget();
-  void decomissionWidget();
-  bool widgetIsInOperation();
+    void commitWidget();
+    void decomissionWidget();
+    bool widgetIsInOperation();
 
-  void teardown();
+    void teardown();
 signals:
-  void done();
+    void done();
 };
 
 class SlidingAnimator::ResizeAwareWidget : public QWidget {
-  Q_OBJECT
+Q_OBJECT
 
-  void resizeEvent(QResizeEvent *event) {
-    QWidget::resizeEvent(event);
-    emit resized();
-  }
+    void resizeEvent(QResizeEvent *event) override {
+        QWidget::resizeEvent(event);
+        emit resized();
+    }
 
 public:
-  explicit ResizeAwareWidget(QWidget *parent = nullptr) : QWidget(parent) {}
+    explicit ResizeAwareWidget(QWidget *parent = nullptr) : QWidget(parent) {}
+
 signals:
-  void resized();
+    void resized();
 };
 
 #endif // SLIDINGANIMATOR_H

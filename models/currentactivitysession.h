@@ -2,8 +2,8 @@
 // Created by Dmitry Khrykin on 2019-07-11.
 //
 
-#ifndef STRATEGR_CURRENTTIMESESSION_H
-#define STRATEGR_CURRENTTIMESESSION_H
+#ifndef STRATEGR_CURRENTACTIVITYSESSION_H
+#define STRATEGR_CURRENTACTIVITYSESSION_H
 
 #include <ctime>
 #include <chrono>
@@ -11,12 +11,15 @@
 #include "activitysession.h"
 
 class Strategy;
-class CurrentTimeSession {
+class CurrentActivitySession {
 public:
     using Minutes = unsigned;
 
-    static std::optional<ActivitySession> forStrategy(const Strategy &strategy);
-    static std::optional<ActivitySession> upcomingForStrategy(const Strategy &strategy, Minutes inMinutes);
+    static std::optional<ActivitySession>
+    forStrategy(const Strategy &strategy);
+
+    static std::optional<ActivitySession>
+    upcomingForStrategy(const Strategy &strategy, Minutes inMinutes);
 
 private:
     using Timestamp = std::time_t;
@@ -34,4 +37,4 @@ private:
 };
 
 
-#endif //STRATEGR_CURRENTTIMESESSION_H
+#endif //STRATEGR_CURRENTACTIVITYSESSION_H

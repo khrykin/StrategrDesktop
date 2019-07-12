@@ -17,38 +17,23 @@ struct ActivitySession {
     std::vector<const TimeSlot *> timeSlots;
     Activity *activity = nullptr;
 
-    Length length() const {
-        return timeSlots.size();
-    };
+    Length length() const;
 
-    Time beginTime() const {
-        return timeSlots.front()->beginTime;
-    }
+    Time beginTime() const;
 
-    Time endTime() const {
-        return timeSlots.back()->endTime();
-    }
+    Time endTime() const;
 
-    Duration duration() const {
-        return endTime() - beginTime();
-    }
+    Duration duration() const;
 
-    friend std::ostream &operator<<(std::ostream &os, const ActivitySession &session) {
-        os << "ActivitySession(";
+    friend bool operator==(const ActivitySession &lhs,
+                           const ActivitySession &rhs);
 
-        if (session.activity) {
-            os << *session.activity;
-        } else {
-            os << "None";
-        }
+    friend bool operator!=(const ActivitySession &lhs,
+                           const ActivitySession &rhs);
 
-        os << ", length: " << session.length();
-        os << ", beginTime: " << session.beginTime();
-
-        os << ")";
-
-        return os;
-    }
+    friend std::ostream &operator<<(std::ostream &os,
+                                    const ActivitySession &session);
 };
+
 
 #endif // ACTIVITYSESSION_H

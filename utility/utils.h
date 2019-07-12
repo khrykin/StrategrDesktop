@@ -4,10 +4,17 @@
 #include <QString>
 #include <QTime>
 #include <QWidget>
+#include <QLocale>
 
-QString timeStringForMins(int mins);
+QString humanTimeForMinutes(int mins);
+
 int minutesFromQTime(const QTime &time);
+
 QTime qTimeFromMinutes(int minutes);
+
+QString qStringForMinutes(int minutes);
+
+int currentMinutes();
 
 template<class T>
 T *findParentWidget(QWidget *childWidget) {

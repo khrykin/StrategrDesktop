@@ -18,40 +18,20 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 void ApplicationMenu::setupEditMenu() {
     addMenu(editMenu);
 
-    viewMenu->addAction(tr("Undo"),
+    editMenu->addAction(tr("Undo"),
                         [=]() {
                             window->strategy->undo();
                         },
                         QKeySequence(Qt::CTRL + Qt::Key_Z));
 
-    viewMenu->addAction(tr("Redo"),
+    editMenu->addAction(tr("Redo"),
                         [=]() {
                             window->strategy->redo();
                         },
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 
-
-//    undoAction = new QAction(, this);
-//    undoAction->setShortcut(QKeySequence());
-//    connect(undoAction,
-//            &QAction::triggered,
-//            this,
-//            &SlotsWidget::undo);
-//    addAction(undoAction);
-//
-//    redoAction = new QAction(tr("Redo"), this);
-//    redoAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-//    connect(redoAction,
-//            &QAction::triggered,
-//            this,
-//            &SlotsWidget::redo);
-//    addAction(redoAction);
-
-    // TODO
-//
-//    editMenu->addAction(slotBoard->groupsList()->getRedoAction());
-//
 //    editMenu->addSeparator();
+// TODO:
 //
 //    editMenu->addAction(slotBoard->groupsList()->getSelectAllAction());
 //

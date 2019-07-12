@@ -36,7 +36,12 @@ private:
     QScrollArea *slotBoardScrollArea = nullptr;
     SlotBoard *slotBoard = nullptr;
 
+    // Qt's isVisible() could be glitchy for some reason,
+    // so we dont't rely on it and use this flag
+    bool currentSessionWidgetIsVisible = false;
+
     void layoutChildWidgets();
+    void updateCurrentSessionWidget();
 };
 
 

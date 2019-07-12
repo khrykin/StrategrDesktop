@@ -118,7 +118,7 @@ QString ActivitySessionWidget::labelText() const {
 
     auto name = QString::fromStdString(activity->name());
     auto color = QString::fromStdString(activity->color());
-    auto time = timeStringForMins(activitySession->duration());
+    auto time = humanTimeForMinutes(activitySession->duration());
 
     return QString("<font color=\"#888\"><b>%1</b></font>"
                    " "

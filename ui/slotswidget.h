@@ -30,7 +30,8 @@ public:
     void deselectAllSlots();
 
     const SelectionWidget::RawSelectionState &selection();
-
+signals:
+    void activitySessionsChanged();
 private:
     friend SlotsMouseHandler;
     Strategy *strategy;
@@ -46,6 +47,7 @@ private:
     QAction *setActivityAction = nullptr;
     QAction *deleteActivityAction = nullptr;
     QAction *clearSelectionAction = nullptr;
+    QAction *shiftSlotsBelowAction = nullptr;
 
     QAction *selectAllAction = nullptr;
 
@@ -57,10 +59,17 @@ private:
     void openActivitiesWindow();
     void deleteActivityInSelection();
     void selectAllSlots();
+    void shiftAllSlotsBelow();
 
     void setupActions();
 
     void layoutChildWidgets();
+
+    void updateUI();
+
+    void onSelectionChange();
+
+    bool onlyEmptySlotsSelected() const;
 
     MainScene *mainScene();
 

@@ -1,24 +1,54 @@
-//
-// Created by Dmitry Khrykin on 2019-07-10.
-//
+#ifndef CURRENTACTIVITYWIDGET_H
+#define CURRENTACTIVITYWIDGET_H
 
-#ifndef STRATEGR_CURRENTSESSIONWIDGET_H
-#define STRATEGR_CURRENTSESSIONWIDGET_H
-
-#include <QWidget>
-#include <QLayout>
+#include "strategy.h"
 #include <QLabel>
+#include <QWidget>
+#include <optional>
 
 class CurrentSessionWidget : public QWidget {
+Q_OBJECT
 public:
-    explicit CurrentSessionWidget(QWidget *parent = nullptr) : QWidget(parent) {
-        setLayout(new QHBoxLayout());
+    explicit CurrentSessionWidget(QWidget *parent = nullptr);
 
-        auto label = new QLabel("CurrentSessionWidget");
-        label->setAlignment(Qt::AlignCenter);
+    double progress() const;
+    void setProgress(double progress);
 
-        layout()->addWidget(label);
-    }
+    Strategy *strategy() const;
+    void setStrategy(Strategy *strategy);
+    void slideAndHide();
+    void slideAndShow();
+
+    void setActivitySession(
+            const ActivitySession &newActivitySession);
+signals:
+    void clicked();
+
+public slots:
+private:
+    double _progress = 0.0;
+
+    ActivitySession activitySession;
+    ActivitySession previousSession;
+
+    Strategy *_strategy;
+    QLabel *activityLabel;
+    QLabel *startTimeLabel;
+    QLabel *endTimeLabel;
+    QLabel *passedTimeLabel;
+    QLabel *leftTimeLabel;
+
+    bool isHovered = false;
+    bool isClicked = false;
+
+    void updateUI();
+
+    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    const QString makeActivitySessionTitle() const;
 };
 
-#endif //STRATEGR_CURRENTSESSIONWIDGET_H
+#endif // CURRENTACTIVITYWIDGET_H

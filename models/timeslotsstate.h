@@ -44,6 +44,19 @@ public:
 
     void fillSlots(Index fromIndex, Index tillIndex);
 
+    void shiftBelow(Index fromIndex, StateSize length) {
+        auto actualNumberOfSlots = numberOfSlots();
+        _vector.insert(_vector.begin() + fromIndex,
+                       length,
+                       TimeSlot(0, 0));
+
+        _vector.resize(actualNumberOfSlots, TimeSlot(0, 0));
+
+        updateBeginTimes();
+
+        onChangeEvent();
+    }
+
     void populateVector(Time startTime, StateSize numberOfSlots);
 
     iterator findSlotWithActivity(const Activity *activity);
@@ -67,6 +80,7 @@ private:
 
 
     Time slotBeginTime(Time globalBeginTime, Index slotIndex);
+    void updateBeginTimes();
 };
 
 
