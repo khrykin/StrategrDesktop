@@ -10,10 +10,18 @@ ActivitySession::Length ActivitySession::length() const {
 }
 
 ActivitySession::Time ActivitySession::beginTime() const {
+    if (timeSlots.empty()) {
+        return 0;
+    }
+
     return timeSlots.front()->beginTime;
 }
 
 ActivitySession::Time ActivitySession::endTime() const {
+    if (timeSlots.empty()) {
+        return 0;
+    }
+
     return timeSlots.back()->endTime();
 }
 
@@ -32,6 +40,7 @@ std::ostream &operator<<(std::ostream &os, const ActivitySession &session) {
 
     os << ", length: " << session.length();
     os << ", beginTime: " << session.beginTime();
+    os << ", duration: " << session.duration();
 
     os << ")";
 

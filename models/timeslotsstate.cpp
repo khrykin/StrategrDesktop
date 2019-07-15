@@ -184,3 +184,16 @@ TimeSlotsState &TimeSlotsState::operator=(const TimeSlotsState &newState) {
     onChangeEvent();
     return *this;
 }
+
+void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex, TimeSlotsState::StateSize length) {
+    auto actualNumberOfSlots = numberOfSlots();
+    _vector.insert(_vector.begin() + fromIndex,
+                   length,
+                   TimeSlot(0, slotDuration()));
+
+    _vector.resize(actualNumberOfSlots, TimeSlot(0, 0));
+
+    updateBeginTimes();
+
+    onChangeEvent();
+}

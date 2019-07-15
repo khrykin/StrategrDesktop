@@ -11,10 +11,11 @@ public:
     explicit NotifierBackend(QSystemTrayIcon *trayIcon,
                              QObject *parent = nullptr);
 
-    void sendMessage(QString title, QString message);
+    void sendMessage(const QString &title, const QString &message);
 
 private:
     QSystemTrayIcon *trayIcon;
 };
+
 
 #endif // NOTIFIERBACKEND_H

@@ -4,7 +4,6 @@
 
 #include "sessionsmainwidget.h"
 #include "currentactivitysession.h"
-#include <QDebug>
 
 SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
                                        QWidget *parent)
@@ -16,6 +15,8 @@ SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
     setLayout(mainLayout);
 
     layoutChildWidgets();
+
+    notifier = new Notifier(strategy, this);
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {
@@ -63,6 +64,7 @@ void SessionsMainWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     slotBoard->setStrategy(newStrategy);
     strategySettingsWidget->setStrategy(newStrategy);
+    notifier->setStrategy(newStrategy);
 }
 
 void SessionsMainWidget::clearSelection() {

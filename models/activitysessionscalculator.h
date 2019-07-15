@@ -54,6 +54,7 @@ private:
     void pushDefaultSession(ResultType &result);
 
     bool activityChanged();
+
 };
 
 #endif //MODELS_ACTIVITYSESSIONSCALCULATOR_H

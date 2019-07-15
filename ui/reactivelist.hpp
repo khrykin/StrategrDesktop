@@ -36,6 +36,7 @@ private:
             if (currentItem->spacerItem()) {
                 itemWidget = makeNewItemAtIndex(index);
                 listLayout()->insertWidget(index, itemWidget);
+
                 auto spacer = listLayout()->takeAt(index + 1);
                 listLayout()->addItem(spacer);
             } else {

@@ -8,7 +8,7 @@
 #include <QStyleOption>
 #include <models/strategy.h>
 
-ActivitySessionWidget::ActivitySessionWidget(const ActivitySession *activitySession,
+ActivitySessionWidget::ActivitySessionWidget(const ActivitySession &activitySession,
                                              QWidget *parent)
         : activitySession(activitySession),
           QWidget(parent) {
@@ -44,9 +44,9 @@ void ActivitySessionWidget::paintEvent(QPaintEvent *event) {
 
 
 void ActivitySessionWidget::updateStyleSheet() {
-    auto leftBorderStyle = activitySession->activity
+    auto leftBorderStyle = activitySession.activity
                            ? "border-left: 3px solid "
-                             + QString::fromStdString(activitySession->activity->color())
+                             + QString::fromStdString(activitySession.activity->color())
                              + ";"
                            : "";
 
@@ -57,7 +57,7 @@ void ActivitySessionWidget::updateStyleSheet() {
                       "border-bottom: 1px solid #ececec;"
                       "}");
     } else {
-        if (activitySession->activity) {
+        if (activitySession.activity) {
             setStyleSheet("ActivitySessionWidget { "
                           "background-color: white;" +
                           leftBorderStyle +
@@ -85,14 +85,17 @@ void ActivitySessionWidget::setIsSelected(bool isSelected, bool doUpdate) {
 }
 
 void ActivitySessionWidget::updateUI() {
-    auto durationChanged = height() != expectedHeight();
-    auto activityChanged = previousActivity != activitySession->activity;
+    auto heightChanged = height() != expectedHeight();
+    auto durationChanged
+            = previousDuration != activitySession.duration();
+    auto activityChanged
+            = previousActivitySession.activity != activitySession.activity;
 
-    if (!activityChanged && !durationChanged) {
+    if (!activityChanged && !durationChanged && !heightChanged) {
         return;
     }
 
-    if (durationChanged) {
+    if (heightChanged) {
         setFixedHeight(expectedHeight());
     }
 
@@ -102,11 +105,12 @@ void ActivitySessionWidget::updateUI() {
 
     updateLabel();
 
-    previousActivity = activitySession->activity;
+    previousActivitySession = activitySession;
+    previousDuration = activitySession.duration();
 }
 
 void ActivitySessionWidget::updateLabel() const {
-    if (activitySession->activity) {
+    if (activitySession.activity) {
         titleLabel->setText(labelText());
     } else {
         titleLabel->setText("");
@@ -114,11 +118,11 @@ void ActivitySessionWidget::updateLabel() const {
 }
 
 QString ActivitySessionWidget::labelText() const {
-    auto activity = activitySession->activity;
+    auto activity = activitySession.activity;
 
     auto name = QString::fromStdString(activity->name());
     auto color = QString::fromStdString(activity->color());
-    auto time = humanTimeForMinutes(activitySession->duration());
+    auto time = humanTimeForMinutes(activitySession.duration());
 
     return QString("<font color=\"#888\"><b>%1</b></font>"
                    " "
@@ -126,7 +130,8 @@ QString ActivitySessionWidget::labelText() const {
             .arg(time).arg(color).arg(name);
 }
 
-void ActivitySessionWidget::setActivitySession(const ActivitySession *newActivitySession) {
+void ActivitySessionWidget::setActivitySession(
+        const ActivitySession &newActivitySession) {
     activitySession = newActivitySession;
     updateUI();
 }
@@ -136,5 +141,5 @@ void ActivitySessionWidget::setSlotHeight(int newSlotHeight) {
 }
 
 int ActivitySessionWidget::expectedHeight() {
-    return activitySession->length() * slotHeight;
+    return activitySession.length() * slotHeight;
 }

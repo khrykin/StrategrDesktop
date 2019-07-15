@@ -49,5 +49,9 @@ QString qStringForMinutes(int minutes) {
 }
 
 int currentMinutes() {
-    return QTime::currentTime().msecsSinceStartOfDay() / 60 / 1000;
+    return currentSeconds() / 60;
+}
+
+int currentSeconds() {
+    return QTime::currentTime().msecsSinceStartOfDay() / 1000;
 }

@@ -37,7 +37,6 @@ private:
     Strategy *strategy;
 
     QVBoxLayout *slotsLayout = nullptr;
-    QVBoxLayout *selectionLayout = nullptr;
     SelectionWidget *selectionWidget = nullptr;
 
     SlotsMouseHandler mouseHandler{this};

@@ -98,7 +98,7 @@ set(UI
         ui/currentsessionwidget.cpp
         ui/currentsessionwidget.h
         ui/abstractspinboxdecorator.cpp
-        ui/abstractspinboxdecorator.h)
+        ui/abstractspinboxdecorator.h ui/alert.cpp ui/alert.h utility/notifierbackend.cpp)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -108,10 +108,9 @@ set(UTILITY
         utility/applicationsettings.h
         utility/utils.cpp
         utility/utils.h
-        #        utility/notifier.cpp
-        #        utility/notifier.h
-        #        utility/notifierbackend.h
-        )
+        utility/notifier.cpp
+        utility/notifier.h
+        utility/notifierbackend.h utility/backtrace.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -122,8 +121,9 @@ qt5_add_resources(RESOURCES
         resources/fonts.qrc)
 
 if (APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -w")
+    set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit -framework UserNotifications -w")
     set(PLATFORM_FILES
+            ui/alert.mm
             utility/notifierbackend.mm)
 
     list(APPEND RESOURCES deployment/Strategr.icns)

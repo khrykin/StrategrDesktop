@@ -164,13 +164,13 @@ QVBoxLayout *SlotsWidget::listLayout() {
 }
 
 void SlotsWidget::reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) {
-    const auto &session = strategy->activitySessions()[index];
-    itemWidget->setActivitySession(&session);
+    const auto session = strategy->activitySessions()[index];
+    itemWidget->setActivitySession(session);
 }
 
 ActivitySessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
-    const auto &session = strategy->activitySessions()[index];
-    auto itemWidget = new ActivitySessionWidget(&session);
+    const auto session = strategy->activitySessions()[index];
+    auto itemWidget = new ActivitySessionWidget(session);
     itemWidget->setSlotHeight(slotHeight());
 
     return itemWidget;

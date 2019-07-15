@@ -29,7 +29,7 @@ public:
     void saveAsDefault(const Strategy &strategy);
 
     std::unique_ptr<Strategy> read(const QString &readFilepath);
-    std::optional<std::unique_ptr<Strategy>> lastOpened();
+    std::unique_ptr<Strategy> lastOpened();
 
     std::unique_ptr<Strategy> openDefaultStrategy();
 
@@ -39,12 +39,11 @@ public:
     QFileInfo fileInfo();
 
     struct Settings {
-        inline static const auto lastOpenedDirectoryKey = "lastOpenedDirectory";
-        inline static const QString lastOpenedStrategyKey = "lastOpenedStrategy";
-        inline static const QString recentFilesKey = "recentFiles";
-        inline static const QString defaultStrategyKey = "defaultStrategy";
-        inline static const QString defaultActivitiesKey = "defaultActivities";
-        inline static const int numberOfRecent = 5;
+        static constexpr auto lastOpenedDirectoryKey = "lastOpenedDirectory";
+        static constexpr auto lastOpenedStrategyKey = "lastOpenedStrategy";
+        static constexpr auto recentFilesKey = "recentFiles";
+        static constexpr auto defaultStrategyKey = "defaultStrategy";
+        static constexpr int numberOfRecent = 5;
     };
 
 private:
@@ -56,8 +55,7 @@ private:
 
     QWidget *window;
 
-    inline static const QString searchPattern =
-            QObject::tr("Strategy files (*.stg)");
+    static constexpr auto searchPattern = "Strategy files (*.stg)";
 
     static QString destinationDir();
     void write(const Strategy &strategy);

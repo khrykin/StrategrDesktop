@@ -13,13 +13,15 @@
 class Strategy;
 class CurrentActivitySession {
 public:
-    using Minutes = unsigned;
+    using Seconds = unsigned;
 
+    /// Returns current session if it's non-empty.
     static std::optional<ActivitySession>
     forStrategy(const Strategy &strategy);
 
+    /// Returns upcoming session if it's non-empty.
     static std::optional<ActivitySession>
-    upcomingForStrategy(const Strategy &strategy, Minutes inMinutes);
+    upcomingForStrategy(const Strategy &strategy);
 
 private:
     using Timestamp = std::time_t;
@@ -33,7 +35,8 @@ private:
 
     static Duration currentDayDuration();
 
-    static Minutes currentMinutes();
+    static Seconds currentMinutes();
+    static std::optional<ActivitySession> currentSessionForStrategy(const Strategy &strategy);
 };
 
 

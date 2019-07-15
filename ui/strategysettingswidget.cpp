@@ -80,7 +80,9 @@ void StrategySettingsWidget::createStartTimeForm() {
     formWidget->layout()->addWidget(beginTimeEditDecorator);
 
     connect(beginTimeEdit, &QTimeEdit::timeChanged,
-            [this](const QTime &time) { save(); });
+            [this](const QTime &time) {
+                save();
+            });
 
     mainLayout->addWidget(formWidget);
 }
@@ -140,6 +142,8 @@ void StrategySettingsWidget::updateUI() {
     auto beginTime = qTimeFromMinutes(strategy->beginTime());
     auto endTime = qTimeFromMinutes(strategy->endTime());
 
+    dontSave = true;
+
     if (slotDuration != slotDurationEdit->value()) {
         slotDurationEdit->setValue(slotDuration);
     }
@@ -159,6 +163,8 @@ void StrategySettingsWidget::updateUI() {
     if (endTimeEdit->minuteStepSize != strategy->timeSlotDuration()) {
         endTimeEdit->minuteStepSize = strategy->timeSlotDuration();
     }
+
+    dontSave = false;
 }
 
 void StrategySettingsWidget::getBack() {
@@ -167,6 +173,10 @@ void StrategySettingsWidget::getBack() {
 }
 
 void StrategySettingsWidget::save() {
+    if (dontSave) {
+        return;
+    }
+
     auto slotDuration = slotDurationEdit->value();
     auto beginTime = minutesFromQTime(beginTimeEdit->time());
     auto endTime = minutesFromQTime(endTimeEdit->time());
@@ -202,6 +212,7 @@ void StrategySettingsWidget::endTimeChanged(const QTime &time) {
     if (mins != minutesFromQTime(time)) {
         endTimeEdit->setTime(qTimeFromMinutes(mins));
     }
+
     save();
 }
 

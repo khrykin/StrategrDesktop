@@ -3,22 +3,33 @@
 
 #include <QDebug>
 #include <QTimer>
+#include "applicationsettings.h"
+
 
 Notifier::Notifier(Strategy *strategy, QObject *parent)
         : QObject(parent), strategy(strategy) {
 
-    contextMenu = new QMenu();
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(contextMenu);
-    trayIcon->show();
+    setupTrayIcon();
 
     backend = new NotifierBackend(trayIcon, this);
 
     timer = new QTimer(this);
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &Notifier::timerTick);
-    timer->start(1000);
+    connect(timer,
+            &QTimer::timeout,
+            this,
+            &Notifier::timerTick);
+
+    timer->start(ApplicationSettings::notifierTimerTimeInterval);
+
     timerTick();
+}
+
+void Notifier::setupTrayIcon() {
+    contextMenu = new QMenu();
+
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setContextMenu(contextMenu);
+    trayIcon->show();
 }
 
 Notifier::~Notifier() {
@@ -27,93 +38,96 @@ Notifier::~Notifier() {
 }
 
 void Notifier::timerTick() {
-    auto currentTime = QTime::currentTime().msecsSinceStartOfDay() / 1000;
-    if (currentTime / 60 == currentMinute) {
-        //       return;
-    }
+    const auto newUpcomingSession =
+            CurrentActivitySession::upcomingForStrategy(*strategy);
+    auto strategyEndCountdown =
+            strategy->endTime() * 60 - currentSeconds();
 
-    currentMinute = currentTime / 60;
-    auto currentSlotIndex = strategy->findSlotIndexForTime(currentMinute);
-    if (!currentSlotIndex) {
-        return;
-    }
+    if (!newUpcomingSession) {
+        if (strategyEndCountdown <= getReadyInterval) {
+            if (!nextIsTheEndOfStrategy) {
+                resetSents();
 
-    _currentGroupIndex =
-            strategy->groupIndexForSlotIndex(currentSlotIndex.value());
-    if (!_currentGroupIndex) {
-        return;
-    }
-
-    auto groups = strategy->calculateGroups();
-    _currentGroup = groups[static_cast<unsigned int>(_currentGroupIndex.value())];
-
-    auto nextGroupIndex =
-            static_cast<unsigned int>(_currentGroupIndex.value()) + 1;
-
-    std::optional<ActivityGroup> nextGroup;
-    int nextGroupStartTime;
-    QString messageTitle;
-    const char *prepareText;
-    const char *startsText;
-
-    if (nextGroupIndex < groups.size()) {
-
-        nextGroup = groups[nextGroupIndex];
-
-        if (!nextGroup->activity ||
-            _currentGroup->activity->name == nextGroup->activity->name) {
+                nextIsTheEndOfStrategy = true;
+            }
+        } else {
+            nextIsTheEndOfStrategy = false;
             return;
         }
+    }
 
-        auto nextGroupStartSlotIndex =
-                strategy->startSlotIndexForGroupIndex(static_cast<int>(nextGroupIndex));
-        nextGroupStartTime =
-                strategy->startTimeForSlotIndex(nextGroupStartSlotIndex.value());
+    if (newUpcomingSession && newUpcomingSession != upcomingSession) {
+        upcomingSession = *newUpcomingSession;
+        resetSents();
+    }
 
-        if (nextGroup->activity->name != targetActivity->name) {
-            getReadySent = false;
-            startSent = false;
-            targetActivity = nextGroup->activity;
-        }
+    auto countdown = getCountdown();
+    auto[prepareMessage, startMessage] = makeMessages();
 
-        auto nextActivityName = QString::fromStdString(nextGroup->activity->name);
-        messageTitle = titleForGroup(nextGroup.value());
-        prepareText = "Coming up in 5 minutes";
-        startsText = "Starts right now";
+    if (countdown < startSentInterval && !startSent) {
+        sendStartMessage(startMessage);
+        return;
+    }
+
+    if (countdown < getReadyInterval && !getReadySent) {
+        sendPrepareMessage(prepareMessage);
+        return;
+    }
+}
+
+ActivitySession::Time Notifier::getCountdown() const {
+    const auto countdown = nextIsTheEndOfStrategy
+                           ? strategy->endTime() * 60 - currentSeconds()
+                           : upcomingSession.beginTime() * 60 - currentSeconds();
+    return countdown;
+}
+
+void Notifier::sendStartMessage(const Message &message) {
+    backend->sendMessage(message.title, message.text);
+    startSent = true;
+    getReadySent = true;
+}
+
+
+void Notifier::sendPrepareMessage(const Message &message) {
+    backend->sendMessage(message.title, message.text);
+    getReadySent = true;
+}
+
+void Notifier::resetSents() {
+    getReadySent = false;
+    startSent = false;
+}
+
+void Notifier::setStrategy(Strategy *newStrategy) {
+    strategy = newStrategy;
+}
+
+QString Notifier::titleForSession(const ActivitySession &activitySession) {
+    return QString::fromStdString(activitySession.activity->name())
+           + " ("
+           + humanTimeForMinutes(activitySession.duration())
+           + ")";
+}
+
+std::tuple<Notifier::Message, Notifier::Message> Notifier::makeMessages() {
+    Message prepareMessage;
+    Message startMessage;
+
+    if (nextIsTheEndOfStrategy) {
+        prepareMessage.title = "End Of A Strategy";
+        startMessage.text = "Strategy ends right now";
     } else {
-        nextGroupStartTime = strategy->endTime();
-        messageTitle = "End Of Strategy";
-        prepareText = "Coming up in 5 minutes";
-        startsText = "Strategy ends right now";
+        prepareMessage.title = titleForSession(upcomingSession);
+        startMessage.text = "Starts right now";
     }
 
-    auto countdown = nextGroupStartTime * 60 - currentTime;
-    if (countdown < 5 * 60 && !getReadySent) {
-        backend->sendMessage(messageTitle, tr(prepareText));
-        getReadySent = true;
-        return;
-    }
+    prepareMessage.text =
+            QString("Coming up in %1 minutes")
+                    .arg(Settings::getReadyMinutes);
 
-    if (countdown < 10 && !startSent) {
-        backend->sendMessage(messageTitle, tr(startsText));
-        startSent = true;
-        return;
-    }
+    startMessage.title = prepareMessage.title;
+
+    return std::make_tuple(prepareMessage, startMessage);
 }
 
-std::optional<int> Notifier::currentGroupIndex() const {
-    return _currentGroupIndex;
-}
-
-std::optional<ActivityGroup> Notifier::currentGroup() const {
-    return _currentGroup;
-}
-
-void Notifier::setStrategy(Strategy *value) { strategy = value; }
-
-QString Notifier::titleForGroup(ActivityGroup &activityGroup) {
-    return QString::fromStdString(activityGroup.activity->name) + " (" +
-           timeStringForMins(static_cast<int>(activityGroup.length) *
-                             strategy->slotDuration()) +
-           ")";
-}

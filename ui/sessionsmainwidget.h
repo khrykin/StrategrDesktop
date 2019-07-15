@@ -14,6 +14,7 @@
 #include "currentsessionwidget.h"
 #include "slotboard.h"
 #include "strategy.h"
+#include "notifier.h"
 
 class SessionsMainWidget : public QWidget {
 public:
@@ -31,6 +32,7 @@ public:
 private:
     Strategy *strategy;
 
+    Notifier *notifier = nullptr;
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
     QScrollArea *slotBoardScrollArea = nullptr;

@@ -31,6 +31,8 @@ private:
     Strategy *strategy;
     QVBoxLayout *mainLayout;
 
+    bool dontSave = false;
+
     QSpinBox *slotDurationEdit;
     SteppedTimeEdit *beginTimeEdit;
     SteppedTimeEdit *endTimeEdit;

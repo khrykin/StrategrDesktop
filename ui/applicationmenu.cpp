@@ -99,7 +99,7 @@ void ApplicationMenu::setupFileMenu() {
                         &MainScene::openStrategySettings,
                         QKeySequence(Qt::CTRL + Qt::Key_Comma));
 
-    fileMenu->addAction(tr("Save Current Strategy as Default"),
+    fileMenu->addAction(tr("Save as Default"),
                         window,
                         &MainWindow::saveCurrentStrategyAsDefault,
                         QKeySequence(Qt::CTRL + Qt::Key_D));

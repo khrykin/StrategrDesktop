@@ -15,6 +15,7 @@ QTime qTimeFromMinutes(int minutes);
 QString qStringForMinutes(int minutes);
 
 int currentMinutes();
+int currentSeconds();
 
 template<class T>
 T *findParentWidget(QWidget *childWidget) {

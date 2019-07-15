@@ -32,13 +32,19 @@ CurrentActivitySession::Duration CurrentActivitySession::currentDayDuration() {
 
 std::optional<ActivitySession>
 CurrentActivitySession::forStrategy(const Strategy &strategy) {
+    auto currentSession = currentSessionForStrategy(strategy);
+    return currentSession && currentSession->activity
+           ? currentSession
+           : std::nullopt;
+}
+
+std::optional<ActivitySession>
+CurrentActivitySession::currentSessionForStrategy(const Strategy &strategy) {
     auto currentMinutes = CurrentActivitySession::currentMinutes();
     for (auto &session : strategy.activitySessions()) {
         if (currentMinutes >= session.beginTime()
             && currentMinutes <= session.endTime()) {
-            return session.activity
-                   ? std::make_optional(session)
-                   : std::nullopt;
+            return session;
         }
     }
 
@@ -46,24 +52,23 @@ CurrentActivitySession::forStrategy(const Strategy &strategy) {
 }
 
 std::optional<ActivitySession>
-CurrentActivitySession::upcomingForStrategy(const Strategy &strategy,
-                                            Minutes inMinutes) {
-    auto currentMinutes = CurrentActivitySession::currentMinutes();
-    auto targetTime = currentMinutes + inMinutes;
+CurrentActivitySession::upcomingForStrategy(const Strategy &strategy) {
+    auto currentSession =
+            CurrentActivitySession::currentSessionForStrategy(strategy);
 
-    for (auto &session : strategy.activitySessions()) {
-        if (targetTime >= session.beginTime()
-            && targetTime << session.endTime()) {
-            return session.activity
-                   ? std::make_optional(session)
-                   : std::nullopt;
-        }
+    if (!currentSession) {
+        // We're out of strategy's time bounds.
+        return std::nullopt;
     }
 
-    return std::nullopt;
+    auto nextSession = strategy.activitySessions().after(*currentSession);
+    return nextSession && nextSession->activity
+           ? nextSession
+           : std::nullopt;
 }
 
-CurrentActivitySession::Minutes CurrentActivitySession::currentMinutes() {
+CurrentActivitySession::Seconds
+CurrentActivitySession::currentMinutes() {
     using namespace std::chrono;
     auto duration = currentDayDuration();
     return duration_cast<minutes>(duration).count();

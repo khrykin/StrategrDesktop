@@ -1,7 +1,3 @@
-#include "filesystemiomanager.h"
-#include "jsonserializer.h"
-#include "notifierbackend.h"
-#include "ui/mainwindow.h"
 #include <QApplication>
 #include <QDebug>
 #include <QFileDialog>
@@ -10,6 +6,12 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextStream>
+
+#include "filesystemiomanager.h"
+#include "jsonserializer.h"
+#include "notifierbackend.h"
+#include "ui/mainwindow.h"
+#include "alert.h"
 
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : window(parent) {}
 
@@ -88,7 +90,7 @@ FileSystemIOManager::read(const QString &readFilepath) {
     return strategy;
 }
 
-std::optional<std::unique_ptr<Strategy>>
+std::unique_ptr<Strategy>
 FileSystemIOManager::lastOpened() {
     QSettings settings;
     if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
@@ -99,7 +101,7 @@ FileSystemIOManager::lastOpened() {
         return read(lastFilepath);
     }
 
-    return std::nullopt;
+    return nullptr;
 }
 
 void FileSystemIOManager::resetFilepath() {
@@ -126,6 +128,8 @@ FileSystemIOManager::openDefaultStrategy() {
                 .toString();
 
         auto defaultStrategy = JSONSerializer::read(defaultStrategyString);
+
+        resetFilepath();
 
         return defaultStrategy
                ? std::move(defaultStrategy)
@@ -244,19 +248,9 @@ bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const Strategy &strat
 }
 
 int FileSystemIOManager::showAreYouSureDialog() {
-    QMessageBox messageBox;
-    messageBox.setText("Document "
-                       + fileInfo().fileName()
-                       + " has been modified.");
-
-    messageBox.setInformativeText("Do you want to save your changes?");
-
-    messageBox.setStandardButtons(QMessageBox::Save
-                                  | QMessageBox::Discard
-                                  | QMessageBox::Cancel);
-
-    messageBox.setDefaultButton(QMessageBox::Save);
-
-    return messageBox.exec();
+    return Alert::showAskToSave("Document "
+                                + fileInfo().fileName()
+                                + " has been modified.",
+                                "Do you want to save your changes?");
 }
 

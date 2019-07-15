@@ -18,6 +18,7 @@ namespace ApplicationSettings {
     const auto currentSessionHeight = 40;
 
     const auto currentTimeTimerInterval = 15 * 1000;
+    const auto notifierTimerTimeInterval = 1 * 1000;
 }
 
 #endif //APPLICATIONSETTINGS_H

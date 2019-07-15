@@ -13,22 +13,23 @@ class ActivitySessionWidget : public QWidget {
 Q_OBJECT
 
 public:
-    explicit ActivitySessionWidget(const ActivitySession *activitySession,
+    explicit ActivitySessionWidget(const ActivitySession &activitySession,
                                    QWidget *parent = nullptr);
 
 
     bool isSelected() const;
     void setIsSelected(bool isSelected, bool doUpdate = true);
 
-    void setActivitySession(const ActivitySession *newActivitySession);
+    void setActivitySession(const ActivitySession &newActivitySession);
     void setSlotHeight(int slotHeight);
 
 private:
     int slotHeight = ApplicationSettings::defaultSlotHeight;
     bool _isSelected = false;
-    mutable const ActivitySession *activitySession = nullptr;
 
-    Activity *previousActivity = Strategy::NoActivity;
+    ActivitySession activitySession;
+    ActivitySession previousActivitySession = ActivitySession();
+    int previousDuration = 0;
 
     QLabel *label = nullptr;
     QLabel *titleLabel = nullptr;

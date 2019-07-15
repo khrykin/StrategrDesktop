@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QLayout>
 #include <QLabel>
+#include "backtrace.h"
 
 void setupCredentials() {
     QCoreApplication::setOrganizationName("Dmitry Khrykin");
@@ -23,6 +24,8 @@ void setupFonts() {
 
 
 int main(int argc, char *argv[]) {
+    signal(SIGSEGV, handler);
+
     setupCredentials();
     QApplication a(argc, argv);
 

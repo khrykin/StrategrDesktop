@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     _scene = new MainScene(strategy.get(), this);
     _menu = new ApplicationMenu(this);
-    // TODO Notifier
 
     setCentralWidget(_scene);
 
@@ -30,7 +29,7 @@ void MainWindow::loadRecent() {
     auto lastOpened = fsIOManager.lastOpened();
     if (lastOpened) {
         updateWindowTitle();
-        setStrategy(std::move(*lastOpened));
+        setStrategy(std::move(lastOpened));
     }
 }
 
@@ -48,21 +47,25 @@ void MainWindow::openNewWindow() {
 }
 
 void MainWindow::openFile() {
-    auto oldFsIOManger = FileSystemIOManager(fsIOManager);
-    auto newStrategy = fsIOManager.open();
+    auto newFsIOManger = FileSystemIOManager(fsIOManager);
+    auto newStrategy = newFsIOManger.open();
 
     if (!newStrategy) {
+        qWarning() << "Strategy wasn't opened";
         return;
     }
 
-    if (!oldFsIOManger.isSaved()) {
-        auto wantToLeave = oldFsIOManger.askIfWantToDiscardOrLeaveCurrent(*strategy);
-        if (wantToLeave) {
-            return;
-        }
-    }
+//    if (!oldFsIOManger.isSaved()) {
+//        auto wantToLeave = oldFsIOManger.askIfWantToDiscardOrLeaveCurrent(*strategy);
+//        if (wantToLeave) {
+//            return;
+//        }
+//    }
 
-    setStrategy(std::move(newStrategy));
+    auto *newWindow = new MainWindow();
+    newWindow->fsIOManager = newFsIOManger;
+    newWindow->setStrategy(std::move(newStrategy));
+    newWindow->show();
 }
 
 void MainWindow::saveFile() {
