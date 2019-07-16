@@ -15,6 +15,8 @@ Application::Application(int &argc, char **argv)
             window->show();
         }
     });
+
+    setupFonts();
 }
 
 bool Application::event(QEvent *event) {
