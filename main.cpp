@@ -1,11 +1,12 @@
 #include "ui/mainwindow.h"
 
-#include <QApplication>
 #include <QFontDatabase>
 #include <QDebug>
 #include <QWidget>
 #include <QLayout>
 #include <QLabel>
+
+#include "application.h"
 #include "backtrace.h"
 
 void setupCredentials() {
@@ -14,27 +15,11 @@ void setupCredentials() {
     QCoreApplication::setApplicationName("Strategr");
 }
 
-void setupFonts() {
-    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf") < 0)
-        qWarning() << "FontAwesome cannot be loaded !";
-
-    if (QFontDatabase::addApplicationFont(":/fonts/ionicons.ttf") < 0)
-        qWarning() << "FontAwesome cannot be loaded !";
-}
-
-
 int main(int argc, char *argv[]) {
     signal(SIGSEGV, handler);
 
     setupCredentials();
-    QApplication a(argc, argv);
-
-    // NB! Must be called after QApplication()
-    setupFonts();
-
-    MainWindow w;
-    w.loadRecent();
-    w.show();
+    Application a(argc, argv);
 
     return QApplication::exec();
 }

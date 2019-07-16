@@ -18,11 +18,11 @@ public:
     static void clearRecent();
 
     explicit FileSystemIOManager(QWidget *parent);
-
+    void setWindow(QWidget *window);
     bool isSaved() const;
     void setIsSaved(bool isSaved);
 
-    std::unique_ptr<Strategy> open();
+    QString getOpenFileName();
 
     void save(const Strategy &strategy);
     void saveAs(const Strategy &strategy);

@@ -98,7 +98,7 @@ set(UI
         ui/currentsessionwidget.cpp
         ui/currentsessionwidget.h
         ui/abstractspinboxdecorator.cpp
-        ui/abstractspinboxdecorator.h ui/alert.cpp ui/alert.h utility/notifierbackend.cpp)
+        ui/abstractspinboxdecorator.h ui/alert.cpp ui/alert.h utility/notifierbackend.cpp ui/application.cpp ui/application.h)
 
 set(UTILITY
         utility/jsonserializer.cpp

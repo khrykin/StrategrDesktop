@@ -15,13 +15,12 @@
 
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : window(parent) {}
 
-std::unique_ptr<Strategy>
-FileSystemIOManager::open() {
+QString FileSystemIOManager::getOpenFileName() {
     auto openFilepath = QFileDialog::getOpenFileName(
             window, QObject::tr("Open Strategy"), destinationDir(), searchPattern);
 
     QSettings().setValue(Settings::lastOpenedDirectoryKey, openFilepath);
-    return read(openFilepath);
+    return openFilepath;
 }
 
 void FileSystemIOManager::save(const Strategy &strategy) {
@@ -252,5 +251,9 @@ int FileSystemIOManager::showAreYouSureDialog() {
                                 + fileInfo().fileName()
                                 + " has been modified.",
                                 "Do you want to save your changes?");
+}
+
+void FileSystemIOManager::setWindow(QWidget *newWindow) {
+    window = newWindow;
 }
 

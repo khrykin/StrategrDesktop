@@ -10,6 +10,7 @@
 class Alert {
 public:
     static int showAskToSave(const QString &title, const QString &message);
+    static void showWarning(const QString &title, const QString &message);
 };
 
 

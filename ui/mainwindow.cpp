@@ -3,11 +3,26 @@
 //
 
 #include "mainwindow.h"
-#include <QMessageBox>
+#include "application.h"
+#include "alert.h"
 
+#include <QMessageBox>
 #include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    setup();
+}
+
+
+MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
+        : fsIOManager(std::move(fsIOManager)),
+          strategy(this->fsIOManager.lastOpened()),
+          QMainWindow(parent) {
+    fsIOManager.setWindow(this);
+    setup();
+}
+
+void MainWindow::setup() {
     WindowGeometryManager::setInitialGeometry(this);
 
     strategy->setOnChangeCallback(this, &MainWindow::strategyStateChanged);
@@ -18,14 +33,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setCentralWidget(_scene);
 
     updateWindowTitle();
-}
 
+    fsIOManager.setIsSaved(true);
+}
 
 MainWindow::~MainWindow() {
-    WindowGeometryManager::saveGeometry(this);
+    tearDown();
 }
 
-void MainWindow::loadRecent() {
+void MainWindow::loadLastOpened() {
     auto lastOpened = fsIOManager.lastOpened();
     if (lastOpened) {
         updateWindowTitle();
@@ -48,24 +64,9 @@ void MainWindow::openNewWindow() {
 
 void MainWindow::openFile() {
     auto newFsIOManger = FileSystemIOManager(fsIOManager);
-    auto newStrategy = newFsIOManger.open();
+    auto filePath = newFsIOManger.getOpenFileName();
 
-    if (!newStrategy) {
-        qWarning() << "Strategy wasn't opened";
-        return;
-    }
-
-//    if (!oldFsIOManger.isSaved()) {
-//        auto wantToLeave = oldFsIOManger.askIfWantToDiscardOrLeaveCurrent(*strategy);
-//        if (wantToLeave) {
-//            return;
-//        }
-//    }
-
-    auto *newWindow = new MainWindow();
-    newWindow->fsIOManager = newFsIOManger;
-    newWindow->setStrategy(std::move(newStrategy));
-    newWindow->show();
+    loadFile(filePath);
 }
 
 void MainWindow::saveFile() {
@@ -112,18 +113,36 @@ void MainWindow::setIsSaved(bool isSaved) {
     setWindowTitle(windowTitle);
 }
 
-void MainWindow::loadFile(const QString &path) {
-    auto loadedStrategy = fsIOManager.read(path);
+void MainWindow::loadFile(const QString &path, bool inNewWindow) {
+    auto newFsIOManger = FileSystemIOManager(fsIOManager);
+    auto loadedStrategy = newFsIOManger.read(path);
     if (!loadedStrategy) {
+        qWarning() << "Strategy wasn't loaded";
         return;
     }
 
-    setStrategy(std::move(loadedStrategy));
+    qDebug() << Application::openedFiles;
+    if (Application::openedFiles.indexOf(newFsIOManger.fileInfo().filePath()) >= 0) {
+        return;
+    }
+
+    if (inNewWindow) {
+        auto *newWindow = new MainWindow();
+        newWindow->fsIOManager = newFsIOManger;
+        newWindow->setStrategy(std::move(loadedStrategy));
+        newWindow->show();
+    } else {
+        Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
+        fsIOManager = newFsIOManger;
+        setStrategy(std::move(loadedStrategy));
+    }
 }
 
 void MainWindow::setStrategy(std::unique_ptr<Strategy> newStrategy) {
     strategy = std::move(newStrategy);
     strategy->setOnChangeCallback(this, &MainWindow::strategyStateChanged);
+
+    Application::openedFiles.append(fsIOManager.fileInfo().filePath());
 
     setIsSaved(true);
 
@@ -146,12 +165,21 @@ bool MainWindow::wantToClose() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
-        WindowGeometryManager::saveGeometry(this);
+        tearDown();
         event->accept();
     } else {
         event->ignore();
     }
 }
 
+void MainWindow::tearDown() {
+    WindowGeometryManager::saveGeometry(this);
+    Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
+}
 
+MainWindow *MainWindow::createLastOpened() {
+    auto fsIOManager = FileSystemIOManager(nullptr);
+    auto window = new MainWindow(fsIOManager);
 
+    return window;
+}

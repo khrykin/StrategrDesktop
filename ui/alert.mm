@@ -41,3 +41,14 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
             return QMessageBox::Save;
     }
 }
+
+void Alert::showWarning(const QString &title, const QString &message) {
+    QMessageBox messageBox;
+    messageBox.setText(title);
+    messageBox.setInformativeText(message);
+    messageBox.setIcon(QMessageBox::Warning);
+
+    messageBox.setDefaultButton(QMessageBox::Save);
+
+    messageBox.exec();
+}

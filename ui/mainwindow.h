@@ -20,17 +20,23 @@
 class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
+    static const bool LoadInCurrentWindow = false;
+
     explicit MainWindow(QWidget *parent = nullptr);
+
+    static MainWindow *createLastOpened();
 
     ~MainWindow() override;
 
-    void loadRecent();
+    void loadLastOpened();
 
     MainScene *scene() const;
     ApplicationMenu *menu() const;
 
     void openNewWindow();
     void openFile();
+    void openRecentFile();
+    void loadFile(const QString &path, bool inNewWindow = true);
 
     void saveFile();
     void saveFileAs();
@@ -38,11 +44,12 @@ public:
     void saveCurrentStrategyAsDefault();
     void clearRecentFilesList();
 
-    void openRecentFile();
 
-    void loadFile(const QString &path);
 private:
     friend ApplicationMenu;
+
+    explicit MainWindow(FileSystemIOManager fsIOManager,
+                        QWidget *parent = nullptr);
 
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
@@ -56,6 +63,8 @@ private:
 
     bool wantToClose();
     void closeEvent(QCloseEvent *event) override;
+    void tearDown();
+    void setup();
 };
 
 
