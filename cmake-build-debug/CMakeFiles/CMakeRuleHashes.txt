@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+a1dad8f500898f94b348cc5c3c9ab2cd CMakeFiles/Strategr_autogen
+7f34b0564eab2ba301c03139866b31d4 CMakeFiles/ui_tests_autogen
+6d658f3734cd12ac11b3d76e75b5a365 qrc_fonts.cpp
+aa248cb90c4ce4fcef17ca4755abf1c0 qrc_icons.cpp

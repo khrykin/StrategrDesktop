@@ -24,6 +24,7 @@ void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
     } else if (leftButtonPressed) {
         // Slot pulling event
         isPulling = true;
+        slotsWidget->setCursor(QCursor(Qt::SizeVerCursor));
         selectSessionAtSlotIndex(pulledFrom);
         slotsWidget->deselectAllSlots();
     }
@@ -45,6 +46,7 @@ void SlotsMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
     if (isPulling) {
         reset();
         strategy()->commitToHistory();
+        slotsWidget->unsetCursor();
     }
 }
 

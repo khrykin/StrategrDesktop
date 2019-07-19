@@ -67,8 +67,7 @@ void SelectionWidget::updateUI() {
         delete child;
     }
 
-    for (auto i = selectionState.begin(); i != selectionState.end(); ++i) {
-        auto &selectionItem = *i;
+    for (auto &selectionItem : selectionState) {
         auto topPosition = slotHeight * selectionItem.front();
 
         auto widgetHeight = selectionItem.size() * slotHeight;

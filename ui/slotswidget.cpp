@@ -89,7 +89,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::selectAllSlots);
     addAction(selectAllAction);
 
-    shiftSlotsBelowAction = new QAction(tr("Shift All Slots Below"), this);
+    shiftSlotsBelowAction = new QAction(tr("Make Room Shifting Below"), this);
     shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
     connect(shiftSlotsBelowAction,
             &QAction::triggered,
@@ -103,7 +103,6 @@ void SlotsWidget::setupActions() {
 void SlotsWidget::mousePressEvent(QMouseEvent *event) {
     mouseHandler.mousePressEvent(event);
 }
-
 
 void SlotsWidget::mouseMoveEvent(QMouseEvent *event) {
     mouseHandler.mouseMoveEvent(event);

@@ -16,6 +16,9 @@ Application::Application(int &argc, char **argv)
         }
     });
 
+    Application::setAttribute(Qt::AA_EnableHighDpiScaling);
+    Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     setupFonts();
 }
 

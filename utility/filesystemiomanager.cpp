@@ -220,18 +220,20 @@ void FileSystemIOManager::updateLastOpened() {
 }
 
 void FileSystemIOManager::showCantOpenDialog(const QFile &file) {
-    QMessageBox::warning(window, QObject::tr("Open Strategy"),
-                         QObject::tr("Can't read file %1:\n%2.")
-                                 .arg(filepath)
-                                 .arg(file.errorString()));
+    Alert::showWarning(window,
+                       QObject::tr("Open Strategy"),
+                       QObject::tr("Can't read file %1:\n%2.")
+                               .arg(filepath)
+                               .arg(file.errorString()));
 }
 
 
 void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
-    QMessageBox::warning(window, QObject::tr("Save Strategy"),
-                         QObject::tr("Can't write to file %1:\n%2.")
-                                 .arg(filepath)
-                                 .arg(file.errorString()));
+    Alert::showWarning(window,
+                       QObject::tr("Save Strategy"),
+                       QObject::tr("Can't write to file %1:\n%2.")
+                               .arg(filepath)
+                               .arg(file.errorString()));
 }
 
 bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy) {

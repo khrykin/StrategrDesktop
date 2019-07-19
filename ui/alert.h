@@ -6,11 +6,14 @@
 #define STRATEGR_ALERT_H
 
 #include <QString>
+#include <QWidget>
 
 class Alert {
 public:
     static int showAskToSave(const QString &title, const QString &message);
-    static void showWarning(const QString &title, const QString &message);
+    static int showWarning(QWidget *parent,
+                           const QString &title,
+                           const QString &message);
 };
 
 

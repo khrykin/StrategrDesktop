@@ -12,21 +12,22 @@
 
 #include "applicationsettings.h"
 
-ActivitiesListItemWidget::ActivitiesListItemWidget(Activity *activity, QWidget *parent)
+ActivitiesListItemWidget::ActivitiesListItemWidget(Activity *activity,
+                                                   QWidget *parent)
         : QWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
 
     setStyleSheet("ActivitiesListItemWidget {"
                   "background-color: white;"
-                  "border-bottom: 1px solid #ddd;"
+                  "border-bottom: 1px solid #eee;"
                   "}"
                   "ActivitiesListItemWidget::hover {"
-                  "background-color: #d8d8d8;"
-                  "border-bottom: 1px solid #ddd;"
+                  "background-color: #f6f6f6;"
+                  "border-bottom: 1px solid #eee;"
                   "}");
 
     setLayout(new QHBoxLayout());
-    layout()->setMargin(0);
+    layout()->setContentsMargins(10, 0, 10, 0);
     layout()->setSpacing(0);
 
     layoutChildWidgets();

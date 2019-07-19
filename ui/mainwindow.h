@@ -63,8 +63,9 @@ private:
 
     bool wantToClose();
     void closeEvent(QCloseEvent *event) override;
-    void tearDown();
     void setup();
+    void tearDown();
+
 };
 
 

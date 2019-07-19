@@ -49,6 +49,7 @@ private:
     void leaveEvent(QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     const QString makeActivitySessionTitle() const;
+    double getProgress() const;
 };
 
 #endif // CURRENTACTIVITYWIDGET_H

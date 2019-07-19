@@ -1,0 +1,3 @@
+ToolSet: 1.0 (local)Options: 
+
+Options:-DCMAKE_PREFIX_PATH=~/Qt/5.13.0/clang_64/lib/cmake

@@ -1,0 +1,7 @@
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/ui_tests.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/Strategr.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/models_tests.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/ui_tests_autogen.dir
+/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/CMakeFiles/Strategr_autogen.dir

@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Strategr"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\usr\local\;CMake Files\..\..\..\..\..\..\usr\local\lib\;CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\;CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Catch2\;CMake Files\..\..\..\..\Qt\;CMake Files\..\..\..\..\Qt\5.13.0\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Test\;CMake Files\resources\;CMake Files\deployment\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ui_tests">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/ui_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_TESTLIB_LIB"/>
+					<Add option="-DQT_TESTCASE_BUILDDIR=&quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug&quot;"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/ui_tests_autogen/include"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtTest.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtTest.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 ui_tests"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ui_tests/fast">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/ui_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_TESTLIB_LIB"/>
+					<Add option="-DQT_TESTCASE_BUILDDIR=&quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug&quot;"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/ui_tests_autogen/include"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtTest.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtTest.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 ui_tests/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Strategr">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Strategr.app/Contents/MacOS/Strategr" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="0"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Strategr_autogen/include"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 Strategr"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Strategr/fast">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Strategr.app/Contents/MacOS/Strategr" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="0"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Strategr_autogen/include"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtWidgets.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtGui.framework/Headers"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/OpenGL.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/lib/QtCore.framework/Headers"/>
+					<Add directory="/Users/khrykin/Qt/5.13.0/clang_64/./mkspecs/macx-clang"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 Strategr/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="models_tests">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/models_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 models_tests"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="models_tests/fast">
+				<Option output="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/models_tests" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/."/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui"/>
+					<Add directory="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/10.0.1/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 models_tests/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="ui_tests_autogen">
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 ui_tests_autogen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Strategr_autogen">
+				<Option working_dir="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 Strategr_autogen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/Strategr_autogen/mocs_compilation.cpp">
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/qrc_fonts.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/qrc_icons.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug/ui_tests_autogen/mocs_compilation.cpp">
+			<Option target="ui_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/deployment/Strategr.icns">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/main.cpp">
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activity.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activity.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activityinvalidpropertyexception.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activityinvalidpropertyexception.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitylist.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitylist.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysession.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysession.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysessionscalculator.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysessionscalculator.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysessionslist.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/activitysessionslist.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/currentactivitysession.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/currentactivitysession.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/notifiableonchange.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/privatelist.hpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/strategy.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/strategy.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/strategyhistory.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/strategyhistory.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/streamablelist.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/activity_tests.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/strategy_activities_slots_interaction_test.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/strategy_activities_test.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/strategy_history_test.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/strategy_settings_test.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/tests/strategy_timeslots_test.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/timeslot.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/timeslot.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/timeslotsstate.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/models/timeslotsstate.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/qt_tests_main.cpp">
+			<Option target="ui_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/resources/fonts.qrc">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/resources/icons.qrc">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/tests_main.cpp">
+			<Option target="models_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/third-party/slidingstackedwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/third-party/slidingstackedwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/third-party/stacklayout.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/third-party/stacklayout.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/abstractspinboxdecorator.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/abstractspinboxdecorator.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitieslistitem.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitieslistitem.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitieslistwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitieslistwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitysessionwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/activitysessionwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/alert.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/alert.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/alert.mm">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/application.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/application.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/applicationmenu.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/applicationmenu.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/colorpicker.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/colorpicker.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/colorpickeritem.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/colorpickeritem.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/currentsessionwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/currentsessionwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/currenttimemarker.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/currenttimemarker.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/enterpresseater.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/enterpresseater.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/mainscene.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/mainscene.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/mainwindow.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/mainwindow.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/navbar.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/navbar.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/newactivitymenu.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/newactivitymenu.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/parentwindowaccessible.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/parentwindowaccessible.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/reactivelist.hpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/selectionwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/selectionwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/sessionsmainwidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/sessionsmainwidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slidinganimator.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slidinganimator.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotboard.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotboard.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotruler.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotruler.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotsmousehandler.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotsmousehandler.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotswidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/slotswidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/strategysettingswidget.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/strategysettingswidget.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/tests/main_window_test.cpp">
+			<Option target="ui_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/windowgeometrymanager.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/ui/windowgeometrymanager.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/applicationsettings.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/backtrace.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/filesystemiomanager.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/filesystemiomanager.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/jsonserializer.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/jsonserializer.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/notifier.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/notifier.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/notifierbackend.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/notifierbackend.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/notifierbackend.mm">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/testutils.h">
+			<Option target="ui_tests"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/utils.cpp">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/utility/utils.h">
+			<Option target="ui_tests"/>
+			<Option target="Strategr"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../../../usr/local/lib/cmake/Catch2/Catch2Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Catch2\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../../../usr/local/lib/cmake/Catch2/catch2Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Catch2\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../../../usr/local/lib/cmake/Catch2/catch2ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\usr\local\lib\cmake\Catch2\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5/Qt5ModuleLocation.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Widgets/Qt5Widgets_QMacStylePlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QCocoaIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QMacHeifPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QMacJp2Plugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QMinimalIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QOffscreenIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Gui/Qt5Gui_QXdgDesktopPortalThemePlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Test/Qt5TestConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Test\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Test/Qt5TestConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Test\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/../../../../Qt/5.13.0/clang_64/lib/cmake/Qt5Test/Qt5TestConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Qt\5.13.0\clang_64\lib\cmake\Qt5Test\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/resources/fonts.qrc">
+			<Option virtualFolder="CMake Files\resources\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/resources/icons.qrc">
+			<Option virtualFolder="CMake Files\resources\"/>
+		</Unit>
+		<Unit filename="/Users/khrykin/Developer/Qt/Startegr/strategrqt/deployment/Info.plist">
+			<Option virtualFolder="CMake Files\deployment\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

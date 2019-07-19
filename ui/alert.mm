@@ -42,13 +42,8 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
     }
 }
 
-void Alert::showWarning(const QString &title, const QString &message) {
-    QMessageBox messageBox;
-    messageBox.setText(title);
-    messageBox.setInformativeText(message);
-    messageBox.setIcon(QMessageBox::Warning);
-
-    messageBox.setDefaultButton(QMessageBox::Save);
-
-    messageBox.exec();
+int Alert::showWarning(QWidget *parent,
+                       const QString &title,
+                       const QString &message) {
+    QMessageBox::warning(parent, title, message);
 }

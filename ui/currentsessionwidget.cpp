@@ -185,14 +185,14 @@ void CurrentSessionWidget::updateUI() {
 
     auto activityText = makeActivitySessionTitle();
 
-    auto currentTime = currentMinutes();
-    auto passedTime = currentTime - activitySession.beginTime();
-    auto leftTime = activitySession.endTime() - currentTime;
+    auto currentTime = static_cast<double>(currentMinutes());
+    auto passedTime = qRound(currentTime - activitySession.beginTime());
+    auto leftTime = activitySession.duration() - passedTime;
 
     auto passedTimeText = humanTimeForMinutes(passedTime);
     auto leftTimeText = humanTimeForMinutes(leftTime);
 
-    auto progress = static_cast<double>(passedTime) / activitySession.duration();
+    auto progress = getProgress();
 
     if (activitySession != previousSession) {
         startTimeLabel->setText(startTimeText);
@@ -204,6 +204,12 @@ void CurrentSessionWidget::updateUI() {
     activityLabel->setText(activityText);
 
     setProgress(progress);
+}
+
+double CurrentSessionWidget::getProgress() const {
+    auto secondsPassed = static_cast<double>(currentSeconds() - activitySession.beginTime() * 60);
+    auto secondsDuration = 60 * activitySession.duration();
+    return secondsPassed / secondsDuration;
 }
 
 const QString CurrentSessionWidget::makeActivitySessionTitle() const {
@@ -234,6 +240,7 @@ void CurrentSessionWidget::setActivitySession(
     if (activitySession != newActivitySession || activityPropertiesChanged) {
         previousSession = activitySession;
         activitySession = newActivitySession;
-        updateUI();
     }
+
+    updateUI();
 }

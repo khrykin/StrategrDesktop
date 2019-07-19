@@ -68,7 +68,7 @@ void ActivitiesListWidget::setupNavbar() {
     layout()->addWidget(navbar);
 
     navbar->setTitle("Activities");
-    navbar->setLeftButton("‹ Back",
+    navbar->setLeftButton("Back",
                           this,
                           &ActivitiesListWidget::getBack);
     navbar->setRightButton("New",
@@ -90,7 +90,6 @@ MainScene *ActivitiesListWidget::mainScene() {
 void ActivitiesListWidget::getBack() {
     emit wantToGetBack();
 }
-
 
 void ActivitiesListWidget::reconnectItemAtIndex(int index,
                                                 ActivitiesListItemWidget *item) {

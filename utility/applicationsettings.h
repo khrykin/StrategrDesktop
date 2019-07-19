@@ -17,8 +17,8 @@ namespace ApplicationSettings {
     const auto defaultActivityItemHeight = 40;
     const auto currentSessionHeight = 40;
 
-    const auto currentTimeTimerInterval = 15 * 1000;
-    const auto notifierTimerTimeInterval = 1 * 1000;
+    const auto currentTimeTimerInterval = 1 * 1000;
+    const auto notifierTimerTimeInterval = 15 * 1000;
 }
 
 #endif //APPLICATIONSETTINGS_H
