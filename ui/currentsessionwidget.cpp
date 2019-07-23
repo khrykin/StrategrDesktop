@@ -217,7 +217,8 @@ const QString CurrentSessionWidget::makeActivitySessionTitle() const {
            + " "
            + "<font color=\""
            + QString::fromStdString(activitySession.activity->color())
-           + "\">" + QString::fromStdString(activitySession.activity->name())
+           + "\">"
+           + QString::fromStdString(activitySession.activity->name())
            + "</font>";
 }
 

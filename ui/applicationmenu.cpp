@@ -29,13 +29,6 @@ void ApplicationMenu::setupEditMenu() {
                             window->strategy->redo();
                         },
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
-
-//    editMenu->addSeparator();
-// TODO:
-//
-//    editMenu->addAction(slotBoard->groupsList()->getSelectAllAction());
-//
-//    editMenu->addAction(slotBoard->groupsList()->getClearSelectionAction());
 }
 
 void ApplicationMenu::setupViewMenu() {

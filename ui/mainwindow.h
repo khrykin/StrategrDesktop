@@ -28,8 +28,6 @@ public:
 
     ~MainWindow() override;
 
-    void loadLastOpened();
-
     MainScene *scene() const;
     ApplicationMenu *menu() const;
 

@@ -28,7 +28,7 @@ public:
 
         // Explicit constructor definition is needed here because of clang bug.
         // See: https://stackoverflow.com/questions/53408962
-        Options() {}
+        Options() {};
     };
 
     static void hideWidget(QWidget *widget, Options options = Options());
@@ -36,9 +36,11 @@ public:
 
 private:
     class ResizeAwareWidget;
+
     enum class Operation {
         Show, Hide
     };
+
     enum class Orientation {
         Horizontal, Vertical
     };
@@ -139,17 +141,17 @@ signals:
 
 class SlidingAnimator::ResizeAwareWidget : public QWidget {
 Q_OBJECT
-
-    void resizeEvent(QResizeEvent *event) override {
-        QWidget::resizeEvent(event);
-        emit resized();
-    }
-
 public:
     explicit ResizeAwareWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
 signals:
     void resized();
+
+private:
+    void resizeEvent(QResizeEvent *event) override {
+        QWidget::resizeEvent(event);
+        emit resized();
+    }
 };
 
 #endif // SLIDINGANIMATOR_H

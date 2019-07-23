@@ -18,7 +18,12 @@ MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
         : fsIOManager(std::move(fsIOManager)),
           strategy(this->fsIOManager.lastOpened()),
           QMainWindow(parent) {
-    fsIOManager.setWindow(this);
+    this->fsIOManager.setWindow(this);
+
+    if (!this->fsIOManager.fileInfo().filePath().isEmpty()) {
+        Application::openedFiles.append(this->fsIOManager.fileInfo().filePath());
+    }
+
     setup();
 }
 
@@ -39,14 +44,6 @@ void MainWindow::setup() {
 
 MainWindow::~MainWindow() {
     tearDown();
-}
-
-void MainWindow::loadLastOpened() {
-    auto lastOpened = fsIOManager.lastOpened();
-    if (lastOpened) {
-        updateWindowTitle();
-        setStrategy(std::move(lastOpened));
-    }
 }
 
 MainScene *MainWindow::scene() const {
@@ -96,7 +93,8 @@ void MainWindow::openRecentFile() {
 }
 
 void MainWindow::updateWindowTitle() {
-    setIsSaved(false);
+    auto isSaved = !fsIOManager.fileInfo().baseName().isEmpty();
+    setIsSaved(isSaved);
 }
 
 void MainWindow::setIsSaved(bool isSaved) {
@@ -121,7 +119,6 @@ void MainWindow::loadFile(const QString &path, bool inNewWindow) {
         return;
     }
 
-    qDebug() << Application::openedFiles;
     if (Application::openedFiles.indexOf(newFsIOManger.fileInfo().filePath()) >= 0) {
         return;
     }

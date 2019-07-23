@@ -40,7 +40,31 @@ void StrategySettingsWidget::createLayout() {
     setLayout(mainLayout);
 }
 
-void StrategySettingsWidget::createHeader() {}
+void StrategySettingsWidget::createHeader() {
+    auto *headerWidget = makeFormRowWidget();
+
+    auto *label = new QLabel(tr("Settings"));
+    label->setStyleSheet("QLabel {"
+                         "font-weight: bold;"
+                         "text-transform: uppercase;"
+                         "color: #888;"
+                         "}");
+
+    auto *closeButton = new QPushButton(tr("Done"));
+    closeButton->setDefault(true);
+    connect(closeButton,
+            &QPushButton::clicked,
+            this,
+            &StrategySettingsWidget::slideAndHide);
+
+    closeButton->setSizePolicy(QSizePolicy::Fixed,
+                               QSizePolicy::Fixed);
+
+    headerWidget->layout()->addWidget(label);
+    headerWidget->layout()->addWidget(closeButton);
+
+    layout()->addWidget(headerWidget);
+}
 
 void StrategySettingsWidget::createSlotDurationForm() {
     auto *formWidget = makeFormRowWidget();
