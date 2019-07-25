@@ -32,6 +32,8 @@ private:
     int previousDuration = 0;
     Strategy::Time previousEndTime = 0;
 
+    QString previousLabelText = "";
+
     QLabel *label = nullptr;
     QLabel *titleLabel = nullptr;
 
@@ -42,7 +44,8 @@ private:
 
     void updateUI();
     int expectedHeight();
-    void updateLabel() const;
+    void updateLabel();
+
     QString labelText() const;
 
     QColor selectedBackgroundColor() const;

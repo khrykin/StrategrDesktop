@@ -183,16 +183,20 @@ void ActivitySessionWidget::updateUI() {
     previousEndTime = activitySession.endTime();
 }
 
-void ActivitySessionWidget::updateLabel() const {
-    if (activitySession.activity) {
-        titleLabel->setText(labelText());
-    } else {
-        titleLabel->setText("");
+void ActivitySessionWidget::updateLabel() {
+    auto currentLabelText = labelText();
+    if (currentLabelText != previousLabelText) {
+        titleLabel->setText(currentLabelText);
+        previousLabelText = currentLabelText;
     }
 }
 
 QString ActivitySessionWidget::labelText() const {
     auto activity = activitySession.activity;
+
+    if (!activity) {
+        return "";
+    }
 
     auto name = QString::fromStdString(activity->name());
     auto color = QString::fromStdString(activity->color());
