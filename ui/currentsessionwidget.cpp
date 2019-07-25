@@ -19,16 +19,18 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
 
     auto mainLayout = new QHBoxLayout();
     mainLayout->setContentsMargins(11, 0, 11, 0);
-    mainLayout->setSpacing(0);
+    mainLayout->setSpacing(2);
     setLayout(mainLayout);
+
     auto *leftLayout = new QVBoxLayout();
     leftLayout->setSpacing(0);
+
     auto *centerLayout = new QVBoxLayout();
     centerLayout->setSpacing(0);
+
     auto *rightLayout = new QVBoxLayout();
     rightLayout->setSpacing(0);
 
-    //  setStyleSheet("border: 1px solid red;");
     mainLayout->addLayout(leftLayout);
     mainLayout->addLayout(centerLayout);
     mainLayout->addLayout(rightLayout);
@@ -38,36 +40,38 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
                                 "text-transform: uppercase;"
                                 "font-size: 10pt;"
                                 "color: #999");
+
     currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
 
-    activityLabel = new QLabel(tr("45 min Guitar"));
+    activityLabel = new QLabel();
     activityLabel->setStyleSheet("font-weight: bold;"
-                                 "font-size: 15pt;"
+                                 "font-size: 14pt;"
                                  "color: #888");
+
     activityLabel->setFixedHeight(25);
     activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 
-    startTimeLabel = new QLabel(tr("5:00 PM"));
+    startTimeLabel = new QLabel();
     startTimeLabel->setStyleSheet("font-weight: bold;"
                                   "font-size: 12pt;"
                                   "color: #777");
 
     startTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-    endTimeLabel = new QLabel(tr("7:00 PM"));
+    endTimeLabel = new QLabel();
     endTimeLabel->setStyleSheet("font-weight: bold;"
                                 "font-size: 12pt;"
                                 "color: #777");
 
     endTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
 
-    passedTimeLabel = new QLabel(tr("15 min"));
+    passedTimeLabel = new QLabel();
     passedTimeLabel->setStyleSheet("font-weight: bold;"
                                    "font-size: 12pt;"
                                    "color: #999");
     passedTimeLabel->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
-    leftTimeLabel = new QLabel(tr("35 min"));
+    leftTimeLabel = new QLabel();
     leftTimeLabel->setStyleSheet("font-weight: bold;"
                                  "font-size: 12pt;"
                                  "color: #999");

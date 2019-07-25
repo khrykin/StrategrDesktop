@@ -19,6 +19,8 @@ namespace ApplicationSettings {
 
     const auto currentTimeTimerInterval = 1 * 1000;
     const auto notifierTimerTimeInterval = 15 * 1000;
+
+    const auto timeSlotBorderColor = "#eaeaea";
 }
 
 #endif //APPLICATIONSETTINGS_H

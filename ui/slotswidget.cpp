@@ -5,6 +5,7 @@
 #include <QScrollBar>
 #include <QStyleOption>
 #include <QVector>
+#include <QStyleOption>
 
 #include "slotswidget.h"
 #include "third-party/stacklayout.h"
@@ -26,22 +27,18 @@ SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
 
     setupActions();
 
-    setStyleSheet("SlotsWidget {"
-                  "border-top: 1px solid #d8d8d8;"
-                  "}");
-
     updateList();
 }
 
 void SlotsWidget::layoutChildWidgets() {
     slotsLayout = new QVBoxLayout();
     slotsLayout->setSpacing(0);
-    slotsLayout->setContentsMargins(0, 1, 0, 0);
 
     auto *slotsWidget = new QWidget();
+    slotsWidget->setProperty("slotsWidget", true);
     slotsWidget->setLayout(slotsLayout);
 
-    selectionWidget = new SelectionWidget(_slotHeight);
+    selectionWidget = new SelectionWidget(strategy, _slotHeight, nullptr);
     connect(selectionWidget,
             &SelectionWidget::selectionChanged,
             this,
@@ -49,6 +46,8 @@ void SlotsWidget::layoutChildWidgets() {
 
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
+
+    updateContentsMargins();
 }
 
 
@@ -142,6 +141,8 @@ void SlotsWidget::setStrategy(Strategy *newStrategy) {
     strategy->activitySessions()
             .setOnChangeCallback(this, &SlotsWidget::updateUI);
 
+    selectionWidget->setStrategy(strategy);
+
     updateList();
     mouseHandler.reset();
 }
@@ -176,6 +177,7 @@ ActivitySessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
 }
 
 void SlotsWidget::updateUI() {
+    updateContentsMargins();
     updateList();
     emit activitySessionsChanged();
 }
@@ -209,6 +211,28 @@ bool SlotsWidget::onlyEmptySlotsSelected() const {
 
     return true;
 }
+
+void SlotsWidget::paintEvent(QPaintEvent *event) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter painter(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QColor(ApplicationSettings::timeSlotBorderColor));
+
+    auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
+    auto borderRect = QRect(0, 0, width() - 8, thickness);
+
+    painter.drawRect(borderRect);
+}
+
+void SlotsWidget::updateContentsMargins() {
+    auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
+    slotsLayout->setContentsMargins(0, thickness, 8, 0);
+    selectionWidget->setContentsMargins(0, thickness, 8, 0);
+}
+
 
 
 

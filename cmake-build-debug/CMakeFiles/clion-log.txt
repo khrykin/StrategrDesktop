@@ -1,4 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=~/Qt/5.13.0/clang_64/lib/cmake -G "CodeBlocks - Unix Makefiles" /Users/khrykin/Developer/Qt/Startegr/strategrqt
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/khrykin/Developer/Qt/Startegr/strategrqt/cmake-build-debug

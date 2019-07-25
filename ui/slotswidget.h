@@ -65,6 +65,7 @@ private:
     void layoutChildWidgets();
 
     void updateUI();
+    void updateContentsMargins();
 
     void onSelectionChange();
 
@@ -78,6 +79,8 @@ private:
     QVBoxLayout *listLayout() override;;
     void reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) override;
     ActivitySessionWidget *makeNewItemAtIndex(int index) override;
+
+    void paintEvent(QPaintEvent *event) override;
 };
 
 #endif // GROUPSLIST_H

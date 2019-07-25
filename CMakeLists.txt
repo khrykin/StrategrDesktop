@@ -114,7 +114,7 @@ set(UTILITY
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
-        utility/testutils.h)
+        utility/testutils.h ui/timelabel.h)
 
 qt5_add_resources(RESOURCES
         resources/icons.qrc

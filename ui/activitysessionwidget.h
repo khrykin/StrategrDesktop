@@ -30,6 +30,7 @@ private:
     ActivitySession activitySession;
     ActivitySession previousActivitySession = ActivitySession();
     int previousDuration = 0;
+    Strategy::Time previousEndTime = 0;
 
     QLabel *label = nullptr;
     QLabel *titleLabel = nullptr;
@@ -43,6 +44,11 @@ private:
     int expectedHeight();
     void updateLabel() const;
     QString labelText() const;
+
+    QColor selectedBackgroundColor() const;
+    QColor sessionColor() const;
+    void drawSelection(QPainter &painter) const;
+    void drawRulers(QPainter &painter) const;
 };
 
 #endif // SLOT_H

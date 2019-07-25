@@ -7,8 +7,9 @@
 #include "strategy.h"
 #include "currenttimemarker.h"
 #include "slotswidget.h"
-#include "slotruler.h"
 #include "parentwindowaccessible.h"
+#include "slotruler.h"
+#include "timelabel.h"
 
 class MainWindow;
 class SlotBoard :
@@ -34,18 +35,16 @@ private:
 
     SlotsWidget *slotsWidget = nullptr;
     SlotRuler *slotRuler = nullptr;
+    QVBoxLayout *slotsLayout = nullptr;
 
-    CurrentTimeMarker *currentTimeMarker;
-    QTimer *currentTimeTimer;
+    CurrentTimeMarker *currentTimeMarker = nullptr;
+    QTimer *currentTimeTimer = nullptr;
 
     int currentTimeMarkerTopOffset = 0;
 
-    void resizeEvent(QResizeEvent *event) override;
     void updateCurrentTimeMarker();
 
-    QWidget *makeHeader();
-    QWidget *makeFooter();
-    QStringList makeLabelsForStrategy();
+    QVector<TimeLabel> makeLabelsForStrategy();
 
     void timeSlotsChange();
     void updateUI();
@@ -56,6 +55,11 @@ private:
     QRect calculateCurrentTimeMarkerGeometry() const;
 
     QScrollArea *parentScrollArea();
+    void setupCurrentTimeTimer();
+
+    void paintEvent(QPaintEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void updateSlotsLayout() const;
 };
 
 #endif // SLOTBOARD_H

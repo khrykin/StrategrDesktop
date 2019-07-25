@@ -5,8 +5,10 @@
 #include "selectionwidget.h"
 #include <QLayout>
 
-SelectionWidget::SelectionWidget(int slotHeight, QWidget *parent)
-        : QWidget(parent) {
+SelectionWidget::SelectionWidget(Strategy *strategy,
+                                 int slotHeight,
+                                 QWidget *parent)
+        : strategy(strategy), QWidget(parent) {
 }
 
 SelectionWidget::SelectionState
@@ -71,21 +73,19 @@ void SelectionWidget::updateUI() {
         auto topPosition = slotHeight * selectionItem.front();
 
         auto widgetHeight = selectionItem.size() * slotHeight;
-        auto styleSheet = "background-color: rgba(189, 214, 241, 0.5);"
-                          "border-top: 1px solid rgba(0, 122, 255, 0.5);"
-                          "border-bottom: 1px solid rgba(0, 122, 255, 0.5);";
-
         auto *widget = new QWidget(this);
-        auto rect = QRect(0,
-                          topPosition,
-                          width(),
-                          widgetHeight + 1);
 
-        // widgetHeight + 1 to overflow
-        // next session's border
+        const auto &lastTimeSlot = strategy->timeSlots()[selectionItem.back()];
+        auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 ? 1 : 0;
+
+        auto rect = QRect(contentsMargins().left(),
+                          contentsMargins().top() + topPosition + 2,
+                          width() - contentsMargins().right(),
+                          widgetHeight - 5 - bottomMargin);
 
         widget->setGeometry(rect);
-        widget->setStyleSheet(styleSheet);
+        widget->setStyleSheet("background-color: rgba(189, 214, 241, 0.5);"
+                              "border-radius: 4px;");
         widget->show();
     }
 }
@@ -120,4 +120,9 @@ const SelectionWidget::RawSelectionState &SelectionWidget::selection() const {
 
 bool SelectionWidget::selectionIsContinuous() const {
     return selectionState.size() == 1;
+}
+
+void SelectionWidget::setStrategy(Strategy *newStrategy) {
+    strategy = newStrategy;
+    updateUI();
 }

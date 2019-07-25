@@ -14,7 +14,8 @@ Q_OBJECT
 public:
     using RawSelectionState = std::vector<Strategy::TimeSlotIndex>;
 
-    explicit SelectionWidget(int slotHeight,
+    explicit SelectionWidget(Strategy *strategy,
+                             int slotHeight,
                              QWidget *parent = nullptr);
 
     void selectAtIndex(int slotIndex);
@@ -26,10 +27,14 @@ public:
     const RawSelectionState &selection() const;
 
     bool selectionIsContinuous() const;
+    void setStrategy(Strategy *strategy);
+
+
 signals:
     void selectionChanged();
 private:
     using SelectionState = std::vector<RawSelectionState>;
+    Strategy *strategy;
 
     int slotHeight = ApplicationSettings::defaultSlotHeight;
 

@@ -4,32 +4,39 @@
 #include <QStyleOption>
 #include <QVBoxLayout>
 #include "applicationsettings.h"
+#include "utils.h"
 
-SlotRuler::SlotRuler(QStringList labels, int cellHeight, QWidget *parent)
+SlotRuler::SlotRuler(QVector<TimeLabel> labels,
+                     int cellHeight,
+                     QWidget *parent)
         : _labels(std::move(labels)),
           _cellHeight(cellHeight),
           QWidget(parent) {
     auto *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, cellHeight / 2, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
 
-    // TODO: Adjust to label size
-    setFixedWidth(ApplicationSettings::defaultRulerWidth);
-
-    // TODO: Extract to global stylesheet
-    setStyleSheet("SlotRuler {"
-                  "border-right: 1px solid #e4e4e4;"
-                  "}");
+    setFixedWidth(calculateLabelWidth() + 16);
 
     updateList();
 }
 
-QStringList SlotRuler::labels() const {
+int SlotRuler::calculateLabelWidth() const {
+    auto font = QFont();
+    font.setPointSize(10);
+    font.setBold(true);
+
+    auto fm = QFontMetrics(font);
+    int width = fm.horizontalAdvance(qStringForMinutes(0));
+    return width;
+}
+
+QVector<TimeLabel> SlotRuler::labels() const {
     return _labels;
 }
 
-void SlotRuler::setLabels(const QStringList &labels) {
+void SlotRuler::setLabels(const QVector<TimeLabel> &labels) {
     if (_labels != labels) {
         _labels = labels;
         updateList();
@@ -59,20 +66,32 @@ QVBoxLayout *SlotRuler::listLayout() {
 }
 
 void SlotRuler::reuseItemAtIndex(int index, QLabel *itemWidget) {
-    itemWidget->setText(labels()[index]);
+    itemWidget->setText(labels()[index].label);
     itemWidget->setFixedHeight(cellHeight());
+    itemWidget->setStyleSheet(makeStyleSheetForLabelIndex(index));
 }
 
 QLabel *SlotRuler::makeNewItemAtIndex(int index) {
-    auto cell = new QLabel();
-    cell->setAlignment(Qt::AlignCenter);
-    cell->setFixedHeight(cellHeight());
+    auto label = new QLabel();
+    label->setAlignment(Qt::AlignCenter);
+    label->setFixedHeight(cellHeight());
+    label->setStyleSheet(makeStyleSheetForLabelIndex(index));
+    label->setText(labels()[index].label);
+    return label;
+}
+
+QString SlotRuler::makeStyleSheetForLabelIndex(int index) const {
+    auto &timeLabel = labels()[index];
 
     // TODO extract to global stylesheet
-    cell->setStyleSheet("font-size: 10pt;"
-                        "font-weight: bold;"
-                        "color: #777");
+    auto isIntegerHour = timeLabel.time % 60 == 0;
+    auto color = isIntegerHour ? "#777" : "#aaa";
+    auto fontSize = isIntegerHour ? 10 : 9;
 
-    cell->setText(labels()[index]);
-    return cell;
+    return QString("font-size: %1pt;"
+                   "font-weight: bold;"
+                   "color: %2")
+            .arg(QString::number(fontSize))
+            .arg(color);
 }
+

@@ -14,7 +14,7 @@
 #include "strategyhistory.h"
 #include "notifiableonchange.h"
 
-struct Strategy : public NotifiableOnChange {
+class Strategy : public NotifiableOnChange {
 public:
     struct Defaults {
         static constexpr auto timeSlotDuration = 15;

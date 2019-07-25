@@ -4,14 +4,14 @@
 #include <QWidget>
 
 class CurrentTimeMarker : public QWidget {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit CurrentTimeMarker(QWidget *parent = nullptr);
+    explicit CurrentTimeMarker(QWidget *parent = nullptr);
 
-  static const auto markerSize = 8;
+    static const auto markerSize = 7;
 
 protected:
-  void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 
 signals:
 

@@ -7,10 +7,12 @@
 #include <QTime>
 #include <QPropertyAnimation>
 #include <QScrollBar>
+#include <QStyleOption>
 
 #include "slotboard.h"
 #include "utils.h"
 #include "mainwindow.h"
+#include "slotruler.h"
 
 SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
@@ -22,6 +24,14 @@ SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
 
     layoutChildWidgets(mainLayout);
 
+    setStyleSheet("SlotBoard {"
+                  "background: white;"
+                  "}");
+
+    setupCurrentTimeTimer();
+}
+
+void SlotBoard::setupCurrentTimeTimer() {
     currentTimeTimer = new QTimer(this);
     connect(currentTimeTimer,
             &QTimer::timeout,
@@ -41,17 +51,12 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     slotRuler = new SlotRuler(makeLabelsForStrategy(),
                               slotsWidget->slotHeight());
 
-    auto *slotsLayout = new QVBoxLayout();
+    slotsLayout = new QVBoxLayout();
     slotsLayout->setSpacing(0);
-    slotsLayout->setMargin(0);
-
-    auto *header = makeHeader();
-    auto *footer = makeFooter();
-
-    slotsLayout->addWidget(header);
     slotsLayout->addWidget(slotsWidget);
-    slotsLayout->addWidget(footer);
     slotsLayout->addStretch();
+
+    updateSlotsLayout();
 
     mainLayout->addWidget(slotRuler);
     mainLayout->addLayout(slotsLayout);
@@ -59,24 +64,10 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     currentTimeMarker = new CurrentTimeMarker(this);
 }
 
-QWidget *SlotBoard::makeHeader() {
-    auto *header = new QLabel(tr("Begin"));
-    header->setAlignment(Qt::AlignCenter);
-    header->setFixedHeight(slotsWidget->slotHeight());
-    header->setStyleSheet("color: #c3c3c3;"
-                          "font-weight: bold;"
-                          "background: #f4f4f4;");
-    return header;
-}
-
-QWidget *SlotBoard::makeFooter() {
-    auto *footer = new QLabel(tr("End"));
-    footer->setAlignment(Qt::AlignCenter);
-    footer->setFixedHeight(slotsWidget->slotHeight());
-    footer->setStyleSheet("color: #c3c3c3;"
-                          "font-weight: bold;"
-                          "background: #f4f4f4;");
-    return footer;
+void SlotBoard::updateSlotsLayout() const {
+    slotsLayout->setContentsMargins(0,
+                                    slotsWidget->slotHeight() /
+                                    2, 0, 0);
 }
 
 void SlotBoard::setStrategy(Strategy *newStrategy) {
@@ -91,16 +82,16 @@ void SlotBoard::updateUI() {
     updateCurrentTimeMarker();
 }
 
-QStringList SlotBoard::makeLabelsForStrategy() {
-    QStringList labels;
+QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
+    QVector<TimeLabel> labels;
 
     for (auto &timeSlot : strategy->timeSlots()) {
         auto label = qStringForMinutes(timeSlot.beginTime);
-        labels.append(label);
+        labels.append(TimeLabel{label, timeSlot.beginTime});
     }
 
     auto endTimeLabel = qStringForMinutes(strategy->endTime());
-    labels.append(endTimeLabel);
+    labels.append(TimeLabel{endTimeLabel, strategy->endTime()});
 
     return labels;
 }
@@ -194,5 +185,12 @@ void SlotBoard::timeSlotsChange() {
     updateCurrentTimeMarker();
 
     slotRuler->setLabels(makeLabelsForStrategy());
+}
+
+void SlotBoard::paintEvent(QPaintEvent *event) {
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
 }
 
