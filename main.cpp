@@ -7,7 +7,6 @@
 #include <QLabel>
 
 #include "application.h"
-#include "backtrace.h"
 
 void setupCredentials() {
     QCoreApplication::setOrganizationName("Dmitry Khrykin");
@@ -16,8 +15,6 @@ void setupCredentials() {
 }
 
 int main(int argc, char *argv[]) {
-    signal(SIGSEGV, handler);
-
     setupCredentials();
     Application a(argc, argv);
 

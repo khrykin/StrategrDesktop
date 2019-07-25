@@ -25,59 +25,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/ui/timelabel.h" afterDir="false" />
+    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="SlotBoard Redesign">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/CXX.includecache" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/CXX.includecache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/Strategr_autogen/mocs_compilation.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/Strategr_autogen/mocs_compilation.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/depend.internal" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/depend.internal" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/main.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/models/currentactivitysession.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/models/currentactivitysession.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/models/strategy.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/models/strategy.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/activitieslistwidget.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/activitieslistwidget.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/activitysessionwidget.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/application.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/applicationmenu.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/applicationmenu.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/colorpicker.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/colorpicker.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/colorpickeritem.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/currentsessionwidget.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/currentsessionwidget.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/currenttimemarker.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/mainscene.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/mainscene.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/mainwindow.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/mainwindow.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/navbar.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/navbar.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/sessionsmainwidget.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/sessionsmainwidget.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slidinganimator.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slidinganimator.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slotboard.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slotruler.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slotsmousehandler.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slotsmousehandler.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/slotswidget.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/ui/strategysettingswidget.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/utility/filesystemiomanager.cpp.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/utility/jsonserializer.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/utility/jsonserializer.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/utility/notifier.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Strategr.dir/utility/notifier.cpp.o" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/models_tests.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/models_tests.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ui_tests.dir/depend.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ui_tests.dir/depend.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ui_tests_autogen.dir/AutogenInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/ui_tests_autogen.dir/AutogenInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Strategr.app/Contents/MacOS/Strategr" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Strategr.app/Contents/MacOS/Strategr" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Strategr.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Strategr.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/currenttimemarker.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currenttimemarker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/navbar.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/navbar.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/selectionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/selectionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/selectionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/selectionwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotruler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotruler.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotruler.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotruler.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotswidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotswidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotswidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/colorutils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/colorutils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/backtrace.h" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -159,7 +111,7 @@
         <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+              <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -188,13 +140,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/slotboard.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="44" column="15" selection-start-line="44" selection-start-column="15" selection-end-line="44" selection-end-column="15" />
+            <state relative-caret-position="447">
+              <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
               <folding>
                 <element signature="e#41#59#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/main.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -208,15 +172,6 @@
               <folding>
                 <element signature="e#122#140#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cmake-build-debug/Strategr_autogen/UYX5XTB5RZ/moc_selectionwidget.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
-              <caret line="128" column="22" selection-start-line="128" selection-start-column="22" selection-end-line="128" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -293,7 +248,6 @@
         <option value="$PROJECT_DIR$/utility/notifier.cpp" />
         <option value="$PROJECT_DIR$/deployment/Info.plist" />
         <option value="$PROJECT_DIR$/ui/colorpickeritem.cpp" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ui/application.h" />
         <option value="$PROJECT_DIR$/ui/activitieslistitem.cpp" />
         <option value="$PROJECT_DIR$/ui/activitieslistwidget.cpp" />
@@ -332,6 +286,7 @@
         <option value="$PROJECT_DIR$/ui/slotruler.cpp" />
         <option value="$PROJECT_DIR$/ui/slotboard.cpp" />
         <option value="$PROJECT_DIR$/ui/slotboard.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -360,12 +315,12 @@
             <path>
               <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
               <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
-              <item name="cmake-build-release" type="462c0819:PsiDirectoryNode" />
+              <item name="ui" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
               <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
-              <item name="ui" type="462c0819:PsiDirectoryNode" />
+              <item name="utility" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -489,7 +444,7 @@
       <workItem from="1563990678534" duration="612000" />
       <workItem from="1564047394049" duration="447000" />
       <workItem from="1564055553356" duration="186000" />
-      <workItem from="1564058509155" duration="15048000" />
+      <workItem from="1564058509155" duration="15298000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -638,7 +593,14 @@
       <option name="project" value="LOCAL" />
       <updated>1563887769092</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="SlotBoard Redesign">
+      <created>1564073840448</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1564073840448</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -674,7 +636,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="359278000" />
+    <option name="totallyTimeSpent" value="359528000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -689,7 +651,7 @@
     <frame x="0" y="23" width="1440" height="838" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.54909563" visible="true" weight="0.22031474" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.54909563" visible="true" weight="0.22031474" />
       <window_info id="Structure" order="1" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -701,7 +663,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32707775" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.8820375" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.3163539" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.3163539" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.2761394" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.41286862" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.2855228" />
@@ -781,7 +743,8 @@
     <MESSAGE value="Fonts issue fix" />
     <MESSAGE value="Ready to deploy" />
     <MESSAGE value="Settings close button" />
-    <option name="LAST_COMMIT_MESSAGE" value="Settings close button" />
+    <MESSAGE value="SlotBoard Redesign" />
+    <option name="LAST_COMMIT_MESSAGE" value="SlotBoard Redesign" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -833,16 +796,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ui/application.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
-          <folding>
-            <element signature="e#51#75#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/chevron-left-solid.svg">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -1194,7 +1147,7 @@
     <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="11" column="1" lean-forward="true" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
+          <caret line="11" column="1" selection-start-line="11" selection-start-column="1" selection-end-line="11" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -1220,10 +1173,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/slotboard.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="44" column="15" selection-start-line="44" selection-start-column="15" selection-end-line="44" selection-end-column="15" />
+        <state relative-caret-position="447">
+          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="54" selection-end-column="8" />
           <folding>
             <element signature="e#41#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -110,7 +110,7 @@ set(UTILITY
         utility/utils.h
         utility/notifier.cpp
         utility/notifier.h
-        utility/notifierbackend.h utility/backtrace.h)
+        utility/notifierbackend.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
