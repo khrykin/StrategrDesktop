@@ -89,7 +89,7 @@ void ApplicationMenu::setupFileMenu() {
 
     fileMenu->addAction(tr("Settings"),
                         window->scene(),
-                        &MainScene::openStrategySettings,
+                        &MainScene::showStrategySettings,
                         QKeySequence(Qt::CTRL + Qt::Key_Comma));
 
     fileMenu->addAction(tr("Save as Default"),

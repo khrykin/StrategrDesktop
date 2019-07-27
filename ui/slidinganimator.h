@@ -5,6 +5,8 @@
 #include <QTimeLine>
 #include <QWidget>
 
+#include <functional>
+
 class SlidingAnimator : public QObject {
 Q_OBJECT
 private:
@@ -25,14 +27,17 @@ public:
         int duration = defaultDuration;
         int updateInterval = defaultUpdateInterval;
         QTimeLine::CurveShape curveShape = defaultCurveShape;
+        std::function<void()> onFinishedCallback = nullptr;
 
         // Explicit constructor definition is needed here because of clang bug.
         // See: https://stackoverflow.com/questions/53408962
         Options() {};
     };
 
-    static void hideWidget(QWidget *widget, Options options = Options());
-    static void showWidget(QWidget *widget, Options options = Options());
+    static void hideWidget(QWidget *widget,
+                           const Options &options = Options());
+    static void showWidget(QWidget *widget,
+                           const Options &options = Options());
 
 private:
     class ResizeAwareWidget;
@@ -68,7 +73,7 @@ private:
     int indexInParentLayout;
 
     explicit SlidingAnimator(QWidget *widget = nullptr,
-                             Options options = Options());
+                             const Options &options = Options());
 
     WidgetSizeSetterPointer fixedSizeSetter();
     WidgetSizeSetterPointer maximumSizeSetter();

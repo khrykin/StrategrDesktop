@@ -4,7 +4,28 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <QVariant>
+#include "applicationsettings.h"
 
+#ifdef Q_OS_MAC
+
+Navbar::Navbar(QWidget *parent) : QWidget(parent) {
+}
+
+void Navbar::setTitle(const QString &title) {}
+
+QPushButton *Navbar::leftButton() const {
+    return nullptr;
+}
+
+QPushButton *Navbar::rightButton() const {
+    return nullptr;
+}
+
+QLabel *Navbar::titleLabel() const {
+    return nullptr;
+}
+
+#else
 Navbar::Navbar(QWidget *parent) : QWidget(parent) {
     setupLayout();
     setupWidgets();
@@ -31,10 +52,10 @@ QLabel *Navbar::titleLabel() const {
 }
 
 void Navbar::paintEvent(QPaintEvent *) {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    auto painter = QPainter(this);
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(baseColor());
+    painter.drawRect(0, 0, width(), height());
 }
 
 void Navbar::setupWidgets() {
@@ -46,8 +67,8 @@ void Navbar::setupWidgets() {
 void Navbar::setupLayout() {
     setLayout(new QHBoxLayout());
     layout()->setSpacing(0);
-    layout()->setMargin(0);
-    setFixedHeight(45);
+    layout()->setContentsMargins(0, ApplicationSettings::applicationTopPadding, 0, 0);
+    setFixedHeight(45 + ApplicationSettings::applicationTopPadding);
 }
 
 void Navbar::setupLeftButton() {
@@ -89,3 +110,5 @@ void Navbar::addWidgetsToLayout() {
     layout()->addWidget(_titleLabel);
     layout()->addWidget(_rightButton);
 }
+
+#endif

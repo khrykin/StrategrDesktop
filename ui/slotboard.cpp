@@ -8,11 +8,13 @@
 #include <QPropertyAnimation>
 #include <QScrollBar>
 #include <QStyleOption>
+#include <QApplication>
 
 #include "slotboard.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "slotruler.h"
+#include "macoswindow.h"
 
 SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
@@ -23,10 +25,6 @@ SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
     layout()->setContentsMargins(0, 0, 0, 0);
 
     layoutChildWidgets(mainLayout);
-
-    setStyleSheet("SlotBoard {"
-                  "background: white;"
-                  "}");
 
     setupCurrentTimeTimer();
 }
@@ -188,9 +186,11 @@ void SlotBoard::timeSlotsChange() {
 }
 
 void SlotBoard::paintEvent(QPaintEvent *event) {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QPainter painter(this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(baseColor());
+
+    painter.drawRect(QRect(0, 0, width(), height()));
 }
 

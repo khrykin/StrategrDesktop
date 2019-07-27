@@ -6,7 +6,7 @@
 
 #include "windowgeometrymanager.h"
 #include "mainwindow.h"
-
+#include "macoswindow.h"
 
 QWidgetList WindowGeometryManager::windows;
 
@@ -28,10 +28,16 @@ void WindowGeometryManager::setInitialGeometry(QWidget *window) {
     window->setGeometry(initRect);
 }
 
-void WindowGeometryManager::saveGeometry(QWidget *window) {
+void WindowGeometryManager::saveGeometry(MainWindow *window) {
     windows.removeAll(window);
 
-    QSettings().setValue(windowGeometrySetting, window->geometry());
+    auto geometry = window->geometry();
+
+#ifdef Q_OS_MAC
+    geometry = MacOSWindow::geometry(window);
+#endif
+
+    QSettings().setValue(windowGeometrySetting, geometry);
 }
 
 void WindowGeometryManager::resetSavedGeometry() {

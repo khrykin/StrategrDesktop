@@ -1,13 +1,22 @@
-#include "activitysessionwidget.h"
-#include "third-party/stacklayout.h"
-#include "utils.h"
+#include <cmath>
+
 #include <QDebug>
 #include <QLayout>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QStyleOption>
-#include <models/strategy.h>
+#include <QApplication>
+#include <QTextDocument>
+#include <QAbstractTextDocumentLayout>
+#include <QStaticText>
+
+#include "activitysessionwidget.h"
+#include "utils.h"
+#include "strategy.h"
 #include "colorutils.h"
+#include "fontutils.h"
+
+#include "third-party/stacklayout.h"
 
 ActivitySessionWidget::ActivitySessionWidget(const ActivitySession &activitySession,
                                              QWidget *parent)
@@ -15,50 +24,35 @@ ActivitySessionWidget::ActivitySessionWidget(const ActivitySession &activitySess
           QWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
-    layoutChildWidgets();
-
     updateUI();
-    updateStyleSheet();
-}
-
-void ActivitySessionWidget::layoutChildWidgets() {
-    auto *mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    mainLayout->setSpacing(0);
-
-    setLayout(mainLayout);
-
-    titleLabel = new QLabel();
-    titleLabel->setAlignment(Qt::AlignCenter);
-    titleLabel->setStyleSheet("font-size: 15pt;"
-                              "font-weight: bold;");
-    titleLabel->setWordWrap(true);
-
-    layout()->addWidget(titleLabel);
 }
 
 void ActivitySessionWidget::paintEvent(QPaintEvent *event) {
-    QStyleOption opt;
-    opt.init(this);
     QPainter painter(this);
 
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
-
     painter.setPen(Qt::NoPen);
+
+    drawBorder(painter);
+
+    if (activitySession.activity) {
+        drawRulers(painter);
+
+        drawLabel(painter);
+    }
 
     if (isSelected()) {
         drawSelection(painter);
     }
-
-    if (activitySession.activity) {
-        drawRulers(painter);
-    }
-
 }
 
 void ActivitySessionWidget::drawRulers(QPainter &painter) const {
-    auto rulerColor = QColor(ApplicationSettings::timeSlotBorderColor);
-    rulerColor.setAlphaF(0.2);
+    auto baseColor = palette().color(QPalette::Base);
+    auto alphaFactor = ColorUtils::shadesAlphaFactor(8);
+
+    auto rulerColor = ColorUtils::qColorOverlayWithAlpha(
+            QColor(ApplicationSettings::rowBorderColor),
+            0.06 * alphaFactor,
+            baseColor);
 
     painter.setBrush(rulerColor);
 
@@ -94,8 +88,11 @@ void ActivitySessionWidget::drawSelection(QPainter &painter) const {
 }
 
 QColor ActivitySessionWidget::selectedBackgroundColor() const {
+    using namespace ColorUtils;
+
     if (!activitySession.activity) {
-        return QColor("#f5f5f5");
+        return qColorOverlayWithAlpha(textColor(),
+                                      0.05 * shadesAlphaFactor());
     }
 
     auto backgroundColor = sessionColor().lighter(110);
@@ -115,28 +112,24 @@ QColor ActivitySessionWidget::sessionColor() const {
 }
 
 
-void ActivitySessionWidget::updateStyleSheet() {
-    auto color = activitySession.activity
-                 ? ColorUtils::qColorFromStdString(activitySession.activity->color())
-                 : QColor();
-
-
-    auto leftBorderStyle = activitySession.activity
-                           ? QString("border-left: 2px solid %1")
-                                   .arg(color.name())
-                           : "";
-
+void ActivitySessionWidget::drawBorder(QPainter &painter) {
     auto thickBorder = activitySession.timeSlots.back()->endTime() % 60 == 0;
-    auto borderColor = ApplicationSettings::timeSlotBorderColor;
-    auto borderBottomThickness = thickBorder ? 2 : 1;
+    auto borderThickness = thickBorder ? 2 : 1;
 
-    auto borderBottomStyle = QString("border-bottom: %1px solid %2;")
-            .arg(QString::number(borderBottomThickness))
-            .arg(borderColor);
+    auto borderRect = QRect(0,
+                            height() - borderThickness,
+                            width(),
+                            borderThickness);
 
-    setStyleSheet("ActivitySessionWidget { "
-                  + borderBottomStyle
-                  + "}");
+    painter.setBrush(borderColor());
+    painter.drawRect(borderRect);
+}
+
+QColor ActivitySessionWidget::borderColor() {
+    return ColorUtils::qColorOverlayWithAlpha(
+            QColor(ApplicationSettings::rowBorderColor),
+            0.35,
+            QApplication::palette().color(QPalette::Base));
 }
 
 bool ActivitySessionWidget::isSelected() const {
@@ -147,7 +140,7 @@ void ActivitySessionWidget::setIsSelected(bool isSelected, bool doUpdate) {
     _isSelected = isSelected;
 
     if (doUpdate) {
-        updateStyleSheet();
+        update();
     }
 }
 
@@ -168,15 +161,17 @@ void ActivitySessionWidget::updateUI() {
 
     if (heightChanged) {
         setFixedHeight(expectedHeight());
+    } else {
+        update();
     }
-
-    if (activityChanged || endTimeChanged) {
-        updateStyleSheet();
-    }
-
-    if (activityChanged || durationChanged) {
-        updateLabel();
-    }
+//
+//    if (activityChanged || endTimeChanged) {
+//        update();
+//    }
+//
+//    if (activityChanged || durationChanged) {
+//        updateLabel();
+//    }
 
     previousActivitySession = activitySession;
     previousDuration = activitySession.duration();
@@ -184,28 +179,25 @@ void ActivitySessionWidget::updateUI() {
 }
 
 void ActivitySessionWidget::updateLabel() {
-    auto currentLabelText = labelText();
-    if (currentLabelText != previousLabelText) {
-        titleLabel->setText(currentLabelText);
-        previousLabelText = currentLabelText;
-    }
+//    auto currentLabelText = makeLabelTextComponents();
+//    if (currentLabelText != previousLabelText) {
+//        setLabelText(makeLabelTextComponents);
+//        previousLabelText = currentLabelText;
+//    }
 }
 
-QString ActivitySessionWidget::labelText() const {
+QStringList ActivitySessionWidget::makeLabelTextComponents() const {
+    using namespace ColorUtils;
     auto activity = activitySession.activity;
 
     if (!activity) {
-        return "";
+        return QStringList();
     }
 
     auto name = QString::fromStdString(activity->name());
-    auto color = QString::fromStdString(activity->color());
     auto time = humanTimeForMinutes(activitySession.duration());
 
-    return QString("<font color=\"#888\"><b>%1</b></font>"
-                   " "
-                   "<font color=\"%2\"><b>%3</b></font>")
-            .arg(time).arg(color).arg(name);
+    return QStringList{time, name};
 }
 
 void ActivitySessionWidget::setActivitySession(
@@ -220,4 +212,41 @@ void ActivitySessionWidget::setSlotHeight(int newSlotHeight) {
 
 int ActivitySessionWidget::expectedHeight() {
     return activitySession.length() * slotHeight;
+}
+
+void ActivitySessionWidget::setLabelText(const QString &newLabelText) {
+    if (newLabelText == lableText) {
+        return;
+    }
+
+    lableText = newLabelText;
+    update();
+}
+
+void ActivitySessionWidget::drawLabel(QPainter &painter) const {
+    using namespace ColorUtils;
+
+    auto font = QFont();
+    font.setBold(true);
+    font.setPointSize(15);
+
+    painter.setFont(font);
+
+    auto durationColor = ColorUtils::qColorOverlayWithAlpha(
+            palette().color(QPalette::WindowText),
+            0.5);
+
+    auto color = safeForegroundColor(
+            qColorFromStdString(activitySession.activity->color())
+    );
+
+    auto textComponents = makeLabelTextComponents();
+
+    FontUtils::drawTruncatedTitleFromComponents(textComponents,
+                                                painter,
+                                                geometry(),
+                                                durationColor,
+                                                color);
+
+    painter.setPen(Qt::NoPen);
 }

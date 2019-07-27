@@ -6,10 +6,12 @@
 #define STRATEGR_SELECTIONWIDGET_H
 
 #include <QWidget>
+
 #include "applicationsettings.h"
 #include "strategy.h"
+#include "colorprovider.h"
 
-class SelectionWidget : public QWidget {
+class SelectionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     using RawSelectionState = std::vector<Strategy::TimeSlotIndex>;
@@ -40,12 +42,14 @@ private:
 
     void updateUI();
 
-    void resizeEvent(QResizeEvent *event) override;
-
     RawSelectionState rawSelectionState;
     SelectionState selectionState;
 
     static SelectionState makeSelectionState(RawSelectionState rawState);
+    void drawSelectionForItem(SelectionWidget::RawSelectionState &selectionItem, QPainter &painter);
+
+    void resizeEvent(QResizeEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 };
 
 #endif //STRATEGR_SELECTIONWIDGET_H

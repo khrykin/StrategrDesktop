@@ -14,12 +14,13 @@
 
 CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
         : QWidget(parent) {
-    setFixedHeight(ApplicationSettings::currentSessionHeight);
     setMouseTracking(true);
 
+    setFixedHeight(ApplicationSettings::currentSessionHeight);
+
     auto mainLayout = new QHBoxLayout();
-    mainLayout->setContentsMargins(11, 0, 11, 0);
     mainLayout->setSpacing(2);
+    mainLayout->setContentsMargins(8, 0, 8, 0);
     setLayout(mainLayout);
 
     auto *leftLayout = new QVBoxLayout();
@@ -87,14 +88,14 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
     rightLayout->addWidget(leftTimeLabel);
     rightLayout->addWidget(endTimeLabel);
 
-            foreach (auto *widget, findChildren<QWidget *>()) {
-            widget->setAttribute(Qt::WA_TransparentForMouseEvents);
-        };
+    for (auto *widget : findChildren<QWidget *>()) {
+        widget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    }
 }
 
 void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
-    QPainter painter;
-    painter.begin(this);
+    auto painter = QPainter(this);
+
     auto baseRect = QRect(QPoint(0, 0), geometry().size());
     auto borderRect = QRect(baseRect.bottomLeft().x(),
                             baseRect.bottomLeft().y(),
@@ -106,19 +107,15 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
                               baseRect.width() * progress(),
                               baseRect.height());
 
-    auto borderColor = QColor("#ccc");
-    auto bgColor = QColor("#F8F8F8");
-    auto progressColor = QColor("#ECECEC");
-    auto progressBorderColor = borderColor;
-
+    auto progressBorderColor = hardBorderColor();
     progressBorderColor.setAlpha(0.5 * 255);
 
     painter.setPen(Qt::NoPen);
 
-    painter.setBrush(bgColor);
+    painter.setBrush(panelColor());
     painter.drawRect(baseRect);
 
-    painter.setBrush(progressColor);
+    painter.setBrush(darkPanelColor());
     painter.drawRect(progressRect);
 
     painter.setPen(progressBorderColor);
@@ -140,10 +137,8 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
         painter.drawRect(geometry());
     }
 
-    painter.setBrush(borderColor);
+    painter.setBrush(hardBorderColor());
     painter.drawRect(borderRect);
-
-    painter.end();
 }
 
 void CurrentSessionWidget::mousePressEvent(QMouseEvent *) {
@@ -175,11 +170,17 @@ void CurrentSessionWidget::setStrategy(Strategy *strategy) {
     updateUI();
 }
 
-void CurrentSessionWidget::slideAndHide() {
-    SlidingAnimator::hideWidget(this);
+void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
+    SlidingAnimator::Options options;
+    options.onFinishedCallback = onFinishedCallback;
+
+    SlidingAnimator::hideWidget(this, options);
 }
 
-void CurrentSessionWidget::slideAndShow() {
+void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
+    SlidingAnimator::Options options;
+    options.onFinishedCallback = onFinishedCallback;
+
     SlidingAnimator::showWidget(this);
 }
 

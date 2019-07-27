@@ -10,11 +10,13 @@
 #include "parentwindowaccessible.h"
 #include "slotruler.h"
 #include "timelabel.h"
+#include "colorprovider.h"
 
 class MainWindow;
 class SlotBoard :
         public QWidget,
-        public ParentWindowAccessible<SlotBoard> {
+        public ParentWindowAccessible<SlotBoard>,
+        public ColorProvider {
 Q_OBJECT
 public:
     explicit SlotBoard(Strategy *strategy,

@@ -1,13 +1,18 @@
 #ifndef STRATEGYSETTINGS_H
 #define STRATEGYSETTINGS_H
 
-#include "models/strategy.h"
-#include "navbar.h"
-#include "steppedtimeedit.h"
+#include <functional>
+
 #include <QLayout>
 #include <QSpinBox>
 #include <QWidget>
+
+#include "strategy.h"
+#include "navbar.h"
+#include "steppedtimeedit.h"
+#include "coloredlabel.h"
 #include "parentwindowaccessible.h"
+#include "rowwidget.h"
 
 class MainWindow;
 class StrategySettingsWidget : public QWidget,
@@ -20,8 +25,8 @@ public:
 
     void setStrategy(Strategy *strategy);
 
-    void slideAndHide();
-    void slideAndShow();
+    void slideAndHide(const std::function<void()> &onFinishedCallback = nullptr);
+    void slideAndShow(const std::function<void()> &onFinishedCallback = nullptr);
 
     void getBack();
 signals:
@@ -44,9 +49,9 @@ private:
     void createStartTimeForm();
     void createEndTimeForm();
 
-    QWidget *makeFormRowWidget();
+    RowWidget *makeFormRowWidget();
 
-    QLabel *makeFormLabel(QString text);
+    ColoredLabel *makeFormLabel(QString text);
 
     void updateUI();
 
@@ -54,6 +59,7 @@ private:
     void endTimeChanged(const QTime &time);
 
     void paintEvent(QPaintEvent *) override;
+    QColor labelColor() const;
 };
 
 #endif // STRATEGYSETTINGS_H

@@ -1,18 +1,20 @@
 #ifndef SLOT_H
 #define SLOT_H
 
-#include <QLabel>
-#include <QMap>
-#include <QWidget>
-#include <models/strategy.h>
-
+#include "strategy.h"
 #include "activitysession.h"
 #include "applicationsettings.h"
+#include "colorprovider.h"
 
-class ActivitySessionWidget : public QWidget {
+#include <QMap>
+#include <QWidget>
+
+class ActivitySessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 
 public:
+    static QColor borderColor();
+
     explicit ActivitySessionWidget(const ActivitySession &activitySession,
                                    QWidget *parent = nullptr);
 
@@ -22,6 +24,7 @@ public:
 
     void setActivitySession(const ActivitySession &newActivitySession);
     void setSlotHeight(int slotHeight);
+    void setLabelText(const QString &labelText);
 
 private:
     int slotHeight = ApplicationSettings::defaultSlotHeight;
@@ -29,29 +32,29 @@ private:
 
     ActivitySession activitySession;
     ActivitySession previousActivitySession = ActivitySession();
+
     int previousDuration = 0;
     Strategy::Time previousEndTime = 0;
 
+    QString lableText = "";
     QString previousLabelText = "";
-
-    QLabel *label = nullptr;
-    QLabel *titleLabel = nullptr;
 
     void paintEvent(QPaintEvent *event) override;
 
-    void updateStyleSheet();
-    void layoutChildWidgets();
+    void drawBorder(QPainter &painter);
 
     void updateUI();
     int expectedHeight();
     void updateLabel();
 
-    QString labelText() const;
+    QStringList makeLabelTextComponents() const;
 
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;
     void drawSelection(QPainter &painter) const;
     void drawRulers(QPainter &painter) const;
+    void drawLabel(QPainter &painter) const;
 };
+
 
 #endif // SLOT_H

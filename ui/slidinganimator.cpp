@@ -222,7 +222,7 @@ void SlidingAnimator::prepareOperation() {
     timeLine = makeTimeLine();
 }
 
-SlidingAnimator::SlidingAnimator(QWidget *widget, Options options)
+SlidingAnimator::SlidingAnimator(QWidget *widget, const Options &options)
         : QObject(widget),
           widget(widget),
           direction(options.direction),
@@ -287,14 +287,28 @@ void SlidingAnimator::hide() {
     timeLine->start();
 }
 
-void SlidingAnimator::hideWidget(QWidget *widget, Options options) {
+void SlidingAnimator::hideWidget(QWidget *widget, const Options &options) {
     auto *animator = new SlidingAnimator(widget, options);
-    connect(animator, &SlidingAnimator::done, [animator]() { delete animator; });
+    connect(animator, &SlidingAnimator::done, [animator, options]() {
+        if (options.onFinishedCallback) {
+            options.onFinishedCallback();
+        }
+
+        delete animator;
+    });
+
     animator->hide();
 }
 
-void SlidingAnimator::showWidget(QWidget *widget, Options options) {
+void SlidingAnimator::showWidget(QWidget *widget, const Options &options) {
     auto *animator = new SlidingAnimator(widget, options);
-    connect(animator, &SlidingAnimator::done, [animator]() { delete animator; });
+    connect(animator, &SlidingAnimator::done, [animator, options]() {
+        if (options.onFinishedCallback) {
+            options.onFinishedCallback();
+        }
+
+        delete animator;
+    });
+
     animator->show();
 }

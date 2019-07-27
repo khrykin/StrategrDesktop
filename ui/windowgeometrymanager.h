@@ -10,10 +10,11 @@
 #include <QSettings>
 #include <QWidget>
 
+class MainWindow;
 class WindowGeometryManager {
 public:
     static void setInitialGeometry(QWidget *window);
-    static void saveGeometry(QWidget *window);
+    static void saveGeometry(MainWindow *window);
     static void resetSavedGeometry();
 
 private:

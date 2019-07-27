@@ -16,9 +16,12 @@
 #include "windowgeometrymanager.h"
 #include "mainscene.h"
 #include "applicationmenu.h"
+#include "macoswindow.h"
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
+
+    void *toolbarDelegate = nullptr;
 public:
     static const bool LoadInCurrentWindow = false;
 
@@ -42,9 +45,13 @@ public:
     void saveCurrentStrategyAsDefault();
     void clearRecentFilesList();
 
-
+    void updateUI();
 private:
     friend ApplicationMenu;
+
+#ifdef Q_OS_MAC
+    friend MacOSWindow;
+#endif
 
     explicit MainWindow(FileSystemIOManager fsIOManager,
                         QWidget *parent = nullptr);
@@ -60,10 +67,10 @@ private:
     void updateWindowTitle();
 
     bool wantToClose();
-    void closeEvent(QCloseEvent *event) override;
     void setup();
     void tearDown();
 
+    void closeEvent(QCloseEvent *event) override;
 };
 
 

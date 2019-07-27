@@ -4,14 +4,36 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
+#include "colorprovider.h"
 
-class Navbar : public QWidget {
+class Navbar : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     explicit Navbar(QWidget *parent = nullptr);
 
-    QString title() const;
     void setTitle(const QString &title);
+
+    template<typename Method>
+    void setLeftButton(
+            const QString &text,
+            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+            Method slot) {
+    }
+
+    template<typename Method>
+    void setRightButton(
+            const QString &text,
+            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+            Method slot) {
+
+    }
+
+    QPushButton *leftButton() const;
+    QPushButton *rightButton() const;
+    QLabel *titleLabel() const;
+
+#ifndef Q_OS_MAC
+    QString title() const;
 
     template<typename Method>
     void setLeftButton(
@@ -30,10 +52,6 @@ public:
         _rightButton->setText(text);
         QObject::connect(_rightButton, &QPushButton::clicked, receiver, slot);
     }
-
-    QPushButton *leftButton() const;
-    QPushButton *rightButton() const;
-    QLabel *titleLabel() const;
 
 private:
     QString _title;
@@ -54,6 +72,7 @@ private:
     void setupRightButton();
 
     void addWidgetsToLayout();
+#endif
 };
 
 #endif // NAVSCREEN_H

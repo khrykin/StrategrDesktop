@@ -25,7 +25,6 @@ private:
     bool event(QEvent *event) override;
 
     static void setupFonts();
-
 };
 
 #endif //STRATEGR_APPLICATION_H

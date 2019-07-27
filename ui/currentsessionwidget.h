@@ -1,12 +1,17 @@
 #ifndef CURRENTACTIVITYWIDGET_H
 #define CURRENTACTIVITYWIDGET_H
 
-#include "strategy.h"
+#include <optional>
+#include <functional>
+
 #include <QLabel>
 #include <QWidget>
-#include <optional>
+#include <QTimeLine>
 
-class CurrentSessionWidget : public QWidget {
+#include "strategy.h"
+#include "colorprovider.h"
+
+class CurrentSessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     explicit CurrentSessionWidget(QWidget *parent = nullptr);
@@ -16,11 +21,12 @@ public:
 
     Strategy *strategy() const;
     void setStrategy(Strategy *strategy);
-    void slideAndHide();
-    void slideAndShow();
+    void slideAndHide(const std::function<void()> &onFinishedCallback = nullptr);
+    void slideAndShow(const std::function<void()> &onFinishedCallback = nullptr);
 
     void setActivitySession(
             const ActivitySession &newActivitySession);
+
 signals:
     void clicked();
 
@@ -31,12 +37,14 @@ private:
     ActivitySession activitySession;
     ActivitySession previousSession;
 
-    Strategy *_strategy;
-    QLabel *activityLabel;
-    QLabel *startTimeLabel;
-    QLabel *endTimeLabel;
-    QLabel *passedTimeLabel;
-    QLabel *leftTimeLabel;
+    Strategy *_strategy = nullptr;
+    QLabel *activityLabel = nullptr;
+    QLabel *startTimeLabel = nullptr;
+    QLabel *endTimeLabel = nullptr;
+    QLabel *passedTimeLabel = nullptr;
+    QLabel *leftTimeLabel = nullptr;
+
+    QTimeLine *paddingAnimator = nullptr;
 
     bool isHovered = false;
     bool isClicked = false;

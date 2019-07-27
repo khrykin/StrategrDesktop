@@ -2,9 +2,14 @@
 // Created by Dmitry Khrykin on 2019-07-10.
 //
 
+#include <QMenu>
+#include <QScreen>
+#include <QGuiApplication>
+#include <QApplication>
+
 #include "slotsmousehandler.h"
 #include "slotswidget.h"
-#include <QMenu>
+#include "macoswindow.h"
 
 SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
         : slotsWidget(slotsWidget) {
@@ -24,10 +29,22 @@ void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
     } else if (leftButtonPressed) {
         // Slot pulling event
         isPulling = true;
-        slotsWidget->setCursor(QCursor(Qt::SizeVerCursor));
+        setResizeCursor();
         selectSessionAtSlotIndex(pulledFrom);
         slotsWidget->deselectAllSlots();
     }
+}
+
+void SlotsMouseHandler::setResizeCursor() const {
+#ifdef Q_OS_MAC
+    auto pixmap = MacOSWindow::resizeCursor();
+    auto screenNumber = QApplication::desktop()->screenNumber();
+    auto devicePixelRatio = QGuiApplication::screens()[screenNumber]->devicePixelRatio();
+    pixmap.setDevicePixelRatio(devicePixelRatio);
+    slotsWidget->setCursor(QCursor(pixmap));
+#else
+    slotsWidget->setCursor(QCursor(Qt::SizeVerCursor));
+#endif
 }
 
 void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {

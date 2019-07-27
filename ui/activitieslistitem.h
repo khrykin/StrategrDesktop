@@ -1,17 +1,19 @@
 #ifndef ACTIVITIESLISTITEM_H
 #define ACTIVITIESLISTITEM_H
 
-#include "colorpicker.h"
-#include "models/activity.h"
-#include "newactivitymenu.h"
 #include <QColorDialog>
-#include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
 #include <QWidget>
 #include <QWidgetAction>
 
-class ActivitiesListItemWidget : public QWidget {
+#include "colorpicker.h"
+#include "activity.h"
+#include "newactivitymenu.h"
+#include "colorprovider.h"
+#include "coloredlabel.h"
+
+class ActivitiesListItemWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     explicit ActivitiesListItemWidget(Activity *activity,
@@ -40,14 +42,18 @@ private:
     QColorDialog *colorDialog = nullptr;
     QLineEdit *lineEdit = nullptr;
     ColorPicker *colorPicker = nullptr;
-    QLabel *label = nullptr;
+    ColoredLabel *label = nullptr;
 
     QColor previousColor;
-    bool _isClicked = false;
+    bool isClicked = false;
+    bool isHovered = false;
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void enterEvent(QEvent *event) override;
+    void leaveEvent(QEvent *event) override;
+
     void contextMenuEvent(QContextMenuEvent *event) override;
     void paintEvent(QPaintEvent *) override;
 
@@ -68,6 +74,7 @@ private:
     void layoutChildWidgets();
     void setupActions();
     QMenu *makeContextMenu();
+    void updateStyleSheet();
 };
 
 #endif // ACTIVITIESLISTITEM_H

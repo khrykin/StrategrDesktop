@@ -15,8 +15,9 @@
 #include "slotboard.h"
 #include "strategy.h"
 #include "notifier.h"
+#include "colorprovider.h"
 
-class SessionsMainWidget : public QWidget {
+class SessionsMainWidget : public QWidget, public ColorProvider {
 public:
     explicit SessionsMainWidget(Strategy *strategy,
                                 QWidget *parent = nullptr);
@@ -29,6 +30,8 @@ public:
     const SelectionWidget::RawSelectionState &selection();
 
     void setStrategy(Strategy *newStrategy);
+    bool hasPadding() const;
+    void setHasPadding(bool hasPadding);
 private:
     Strategy *strategy;
 
@@ -44,6 +47,8 @@ private:
 
     void layoutChildWidgets();
     void updateCurrentSessionWidget();
+
+    void paintEvent(QPaintEvent *paintEvent) override;
 };
 
 

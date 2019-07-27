@@ -10,8 +10,9 @@
 
 #include "sessionsmainwidget.h"
 #include "activitieslistwidget.h"
+#include "parentwindowaccessible.h"
 
-class MainScene : public SlidingStackedWidget {
+class MainScene : public SlidingStackedWidget, public ParentWindowAccessible<MainScene> {
 Q_OBJECT
 public:
     explicit MainScene(Strategy *strategy,
@@ -21,7 +22,9 @@ public:
     void showSessions();
 
     void focusOnCurrentTime();
-    void openStrategySettings();
+    void showStrategySettings();
+
+    void showNewActivityMenu();
 
     void clearSelection();
 

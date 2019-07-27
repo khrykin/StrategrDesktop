@@ -5,6 +5,7 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "alert.h"
+#include "macoswindow.h"
 
 #include <QMessageBox>
 #include <iostream>
@@ -12,7 +13,6 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setup();
 }
-
 
 MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
         : fsIOManager(std::move(fsIOManager)),
@@ -29,6 +29,10 @@ MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
 
 void MainWindow::setup() {
     WindowGeometryManager::setInitialGeometry(this);
+
+#ifdef Q_OS_MAC
+    MacOSWindow::setup(this);
+#endif
 
     strategy->setOnChangeCallback(this, &MainWindow::strategyStateChanged);
 
@@ -109,6 +113,10 @@ void MainWindow::setIsSaved(bool isSaved) {
     auto windowTitle = strategyTitle + (isSaved ? "" : "*");
 
     setWindowTitle(windowTitle);
+
+#ifdef Q_OS_MAC
+    MacOSWindow::updateWindowTitle(this);
+#endif
 }
 
 void MainWindow::loadFile(const QString &path, bool inNewWindow) {
@@ -143,7 +151,7 @@ void MainWindow::setStrategy(std::unique_ptr<Strategy> newStrategy) {
 
     setIsSaved(true);
 
-    scene()->setStrategy(strategy.get());
+    updateUI();
 }
 
 void MainWindow::strategyStateChanged() {
@@ -172,6 +180,10 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 void MainWindow::tearDown() {
     WindowGeometryManager::saveGeometry(this);
     Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
+
+#ifdef Q_OS_MAC
+    MacOSWindow::teardown(this);
+#endif
 }
 
 MainWindow *MainWindow::createLastOpened() {
@@ -179,4 +191,8 @@ MainWindow *MainWindow::createLastOpened() {
     auto window = new MainWindow(fsIOManager);
 
     return window;
+}
+
+void MainWindow::updateUI() {
+    scene()->setStrategy(strategy.get());
 }

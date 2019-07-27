@@ -1,3 +1,5 @@
+#include <functional>
+
 #include <QPainter>
 #include <QStyleOption>
 
@@ -6,15 +8,20 @@
 #include "mainwindow.h"
 #include "slidinganimator.h"
 #include "utils.h"
+#include "colorutils.h"
+#include "rowwidget.h"
 
 StrategySettingsWidget::StrategySettingsWidget(Strategy *strategy,
                                                QWidget *parent)
         : strategy(strategy), QWidget(parent) {
+    auto backgroundColor = palette().color(QPalette::Base).name();
+
     setStyleSheet("StrategySettingsWidget {"
-                  "background-color: white;"
+                  "background-color: " + backgroundColor + ";" +
                   "}");
 
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    setSizePolicy(QSizePolicy::Expanding,
+                  QSizePolicy::Fixed);
 
     createLayout();
     createHeader();
@@ -43,19 +50,23 @@ void StrategySettingsWidget::createLayout() {
 void StrategySettingsWidget::createHeader() {
     auto *headerWidget = makeFormRowWidget();
 
-    auto *label = new QLabel(tr("Settings"));
-    label->setStyleSheet("QLabel {"
-                         "font-weight: bold;"
-                         "text-transform: uppercase;"
-                         "color: #888;"
-                         "}");
+    auto *label = new ColoredLabel(tr("Settings"));
+    label->setStyleSheet("text-transform: uppercase;");
+    label->setDynamicColor([]() {
+        return ColorUtils::qColorOverlayWithAlpha(
+                QApplication::palette().color(QPalette::Text),
+                0.5 * ColorUtils::shadesAlphaFactor());
+    });
+
+    label->setBold(true);
 
     auto *closeButton = new QPushButton(tr("Done"));
     closeButton->setDefault(true);
     connect(closeButton,
             &QPushButton::clicked,
-            this,
-            &StrategySettingsWidget::slideAndHide);
+            [this]() {
+                slideAndHide();
+            });
 
     closeButton->setSizePolicy(QSizePolicy::Fixed,
                                QSizePolicy::Fixed);
@@ -77,6 +88,8 @@ void StrategySettingsWidget::createSlotDurationForm() {
     slotDurationEdit->setStyleSheet("color: #888;");
 
     auto slotDurationEditDecorator = new SpinBoxDecorator(slotDurationEdit, this);
+    slotDurationEditDecorator->setSizePolicy(QSizePolicy::Fixed,
+                                             QSizePolicy::Fixed);
 
     formWidget->layout()->addWidget(makeFormLabel("Slot Duration"));
     formWidget->layout()->addWidget(slotDurationEditDecorator);
@@ -99,6 +112,8 @@ void StrategySettingsWidget::createStartTimeForm() {
     beginTimeEdit->setStyleSheet("color: #888;");
 
     auto *beginTimeEditDecorator = new TimeEditDecorator(beginTimeEdit, this);
+    beginTimeEditDecorator->setSizePolicy(QSizePolicy::Fixed,
+                                          QSizePolicy::Fixed);
 
     formWidget->layout()->addWidget(makeFormLabel("Start Time"));
     formWidget->layout()->addWidget(beginTimeEditDecorator);
@@ -112,14 +127,17 @@ void StrategySettingsWidget::createStartTimeForm() {
 }
 
 void StrategySettingsWidget::createEndTimeForm() {
+
     auto *formWidget = makeFormRowWidget();
-    formWidget->setStyleSheet("[FormRow] { border-bottom: 1px solid #ccc; }");
+    formWidget->setIsHardBorder(true);
 
     endTimeEdit = new SteppedTimeEdit();
     endTimeEdit->setAlignment(Qt::AlignRight);
     endTimeEdit->setStyleSheet("color: #888;");
 
     auto *endTimeEditDecorator = new TimeEditDecorator(endTimeEdit, this);
+    endTimeEditDecorator->setSizePolicy(QSizePolicy::Fixed,
+                                        QSizePolicy::Fixed);
 
     formWidget->layout()->addWidget(makeFormLabel("End Time"));
     formWidget->layout()->addWidget(endTimeEditDecorator);
@@ -130,12 +148,16 @@ void StrategySettingsWidget::createEndTimeForm() {
             &StrategySettingsWidget::endTimeChanged);
 }
 
-QWidget *StrategySettingsWidget::makeFormRowWidget() {
-    auto formRowWidget = new QWidget(this);
-    formRowWidget->setProperty("FormRow", true);
-    formRowWidget->setStyleSheet("[FormRow] {"
-                                 "border-bottom: 1px solid #eee;"
-                                 "}");
+
+QColor StrategySettingsWidget::labelColor() const {
+    return ColorUtils::qColorOverlayWithAlpha(
+            palette().color(QPalette::Text),
+            0.75 * ColorUtils::shadesAlphaFactor(),
+            palette().color(QPalette::Base));
+}
+
+RowWidget *StrategySettingsWidget::makeFormRowWidget() {
+    auto formRowWidget = new RowWidget(this);
 
     auto *formLayout = new QHBoxLayout();
     formLayout->setSpacing(5);
@@ -147,16 +169,20 @@ QWidget *StrategySettingsWidget::makeFormRowWidget() {
 }
 
 void StrategySettingsWidget::paintEvent(QPaintEvent *) {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    auto painter = QPainter(this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(QApplication::palette().color(QPalette::Base));
+
+    painter.drawRect(QRect(0, 0, width(), height()));
 }
 
-QLabel *StrategySettingsWidget::makeFormLabel(QString text) {
-    auto label = new QLabel(text);
-    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    label->setStyleSheet("font-weight: bold; color: #333;");
+ColoredLabel *StrategySettingsWidget::makeFormLabel(QString text) {
+    auto label = new ColoredLabel(text);
+//    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    label->setBold(true);
+
+    label->setDynamicColor(std::bind(&StrategySettingsWidget::labelColor, this));
 
     return label;
 }
@@ -240,10 +266,14 @@ void StrategySettingsWidget::endTimeChanged(const QTime &time) {
     save();
 }
 
-void StrategySettingsWidget::slideAndHide() {
-    SlidingAnimator::hideWidget(this);
+void StrategySettingsWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
+    SlidingAnimator::Options options;
+    options.onFinishedCallback = onFinishedCallback;
+    SlidingAnimator::hideWidget(this, options);
 }
 
-void StrategySettingsWidget::slideAndShow() {
-    SlidingAnimator::showWidget(this);
+void StrategySettingsWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
+    SlidingAnimator::Options options;
+    options.onFinishedCallback = onFinishedCallback;
+    SlidingAnimator::showWidget(this, options);
 }

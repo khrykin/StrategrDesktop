@@ -2,6 +2,9 @@
 // Created by Dmitry Khrykin on 2019-07-10.
 //
 
+#include <QDebug>
+#include <QPainter>
+
 #include "sessionsmainwidget.h"
 #include "currentactivitysession.h"
 
@@ -91,4 +94,12 @@ void SessionsMainWidget::updateCurrentSessionWidget() {
             currentSessionWidget->slideAndHide();
         }
     }
+}
+
+void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
+    auto painter = QPainter(this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(baseColor());
+    painter.drawRect(0, 0, width(), height());
 }

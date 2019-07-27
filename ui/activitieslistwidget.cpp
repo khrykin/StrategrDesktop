@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QStyleOption>
+#include <QApplication>
 
 ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
                                            QWidget *parent)
@@ -19,15 +20,11 @@ ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
-    layout()->setMargin(0);
+    layout()->setContentsMargins(0, 0, 0, 0);
 
     setupNavbar();
     layoutChildWidgets();
     setupActions();
-
-    setStyleSheet("ActivitiesListWidget {"
-                  "background: white;"
-                  "}");
 
     updateList();
 }
@@ -73,14 +70,16 @@ void ActivitiesListWidget::setupNavbar() {
                           &ActivitiesListWidget::getBack);
     navbar->setRightButton("New",
                            this,
-                           &ActivitiesListWidget::sendWantNewActivity);
+                           &ActivitiesListWidget::showNewActivityMenu);
 }
 
 void ActivitiesListWidget::paintEvent(QPaintEvent *) {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    auto painter = QPainter(this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(baseColor());
+
+    painter.drawRect(QRect(0, 0, width(), height()));
 }
 
 MainScene *ActivitiesListWidget::mainScene() {
@@ -119,13 +118,16 @@ void ActivitiesListWidget::reconnectItemAtIndex(int index,
             });
 }
 
-void ActivitiesListWidget::sendWantNewActivity() {
+void ActivitiesListWidget::showNewActivityMenu() {
     const auto margin = 10;
-    auto center =
-            QPoint(mapToGlobal(geometry().topRight()).x() -
-                   newActivityMenu->sizeHint().width() - margin,
-                   mapToGlobal(navbar->rightButton()->geometry().bottomLeft()).y() +
-                   margin);
+
+    int topOffset = mapToGlobal(QPoint(0, 0)).y();
+    if (navbar->rightButton()) {
+        topOffset = mapToGlobal(navbar->rightButton()->geometry().bottomLeft()).y();
+    }
+    auto center = QPoint(mapToGlobal(geometry().topRight()).x() -
+                         newActivityMenu->sizeHint().width() - margin,
+                         topOffset + margin);
 
     newActivityMenu->exec(center);
 }

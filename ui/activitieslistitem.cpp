@@ -17,17 +17,10 @@ ActivitiesListItemWidget::ActivitiesListItemWidget(Activity *activity,
         : QWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
 
-    setStyleSheet("ActivitiesListItemWidget {"
-                  "background-color: white;"
-                  "border-bottom: 1px solid #eee;"
-                  "}"
-                  "ActivitiesListItemWidget::hover {"
-                  "background-color: #f6f6f6;"
-                  "border-bottom: 1px solid #eee;"
-                  "}");
+    updateStyleSheet();
 
     setLayout(new QHBoxLayout());
-    layout()->setContentsMargins(10, 0, 10, 0);
+    layout()->setContentsMargins(16, 0, 16, 0);
     layout()->setSpacing(0);
 
     layoutChildWidgets();
@@ -35,6 +28,16 @@ ActivitiesListItemWidget::ActivitiesListItemWidget(Activity *activity,
     setupActions();
 
     updateUI();
+}
+
+void ActivitiesListItemWidget::updateStyleSheet() {
+    using namespace ColorUtils;
+
+    auto backgroundColor = palette().color(QPalette::Base);
+    auto highlightColor = qColorOverlayWithAlpha(
+            palette().color(QPalette::Highlight),
+            0.5,
+            backgroundColor);
 }
 
 void ActivitiesListItemWidget::setupActions() {
@@ -68,22 +71,35 @@ void ActivitiesListItemWidget::setupActions() {
 }
 
 void ActivitiesListItemWidget::layoutChildWidgets() {
-    label = new QLabel();
+    label = new ColoredLabel();
     label->setAlignment(Qt::AlignCenter);
-    label->setStyleSheet("QLineEdit {"
-                         "border: none;"
-                         "background-color: none;"
-                         "font-weight: bold;"
-                         "}");
+    label->setBold(true);
 
     layout()->addWidget(label);
 }
 
 void ActivitiesListItemWidget::paintEvent(QPaintEvent *) {
-    QStyleOption opt;
-    opt.init(this);
-    QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    auto painter = QPainter(this);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(baseColor());
+
+    painter.drawRect(QRect(0, 0, width(), height()));
+
+    painter.setBrush(borderColor());
+    auto borderRect = QRect(16, height() - 1, width() - 2 * 16, 1);
+    painter.drawRect(borderRect);
+
+    if (isHovered || isClicked) {
+        auto color = isClicked ? highlightColor() : selectionColor();
+        painter.setBrush(color);
+        auto selectionRect = QRect(16 + 1,
+                                   2,
+                                   width() - 2 * 16 - 2,
+                                   height() - 5);
+
+        painter.drawRoundedRect(selectionRect, 4, 4);
+    }
 }
 
 void ActivitiesListItemWidget::wantDeleteActivity() { emit wantToDelete(); }
@@ -182,10 +198,11 @@ void ActivitiesListItemWidget::colorDialogRejected() {
 }
 
 void ActivitiesListItemWidget::updateUI() {
+    using namespace ColorUtils;
     label->setText(QString::fromStdString(activity()->name()));
-    label->setStyleSheet("font-weight: bold;"
-                         "color: " +
-                         QString::fromStdString(activity()->color()));
+    label->setDynamicColor([this]() {
+        return safeForegroundColor(qColorFromStdString(activity()->color()));
+    });
 }
 
 Activity *ActivitiesListItemWidget::activity() const { return _activity; }
@@ -199,16 +216,16 @@ void ActivitiesListItemWidget::setActivity(Activity *activity) {
 
 void ActivitiesListItemWidget::mousePressEvent(QMouseEvent *event) {
     if (event->buttons() == Qt::LeftButton) {
-        _isClicked = true;
+        isClicked = true;
+        update();
     }
 }
 
 void ActivitiesListItemWidget::mouseReleaseEvent(QMouseEvent *event) {
-    if (_isClicked) {
-        emit selected();
-    }
+    isClicked = false;
+    update();
 
-    _isClicked = false;
+    emit selected();
 }
 
 void ActivitiesListItemWidget::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -216,6 +233,9 @@ void ActivitiesListItemWidget::mouseDoubleClickEvent(QMouseEvent *event) {
 }
 
 void ActivitiesListItemWidget::contextMenuEvent(QContextMenuEvent *event) {
+    isHovered = true;
+    update();
+
     delete contextMenu;
 
     contextMenu = makeContextMenu();
@@ -245,4 +265,16 @@ QMenu *ActivitiesListItemWidget::makeContextMenu() {
     });
 
     return contextMenu;
+}
+
+void ActivitiesListItemWidget::enterEvent(QEvent *event) {
+    QWidget::enterEvent(event);
+    isHovered = true;
+    update();
+}
+
+void ActivitiesListItemWidget::leaveEvent(QEvent *event) {
+    QWidget::leaveEvent(event);
+    isHovered = false;
+    update();
 }

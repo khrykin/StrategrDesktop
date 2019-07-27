@@ -219,7 +219,7 @@ void SlotsWidget::paintEvent(QPaintEvent *event) {
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(QColor(ApplicationSettings::timeSlotBorderColor));
+    painter.setBrush(ActivitySessionWidget::borderColor());
 
     auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
     auto borderRect = QRect(0, 0, width() - 8, thickness);

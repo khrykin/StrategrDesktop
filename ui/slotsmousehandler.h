@@ -45,6 +45,7 @@ private:
     void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
 
     void fillSlots(int fromIndex, int toIndex);
+    void setResizeCursor() const;
 };
 
 

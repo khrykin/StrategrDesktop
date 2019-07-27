@@ -2,8 +2,11 @@
 // Created by Dmitry Khrykin on 2019-07-11.
 //
 
-#include "selectionwidget.h"
 #include <QLayout>
+#include <QPainter>
+
+#include "selectionwidget.h"
+#include "colorutils.h"
 
 SelectionWidget::SelectionWidget(Strategy *strategy,
                                  int slotHeight,
@@ -65,29 +68,31 @@ void SelectionWidget::setSlotHeight(int newSlotHeight) {
 void SelectionWidget::updateUI() {
     selectionState = makeSelectionState(rawSelectionState);
 
-    for (auto *child : children()) {
-        delete child;
-    }
+    update();
+//    for (auto *child : children()) {
+//        delete child;
+//    }
+//
+//    for (auto &selectionItem : selectionState) {
+//        drawSelectionForItem(selectionItem);
+//    }
+}
 
-    for (auto &selectionItem : selectionState) {
-        auto topPosition = slotHeight * selectionItem.front();
+void SelectionWidget::drawSelectionForItem(RawSelectionState &selectionItem,
+                                           QPainter &painter) {
+    auto topPosition = slotHeight * selectionItem.front();
 
-        auto widgetHeight = selectionItem.size() * slotHeight;
-        auto *widget = new QWidget(this);
+    auto widgetHeight = selectionItem.size() * slotHeight;
 
-        const auto &lastTimeSlot = strategy->timeSlots()[selectionItem.back()];
-        auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 ? 1 : 0;
+    const auto &lastTimeSlot = strategy->timeSlots()[selectionItem.back()];
+    auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 ? 1 : 0;
 
-        auto rect = QRect(contentsMargins().left(),
-                          contentsMargins().top() + topPosition + 2,
-                          width() - contentsMargins().right(),
-                          widgetHeight - 5 - bottomMargin);
+    auto rect = QRect(contentsMargins().left(),
+                      contentsMargins().top() + topPosition + 2,
+                      width() - contentsMargins().right(),
+                      widgetHeight - 5 - bottomMargin);
 
-        widget->setGeometry(rect);
-        widget->setStyleSheet("background-color: rgba(189, 214, 241, 0.5);"
-                              "border-radius: 4px;");
-        widget->show();
-    }
+    painter.drawRoundedRect(rect, 4, 4);
 }
 
 void SelectionWidget::resizeEvent(QResizeEvent *event) {
@@ -125,4 +130,18 @@ bool SelectionWidget::selectionIsContinuous() const {
 void SelectionWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     updateUI();
+}
+
+void SelectionWidget::paintEvent(QPaintEvent *event) {
+    QWidget::paintEvent(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(selectionColor());
+
+    for (auto &selectionItem : selectionState) {
+        drawSelectionForItem(selectionItem, painter);
+    }
 }

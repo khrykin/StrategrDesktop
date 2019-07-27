@@ -4,7 +4,7 @@ project(Strategr)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(catch2 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Test MacExtras REQUIRED)
 
 include_directories(.)
 include_directories(models)
@@ -98,7 +98,19 @@ set(UI
         ui/currentsessionwidget.cpp
         ui/currentsessionwidget.h
         ui/abstractspinboxdecorator.cpp
-        ui/abstractspinboxdecorator.h ui/alert.cpp ui/alert.h utility/notifierbackend.cpp ui/application.cpp ui/application.h)
+        ui/abstractspinboxdecorator.h
+        ui/timelabel.h
+        ui/alert.cpp
+        ui/alert.h
+        ui/application.cpp
+        ui/application.h
+        ui/rowwidget.cpp
+        ui/rowwidget.h
+        ui/coloredlabel.cpp
+        ui/coloredlabel.h
+        ui/colorprovider.cpp
+        ui/colorprovider.h
+        ui/macoswindow.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -110,11 +122,13 @@ set(UTILITY
         utility/utils.h
         utility/notifier.cpp
         utility/notifier.h
-        utility/notifierbackend.h)
+        utility/notifierbackend.h
+        utility/fontutils.cpp
+        utility/fontutils.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
-        utility/testutils.h ui/timelabel.h)
+        utility/testutils.h)
 
 qt5_add_resources(RESOURCES
         resources/icons.qrc
@@ -124,7 +138,9 @@ if (APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit -framework UserNotifications -w")
     set(PLATFORM_FILES
             ui/alert.mm
-            utility/notifierbackend.mm)
+            ui/macoswindow.mm
+            utility/notifierbackend.mm
+            )
 
     list(APPEND RESOURCES deployment/Strategr.icns)
 endif ()
@@ -160,7 +176,7 @@ target_link_libraries(ui_tests
         Qt5::Widgets
         Qt5::Test)
 
-target_link_libraries(Strategr Qt5::Widgets)
+target_link_libraries(Strategr Qt5::Widgets Qt5::MacExtras)
 
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES
