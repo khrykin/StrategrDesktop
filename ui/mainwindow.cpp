@@ -44,6 +44,7 @@ void MainWindow::setup() {
     updateWindowTitle();
 
     fsIOManager.setIsSaved(true);
+
 }
 
 MainWindow::~MainWindow() {

@@ -4,17 +4,15 @@
 #include <QObject>
 
 class EnterPressEater : public QObject {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit EnterPressEater(QObject *parent = nullptr);
+    explicit EnterPressEater(QObject *parent = nullptr);
 
 signals:
-  void returnKeyPressed();
-
-public slots:
+    void returnKeyPressed();
 
 protected:
-  bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
 #endif // ENTERPRESSEATER_H

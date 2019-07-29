@@ -25,6 +25,7 @@ public:
     using Duration = TimeSlot::Duration;
     using Time = TimeSlot::Time;
     using TimeSlotIndex = TimeSlotsState::Index;
+    using ActivitySessionIndex = ActivitySessionsList::Index;
     using StateSize = TimeSlotsState::StateSize;
 
     static constexpr auto NoActivity = TimeSlot::NoActivity;
@@ -62,9 +63,10 @@ public:
     void putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
                                          const std::vector<TimeSlotIndex> &timeSlotIndices);
 
-    void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);;
+    void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);
 
     void fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex);
+    void dragActivitySession(ActivitySessionIndex sessionIndex, int distance);
 
     void shiftBelowTimeSlot(TimeSlotIndex fromIndex, int length);
 

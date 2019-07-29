@@ -36,7 +36,6 @@ void ActivitySessionWidget::paintEvent(QPaintEvent *event) {
 
     if (activitySession.activity) {
         drawRulers(painter);
-
         drawLabel(painter);
     }
 
@@ -74,6 +73,10 @@ void ActivitySessionWidget::drawRulers(QPainter &painter) const {
 }
 
 void ActivitySessionWidget::drawSelection(QPainter &painter) const {
+    if (!activitySession.activity) {
+        return;
+    }
+
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(selectedBackgroundColor());
 

@@ -61,7 +61,7 @@ CurrentActivitySession::upcomingForStrategy(const Strategy &strategy) {
         return std::nullopt;
     }
 
-    auto nextSession = strategy.activitySessions().after(*currentSession);
+    auto nextSession = strategy.activitySessions().sessionAfter(*currentSession);
     return nextSession && nextSession->activity
            ? nextSession
            : std::nullopt;

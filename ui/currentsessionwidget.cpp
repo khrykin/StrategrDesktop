@@ -104,7 +104,7 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
 
     auto progressRect = QRect(baseRect.topLeft().x(),
                               baseRect.topLeft().y(),
-                              baseRect.width() * progress(),
+                              static_cast<int>(baseRect.width() * progress()),
                               baseRect.height());
 
     auto progressBorderColor = hardBorderColor();

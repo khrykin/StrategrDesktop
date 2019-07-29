@@ -48,7 +48,6 @@ void SessionsMainWidget::layoutChildWidgets() {
 
     slotBoardScrollArea = new QScrollArea();
     slotBoardScrollArea->setWidgetResizable(true);
-    slotBoardScrollArea->setMouseTracking(true);
     slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
     slotBoard = new SlotBoard(strategy);

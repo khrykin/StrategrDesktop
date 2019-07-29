@@ -160,3 +160,64 @@ void Strategy::shiftBelowTimeSlot(Strategy::TimeSlotIndex fromIndex, int length)
 
     commitToHistory();
 }
+
+void Strategy::dragActivitySession(Strategy::ActivitySessionIndex sessionIndex,
+                                   int distance) {
+    if (sessionIndex < 0 ||
+        sessionIndex > activitySessions().size() - 1 ||
+        distance == 0) {
+        return;
+    }
+
+    const auto session = activitySessions()[sessionIndex];
+    if (session.activity == Strategy::NoActivity) {
+        return;
+    }
+
+    auto sessionFirstSlotIndex = timeSlots().indexOf(session.timeSlots.front());
+    auto sessionLastSlotIndex = timeSlots().indexOf(session.timeSlots.back());
+
+    std::vector<Activity *> cache;
+    if (distance < 0) {
+        int previousSlotIndex = sessionFirstSlotIndex + distance;
+        if (previousSlotIndex < 0)
+            return;
+
+        for (auto i = previousSlotIndex; i != sessionFirstSlotIndex; i++) {
+            cache.push_back(_timeSlots[i].activity);
+        }
+
+        for (auto i = previousSlotIndex;
+             i < previousSlotIndex + session.length();
+             i++) {
+            _timeSlots.silentlySetActivityAtIndex(session.activity, i);
+        }
+
+        for (auto i = 0; i < cache.size(); i++) {
+            auto insertAtIndex = previousSlotIndex + session.length() + i;
+            _timeSlots.silentlySetActivityAtIndex(cache[i], insertAtIndex);
+        }
+    } else {
+        auto nextSlotIndex = sessionLastSlotIndex + distance;
+
+        if (nextSlotIndex > _timeSlots.size() - 1)
+            return;
+
+        for (auto i = nextSlotIndex; i != sessionLastSlotIndex; i--) {
+            cache.push_back(_timeSlots[i].activity);
+        }
+
+        for (auto i = nextSlotIndex;
+             i > nextSlotIndex - session.length();
+             i--) {
+            _timeSlots.silentlySetActivityAtIndex(session.activity, i);
+        }
+
+        for (auto i = 0; i < cache.size(); i++) {
+            auto insertAtIndex = nextSlotIndex - session.length() - i;
+            _timeSlots.silentlySetActivityAtIndex(cache[i], insertAtIndex);
+        }
+    }
+
+    timeSlotsChanged();
+}

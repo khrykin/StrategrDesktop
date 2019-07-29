@@ -39,7 +39,7 @@ private:
     QVBoxLayout *slotsLayout = nullptr;
     SelectionWidget *selectionWidget = nullptr;
 
-    SlotsMouseHandler mouseHandler{this};
+    SlotsMouseHandler *mouseHandler = nullptr;
 
     int _slotHeight = ApplicationSettings::defaultSlotHeight;
 
@@ -49,11 +49,6 @@ private:
     QAction *shiftSlotsBelowAction = nullptr;
 
     QAction *selectAllAction = nullptr;
-
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
 
     void openActivitiesWindow();
     void deleteActivityInSelection();

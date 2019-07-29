@@ -73,17 +73,17 @@ void SlidingStackedWidget::slideToIndex(int idx, enum t_direction direction) {
 void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
                                          enum t_direction direction) {
     if (m_active) {
-        return; // at the moment, do not allow re-entrance before an animation is
+        return; // at the moment, do not allow re-entrance sessionBefore an animation is
         // completed.
         // other possibility may be to finish the previous animation abrupt, or
-        // to revert the previous animation with a counter animation, before going
+        // to revert the previous animation with a counter animation, sessionBefore going
         // ahead or to revert the previous animation abrupt and all those only, if
         // the newwidget is not the same as that of the previous running animation.
     } else
         m_active = true;
 
     enum t_direction directionhint;
-    int now = currentIndex(); // currentIndex() is a function inherited from
+    int now = currentIndex(); // currentSlotIndex() is a function inherited from
     // QStackedWidget
     int next = indexOf(newwidget);
     if (now == next) {

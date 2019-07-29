@@ -15,7 +15,6 @@
 SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
         : strategy(strategy),
           QWidget(parent) {
-
     strategy->activitySessions()
             .setOnChangeCallback(this, &SlotsWidget::updateUI);
 
@@ -35,7 +34,6 @@ void SlotsWidget::layoutChildWidgets() {
     slotsLayout->setSpacing(0);
 
     auto *slotsWidget = new QWidget();
-    slotsWidget->setProperty("slotsWidget", true);
     slotsWidget->setLayout(slotsLayout);
 
     selectionWidget = new SelectionWidget(strategy, _slotHeight, nullptr);
@@ -44,8 +42,11 @@ void SlotsWidget::layoutChildWidgets() {
             this,
             &SlotsWidget::onSelectionChange);
 
+    mouseHandler = new SlotsMouseHandler(this);
+
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
+    layout()->addWidget(mouseHandler);
 
     updateContentsMargins();
 }
@@ -99,22 +100,6 @@ void SlotsWidget::setupActions() {
     addAction(shiftSlotsBelowAction);
 }
 
-void SlotsWidget::mousePressEvent(QMouseEvent *event) {
-    mouseHandler.mousePressEvent(event);
-}
-
-void SlotsWidget::mouseMoveEvent(QMouseEvent *event) {
-    mouseHandler.mouseMoveEvent(event);
-}
-
-void SlotsWidget::mouseReleaseEvent(QMouseEvent *event) {
-    mouseHandler.mouseReleaseEvent(event);
-}
-
-void SlotsWidget::contextMenuEvent(QContextMenuEvent *event) {
-    mouseHandler.contextMenuEvent(event);
-}
-
 int SlotsWidget::slotHeight() const { return _slotHeight; }
 
 void SlotsWidget::openActivitiesWindow() {
@@ -144,7 +129,7 @@ void SlotsWidget::setStrategy(Strategy *newStrategy) {
     selectionWidget->setStrategy(strategy);
 
     updateList();
-    mouseHandler.reset();
+    mouseHandler->reset();
 }
 
 MainScene *SlotsWidget::mainScene() {

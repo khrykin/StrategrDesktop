@@ -25,13 +25,10 @@ public:
     void toggleStrategySettingsOpen();
     void focusOnCurrentTime();
 
+    const SelectionWidget::RawSelectionState &selection();
     void clearSelection();
 
-    const SelectionWidget::RawSelectionState &selection();
-
     void setStrategy(Strategy *newStrategy);
-    bool hasPadding() const;
-    void setHasPadding(bool hasPadding);
 private:
     Strategy *strategy;
 

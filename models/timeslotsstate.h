@@ -42,6 +42,9 @@ public:
     void setActivityAtIndices(Activity *activity,
                               const std::vector<Index> &indices);
 
+    void silentlySetActivityAtIndices(Activity *activity,
+                                      const std::vector<Index> &indices);
+
     void fillSlots(Index fromIndex, Index tillIndex);
 
     void shiftBelow(Index fromIndex, StateSize length);
@@ -55,17 +58,23 @@ public:
     void editActivity(Activity *oldActivity,
                       Activity *newActivity);
 
+    void swap(Index firstIndex, Index secondIndex);
+    void silentlySwap(Index firstIndex, Index secondIndex);
+
+    void silentlySetActivityAtIndex(Activity *activity,
+                                    Index slotIndex);
+
     bool hasActivity(const Activity *activity);
 
     TimeSlotsState &operator=(const TimeSlotsState &newState);
 
     std::string classPrintName() const override;
+
+    Index indexOf(const TimeSlot *slot) const;
+
 private:
     Time _beginTime = 0;
     Duration _slotDuration = 0;
-
-    void setActivityAtIndex(Activity *activity,
-                            Index slotIndex);
 
 
     Time slotBeginTime(Time globalBeginTime, Index slotIndex);

@@ -8,9 +8,9 @@
 TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
     auto strategy = Strategy();
 
+    strategy.addActivity(Activity("Some 0"));
     strategy.addActivity(Activity("Some 1"));
     strategy.addActivity(Activity("Some 2"));
-    strategy.addActivity(Activity("Some 3"));
 
     const auto &firstActivity = strategy.activities()[0];
     const auto &secondActivity = strategy.activities()[1];
@@ -104,6 +104,40 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
 
             REQUIRE(strategy.activitySessions()[1].length() == 1);
             REQUIRE(strategy.activitySessions()[1].activity == Strategy::NoActivity);
+        }
+
+    }
+
+    SECTION("drag activity session") {
+        strategy.putActivityInTimeSlotsAtIndices(1, {1, 2});
+        strategy.putActivityInTimeSlotsAtIndices(2, {3, 4, 5});
+
+        SECTION("up") {
+            strategy.dragActivitySession(2, -2);
+
+            REQUIRE(strategy.activitySessions()[0].activity == Strategy::NoActivity);
+            REQUIRE(strategy.activitySessions()[0].length() == 1);
+            REQUIRE(strategy.activitySessions()[1].activity == strategy.activities().at(2));
+            REQUIRE(strategy.activitySessions()[1].length() == 3);
+            REQUIRE(strategy.activitySessions()[2].activity == strategy.activities().at(1));
+            REQUIRE(strategy.activitySessions()[2].length() == 2);
+            REQUIRE(strategy.activitySessions()[3].activity == Strategy::NoActivity);
+            REQUIRE(strategy.activitySessions()[3].length() == 1);
+        }
+
+        SECTION("down") {
+            strategy.dragActivitySession(1, 2);
+
+            REQUIRE(strategy.activitySessions()[0].activity == Strategy::NoActivity);
+            REQUIRE(strategy.activitySessions()[0].length() == 1);
+            REQUIRE(strategy.activitySessions()[1].activity == strategy.activities().at(2));
+            REQUIRE(strategy.activitySessions()[1].length() == 2);
+            REQUIRE(strategy.activitySessions()[2].activity == strategy.activities().at(1));
+            REQUIRE(strategy.activitySessions()[2].length() == 2);
+            REQUIRE(strategy.activitySessions()[3].activity == strategy.activities().at(2));
+            REQUIRE(strategy.activitySessions()[3].length() == 1);
+            REQUIRE(strategy.activitySessions()[4].activity == Strategy::NoActivity);
+            REQUIRE(strategy.activitySessions()[4].length() == 1);
         }
 
     }

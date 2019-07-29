@@ -12,6 +12,8 @@ SelectionWidget::SelectionWidget(Strategy *strategy,
                                  int slotHeight,
                                  QWidget *parent)
         : strategy(strategy), QWidget(parent) {
+    setMouseTracking(false);
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 SelectionWidget::SelectionState
@@ -69,13 +71,6 @@ void SelectionWidget::updateUI() {
     selectionState = makeSelectionState(rawSelectionState);
 
     update();
-//    for (auto *child : children()) {
-//        delete child;
-//    }
-//
-//    for (auto &selectionItem : selectionState) {
-//        drawSelectionForItem(selectionItem);
-//    }
 }
 
 void SelectionWidget::drawSelectionForItem(RawSelectionState &selectionItem,

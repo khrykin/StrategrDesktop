@@ -97,8 +97,8 @@ void TimeSlotsState::fillSlots(Index fromIndex,
     onChangeEvent();
 }
 
-void TimeSlotsState::setActivityAtIndex(Activity *activity,
-                                        Index slotIndex) {
+void TimeSlotsState::silentlySetActivityAtIndex(Activity *activity,
+                                                Index slotIndex) {
     if (!hasIndex(slotIndex)) {
         return;
     }
@@ -112,7 +112,7 @@ void TimeSlotsState::setActivityAtIndices(Activity *activity,
     for (auto slotIndex : indices) {
         auto currentActivityChanged = _vector[slotIndex].activity != activity;
         if (currentActivityChanged) {
-            setActivityAtIndex(activity, slotIndex);
+            silentlySetActivityAtIndex(activity, slotIndex);
         }
 
         if (!activityChanged && currentActivityChanged) {
@@ -124,6 +124,15 @@ void TimeSlotsState::setActivityAtIndices(Activity *activity,
         onChangeEvent();
     }
 }
+
+
+void TimeSlotsState::silentlySetActivityAtIndices(Activity *activity,
+                                                  const std::vector<Index> &indices) {
+    for (auto slotIndex : indices) {
+        silentlySetActivityAtIndex(activity, slotIndex);
+    }
+}
+
 
 std::string TimeSlotsState::classPrintName() const {
     return "TimeSlotsState";
@@ -185,7 +194,8 @@ TimeSlotsState &TimeSlotsState::operator=(const TimeSlotsState &newState) {
     return *this;
 }
 
-void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex, TimeSlotsState::StateSize length) {
+void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex,
+                                TimeSlotsState::StateSize length) {
     auto actualNumberOfSlots = numberOfSlots();
     _vector.insert(_vector.begin() + fromIndex,
                    length,
@@ -196,4 +206,22 @@ void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex, TimeSlotsState::St
     updateBeginTimes();
 
     onChangeEvent();
+}
+
+TimeSlotsState::Index TimeSlotsState::indexOf(const TimeSlot *slot) const {
+    return slot - &_vector[0];
+}
+
+void TimeSlotsState::swap(Index firstIndex,
+                          Index secondIndex) {
+
+    silentlySwap(firstIndex, secondIndex);
+    onChangeEvent();
+}
+
+void TimeSlotsState::silentlySwap(Index firstIndex,
+                                  Index secondIndex) {
+    auto activity = _vector[firstIndex].activity;
+    _vector[firstIndex].activity = _vector[secondIndex].activity;
+    _vector[secondIndex].activity = activity;
 }

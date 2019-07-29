@@ -35,15 +35,19 @@
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>CFBundleDocumentTypes</key>
-        <array>
-            <dict>
-                <key>CFBundleTypeExtensions</key>
-                <array>
-                    <string>stg</string>
-                </array>
-                <key>CFBundleTypeRole</key>
-                <string>Editor</string>
-            </dict>
-        </array>
+	<array>
+		<dict>
+			<key>CFBundleTypeIconFile</key>
+			<string>Default</string>
+			<key>CFBundleTypeName</key>
+			<string>Strategr Strategy</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>stg</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+	</array>
 </dict>
 </plist>

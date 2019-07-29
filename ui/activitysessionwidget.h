@@ -39,7 +39,6 @@ private:
     QString lableText = "";
     QString previousLabelText = "";
 
-    void paintEvent(QPaintEvent *event) override;
 
     void drawBorder(QPainter &painter);
 
@@ -51,6 +50,10 @@ private:
 
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;
+
+
+    void paintEvent(QPaintEvent *event) override;
+
     void drawSelection(QPainter &painter) const;
     void drawRulers(QPainter &painter) const;
     void drawLabel(QPainter &painter) const;
