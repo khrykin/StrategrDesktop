@@ -26,16 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/dragoperation.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/dragoperation.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysession.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/timeslotsstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/timeslotsstate.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/dragoperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/dragoperation.h" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -68,24 +60,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/activitysession.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1923">
-              <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
           <provider selected="true" editor-type-id="text-editor">
@@ -140,7 +114,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/strategy.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
+            <state relative-caret-position="453">
               <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
               <folding>
                 <element signature="e#39#60#0" expanded="true" />
@@ -161,11 +135,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/dragoperation.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+            <state relative-caret-position="-1476">
+              <caret line="28" column="49" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
               <folding>
                 <element signature="e#118#135#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="20" selection-start-line="20" selection-end-line="20" />
             </state>
           </provider>
         </entry>
@@ -174,7 +157,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>bor</find>
       <find>rulerC</find>
       <find>labelColor</find>
       <find>labelPa</find>
@@ -204,6 +186,7 @@
       <find>DIRECTION</find>
       <find>Direction change!</find>
       <find>printMovements</find>
+      <find>newDraggedIndices</find>
     </findStrings>
     <replaceStrings>
       <replace>Index</replace>
@@ -447,7 +430,7 @@
       <workItem from="1564182810658" duration="15352000" />
       <workItem from="1564203362726" duration="1195000" />
       <workItem from="1564311400960" duration="29751000" />
-      <workItem from="1564342224637" duration="34933000" />
+      <workItem from="1564342224637" duration="42925000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -680,7 +663,21 @@
       <option name="project" value="LOCAL" />
       <updated>1564358653878</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Drag history">
+      <created>1564489095741</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1564489095741</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Refactor">
+      <created>1564496302630</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1564496302630</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -716,7 +713,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="487702000" />
+    <option name="totallyTimeSpent" value="495694000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -736,7 +733,7 @@
       <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.4235925" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.14745308" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.04021448" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.42091152" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -745,7 +742,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.8819277" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3507363" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50143063" side_tool="true" weight="0.08847185" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.16487935" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.2922252" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.2841823" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.5201072" />
       <window_info anchor="bottom" id="Profiler" order="14" />
@@ -852,10 +849,17 @@
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
     <MESSAGE value="Naive implementation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Naive implementation" />
+    <MESSAGE value="Drag history" />
+    <MESSAGE value="Refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>draggingIndices.size()</expression-string>
+        <language-id>ObjectiveC</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>slotsWidget-&gt;slotsLayout-&gt;itemAt(0)</expression-string>
         <language-id>ObjectiveC</language-id>
@@ -896,15 +900,9 @@
         <language-id>ObjectiveC</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(0)-&gt;widget()-&gt;geometry().top()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItemView.m" />
     <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSToolbarItem.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -1257,22 +1255,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/strategy.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
-          <folding>
-            <element signature="e#39#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/strategy.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="538">
           <caret line="193" column="39" selection-start-line="193" selection-start-column="39" selection-end-line="193" selection-end-column="39" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/strategy.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="453">
+          <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
+          <folding>
+            <element signature="e#39#60#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1284,10 +1282,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/dragoperation.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+        <state relative-caret-position="-1476">
+          <caret line="28" column="49" selection-start-line="28" selection-start-column="49" selection-end-line="28" selection-end-column="49" />
           <folding>
             <element signature="e#118#135#0" expanded="true" />
           </folding>

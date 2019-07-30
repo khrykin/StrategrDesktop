@@ -16,12 +16,17 @@
 class DragOperation {
 public:
     using TimeSlotIndex = TimeSlotsState::Index;
+    using OldIndex = TimeSlotIndex;
+    using NewIndex = TimeSlotIndex;
+    using CurrentIndex = TimeSlotIndex;
+
     using IndicesVector = std::vector<TimeSlotIndex>;
+    using InitialAndPreviousIndices = IndicesVector;
 
-    using HistoryState = std::map<TimeSlotIndex, IndicesVector>;
-    using MovementsState = std::map<TimeSlotIndex, TimeSlotIndex>;
+    using HistoryState = std::map<CurrentIndex, InitialAndPreviousIndices>;
+    using MovementsState = std::map<OldIndex, NewIndex>;
 
-    using IndicesCacheEntry = std::tuple<TimeSlotIndex, Activity *>;
+    using IndicesCacheEntry = std::tuple<OldIndex, Activity *>;
     using IndicesCache = std::vector<IndicesCacheEntry>;
 
     explicit DragOperation(TimeSlotsState &timeSlots, IndicesVector initialIndices)
@@ -30,117 +35,139 @@ public:
         printIndices("initialDraggedIndices", initialDraggedIndices);
     }
 
-    void initHistory() {
-        for (auto i = 0; i < timeSlots.size(); i++) {
-            history[i] = {};
-        }
-    }
-
     void recordDrag(const ActivitySession::TimeSlotsState &timeSlotsToDrag, int distance) {
         if (distance == 0) {
             return;
         }
 
-        IndicesCache cache;
-        DragOperation::IndicesVector newDraggedIndices;
-        MovementsState movements;
-
-        auto firstDraggingSlotIndex = timeSlots.indexOf(timeSlotsToDrag.front());
-        auto lastDraggingSlotIndex = timeSlots.indexOf(timeSlotsToDrag.back());
-        
-        if (distance < 0) {
-
-            int previousSlotIndex = firstDraggingSlotIndex + distance;
-            if (previousSlotIndex < 0)
-                return;
-
-            for (auto i = previousSlotIndex; i != firstDraggingSlotIndex; i++) {
-                auto cacheEntry = std::make_tuple(i, timeSlots[i].activity);
-                cache.push_back(cacheEntry);
-            }
-
-            for (auto i = 0; i < timeSlotsToDrag.size(); i++) {
-                auto insertAtIndex = previousSlotIndex + i;
-
-                movements[firstDraggingSlotIndex + i] = insertAtIndex;
-
-                newDraggedIndices.push_back(insertAtIndex);
-                timeSlots.silentlySetActivityAtIndex(timeSlotsToDrag[i]->activity, insertAtIndex);
-            }
-
-            for (auto i = 0; i < cache.size(); i++) {
-                auto insertAtIndex = previousSlotIndex + timeSlotsToDrag.size() + i;
-                auto[historyIndex, activity] = cache[i];
-
-                movements[historyIndex] = insertAtIndex;
-
-                timeSlots.silentlySetActivityAtIndex(activity, insertAtIndex);
-            }
-        } else {
-            auto nextSlotIndex = lastDraggingSlotIndex + distance;
-
-            if (nextSlotIndex > timeSlots.size() - 1)
-                return;
-
-            for (auto i = nextSlotIndex; i != lastDraggingSlotIndex; i--) {
-                auto cacheEntry = std::make_tuple(i, timeSlots[i].activity);
-                cache.push_back(cacheEntry);
-            }
-
-            for (auto i = 0; i < timeSlotsToDrag.size(); i++) {
-                auto insertAtIndex = nextSlotIndex - i;
-                movements[lastDraggingSlotIndex - i] = insertAtIndex;
-
-                newDraggedIndices.insert(newDraggedIndices.begin(), insertAtIndex);
-                timeSlots.silentlySetActivityAtIndex(timeSlotsToDrag[i]->activity, insertAtIndex);
-            }
-
-            for (auto i = 0; i < cache.size(); i++) {
-                auto insertAtIndex = nextSlotIndex - timeSlotsToDrag.size() - i;
-                auto[historyIndex, activity] = cache[i];
-
-                movements[historyIndex] = insertAtIndex;
-
-                timeSlots.silentlySetActivityAtIndex(activity, insertAtIndex);
-            }
-        }
-
-
-        applyMovementsToHistory(movements);
+        auto newDraggedIndices = silentlyDrag(timeSlotsToDrag, distance);
 
         invalidateDrag(newDraggedIndices);
     }
 
-    void applyMovementsToHistory(const MovementsState &movements) {
-        HistoryState newHistoryStacks;
+private:
+    struct IndicesRange {
+        TimeSlotIndex first = 0;
+        TimeSlotIndex last = 0;
 
-        for (auto const&[pastIndex, currentIndex] : movements) {
-            auto newHistoryStack = history[pastIndex];
-            newHistoryStack.push_back(pastIndex);
+        unsigned int size() {
+            return last - first + 1;
+        }
+    };
 
-            newHistoryStacks[currentIndex] = newHistoryStack;
+    TimeSlotsState &timeSlots;
+    IndicesVector initialDraggedIndices;
+    IndicesVector draggedIndices = {};
+
+    HistoryState history = HistoryState();
+
+    IndicesVector silentlyDrag(const ActivitySession::TimeSlotsState &timeSlotsToDrag, int distance) {
+        auto indicesToDrag = IndicesRange{timeSlots.indexOf(timeSlotsToDrag.front()),
+                                          timeSlots.indexOf(timeSlotsToDrag.back())};
+
+        auto destinationIndex = distance < 0
+                                ? indicesToDrag.first + distance
+                                : indicesToDrag.last + distance;
+
+        if (destinationIndex > timeSlots.size() - 1) {
+            return {};
         }
 
-        for (auto const&[index, stack] : newHistoryStacks) {
-            if (index == stack.front()) {
-                history.erase(index);
-            } else {
-                IndicesVector historyEntry{stack.front()};
+        auto[cacheRange, restoreCacheRange, newDragRange]
+        = getRanges(indicesToDrag, destinationIndex, distance);
 
-                // History entry doesn't need more than two values:
-                // only initial index and previous index if they're different
-                if (stack.back() != stack.front()) {
-                    historyEntry.push_back(stack.back());
-                }
+        auto cache = makeCache(cacheRange);
 
-                history[index] = historyEntry;
-            }
+        MovementsState movements;
+        IndicesVector newDraggedIndices;
+
+        for (auto i = 0; i < timeSlotsToDrag.size(); i++) {
+            auto insertAtIndex = newDragRange.first + i;
+
+            movements[indicesToDrag.first + i] = insertAtIndex;
+
+            newDraggedIndices.push_back(insertAtIndex);
+            timeSlots.silentlySetActivityAtIndex(timeSlotsToDrag[i]->activity, insertAtIndex);
         }
 
-        printHistory("History", history);
+        restoreCache(restoreCacheRange, cache, movements);
+
+        applyMovementsToHistory(movements);
+
+        return newDraggedIndices;
+    }
+
+    void restoreCache(const IndicesRange &restoreCacheRange,
+                      const IndicesCache &cache,
+                      MovementsState &movements) const {
+        for (auto i = 0; i < cache.size(); i++) {
+            auto insertAtIndex = restoreCacheRange.first + i;
+            auto[historyIndex, activity] = cache[i];
+
+            movements[historyIndex] = insertAtIndex;
+
+            timeSlots.silentlySetActivityAtIndex(activity, insertAtIndex);
+        }
+    }
+
+    std::tuple<IndicesRange, IndicesRange, IndicesRange>
+    getRanges(IndicesRange &draggingIndices,
+              TimeSlotIndex destinationIndex,
+              int distance) const {
+        auto cacheRange = getCacheRange(draggingIndices,
+                                        destinationIndex,
+                                        distance);
+
+        auto restoreCacheFirstIndex = distance < 0
+                                      ? destinationIndex + draggingIndices.size()
+                                      : draggingIndices.first;
+
+        auto restoreCacheRange = IndicesRange{restoreCacheFirstIndex,
+                                              restoreCacheFirstIndex + cacheRange.size()};
+
+        auto newDragRange = getNewDraggingIndices(draggingIndices,
+                                                  destinationIndex,
+                                                  distance);
+
+        return std::make_tuple(cacheRange, restoreCacheRange, newDragRange);
+    }
+
+    IndicesRange getNewDraggingIndices(IndicesRange &draggingIndices,
+                                       TimeSlotIndex destinationIndex,
+                                       int distance) const {
+        auto newFirstIndex = distance < 0
+                             ? destinationIndex
+                             : destinationIndex - draggingIndices.size() + 1;
+
+        return IndicesRange{newFirstIndex,
+                            newFirstIndex + draggingIndices.size()};
+    }
+
+    IndicesRange getCacheRange(const IndicesRange &draggingIndices,
+                               TimeSlotIndex destinationIndex,
+                               int distance) const {
+        return distance < 0
+               ? IndicesRange{destinationIndex,
+                              draggingIndices.first - 1}
+               : IndicesRange{draggingIndices.last + 1,
+                              destinationIndex};
+    }
+
+    IndicesCache makeCache(IndicesRange cacheIndices) const {
+        IndicesCache cache;
+        for (auto i = cacheIndices.first; i <= cacheIndices.last; i++) {
+            auto cacheEntry = std::make_tuple(i, timeSlots[i].activity);
+            cache.push_back(cacheEntry);
+        }
+
+        return cache;
     }
 
     void invalidateDrag(const IndicesVector &newDraggedIndices) {
+        if (newDraggedIndices.empty()) {
+            return;
+        }
+
         draggedIndices = newDraggedIndices;
         printIndices("draggedIndices", draggedIndices);
     }
@@ -172,21 +199,36 @@ public:
         }
     }
 
-private:
-    TimeSlotsState &timeSlots;
-    TimeSlotsState initialState = timeSlots;
-    IndicesVector initialDraggedIndices;
-    IndicesVector draggedIndices = {};
 
-    HistoryState history = HistoryState();
+    void applyMovementsToHistory(const MovementsState &movements) {
+        HistoryState newHistoryStacks;
 
-    TimeSlotIndex firstIndex() {
-        return draggedIndices.front();
+        for (auto const&[pastIndex, currentIndex] : movements) {
+            auto newHistoryStack = history[pastIndex];
+            newHistoryStack.push_back(pastIndex);
+
+            newHistoryStacks[currentIndex] = newHistoryStack;
+        }
+
+        for (auto const&[index, stack] : newHistoryStacks) {
+            if (index == stack.front()) {
+                history.erase(index);
+            } else {
+                IndicesVector historyEntry{stack.front()};
+
+                // History entry doesn't need more than two values:
+                // only initial index and previous index if they're different
+                if (stack.back() != stack.front()) {
+                    historyEntry.push_back(stack.back());
+                }
+
+                history[index] = historyEntry;
+            }
+        }
+
+        printHistory("History", history);
     }
 
-    TimeSlotIndex lastIndex() {
-        return draggedIndices.back();
-    }
 };
 
 
