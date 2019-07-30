@@ -13,6 +13,7 @@
 #include "activitysessionslist.h"
 #include "strategyhistory.h"
 #include "notifiableonchange.h"
+#include "dragoperation.h"
 
 class Strategy : public NotifiableOnChange {
 public:
@@ -66,7 +67,10 @@ public:
     void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);
 
     void fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex);
+
+    void beginDragging(ActivitySessionIndex sessionIndex);
     void dragActivitySession(ActivitySessionIndex sessionIndex, int distance);
+    void endDragging();
 
     void shiftBelowTimeSlot(TimeSlotIndex fromIndex, int length);
 
@@ -80,10 +84,13 @@ private:
     ActivitySessionsList _activitySessions;
     StrategyHistory history;
 
+    std::unique_ptr<DragOperation> currentDragOperation = nullptr;
+
     void timeSlotsChanged();
     void setupTimeSlotsCallback();
 
     StrategyHistory::Entry makeHistoryEntry();
+    DragOperation::IndicesVector getGlobalSlotIndicesFromSession(const ActivitySession &session) const;
 };
 
 #endif // STRATEGY_H

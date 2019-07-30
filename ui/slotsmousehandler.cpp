@@ -59,6 +59,7 @@ void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
     if (operation == Operation::Drag) {
         dragHandleSlotIndex = currentSlotIndex;
         selectSessionAtSlotIndex(currentSlotIndex);
+        strategy()->beginDragging(sessionIndexForSlotIndex(currentSlotIndex));
     }
 
     updateCursor();
@@ -402,6 +403,8 @@ void SlotsMouseHandler::reset() {
     operation = std::nullopt;
     direction = std::nullopt;
     draggedSession = std::nullopt;
+
+    strategy()->endDragging();
 
     unsetCursor();
 

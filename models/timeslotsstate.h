@@ -45,6 +45,9 @@ public:
     void silentlySetActivityAtIndices(Activity *activity,
                                       const std::vector<Index> &indices);
 
+    void silentlySetActivityAtIndex(Activity *activity,
+                                    Index slotIndex);
+
     void fillSlots(Index fromIndex, Index tillIndex);
 
     void shiftBelow(Index fromIndex, StateSize length);
@@ -61,8 +64,6 @@ public:
     void swap(Index firstIndex, Index secondIndex);
     void silentlySwap(Index firstIndex, Index secondIndex);
 
-    void silentlySetActivityAtIndex(Activity *activity,
-                                    Index slotIndex);
 
     bool hasActivity(const Activity *activity);
 

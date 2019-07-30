@@ -5,9 +5,9 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="Strategr_autogen" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
-      <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="ui_tests" />
       <config projectName="Strategr" targetName="models_tests" />
     </generated>
@@ -25,31 +25,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="Custom macOS window">
+    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/models/dragoperation.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/dragoperation.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deployment/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/deployment/Info.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysession.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/timeslotsstate.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/timeslotsstate.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/timeslotsstate.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/timeslotsstate.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/third-party/slidingstackedwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/third-party/slidingstackedwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/enterpresseater.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/enterpresseater.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/enterpresseater.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/enterpresseater.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainscene.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainscene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/selectionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/selectionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotswidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotswidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotswidget.h" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -83,10 +69,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/activitysession.cpp">
+        <entry file="file://$PROJECT_DIR$/models/activitysession.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="34" selection-start-line="34" selection-end-line="34" />
+            <state relative-caret-position="224">
+              <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -94,29 +80,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2019">
+            <state relative-caret-position="-1923">
               <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="93">
-              <caret line="99" column="34" selection-start-line="99" selection-start-column="34" selection-end-line="99" selection-end-column="34" />
+            <state relative-caret-position="1899">
+              <caret line="406" column="30" selection-start-line="406" selection-start-column="30" selection-end-line="406" selection-end-column="30" />
               <folding>
                 <element signature="e#51#67#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/activitysessionwidget.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="78" selection-start-line="78" selection-end-line="78" />
             </state>
           </provider>
         </entry>
@@ -133,8 +110,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/strategy.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1891">
-              <caret line="185" column="75" selection-start-line="185" selection-start-column="75" selection-end-line="185" selection-end-column="75" />
+            <state relative-caret-position="538">
+              <caret line="193" column="39" selection-start-line="193" selection-start-column="39" selection-end-line="193" selection-end-column="39" />
+              <folding>
+                <element signature="e#0#21#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="457">
+              <caret line="130" column="36" selection-start-line="130" selection-start-column="36" selection-end-line="130" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -142,8 +131,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/timeslotsstate.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="271">
-              <caret line="82" column="45" selection-start-line="82" selection-start-column="45" selection-end-line="82" selection-end-column="45" />
+            <state relative-caret-position="151">
+              <caret line="210" column="38" selection-start-line="210" selection-start-column="38" selection-end-line="210" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -151,17 +140,32 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/strategy.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1872">
-              <caret line="78" column="10" selection-start-line="78" selection-start-column="10" selection-end-line="78" selection-end-column="10" />
+            <state relative-caret-position="302">
+              <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
+              <folding>
+                <element signature="e#39#60#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/timeslotsstate.h">
+        <entry file="file://$PROJECT_DIR$/models/dragoperation.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1560">
-              <caret line="65" selection-start-line="65" selection-end-line="65" />
+            <state relative-caret-position="120">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/dragoperation.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="232">
+              <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+              <folding>
+                <element signature="e#118#135#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -170,7 +174,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>borderColor</find>
       <find>bor</find>
       <find>rulerC</find>
       <find>labelColor</find>
@@ -200,6 +203,7 @@
       <find>&quot;ope</find>
       <find>DIRECTION</find>
       <find>Direction change!</find>
+      <find>printMovements</find>
     </findStrings>
     <replaceStrings>
       <replace>Index</replace>
@@ -227,9 +231,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/utility/fontutils.h" />
-        <option value="$PROJECT_DIR$/ui/abstractspinboxdecorator.cpp" />
-        <option value="$PROJECT_DIR$/ui/coloredlabel.cpp" />
         <option value="$PROJECT_DIR$/ui/alert.mm" />
         <option value="$PROJECT_DIR$/ui/slidinganimator.h" />
         <option value="$PROJECT_DIR$/ui/strategysettingswidget.h" />
@@ -270,14 +271,17 @@
         <option value="$PROJECT_DIR$/ui/activitysessionwidget.h" />
         <option value="$PROJECT_DIR$/ui/currentsessionwidget.h" />
         <option value="$PROJECT_DIR$/models/activitysessionslist.h" />
-        <option value="$PROJECT_DIR$/models/strategy.h" />
-        <option value="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" />
-        <option value="$PROJECT_DIR$/models/timeslotsstate.h" />
         <option value="$PROJECT_DIR$/ui/activitysessionwidget.cpp" />
         <option value="$PROJECT_DIR$/models/timeslotsstate.cpp" />
-        <option value="$PROJECT_DIR$/models/strategy.cpp" />
         <option value="$PROJECT_DIR$/ui/slotsmousehandler.h" />
         <option value="$PROJECT_DIR$/ui/slotsmousehandler.cpp" />
+        <option value="$PROJECT_DIR$/models/timeslotsstate.h" />
+        <option value="$PROJECT_DIR$/models/draggingmanager.h" />
+        <option value="$PROJECT_DIR$/models/strategy.cpp" />
+        <option value="$PROJECT_DIR$/models/activitysession.h" />
+        <option value="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" />
+        <option value="$PROJECT_DIR$/models/strategy.h" />
+        <option value="$PROJECT_DIR$/models/dragoperation.h" />
       </list>
     </option>
   </component>
@@ -294,7 +298,31 @@
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
+              <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
+              <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
+              <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -419,7 +447,7 @@
       <workItem from="1564182810658" duration="15352000" />
       <workItem from="1564203362726" duration="1195000" />
       <workItem from="1564311400960" duration="29751000" />
-      <workItem from="1564342224637" duration="13186000" />
+      <workItem from="1564342224637" duration="34933000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -645,28 +673,17 @@
       <option name="project" value="LOCAL" />
       <updated>1564198538111</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="Naive implementation">
+      <created>1564358653877</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1564358653878</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 21h 40m 05s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 21h 40m 14s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 21h 40m 17s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 21h 56m 12s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 00m 06s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 01m 02s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
     <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 03m 24s.xml">
       <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
     </history-entry>
@@ -679,9 +696,27 @@
     <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 17m 23s.xml">
       <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
     </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 38m 16s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 40m 43s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 42m 06s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 42m 52s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 44m 16s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
+    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 44m 22s.xml">
+      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="465955000" />
+    <option name="totallyTimeSpent" value="487702000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -694,22 +729,23 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" weight="0.021459227" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" weight="0.17310444" />
       <window_info id="Structure" order="1" sideWeight="0.45575222" side_tool="true" weight="0.021459227" />
       <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.4235925" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49928468" visible="true" weight="0.45844504" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4155496" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.14745308" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.42091152" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32650602" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.8819277" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3507363" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.2761394" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.47989276" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50143063" side_tool="true" weight="0.08847185" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.16487935" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.2841823" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.5201072" />
       <window_info anchor="bottom" id="Profiler" order="14" />
@@ -719,13 +755,13 @@
       <window_info anchor="right" id="Database" order="3" weight="0.3297568" />
     </layout>
     <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" weight="0.021459227" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" visible="true" weight="0.17310444" />
       <window_info id="Structure" order="1" sideWeight="0.45575222" side_tool="true" weight="0.021459227" />
       <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.4235925" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49928468" visible="true" weight="0.45844504" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.416332" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49928468" visible="true" weight="0.3297587" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4155496" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32650602" />
@@ -733,7 +769,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.8819277" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.3507363" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5007153" side_tool="true" weight="0.2761394" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.47989276" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.5469169" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.2841823" />
       <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.5201072" />
       <window_info anchor="bottom" id="Profiler" order="14" />
@@ -815,7 +851,8 @@
     <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
-    <option name="LAST_COMMIT_MESSAGE" value="Custom macOS window" />
+    <MESSAGE value="Naive implementation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Naive implementation" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -867,20 +904,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ui/navbar.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="30" column="22" selection-start-line="30" selection-start-column="22" selection-end-line="30" selection-end-column="22" />
-          <folding>
-            <element signature="e#41#58#0" expanded="true" />
-            <element signature="e#303#320#0" expanded="true" />
-            <element signature="e#619#636#0" expanded="true" />
-            <element signature="e#312#1507#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItemView.h" />
     <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItemView.m" />
     <entry file="file:///Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks/AppKit.framework/Headers/NSToolbarItem.h">
       <provider selected="true" editor-type-id="text-editor">
@@ -1161,52 +1184,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/activitysession.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="648">
-          <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3288">
-          <caret line="137" column="64" selection-start-line="137" selection-start-column="64" selection-end-line="137" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/strategy.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1872">
-          <caret line="78" column="10" selection-start-line="78" selection-start-column="10" selection-end-line="78" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1560">
-          <caret line="65" selection-start-line="65" selection-end-line="65" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="82" column="45" selection-start-line="82" selection-start-column="45" selection-end-line="82" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/activitysession.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
           <caret line="34" selection-start-line="34" selection-end-line="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/activitylist.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="56" column="21" selection-start-line="56" selection-start-column="21" selection-end-line="56" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -1217,33 +1198,98 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-230">
+          <caret line="49" selection-start-line="49" selection-end-line="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ui/activitysessionwidget.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
+        <state relative-caret-position="-3723">
           <caret line="78" selection-start-line="78" selection-end-line="78" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/strategy.cpp">
+    <entry file="file://$PROJECT_DIR$/models/activitysession.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1891">
-          <caret line="185" column="75" selection-start-line="185" selection-start-column="75" selection-end-line="185" selection-end-column="75" />
+        <state relative-caret-position="224">
+          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2019">
+        <state relative-caret-position="-1923">
           <caret line="25" column="43" selection-start-line="25" selection-start-column="43" selection-end-line="25" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/activitylist.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="388">
+          <caret line="56" column="21" selection-start-line="56" selection-start-column="21" selection-end-line="56" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="93">
-          <caret line="99" column="34" selection-start-line="99" selection-start-column="34" selection-end-line="99" selection-end-column="34" />
+        <state relative-caret-position="1899">
+          <caret line="406" column="30" selection-start-line="406" selection-start-column="30" selection-end-line="406" selection-end-column="30" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="130" column="36" selection-start-line="130" selection-start-column="36" selection-end-line="130" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="210" column="38" selection-start-line="210" selection-start-column="38" selection-end-line="210" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/strategy.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="92" column="41" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
+          <folding>
+            <element signature="e#39#60#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/strategy.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="538">
+          <caret line="193" column="39" selection-start-line="193" selection-start-column="39" selection-end-line="193" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#21#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/dragoperation.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/dragoperation.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="232">
+          <caret line="49" column="8" selection-start-line="49" selection-start-column="8" selection-end-line="49" selection-end-column="8" />
+          <folding>
+            <element signature="e#118#135#0" expanded="true" />
           </folding>
         </state>
       </provider>

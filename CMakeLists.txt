@@ -34,7 +34,7 @@ set(MODELS
         models/strategyhistory.cpp
         models/strategyhistory.h
         models/currentactivitysession.cpp
-        models/currentactivitysession.h models/activitysession.cpp)
+        models/currentactivitysession.h models/activitysession.cpp models/dragoperation.cpp models/dragoperation.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp

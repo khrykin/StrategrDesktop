@@ -113,7 +113,9 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         strategy.putActivityInTimeSlotsAtIndices(2, {3, 4, 5});
 
         SECTION("up") {
+            strategy.beginDragging(2);
             strategy.dragActivitySession(2, -2);
+            strategy.endDragging();
 
             REQUIRE(strategy.activitySessions()[0].activity == Strategy::NoActivity);
             REQUIRE(strategy.activitySessions()[0].length() == 1);
@@ -126,7 +128,9 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         }
 
         SECTION("down") {
+            strategy.beginDragging(1);
             strategy.dragActivitySession(1, 2);
+            strategy.endDragging();
 
             REQUIRE(strategy.activitySessions()[0].activity == Strategy::NoActivity);
             REQUIRE(strategy.activitySessions()[0].length() == 1);

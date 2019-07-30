@@ -13,8 +13,9 @@ struct ActivitySession {
     using Length = size_t;
     using Time = TimeSlot::Time;
     using Duration = TimeSlot::Duration;
+    using TimeSlotsState  = std::vector<const TimeSlot *>;
 
-    std::vector<const TimeSlot *> timeSlots{};
+    TimeSlotsState timeSlots{};
     Activity *activity = TimeSlot::NoActivity;
 
     Length length() const;
