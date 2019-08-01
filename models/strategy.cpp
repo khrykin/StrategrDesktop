@@ -186,12 +186,12 @@ void Strategy::dragActivitySession(Strategy::ActivitySessionIndex sessionIndex,
 
 void Strategy::beginDragging(ActivitySessionIndex sessionIndex) {
     auto &session = activitySessions()[sessionIndex];
-    auto initialIndices = getGlobalSlotIndicesFromSession(session);
+    auto initialIndices = globalSlotIndicesFromSession(session);
 
     currentDragOperation = std::make_unique<DragOperation>(_timeSlots, initialIndices);
 }
 
-DragOperation::IndicesVector Strategy::getGlobalSlotIndicesFromSession(const ActivitySession &session) const {
+DragOperation::IndicesVector Strategy::globalSlotIndicesFromSession(const ActivitySession &session) const {
     DragOperation::IndicesVector initialIndices;
     std::transform(session.timeSlots.begin(),
                    session.timeSlots.end(),

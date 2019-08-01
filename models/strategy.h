@@ -90,7 +90,7 @@ private:
     void setupTimeSlotsCallback();
 
     StrategyHistory::Entry makeHistoryEntry();
-    DragOperation::IndicesVector getGlobalSlotIndicesFromSession(const ActivitySession &session) const;
+    DragOperation::IndicesVector globalSlotIndicesFromSession(const ActivitySession &session) const;
 };
 
 #endif // STRATEGY_H
