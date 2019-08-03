@@ -26,35 +26,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/resizeoperation.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/resizeoperation.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/cursorprovider.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/cursorprovider.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysession.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/dragoperation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/dragoperation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/dragoperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/dragoperation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitieslistitem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorprovider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorprovider.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/selectionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/selectionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotruler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotruler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/selectionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/selectionwidget.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotswidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.h" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/cmake-build-release/" />
@@ -87,11 +63,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="552">
-              <caret line="473" column="5" selection-start-line="473" selection-start-column="5" selection-end-line="473" selection-end-column="5" />
+            <state relative-caret-position="-1058">
+              <caret line="45" column="26" selection-start-line="45" selection-end-line="46" />
               <folding>
                 <element signature="e#51#67#0" expanded="true" />
               </folding>
@@ -100,10 +76,37 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
+        <entry file="file://$PROJECT_DIR$/ui/selectionwidget.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="191">
+              <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="138" column="54" selection-start-line="138" selection-start-column="54" selection-end-line="138" selection-end-column="54" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ui/colorprovider.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="200">
-              <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
+              <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1512">
+              <caret line="63" column="27" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="27" />
               <folding>
                 <element signature="e#126#148#0" expanded="true" />
               </folding>
@@ -145,12 +148,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>eventFilter</find>
-      <find>selectionWidget</find>
-      <find>reset</find>
-      <find>currentSessionIndex&quot;</find>
-      <find>copy</find>
-      <find>selectSessionAtSlotIndex</find>
       <find>&quot;ope</find>
       <find>DIRECTION</find>
       <find>Direction change!</find>
@@ -162,7 +159,6 @@
       <find>previousMouseTop =</find>
       <find>handle</find>
       <find>delta</find>
-      <find>handleSlotIndex</find>
       <find>previousMouseTop =</find>
       <find>previousMouseTop</find>
       <find>toolbarPages</find>
@@ -175,6 +171,13 @@
       <find>resizeBoundarySlotIndex =</find>
       <find>resizeBoundarySlotIndex =</find>
       <find>update()</find>
+      <find>handleSlotIndex</find>
+      <find>selectSlotAtIndex</find>
+      <find>determineMouseZone</find>
+      <find>currentSessionIndex =</find>
+      <find>handleDragOpe</find>
+      <find>draggedSessionIndex</find>
+      <find>mousePressHappened =</find>
     </findStrings>
     <replaceStrings>
       <replace>Index</replace>
@@ -202,7 +205,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/ui/navbar.h" />
         <option value="$PROJECT_DIR$/ui/navbar.cpp" />
         <option value="$PROJECT_DIR$/ui/activitieslistwidget.cpp" />
         <option value="$PROJECT_DIR$/third-party/TAAdaptiveSpaceItemView.h" />
@@ -245,14 +247,15 @@
         <option value="$PROJECT_DIR$/models/resizeoperation.h" />
         <option value="$PROJECT_DIR$/models/strategy.h" />
         <option value="$PROJECT_DIR$/ui/activitysessionwidget.cpp" />
-        <option value="$PROJECT_DIR$/ui/slotsmousehandler.h" />
         <option value="$PROJECT_DIR$/ui/slotboard.cpp" />
         <option value="$PROJECT_DIR$/ui/slotswidget.cpp" />
-        <option value="$PROJECT_DIR$/ui/selectionwidget.cpp" />
         <option value="$PROJECT_DIR$/utility/applicationsettings.h" />
         <option value="$PROJECT_DIR$/models/strategy.cpp" />
         <option value="$PROJECT_DIR$/ui/slotruler.cpp" />
+        <option value="$PROJECT_DIR$/ui/slotsmousehandler.h" />
+        <option value="$PROJECT_DIR$/ui/selectionwidget.h" />
         <option value="$PROJECT_DIR$/ui/slotsmousehandler.cpp" />
+        <option value="$PROJECT_DIR$/ui/selectionwidget.cpp" />
       </list>
     </option>
   </component>
@@ -413,7 +416,7 @@
       <workItem from="1564203362726" duration="1195000" />
       <workItem from="1564311400960" duration="29751000" />
       <workItem from="1564342224637" duration="50155000" />
-      <workItem from="1564649394591" duration="49153000" />
+      <workItem from="1564649394591" duration="53295000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -674,7 +677,21 @@
       <option name="project" value="LOCAL" />
       <updated>1564653252809</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="Stretch operation">
+      <created>1564845238816</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1564845238816</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Stretch operation">
+      <created>1564845426241</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1564845426241</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -710,7 +727,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="552077000" />
+    <option name="totallyTimeSpent" value="556219000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -723,21 +740,20 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="840" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" weight="0.17310444" />
       <window_info id="Structure" order="1" sideWeight="0.45575222" side_tool="true" weight="0.021459227" />
       <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.4224599" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4985694" visible="true" weight="0.16176471" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4985694" weight="0.16176471" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4197861" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32650602" />
       <window_info anchor="bottom" id="Database Changes" order="7" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.8819277" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.040106952" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.43048128" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50143063" side_tool="true" weight="0.08847185" />
       <window_info anchor="bottom" id="Messages" order="11" weight="0.38101605" />
       <window_info anchor="bottom" id="CMake" order="12" weight="0.2841823" />
@@ -825,7 +841,8 @@
     <MESSAGE value="Drag history" />
     <MESSAGE value="Refactor" />
     <MESSAGE value="Intelligent drag operation" />
-    <option name="LAST_COMMIT_MESSAGE" value="Intelligent drag operation" />
+    <MESSAGE value="Stretch operation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Stretch operation" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
@@ -877,13 +894,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/__tree">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="74" selection-start-line="74" selection-end-line="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1186">
@@ -993,13 +1003,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-16">
           <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/colorprovider.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="57" column="1" selection-start-line="57" selection-start-column="1" selection-end-line="57" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -1202,13 +1205,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="79" column="58" lean-forward="true" selection-start-line="79" selection-start-column="58" selection-end-line="79" selection-end-column="58" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/utility/applicationsettings.h">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -1246,10 +1242,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ui/selectionwidget.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="191">
+          <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="62" column="8" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
+        <state relative-caret-position="1512">
+          <caret line="63" column="27" selection-start-line="63" selection-start-column="9" selection-end-line="63" selection-end-column="27" />
           <folding>
             <element signature="e#126#148#0" expanded="true" />
           </folding>
@@ -1258,11 +1261,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="552">
-          <caret line="473" column="5" selection-start-line="473" selection-start-column="5" selection-end-line="473" selection-end-column="5" />
+        <state relative-caret-position="-1058">
+          <caret line="45" column="26" selection-start-line="45" selection-end-line="46" />
           <folding>
             <element signature="e#51#67#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/colorprovider.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="138" column="54" selection-start-line="138" selection-start-column="54" selection-end-line="138" selection-end-column="54" />
         </state>
       </provider>
     </entry>

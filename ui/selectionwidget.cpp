@@ -101,7 +101,7 @@ void SelectionWidget::resizeEvent(QResizeEvent *event) {
 
 void SelectionWidget::deselectAll() {
     rawSelectionState = {};
-
+    _isClicked = false;
     updateUI();
     emit selectionChanged();
 }
@@ -134,9 +134,29 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
     painter.setRenderHint(QPainter::Antialiasing);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(selectionColor());
+
+    auto clickedColor = selectionColor();
+    clickedColor.setAlphaF(clickedColor.alphaF() * 1.25);
+
+    painter.setBrush(_isClicked ? clickedColor : selectionColor());
 
     for (auto &selectionItem : selectionState) {
         drawSelectionForItem(selectionItem, painter);
     }
+}
+
+bool SelectionWidget::isSlotIndexSelected(Strategy::TimeSlotIndex slotIndex) {
+    return std::find(rawSelectionState.begin(),
+                     rawSelectionState.end(),
+                     slotIndex) != rawSelectionState.end();
+}
+
+bool SelectionWidget::isClicked() const {
+    return _isClicked;
+}
+
+void SelectionWidget::setIsClicked(bool isClicked) {
+    _isClicked = isClicked;
+
+    update();
 }

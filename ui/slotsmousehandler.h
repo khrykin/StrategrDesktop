@@ -23,11 +23,6 @@ public:
 
     void reset();
 private:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
-
     static const auto stretchZoneHeight = 3;
 
     struct StretchZonePosition;
@@ -36,6 +31,8 @@ private:
         Drag,
         StretchTop,
         StretchBottom,
+        DragSelect,
+        OpenActivities
     };
 
     enum class MouseZone {
@@ -57,7 +54,7 @@ private:
     std::optional<MouseZone> currentMouseZone = std::nullopt;
 
     int currentSlotIndex = -1;
-    int currentSessionIndex = -1;
+    int clickedSessionIndex = -1;
 
     int previousMouseTop = 0;
     int handleSlotIndex = -1;
@@ -105,7 +102,13 @@ private:
 
     int getMouseTopDelta(int currentMouseTop, int previousMouseTop);
 
+    bool isSlotIndexSelected(int slotIndex);
+
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 

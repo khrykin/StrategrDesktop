@@ -22,13 +22,18 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
 }
 
 void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
+    mousePressHappened = true;
+
     auto leftButtonPressed = event->buttons() == Qt::LeftButton;
     auto rightButtonPressed = event->buttons() == Qt::RightButton;
-    auto ctrlPressed = event->modifiers() == Qt::CTRL;
+    auto ctrlShiftPressed = event->modifiers() == Qt::CTRL ||
+                            event->modifiers() == (Qt::CTRL | Qt::SHIFT);
 
     currentSlotIndex = slotIndexForEvent(event);
+    clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
 
-    if (leftButtonPressed && ctrlPressed) {
+    if (leftButtonPressed && ctrlShiftPressed) {
+        operation = Operation::DragSelect;
         selectSlotAtIndex(currentSlotIndex);
     } else if (leftButtonPressed) {
         handleLeftButtonPress(event);
@@ -36,11 +41,17 @@ void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
 }
 
 void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
+    if (isSlotIndexSelected(currentSlotIndex)) {
+        operation = Operation::OpenActivities;
+        slotsWidget->selectionWidget->setIsClicked(true);
+        return;
+    }
+
     mousePressHappened = true;
 
     slotsWidget->deselectAllSlots();
 
-    currentMouseZone = determineMouseZone(event, currentSessionIndex);
+    currentMouseZone = determineMouseZone(event, clickedSessionIndex);
     operation = determineOperationForMouseZone(*currentMouseZone);
 
     previousMouseTop = event->pos().y();
@@ -65,6 +76,13 @@ void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
 
     if (!mousePressHappened) {
         handleMouseHover(event);
+        return;
+    }
+
+    if (operation == Operation::DragSelect &&
+        event->modifiers() == (Qt::CTRL | Qt::SHIFT)) {
+        if (!isSlotIndexSelected(currentSlotIndex))
+            selectSlotAtIndex(currentSlotIndex);
         return;
     }
 
@@ -214,9 +232,9 @@ void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
 }
 
 void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
-    currentSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
+    clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
 
-    auto mouseZone = determineMouseZone(event, currentSessionIndex);
+    auto mouseZone = determineMouseZone(event, clickedSessionIndex);
 
     if (mouseZone != currentMouseZone) {
         currentMouseZone = mouseZone;
@@ -227,16 +245,20 @@ void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
 void SlotsMouseHandler::handleDragOperation(QMouseEvent *event) {
     auto distance = currentSlotIndex - handleSlotIndex;
 
-    strategy()->dragActivitySession(currentSessionIndex, distance);
+    strategy()->dragActivitySession(clickedSessionIndex, distance);
 
     handleSlotIndex = currentSlotIndex;
-    currentSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
+    clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
 
     selectSessionAtSlotIndex(currentSlotIndex);
 }
 
 
 void SlotsMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
+    if (operation == Operation::OpenActivities) {
+        slotsWidget->openActivitiesWindow();
+    }
+
     if (mousePressHappened) {
         reset();
     }
@@ -291,7 +313,7 @@ SlotsMouseHandler::determineMouseZone(const QMouseEvent *event, int sessionIndex
 }
 
 void SlotsMouseHandler::updateCursor() {
-    auto currentSession = strategy()->activitySessions()[currentSessionIndex];
+    auto currentSession = strategy()->activitySessions()[clickedSessionIndex];
     if (currentSession.activity == Strategy::NoActivity) {
         unsetCursor();
         return;
@@ -321,9 +343,11 @@ void SlotsMouseHandler::contextMenuEvent(QContextMenuEvent *event) {
 
     QMenu menu(slotsWidget);
     menu.addAction(slotsWidget->setActivityAction);
+    slotsWidget->setActivityAction->setEnabled(hasSelection());
+
     menu.addSeparator();
 
-    if (currentSlot.activity) {
+    if (currentSlot.activity && hasSelection()) {
         menu.addAction(slotsWidget->deleteActivityAction);
     }
 
@@ -331,6 +355,8 @@ void SlotsMouseHandler::contextMenuEvent(QContextMenuEvent *event) {
     menu.addSeparator();
 
     menu.addAction(slotsWidget->clearSelectionAction);
+    slotsWidget->clearSelectionAction->setEnabled(hasSelection());
+
 
     menu.exec(event->globalPos());
 }
@@ -423,7 +449,7 @@ void SlotsMouseHandler::reset() {
     resizeBoundarySlotIndex = std::nullopt;
 
     currentSlotIndex = -1;
-    currentSessionIndex = -1;
+    clickedSessionIndex = -1;
     handleSlotIndex = -1;
 
     previousMouseTop = 0;
@@ -470,5 +496,9 @@ void SlotsMouseHandler::paintEvent(QPaintEvent *event) {
         painter.drawEllipse(circleLeftRect);
         painter.drawEllipse(circleRightRect);
     }
+}
+
+bool SlotsMouseHandler::isSlotIndexSelected(int slotIndex) {
+    return slotsWidget->selectionWidget->isSlotIndexSelected(slotIndex);
 }
 

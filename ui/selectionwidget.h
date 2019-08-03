@@ -29,22 +29,24 @@ public:
     const RawSelectionState &selection() const;
 
     bool selectionIsContinuous() const;
+    bool isSlotIndexSelected(Strategy::TimeSlotIndex slotIndex);
+
     void setStrategy(Strategy *strategy);
 
-
+    bool isClicked() const;
+    void setIsClicked(bool isClicked);
 signals:
     void selectionChanged();
 private:
     using SelectionState = std::vector<RawSelectionState>;
     Strategy *strategy;
-
-    int slotHeight = ApplicationSettings::defaultSlotHeight;
-
-    void updateUI();
-
     RawSelectionState rawSelectionState;
     SelectionState selectionState;
 
+    int slotHeight = ApplicationSettings::defaultSlotHeight;
+    bool _isClicked = false;
+
+    void updateUI();
     static SelectionState makeSelectionState(RawSelectionState rawState);
     void drawSelectionForItem(SelectionWidget::RawSelectionState &selectionItem, QPainter &painter);
 
