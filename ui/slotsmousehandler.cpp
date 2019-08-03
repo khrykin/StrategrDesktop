@@ -214,6 +214,17 @@ void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
         secondSelectionIndex = firstSelectionIndex - 1;
     }
 
+    if (firstSelectionIndex < 0 ||
+        firstSelectionIndex >= strategy()->activitySessions().size() ||
+        secondSelectionIndex < 0 ||
+        secondSelectionIndex >= strategy()->activitySessions().size()) {
+        deselectAllSessions();
+        resizeBoundarySlotIndex = std::nullopt;
+        update();
+        reset();
+        return;
+    }
+
     if (strategy()->activitySessions()[firstSelectionIndex].activity != Strategy::NoActivity ||
         strategy()->activitySessions()[secondSelectionIndex].activity != Strategy::NoActivity) {
         auto selectBorderIndex = std::min(firstSelectionIndex, secondSelectionIndex);
