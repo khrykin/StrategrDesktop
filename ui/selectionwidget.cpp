@@ -84,7 +84,7 @@ void SelectionWidget::drawSelectionForItem(RawSelectionState &selectionItem,
 
     auto rect = QRect(contentsMargins().left(),
                       contentsMargins().top() + topPosition + 2,
-                      width() - contentsMargins().right(),
+                      width() - contentsMargins().right() - contentsMargins().left(),
                       widgetHeight - 5 - bottomMargin);
 
     painter.drawRoundedRect(rect, 4, 4);

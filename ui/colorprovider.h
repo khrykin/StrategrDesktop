@@ -21,6 +21,7 @@ public:
     static QColor borderColor();
     static QColor hardBorderColor();
     static QColor highlightColor();
+    static QColor highlightedTextColor();
     static QColor selectionColor();
     static QColor textColor();
 };

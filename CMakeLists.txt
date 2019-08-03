@@ -34,7 +34,7 @@ set(MODELS
         models/strategyhistory.cpp
         models/strategyhistory.h
         models/currentactivitysession.cpp
-        models/currentactivitysession.h models/activitysession.cpp models/dragoperation.cpp models/dragoperation.h)
+        models/currentactivitysession.h models/activitysession.cpp models/dragoperation.cpp models/dragoperation.h models/resizeoperation.cpp models/resizeoperation.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -110,7 +110,7 @@ set(UI
         ui/coloredlabel.h
         ui/colorprovider.cpp
         ui/colorprovider.h
-        ui/macoswindow.h)
+        ui/macoswindow.h ui/cursorprovider.cpp ui/cursorprovider.h)
 
 set(UTILITY
         utility/jsonserializer.cpp

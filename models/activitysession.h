@@ -10,7 +10,7 @@
 #include "timeslot.h"
 
 struct ActivitySession {
-    using Length = size_t;
+    using Length = unsigned int;
     using Time = TimeSlot::Time;
     using Duration = TimeSlot::Duration;
     using TimeSlotsState  = std::vector<const TimeSlot *>;

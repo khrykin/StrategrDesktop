@@ -81,7 +81,7 @@ void ActivitySessionWidget::drawSelection(QPainter &painter) const {
     painter.setBrush(selectedBackgroundColor());
 
     auto lastTimeSlot = activitySession.timeSlots.back();
-    auto bottomMargin = lastTimeSlot->endTime() % 60 == 0 ? 1 : 0;
+    auto bottomMargin = lastTimeSlot->endTime() % 60 == 0 || isBorderSelected ? 1 : 0;
     auto selectionRect = QRect(1,
                                2,
                                width() - 2,
@@ -116,7 +116,9 @@ QColor ActivitySessionWidget::sessionColor() const {
 
 
 void ActivitySessionWidget::drawBorder(QPainter &painter) {
-    auto thickBorder = activitySession.timeSlots.back()->endTime() % 60 == 0;
+    auto thickBorder = activitySession.timeSlots.back()->endTime() % 60 == 0 ||
+                       isBorderSelected;
+
     auto borderThickness = thickBorder ? 2 : 1;
 
     auto borderRect = QRect(0,
@@ -124,7 +126,7 @@ void ActivitySessionWidget::drawBorder(QPainter &painter) {
                             width(),
                             borderThickness);
 
-    painter.setBrush(borderColor());
+    painter.setBrush(isBorderSelected ? highlightColor() : borderColor());
     painter.drawRect(borderRect);
 }
 
@@ -141,6 +143,10 @@ bool ActivitySessionWidget::isSelected() const {
 
 void ActivitySessionWidget::setIsSelected(bool isSelected, bool doUpdate) {
     _isSelected = isSelected;
+
+    if (!isSelected) {
+        isBorderSelected = false;
+    }
 
     if (doUpdate) {
         update();
@@ -217,15 +223,6 @@ int ActivitySessionWidget::expectedHeight() {
     return activitySession.length() * slotHeight;
 }
 
-void ActivitySessionWidget::setLabelText(const QString &newLabelText) {
-    if (newLabelText == lableText) {
-        return;
-    }
-
-    lableText = newLabelText;
-    update();
-}
-
 void ActivitySessionWidget::drawLabel(QPainter &painter) const {
     using namespace ColorUtils;
 
@@ -252,4 +249,10 @@ void ActivitySessionWidget::drawLabel(QPainter &painter) const {
                                                 color);
 
     painter.setPen(Qt::NoPen);
+}
+
+void ActivitySessionWidget::setSelectBorder(bool newIsBorderSelected) {
+    isBorderSelected = newIsBorderSelected;
+
+    update();
 }

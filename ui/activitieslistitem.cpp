@@ -87,15 +87,15 @@ void ActivitiesListItemWidget::paintEvent(QPaintEvent *) {
     painter.drawRect(QRect(0, 0, width(), height()));
 
     painter.setBrush(borderColor());
-    auto borderRect = QRect(16, height() - 1, width() - 2 * 16, 1);
+    auto borderRect = QRect(8, height() - 1, width() - 2 * 8, 1);
     painter.drawRect(borderRect);
 
     if (isHovered || isClicked) {
         auto color = isClicked ? highlightColor() : selectionColor();
         painter.setBrush(color);
-        auto selectionRect = QRect(16 + 1,
+        auto selectionRect = QRect(8 + 1,
                                    2,
-                                   width() - 2 * 16 - 2,
+                                   width() - 2 * 8 - 2,
                                    height() - 5);
 
         painter.drawRoundedRect(selectionRect, 4, 4);

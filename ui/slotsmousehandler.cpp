@@ -3,6 +3,7 @@
 //
 
 #include <cmath>
+#include <algorithm>
 
 #include <QMenu>
 #include <QScreen>
@@ -25,49 +26,37 @@ void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
     auto rightButtonPressed = event->buttons() == Qt::RightButton;
     auto ctrlPressed = event->modifiers() == Qt::CTRL;
 
-    if (leftButtonPressed) {
+    currentSlotIndex = slotIndexForEvent(event);
+
+    if (leftButtonPressed && ctrlPressed) {
+        selectSlotAtIndex(currentSlotIndex);
+    } else if (leftButtonPressed) {
         handleLeftButtonPress(event);
     }
-
-
-//
-//    if ((leftButtonPressed && ctrlPressed)
-//        || (rightButtonPressed && !hasSelection())) {
-//        // Slot selection event
-//        selectSlotAtIndex(pulledFrom);
-//    } else if (leftButtonPressed) {
-//        // Slot pulling event
-//        isPulling = true;
-//        selectSessionAtSlotIndex(pulledFrom);
-//        slotsWidget->deselectAllSlots();
-//    }
 }
 
 void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
-    currentSlotIndex = slotIndexForEvent(event);
-
     mousePressHappened = true;
 
-    updateDraggedSession(currentSlotIndex);
+    slotsWidget->deselectAllSlots();
 
     currentMouseZone = determineMouseZone(event, currentSessionIndex);
+    operation = determineOperationForMouseZone(*currentMouseZone);
 
     previousMouseTop = event->pos().y();
 
-    operation = determineOperationForMouseZone(*currentMouseZone);
+    handleSlotIndex = currentSlotIndex;
 
     if (operation == Operation::Drag) {
-        dragHandleSlotIndex = currentSlotIndex;
         selectSessionAtSlotIndex(currentSlotIndex);
         strategy()->beginDragging(sessionIndexForSlotIndex(currentSlotIndex));
+    } else if (operation == Operation::StretchTop ||
+               operation == Operation::StretchBottom) {
+        selectStetchingSessions(handleSlotIndex);
+        strategy()->beginResizing();
     }
 
     updateCursor();
-}
-
-void SlotsMouseHandler::updateDraggedSession(int slotIndex) {
-    currentSessionIndex = sessionIndexForSlotIndex(slotIndex);
-    draggedSession = strategy()->activitySessions()[currentSessionIndex];
 }
 
 
@@ -79,43 +68,16 @@ void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
         return;
     }
 
-    auto previousDirection = direction;
+    checkForDirectionChange(event);
 
     auto currentMouseTop = event->pos().y();
+    auto delta = getMouseTopDelta(currentMouseTop, previousMouseTop);
 
-    if (std::abs(currentMouseTop - previousMouseTop) < slotHeight() / 2 &&
-        operation != Operation::Drag) {
+    if (delta < slotHeight() / 2 && operation != Operation::Drag) {
         return;
     }
-
-    auto newDirection = determineDirection(event);
 
     previousMouseTop = currentMouseTop;
-
-    if (!newDirection) {
-        return;
-    }
-
-    direction = newDirection;
-
-    if (previousDirection.has_value() &&
-        direction != previousDirection &&
-        operation != Operation::Drag) {
-        // TODO: Direction change!
-        qDebug() << "\nDirection change!";
-        qDebug() << "------------------------------------\n";
-
-        qDebug() << "previousDirection" << static_cast<int>(*previousDirection);
-        qDebug() << "direction" << static_cast<int>(*direction);
-
-//        if (operation == Operation::StretchTop) {
-//            operation = Operation::StretchBottom;
-//        } else if (operation == Operation::StretchBottom) {
-//            operation = Operation::StretchTop;
-//        }
-    }
-
-    previousDirection = direction;
 
     if (operation == Operation::Drag) {
         handleDragOperation(event);
@@ -123,21 +85,32 @@ void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
 
     if (operation == Operation::StretchTop ||
         operation == Operation::StretchBottom) {
-        handleResizeOperation();
+        handleStretchOperation(event);
+    }
+}
+
+void SlotsMouseHandler::checkForDirectionChange(const QMouseEvent *event) {
+    auto previousDirection = direction;
+    auto newDirection = determineDirection(event);
+
+    if (newDirection.has_value()) {
+        direction = newDirection;
     }
 
-
-
-
-//    if (isPulling) {
-//        auto slotIndex = slotIndexForEvent(event);
-//        if (pulledTo != slotIndex) {
-//            pulledTo = slotIndex;
-//            fillSlots(pulledFrom, pulledTo);
-//            selectSessionAtSlotIndex(pulledTo);
-//        }
-//    }
+    if (previousDirection.has_value() &&
+        direction != previousDirection &&
+        operation != Operation::Drag) {
+        handleDirectionChange(previousDirection);
+    }
 }
+
+int SlotsMouseHandler::getMouseTopDelta(int currentMouseTop, int previousMouseTop) {
+    auto totalHeight = static_cast<double>(previousMouseTop - firstSlotTopOffset());
+    auto closestSlotBoundary = round(totalHeight / slotHeight()) * slotHeight();
+
+    return abs(static_cast<int>(currentMouseTop - closestSlotBoundary));;
+}
+
 
 std::optional<SlotsMouseHandler::Direction>
 SlotsMouseHandler::determineDirection(const QMouseEvent *event) {
@@ -156,40 +129,88 @@ SlotsMouseHandler::determineDirection(const QMouseEvent *event) {
     return direction;
 }
 
-void SlotsMouseHandler::handleResizeOperation() {
-    int sourceIndex;
 
-//    qDebug() << "\n------------------------------------\n";
-//    qDebug() << "operation" << static_cast<int>(*operation);
-//    qDebug() << "direction" << (static_cast<int>(*direction) ? "↓" : "↑");
-
-    if (operation == Operation::StretchTop) {
-        auto firstSlotIndex = strategy()->timeSlots().indexOf(draggedSession.value().timeSlots.front());
-        switch (*direction) {
-            case Direction::Up:
-                sourceIndex = firstSlotIndex;
-                break;
-            case Direction::Down:
-                sourceIndex = firstSlotIndex - 1;
-                break;
-        }
-    } else {
-        auto lastSlotIndex = strategy()->timeSlots().indexOf(draggedSession.value().timeSlots.back());
-        switch (*direction) {
-            case Direction::Up:
-                sourceIndex = lastSlotIndex + 1;
-                break;
-            case Direction::Down:
-                sourceIndex = lastSlotIndex;
-                break;
-        }
+void SlotsMouseHandler::handleDirectionChange(const std::optional<Direction> &previousDirection) {
+    if (!resizeBoundarySlotIndex.has_value()) {
+        return;
     }
 
-//    qDebug() << "sourceIndex" << sourceIndex;
-//    qDebug() << "currentSlotIndex" << currentSlotIndex;
+    if (operation == Operation::StretchTop &&
+        previousDirection == Direction::Down) {
+        if (handleSlotIndex != *resizeBoundarySlotIndex + 1)
+            handleSlotIndex = *resizeBoundarySlotIndex + 1;
+    }
 
-    strategy()->fillTimeSlots(sourceIndex, currentSlotIndex);
-//    selectSessionAtSlotIndex(currentSlotIndex);
+    if (operation == Operation::StretchBottom &&
+        previousDirection == Direction::Up) {
+        if (handleSlotIndex != *resizeBoundarySlotIndex)
+            handleSlotIndex = *resizeBoundarySlotIndex;
+    }
+}
+
+
+void SlotsMouseHandler::handleStretchOperation(QMouseEvent *event) {
+    if (!resizeBoundarySlotIndex.has_value()) {
+        return;
+    }
+
+    if (operation == Operation::StretchTop &&
+        direction == Direction::Down) {
+        if (handleSlotIndex != *resizeBoundarySlotIndex)
+            handleSlotIndex = *resizeBoundarySlotIndex;
+    }
+
+    if (operation == Operation::StretchBottom &&
+        direction == Direction::Up) {
+        if (handleSlotIndex != *resizeBoundarySlotIndex + 1)
+            handleSlotIndex = *resizeBoundarySlotIndex + 1;
+    }
+
+    strategy()->fillTimeSlots(handleSlotIndex, currentSlotIndex);
+
+    handleSlotIndex = currentSlotIndex;
+
+    selectStetchingSessions(handleSlotIndex);
+}
+
+
+void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
+    auto firstSelectionIndex = static_cast<int>(strategy()
+            ->activitySessions()
+            .sessionIndexForTimeSlotIndex(sourceIndex)
+            .value());
+
+    if (operation == Operation::StretchTop &&
+        direction == Direction::Down) {
+        firstSelectionIndex++;
+    }
+
+    if (operation == Operation::StretchBottom &&
+        direction == Direction::Up) {
+        firstSelectionIndex--;
+    }
+
+    int secondSelectionIndex = firstSelectionIndex + 1;
+
+    if (operation == Operation::StretchTop) {
+        secondSelectionIndex = firstSelectionIndex - 1;
+    }
+
+    if (strategy()->activitySessions()[firstSelectionIndex].activity != Strategy::NoActivity ||
+        strategy()->activitySessions()[secondSelectionIndex].activity != Strategy::NoActivity) {
+        auto selectBorderIndex = std::min(firstSelectionIndex, secondSelectionIndex);
+
+        for (int i = 0; i < strategy()->activitySessions().size(); i++) {
+            sessionWidgetAtIndex(i)->setSelectBorder(i == selectBorderIndex);
+        }
+
+        selectSessionsAtIndices({firstSelectionIndex, secondSelectionIndex});
+
+        auto borderSlot = strategy()->activitySessions()[selectBorderIndex].timeSlots.back();
+        resizeBoundarySlotIndex = strategy()->timeSlots().indexOf(borderSlot);
+
+        update();
+    }
 }
 
 void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
@@ -204,12 +225,11 @@ void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
 }
 
 void SlotsMouseHandler::handleDragOperation(QMouseEvent *event) {
-    auto distance = currentSlotIndex - dragHandleSlotIndex;
-    auto positionInSlot = relativeTopPositionInSlotForEvent(event);
+    auto distance = currentSlotIndex - handleSlotIndex;
 
     strategy()->dragActivitySession(currentSessionIndex, distance);
 
-    dragHandleSlotIndex = currentSlotIndex;
+    handleSlotIndex = currentSlotIndex;
     currentSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
 
     selectSessionAtSlotIndex(currentSlotIndex);
@@ -219,7 +239,6 @@ void SlotsMouseHandler::handleDragOperation(QMouseEvent *event) {
 void SlotsMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
     if (mousePressHappened) {
         reset();
-        strategy()->commitToHistory();
     }
 }
 
@@ -231,7 +250,7 @@ int SlotsMouseHandler::sessionIndexForSlotIndex(int slotIndex) {
 
 std::optional<SlotsMouseHandler::Operation>
 SlotsMouseHandler::determineOperationForMouseZone(MouseZone mouseZone) {
-    bool currentSlotIsEmpty = strategy()->timeSlots()[currentSlotIndex].activity
+    auto currentSlotIsEmpty = strategy()->timeSlots()[currentSlotIndex].activity
                               == Strategy::NoActivity;
 
     switch (mouseZone) {
@@ -250,21 +269,15 @@ SlotsMouseHandler::determineOperationForMouseZone(MouseZone mouseZone) {
     }
 }
 
-const ActivitySession &
-SlotsMouseHandler::currentSession() {
-    return strategy()->activitySessions()[currentSessionIndex];
-}
-
 
 SlotsMouseHandler::MouseZone
 SlotsMouseHandler::determineMouseZone(const QMouseEvent *event, int sessionIndex) {
     auto *currentSessionWidget = sessionWidgetAtIndex(sessionIndex);
 
-    auto topStretchZone = ZoneSize{currentSessionWidget->geometry().top()};
-
-    auto bottomStretchZone = ZoneSize{currentSessionWidget->geometry().top()
-                                      + currentSessionWidget->height()
-                                      - stretchZoneHeight};
+    auto topStretchZone = StretchZonePosition{currentSessionWidget->geometry().top()};
+    auto bottomStretchZone = StretchZonePosition{currentSessionWidget->geometry().top()
+                                                 + currentSessionWidget->height()
+                                                 - stretchZoneHeight};
 
     if (event->pos().y() >= topStretchZone.top() &&
         event->pos().y() <= topStretchZone.bottom()) {
@@ -286,7 +299,7 @@ void SlotsMouseHandler::updateCursor() {
 
     if (currentMouseZone == MouseZone::DragZone) {
         if (operation == Operation::Drag) {
-            setCursor(QCursor(Qt::ClosedHandCursor));
+            setCursor(closedHandCursor());
         } else {
             unsetCursor();
         }
@@ -297,18 +310,8 @@ void SlotsMouseHandler::updateCursor() {
                currentMouseZone == MouseZone::BottomStretchZone) {
         unsetCursor();
     } else {
-        setCursor(QCursor(Qt::SizeVerCursor));
+        setCursor(resizeVerticalCursor());
     }
-
-#ifdef Q_OS_MAC
-//    auto pixmap = MacOSWindow::resizeCursor();
-//    auto screenNumber = QApplication::desktop()->screenNumber();
-//    auto devicePixelRatio = QGuiApplication::screens()[screenNumber]->devicePixelRatio();
-//    pixmap.setDevicePixelRatio(devicePixelRatio);
-//    slotsWidget->setCursor(QCursor(pixmap));
-#else
-    slotsWidgete->setCursor(QCursor(Qt::SizeVerCursor));
-#endif
 }
 
 
@@ -346,10 +349,20 @@ void SlotsMouseHandler::selectSessionAtSlotIndex(int slotIndex) {
             ->activitySessions()
             .sessionIndexForTimeSlotIndex(slotIndex);
 
-    for (int i = 0; i < slotsWidget->slotsLayout->count(); i++) {
-        setSelectedForSessionIndex(i, i == sessionIndex);
+    if (sessionIndex) {
+        selectSessionsAtIndices({static_cast<int>(*sessionIndex)});
     }
 }
+
+void SlotsMouseHandler::selectSessionsAtIndices(const std::vector<int> &sessionIndices) {
+    for (int i = 0; i < slotsWidget->slotsLayout->layout()->count(); i++) {
+        auto isSelected = std::find(sessionIndices.begin(),
+                                    sessionIndices.end(),
+                                    i) != sessionIndices.end();
+        setSelectedForSessionIndex(i, isSelected);
+    }
+}
+
 
 void SlotsMouseHandler::deselectAllSessions() {
     for (int i = 0; i < slotsWidget->slotsLayout->count(); i++) {
@@ -389,39 +402,36 @@ int SlotsMouseHandler::firstSlotTopOffset() {
     return firstItem->geometry().top();
 }
 
-void SlotsMouseHandler::fillSlots(int fromIndex, int toIndex) {
-    strategy()->fillTimeSlots(fromIndex, toIndex);
-}
-
 Strategy *SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
 }
 
 void SlotsMouseHandler::reset() {
+    if (operation == Operation::Drag) {
+        strategy()->endDragging();
+    }
+
+    if (operation == Operation::StretchBottom ||
+        operation == Operation::StretchTop) {
+        strategy()->endResizing();
+    }
+
     mousePressHappened = false;
     currentMouseZone = std::nullopt;
     operation = std::nullopt;
     direction = std::nullopt;
-    draggedSession = std::nullopt;
-
-    strategy()->endDragging();
-
-    unsetCursor();
+    resizeBoundarySlotIndex = std::nullopt;
 
     currentSlotIndex = -1;
-
     currentSessionIndex = -1;
-    dragHandleSlotIndex = -1;
+    handleSlotIndex = -1;
 
     previousMouseTop = 0;
 
-//    isPulling = false;
-//    pulledFrom = -1;
-//    pulledTo = -1;
-//    _selectedGroupIndex = std::nullopt;
-//    slotsWidget->selectionWidget->deselectAll();
-//
+    unsetCursor();
     deselectAllSessions();
+
+    update();
 }
 
 ActivitySessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
@@ -437,10 +447,28 @@ ActivitySessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex
     return sessionWidgetAtIndex(*sessionIndex);
 }
 
-double SlotsMouseHandler::relativeTopPositionInSlotForEvent(QMouseEvent *event) {
-    auto relativeY = static_cast<double>(event->pos().y() - firstSlotTopOffset()) / slotHeight();
-    float _ = 0;
+void SlotsMouseHandler::paintEvent(QPaintEvent *event) {
+    using namespace ApplicationSettings;
+    auto painter = QPainter(this);
 
-    return std::modf(relativeY, &_);
+    if (resizeBoundarySlotIndex.has_value()) {
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        painter.setPen(QPen(highlightColor(), 2));
+        painter.setBrush(baseColor());
+
+        auto radius = 6;
+        auto topOffset = firstSlotTopOffset()
+                         + (*resizeBoundarySlotIndex + 1) * slotHeight()
+                         - 1 - radius / 2;
+        auto circleLeftRect = QRect(defaultPadding / 2, topOffset, radius, radius);
+        auto circleRightRect = QRect(width() - radius - defaultPadding + defaultPadding / 2,
+                                     topOffset,
+                                     radius,
+                                     radius);
+
+        painter.drawEllipse(circleLeftRect);
+        painter.drawEllipse(circleRightRect);
+    }
 }
 

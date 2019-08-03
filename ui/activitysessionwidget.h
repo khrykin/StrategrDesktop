@@ -13,8 +13,6 @@ class ActivitySessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 
 public:
-    static QColor borderColor();
-
     explicit ActivitySessionWidget(const ActivitySession &activitySession,
                                    QWidget *parent = nullptr);
 
@@ -24,11 +22,14 @@ public:
 
     void setActivitySession(const ActivitySession &newActivitySession);
     void setSlotHeight(int slotHeight);
-    void setLabelText(const QString &labelText);
 
+    void setSelectBorder(bool isBorderSelected);
+
+    static QColor borderColor();
 private:
     int slotHeight = ApplicationSettings::defaultSlotHeight;
     bool _isSelected = false;
+    bool isBorderSelected = false;
 
     ActivitySession activitySession;
     ActivitySession previousActivitySession = ActivitySession();
@@ -50,7 +51,6 @@ private:
 
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;
-
 
     void paintEvent(QPaintEvent *event) override;
 

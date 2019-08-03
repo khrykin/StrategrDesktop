@@ -8,11 +8,16 @@
 #include <QMouseEvent>
 #include <QFrame>
 #include "strategy.h"
+#include "cursorprovider.h"
+#include "colorprovider.h"
 
 class SlotsWidget;
 class ActivitySessionWidget;
 
-class SlotsMouseHandler : public QFrame {
+class SlotsMouseHandler :
+        public QFrame,
+        public CursorProvider,
+        public ColorProvider {
 public:
     explicit SlotsMouseHandler(SlotsWidget *slotsWidget);
 
@@ -25,7 +30,7 @@ private:
 
     static const auto stretchZoneHeight = 3;
 
-    struct ZoneSize;
+    struct StretchZonePosition;
 
     enum class Operation {
         Drag,
@@ -46,8 +51,8 @@ private:
 
     SlotsWidget *slotsWidget;
 
-    std::optional<Operation> operation;
-    std::optional<Direction> direction;
+    std::optional<Operation> operation = std::nullopt;
+    std::optional<Direction> direction = std::nullopt;
 
     std::optional<MouseZone> currentMouseZone = std::nullopt;
 
@@ -55,12 +60,11 @@ private:
     int currentSessionIndex = -1;
 
     int previousMouseTop = 0;
-    int mousePressTop = 0;
-    int dragHandleSlotIndex = -1;
+    int handleSlotIndex = -1;
+
+    std::optional<int> resizeBoundarySlotIndex = std::nullopt;
 
     bool mousePressHappened = false;
-    std::optional<ActivitySession> draggedSession;
-
 
     ActivitySessionWidget *sessionWidgetAtIndex(int sessionIndex);
     ActivitySessionWidget *sessionWidgetAtSlotIndex(int timeSlotIndex);
@@ -75,32 +79,38 @@ private:
         return (event->pos().y() - firstSlotTopOffset()) / slotHeight();
     }
 
-    double relativeTopPositionInSlotForEvent(QMouseEvent *event);
-
     bool hasSelection();
     void selectSlotAtIndex(int slotIndex);
     void selectSessionAtSlotIndex(int slotIndex);
-    void deselectAllSessions();
+    void selectSessionsAtIndices(const std::vector<int> &sessionIndices);
+    void selectStetchingSessions(int sourceIndex);
     void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
+    void deselectAllSessions();
 
-    void fillSlots(int fromIndex, int toIndex);
     void updateCursor();
     SlotsMouseHandler::MouseZone determineMouseZone(const QMouseEvent *event, int slotIndex);
 
     std::optional<Operation> determineOperationForMouseZone(MouseZone mouseZone);
+    std::optional<Direction> determineDirection(const QMouseEvent *event);
+
     int sessionIndexForSlotIndex(int slotIndex);
-    const ActivitySession &currentSession();
+
     void handleDragOperation(QMouseEvent *event);
     void handleMouseHover(const QMouseEvent *event);
-    void handleResizeOperation();
-    std::optional<Direction> determineDirection(const QMouseEvent *event);
+    void handleStretchOperation(QMouseEvent *event);
     void handleLeftButtonPress(const QMouseEvent *event);
-    void updateDraggedSession(int slotIndex);
+    void handleDirectionChange(const std::optional<Direction> &previousDirection);
+
+    void checkForDirectionChange(const QMouseEvent *event);
+
+    int getMouseTopDelta(int currentMouseTop, int previousMouseTop);
+
+    void paintEvent(QPaintEvent *event) override;
 };
 
 
-struct SlotsMouseHandler::ZoneSize {
-    explicit ZoneSize(int top = 0) : _top(top) {}
+struct SlotsMouseHandler::StretchZonePosition {
+    explicit StretchZonePosition(int top = 0) : _top(top) {}
 
     int top() {
         return _top;

@@ -33,7 +33,6 @@ void MainWindow::setup() {
 #ifdef Q_OS_MAC
     MacOSWindow::setup(this);
 #endif
-
     strategy->setOnChangeCallback(this, &MainWindow::strategyStateChanged);
 
     _scene = new MainScene(strategy.get(), this);
@@ -44,7 +43,6 @@ void MainWindow::setup() {
     updateWindowTitle();
 
     fsIOManager.setIsSaved(true);
-
 }
 
 MainWindow::~MainWindow() {

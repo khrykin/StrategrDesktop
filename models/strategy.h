@@ -14,6 +14,7 @@
 #include "strategyhistory.h"
 #include "notifiableonchange.h"
 #include "dragoperation.h"
+#include "resizeoperation.h"
 
 class Strategy : public NotifiableOnChange {
 public:
@@ -66,7 +67,9 @@ public:
 
     void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);
 
+    void beginResizing();
     void fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex);
+    void endResizing();
 
     void beginDragging(ActivitySessionIndex sessionIndex);
     void dragActivitySession(ActivitySessionIndex sessionIndex, int distance);
@@ -85,6 +88,7 @@ private:
     StrategyHistory history;
 
     std::unique_ptr<DragOperation> currentDragOperation = nullptr;
+    std::unique_ptr<ResizeOperation> currentResizeOperation = nullptr;
 
     void timeSlotsChanged();
     void setupTimeSlotsCallback();

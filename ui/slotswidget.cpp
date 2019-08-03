@@ -207,15 +207,15 @@ void SlotsWidget::paintEvent(QPaintEvent *event) {
     painter.setBrush(ActivitySessionWidget::borderColor());
 
     auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
-    auto borderRect = QRect(0, 0, width() - 8, thickness);
+    auto borderRect = QRect(8, 0, width() - 8 * 2, thickness);
 
     painter.drawRect(borderRect);
 }
 
 void SlotsWidget::updateContentsMargins() {
     auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
-    slotsLayout->setContentsMargins(0, thickness, 8, 0);
-    selectionWidget->setContentsMargins(0, thickness, 8, 0);
+    slotsLayout->setContentsMargins(8, thickness, 8, 0);
+    selectionWidget->setContentsMargins(8, thickness, 8, 0);
 }
 
 

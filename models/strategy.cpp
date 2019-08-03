@@ -93,12 +93,12 @@ void Strategy::dragActivity(ActivityIndex fromIndex, ActivityIndex toIndex) {
     _activities.drag(fromIndex, toIndex);
 }
 
-void Strategy::fillTimeSlots(TimeSlotIndex fromIndex,
-                             TimeSlotIndex tillIndex) {
-    _timeSlots.fillSlots(fromIndex, tillIndex);
-    // NB! We don't want to commit to history here,
-    // because user may continue to drag session to next slot index!
-    // So we'll commit from UI side.
+void Strategy::fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex) {
+    if (!currentResizeOperation) {
+        return;
+    }
+
+    currentResizeOperation->fillSlots(fromIndex, tillIndex);
 }
 
 Strategy::StateSize Strategy::numberOfTimeSlots() const {
@@ -204,5 +204,29 @@ DragOperation::IndicesVector Strategy::globalSlotIndicesFromSession(const Activi
 }
 
 void Strategy::endDragging() {
+    if (!currentDragOperation) {
+        return;
+    }
+
+    if (currentDragOperation->stateChanged()) {
+        commitToHistory();
+    }
+
     currentDragOperation.reset();
+}
+
+void Strategy::beginResizing() {
+    currentResizeOperation = std::make_unique<ResizeOperation>(_timeSlots);
+}
+
+void Strategy::endResizing() {
+    if (!currentResizeOperation) {
+        return;
+    }
+
+    if (currentResizeOperation->stateChanged()) {
+        commitToHistory();
+    }
+
+    currentResizeOperation.reset();
 }

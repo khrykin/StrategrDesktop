@@ -53,4 +53,8 @@ QColor ColorProvider::darkPanelColor() {
             0.95 * ColorUtils::shadesAlphaFactor());
 }
 
+QColor ColorProvider::highlightedTextColor() {
+    return QApplication::palette().color(QPalette::HighlightedText);
+}
+
 

@@ -5,6 +5,10 @@
 #include <QTime>
 #include <QWidget>
 #include <QLocale>
+#include <QGuiApplication>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QScreen>
 
 QString humanTimeForMinutes(int mins);
 
@@ -31,5 +35,7 @@ T *findParentWidget(QWidget *childWidget) {
 
     return nullptr;
 }
+
+int devicePixelRatio();
 
 #endif // UTILS_H

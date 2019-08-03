@@ -63,9 +63,7 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
 }
 
 void SlotBoard::updateSlotsLayout() const {
-    slotsLayout->setContentsMargins(0,
-                                    slotsWidget->slotHeight() /
-                                    2, 0, 0);
+    slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
 }
 
 void SlotBoard::setStrategy(Strategy *newStrategy) {

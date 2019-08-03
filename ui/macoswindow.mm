@@ -163,10 +163,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 
 NSWindow *nsWindowFromQWindow(const MainWindow *window) {
     auto *nsView = reinterpret_cast<NSView *>(window->winId());
-    NSWindow *nsWindow = nsView.window;
-    return nsWindow;
-
-
+    return nsView.window;
 }
 
 void MacOSWindow::setup(MainWindow *window) {
@@ -193,7 +190,6 @@ void MacOSWindow::setup(MainWindow *window) {
 
         toolbar.delegate = toolbarDelegate;
         nsWindow.toolbar = toolbar;
-
         [toolbarDelegate setPage:0];
 
         auto path = window->fsIOManager.fileInfo().filePath();

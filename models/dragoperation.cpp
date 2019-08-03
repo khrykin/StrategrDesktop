@@ -8,7 +8,6 @@
 DragOperation::DragOperation(TimeSlotsState &timeSlots, IndicesVector initialIndices)
         : timeSlots(timeSlots),
           initialDraggedIndices(std::move(initialIndices)) {
-    printIndices("initialDraggedIndices", initialDraggedIndices);
 }
 
 void DragOperation::recordDrag(const ActivitySession::TimeSlotsState &timeSlotsToDrag, int distance) {
@@ -142,7 +141,7 @@ void DragOperation::invalidateDrag(const IndicesVector &newDraggedIndices) {
     auto nobodyCanMove = false;
 
     while (!nobodyCanMove) {
-        auto canMoveCount = 0;
+        auto cantMoveCount = 0;
 
         for (auto const&[currentIndex, pastIndices] : history) {
             auto slotIsDragged = std::find(draggedIndices.begin(),
@@ -151,7 +150,7 @@ void DragOperation::invalidateDrag(const IndicesVector &newDraggedIndices) {
             auto slotIsEmpty = timeSlots[currentIndex].activity == Strategy::NoActivity;
 
             if (slotIsDragged || slotIsEmpty) {
-                canMoveCount++;
+                cantMoveCount++;
                 continue;
             }
 
@@ -169,10 +168,10 @@ void DragOperation::invalidateDrag(const IndicesVector &newDraggedIndices) {
                 }
             }
 
-            canMoveCount++;
+            cantMoveCount++;
         }
 
-        if (canMoveCount == history.size()) {
+        if (cantMoveCount == history.size()) {
             nobodyCanMove = true;
         }
     }
@@ -240,7 +239,8 @@ void DragOperation::applyMovementsToHistory(const MovementsState &movements) {
     }
 }
 
-DragOperation::IndicesRange DragOperation::findSessionRangeFor(TimeSlotIndex timeSlotIndex) {
+DragOperation::IndicesRange
+DragOperation::findSessionRangeFor(TimeSlotIndex timeSlotIndex) {
     auto beginIndex = timeSlotIndex;
     auto endIndex = timeSlotIndex;
 
@@ -298,7 +298,7 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
 
         for (auto i = sessionRange.last + 1; i <= targetIndex + sessionRange.size() - 1; i++) {
             if (timeSlots[i].activity == Strategy::NoActivity ||
-                timeSlots[i].activity == timeSlots[sessionRange.first].activity) {
+                timeSlots[i].activity == timeSlots[sessionRange.last].activity) {
                 result = i - sessionRange.size() + 1;
             } else {
                 break;
@@ -309,6 +309,9 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
     return result;
 }
 
+bool DragOperation::stateChanged() {
+    return timeSlots != initialTimeSlotsState;
+}
 
 unsigned int DragOperation::IndicesRange::size() const {
     return last - first + 1;

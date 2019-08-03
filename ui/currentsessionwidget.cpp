@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 #include <QTime>
+#include <QTimer>
 
 #include "currentsessionwidget.h"
 #include "slidinganimator.h"
@@ -174,14 +175,18 @@ void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedC
     SlidingAnimator::Options options;
     options.onFinishedCallback = onFinishedCallback;
 
-    SlidingAnimator::hideWidget(this, options);
+    QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
+        SlidingAnimator::hideWidget(this, options);
+    });
 }
 
 void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
     SlidingAnimator::Options options;
     options.onFinishedCallback = onFinishedCallback;
 
-    SlidingAnimator::showWidget(this);
+    QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
+        SlidingAnimator::showWidget(this);
+    });
 }
 
 void CurrentSessionWidget::updateUI() {

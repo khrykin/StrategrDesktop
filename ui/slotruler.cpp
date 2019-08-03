@@ -13,11 +13,11 @@ SlotRuler::SlotRuler(QVector<TimeLabel> labels,
           _cellHeight(cellHeight),
           QWidget(parent) {
     auto *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setContentsMargins(ApplicationSettings::defaultPadding, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
 
-    setFixedWidth(calculateLabelWidth() + 16);
+    setFixedWidth(calculateLabelWidth() + ApplicationSettings::defaultPadding);
 
     updateList();
 }
@@ -27,9 +27,8 @@ int SlotRuler::calculateLabelWidth() const {
     font.setPointSize(10);
     font.setBold(true);
 
-    auto fm = QFontMetrics(font);
-    int width = fm.horizontalAdvance(qStringForMinutes(0));
-    return width;
+    return QFontMetrics(font)
+            .horizontalAdvance(qStringForMinutes(0));
 }
 
 QVector<TimeLabel> SlotRuler::labels() const {
@@ -83,7 +82,6 @@ QLabel *SlotRuler::makeNewItemAtIndex(int index) {
 QString SlotRuler::makeStyleSheetForLabelIndex(int index) const {
     auto &timeLabel = labels()[index];
 
-    // TODO extract to global stylesheet
     auto isIntegerHour = timeLabel.time % 60 == 0;
     auto color = isIntegerHour ? "#777" : "#aaa";
     auto fontSize = isIntegerHour ? 10 : 9;
