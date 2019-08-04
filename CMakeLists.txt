@@ -136,11 +136,15 @@ qt5_add_resources(RESOURCES
 
 if (APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit -framework UserNotifications -w")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
     set(PLATFORM_FILES
             ui/alert.mm
             ui/macoswindow.mm
             utility/notifierbackend.mm
-            )
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h)
 
     list(APPEND RESOURCES deployment/Strategr.icns)
 endif ()

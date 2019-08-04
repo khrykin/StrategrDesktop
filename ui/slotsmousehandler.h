@@ -78,6 +78,8 @@ private:
 
     bool hasSelection();
     void selectSlotAtIndex(int slotIndex);
+    void fillSelection(int fromIndex, int toIndex);
+
     void selectSessionAtSlotIndex(int slotIndex);
     void selectSessionsAtIndices(const std::vector<int> &sessionIndices);
     void selectStetchingSessions(int sourceIndex);
@@ -109,6 +111,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
+    void initDragSelectedOperation();
 };
 
 

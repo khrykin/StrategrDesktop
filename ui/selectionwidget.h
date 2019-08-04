@@ -23,6 +23,7 @@ public:
     void selectAtIndex(int slotIndex);
     void deselectAll();
     void selectAll(int numberOfSlots);
+    void fillSelected(int fromIndex, int toIndex);
 
     void setSlotHeight(int newSlotHeight);
 

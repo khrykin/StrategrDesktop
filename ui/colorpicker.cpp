@@ -28,7 +28,7 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
         return deselectAll();;
     }
 
-    auto indexOfColor = colors.indexOf(color.value());
+    auto indexOfColor = colors.indexOf(*color);
 
     if (indexOfColor < 0) {
         return deselectAll();

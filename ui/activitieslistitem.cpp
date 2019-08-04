@@ -79,6 +79,8 @@ void ActivitiesListItemWidget::layoutChildWidgets() {
 }
 
 void ActivitiesListItemWidget::paintEvent(QPaintEvent *) {
+    using namespace ApplicationSettings;
+
     auto painter = QPainter(this);
 
     painter.setPen(Qt::NoPen);
@@ -87,15 +89,18 @@ void ActivitiesListItemWidget::paintEvent(QPaintEvent *) {
     painter.drawRect(QRect(0, 0, width(), height()));
 
     painter.setBrush(borderColor());
-    auto borderRect = QRect(8, height() - 1, width() - 2 * 8, 1);
+    auto borderRect = QRect(8,
+                            height() - 1,
+                            width() - 2 * defaultPadding,
+                            1);
     painter.drawRect(borderRect);
 
     if (isHovered || isClicked) {
         auto color = isClicked ? highlightColor() : selectionColor();
         painter.setBrush(color);
-        auto selectionRect = QRect(8 + 1,
+        auto selectionRect = QRect(defaultPadding + 1,
                                    2,
-                                   width() - 2 * 8 - 2,
+                                   width() - 2 * defaultPadding - 2,
                                    height() - 5);
 
         painter.drawRoundedRect(selectionRect, 4, 4);
@@ -186,7 +191,7 @@ void ActivitiesListItemWidget::colorPickerColorChanged(
         return;
     }
 
-    editActivityColor(color.value());
+    editActivityColor(*color);
 
     if (contextMenu) {
         contextMenu->close();
@@ -260,7 +265,7 @@ QMenu *ActivitiesListItemWidget::makeContextMenu() {
     connect(contextMenu, &QMenu::aboutToHide, [=]() {
         editActivityNameFromLineEdit();
         if (colorPicker->color()) {
-            editActivityColor(colorPicker->color().value());
+            editActivityColor(*colorPicker->color());
         }
     });
 

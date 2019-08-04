@@ -3,13 +3,12 @@
 //
 
 #import <AppKit/AppKit.h>
+#import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
 
 #include "macoswindow.h"
 #include "mainwindow.h"
 
 #include <QtMac>
-
-#include <QDebug>
 
 const NSString *ToolbarItemActivitiesIdentifier = @"Activities";
 const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
@@ -17,18 +16,27 @@ const NSString *ToolbarItemNewActivityIdentifier = @"New";
 const NSString *ToolbarItemActivitiesTitleIdentifier = @"Title:Activities";
 const NSString *ToolbarItemBackButtonIdentifier = @"Back";
 const NSString *ToolbarItemSettingsIdentifier = @"Settings";
+const NSString *TAAdaptiveSpaceItemIdentifier = @"TAAdaptiveSpaceItem";
+
 
 const NSArray *sessionsPage = @[ToolbarItemActivitiesIdentifier,
                                 NSToolbarFlexibleSpaceItemIdentifier,
                                 ToolbarItemStrategyTitleIdentifier,
-                                NSToolbarFlexibleSpaceItemIdentifier];
+                                TAAdaptiveSpaceItemIdentifier];
 
 const NSArray *activitiesPage = @[ToolbarItemNewActivityIdentifier,
                                   NSToolbarFlexibleSpaceItemIdentifier,
                                   ToolbarItemActivitiesTitleIdentifier,
+                                  TAAdaptiveSpaceItemIdentifier,
                                   ToolbarItemBackButtonIdentifier];
 
 const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
+
+
+NSWindow *nsWindowFromQWindow(const MainWindow *window) {
+    auto *nsView = reinterpret_cast<NSView *>(window->winId());
+    return nsView.window;
+}
 
 @interface ToolbarDelegate : NSObject <NSToolbarDelegate>
 
@@ -46,13 +54,21 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
  willBeInsertedIntoToolbar:(BOOL)flag {
     NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
 
+    if ([itemIdentifier isEqual:TAAdaptiveSpaceItemIdentifier]) {
+        return [[TAAdaptiveSpaceItem alloc]
+                initWithItemIdentifier:(NSString *) TAAdaptiveSpaceItemIdentifier];
+    }
+
     if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier] ||
         [itemIdentifier isEqual:ToolbarItemStrategyTitleIdentifier]) {
-        item.view = [self makeTextFieldForItemIdentifier:itemIdentifier];;
+        NSTextField *textField = [self makeTextFieldForItemIdentifier:itemIdentifier];
+
+        item.view = textField;
+
         return item;
     }
 
-    item.view = [self makeButtonForItemIdentifier:itemIdentifier];;
+    item.view = [self makeButtonForItemIdentifier:itemIdentifier];
     item.target = self;
     item.action = [self getActionSelectorForItemIdentifier:itemIdentifier];
 
@@ -72,6 +88,12 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
     textField.editable = NO;
     textField.selectable = NO;
     textField.textColor = [NSColor secondaryLabelColor];
+
+    textField.cell.truncatesLastVisibleLine = YES;
+    textField.cell.lineBreakMode = NSLineBreakByTruncatingMiddle;
+
+    [textField setContentCompressionResistancePriority:0.1
+                                        forOrientation:NSLayoutConstraintOrientationHorizontal];
 
     return textField;
 }
@@ -119,8 +141,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
     return [self toolbarDefaultItemIdentifiers:toolbar];
 }
 
--
-(NSArray *)toolbarSelectableItemIdentifiers:
+- (NSArray *)toolbarSelectableItemIdentifiers:
         (NSToolbar *)toolbar {
     return [self toolbarDefaultItemIdentifiers:toolbar];
 }
@@ -141,30 +162,26 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
     _qWindow->scene()->showNewActivityMenu();
 }
 
--
-(void)setPage:(unsigned int)index {
+- (void)setPage:(unsigned int)index {
     _currentPage = index;
 
     for (NSToolbarItem *_ in _toolbar.items) {
         [_toolbar removeItemAtIndex:0];
     }
 
-
-    _toolbar.centeredItemIdentifier = index
-                                      ? (NSString *) ToolbarItemActivitiesTitleIdentifier
-                                      : (NSString *) ToolbarItemStrategyTitleIdentifier;
-
     for (NSString *itemIdentifier in toolbarPages[index]) {
         [_toolbar insertItemWithItemIdentifier:itemIdentifier atIndex:0];
+    }
+
+    for (NSToolbarItem *item in _toolbar.items) {
+        if ([item.itemIdentifier isEqualToString:(NSString *) TAAdaptiveSpaceItemIdentifier]) {
+            TAAdaptiveSpaceItem *adaptiveSpaceItem = (TAAdaptiveSpaceItem *) item;
+            [adaptiveSpaceItem updateWidth];
+        }
     }
 }
 
 @end
-
-NSWindow *nsWindowFromQWindow(const MainWindow *window) {
-    auto *nsView = reinterpret_cast<NSView *>(window->winId());
-    return nsView.window;
-}
 
 void MacOSWindow::setup(MainWindow *window) {
     @autoreleasepool {
@@ -186,7 +203,6 @@ void MacOSWindow::setup(MainWindow *window) {
         ToolbarDelegate *toolbarDelegate = [[ToolbarDelegate alloc] init];
         toolbarDelegate.toolbar = toolbar;
         toolbarDelegate.qWindow = window;
-
 
         toolbar.delegate = toolbarDelegate;
         nsWindow.toolbar = toolbar;

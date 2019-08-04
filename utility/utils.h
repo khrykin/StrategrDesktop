@@ -36,6 +36,6 @@ T *findParentWidget(QWidget *childWidget) {
     return nullptr;
 }
 
-int devicePixelRatio();
+double devicePixelRatio();
 
 #endif // UTILS_H

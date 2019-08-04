@@ -9,38 +9,37 @@
 #include <QWidgetAction>
 
 class NewActivityMenu : public QMenu {
-  Q_OBJECT
+Q_OBJECT
 public:
-  explicit NewActivityMenu(QWidget *parent = nullptr);
+    explicit NewActivityMenu(QWidget *parent = nullptr);
 
 signals:
-  void addNewActivity(const Activity &activity);
+    void addNewActivity(const Activity &activity);
 
 public slots:
 
 private:
-  void mouseReleaseEvent(QMouseEvent *event) override;
-  void createLineEditWidgetAction();
-  void createColorWidgetAction();
-  void createSaveCancelWidgetAction();
-  void wantToSetCustomColor();
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void createLineEditWidgetAction();
+    void createColorWidgetAction();
+    void createSaveCancelWidgetAction();
 
-  void colorPickerColorChanged(const std::optional<QColor> &color);
+    void colorPickerColorChanged(const std::optional<QColor> &color);
 
-  void saveAndClose();
-  void cancelAndClose();
-  void reset();
+    void saveAndClose();
+    void cancelAndClose();
+    void reset();
 
-  QWidgetAction *lineEditWidgetAction;
-  QWidgetAction *colorWidgetAction;
-  QWidgetAction *saveCancelWidgetAction;
+    QWidgetAction *lineEditWidgetAction = nullptr;
+    QWidgetAction *colorWidgetAction = nullptr;
+    QWidgetAction *saveCancelWidgetAction = nullptr;
 
-  QAction *saveAction;
-  QAction *customColorAction;
-  QLineEdit *lineEdit;
-  QColorDialog *colorDialog;
-  ColorPicker *colorPicker;
-  QColor currentColor;
+    QAction *saveAction = nullptr;
+    QAction *customColorAction = nullptr;
+    QLineEdit *lineEdit = nullptr;
+    QColorDialog *colorDialog = nullptr;
+    ColorPicker *colorPicker = nullptr;
+    QColor currentColor;
 };
 
 #endif // NEWACTIVITYMENU_H

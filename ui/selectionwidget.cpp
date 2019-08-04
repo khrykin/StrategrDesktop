@@ -160,3 +160,28 @@ void SelectionWidget::setIsClicked(bool isClicked) {
 
     update();
 }
+
+void SelectionWidget::fillSelected(int fromIndex, int toIndex) {
+
+    if (fromIndex > toIndex) {
+        std::swap(fromIndex, toIndex);
+    }
+
+    if (fromIndex <= 0) {
+        fromIndex = 0;
+    }
+
+    if (toIndex >= strategy->numberOfTimeSlots()) {
+        fromIndex = strategy->numberOfTimeSlots() - 1;
+    }
+
+    for (auto i = fromIndex; i <= toIndex; i++) {
+        if (!isSlotIndexSelected(i))
+            rawSelectionState.push_back(i);
+    }
+
+    std::sort(rawSelectionState.begin(),
+              rawSelectionState.end());
+
+    updateUI();
+}

@@ -56,7 +56,7 @@ int currentSeconds() {
     return QTime::currentTime().msecsSinceStartOfDay() / 1000;
 }
 
-int devicePixelRatio() {
+double devicePixelRatio() {
     auto screenNumber = QApplication::desktop()->screenNumber();
     return QGuiApplication::screens()[screenNumber]->devicePixelRatio();
 }

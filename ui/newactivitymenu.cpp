@@ -33,7 +33,6 @@ NewActivityMenu::NewActivityMenu(QWidget *parent) : QMenu(parent) {
                 currentColor = color;
             });
 
-    //  connect(this, &QMenu::aboutToHide, this);
     reset();
 }
 
@@ -74,14 +73,10 @@ void NewActivityMenu::createLineEditWidgetAction() {
 
     lineEditWidgetAction->setDefaultWidget(lineEditWrapper);
     addAction(lineEditWidgetAction);
-
-    //  connect(lineEdit, &QLineEdit::editingFinished, this,
-    //          &NewActivityMenu::saveAndClose);
 }
 
 void NewActivityMenu::createColorWidgetAction() {
     colorPicker = new ColorPicker(this);
-    //  colorPicker->setColor(/*QColor(QString::fromStdString(activity().color))*/);
     connect(colorPicker, &ColorPicker::colorChanged, this,
             &NewActivityMenu::colorPickerColorChanged);
 
@@ -118,24 +113,15 @@ void NewActivityMenu::createSaveCancelWidgetAction() {
     addAction(saveCancelWidgetAction);
 }
 
-void NewActivityMenu::wantToSetCustomColor() {
-    //  previousColor = ColorUtils::qColorFromStdString(activity().color);
-    colorDialog->setCurrentColor(Qt::red);
-    colorDialog->close(); // this is a dirty fix, since exec() glitches
-    colorDialog->show();
-    show();
-}
-
 void NewActivityMenu::colorPickerColorChanged(
         const std::optional<QColor> &color) {
     customColorAction->setChecked(false);
     if (color) {
-        currentColor = color.value();
+        currentColor = *color;
     }
 }
 
 void NewActivityMenu::saveAndClose() {
-
     if (lineEdit->text().isEmpty()) {
         return;
     }
