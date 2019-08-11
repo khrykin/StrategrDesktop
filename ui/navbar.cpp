@@ -6,7 +6,7 @@
 #include <QVariant>
 #include "applicationsettings.h"
 
-#ifdef Q_OS_MAC
+#ifndef SHOW_NAVBAR
 
 Navbar::Navbar(QWidget *parent) : QWidget(parent) {
 }
@@ -26,6 +26,7 @@ QLabel *Navbar::titleLabel() const {
 }
 
 #else
+
 Navbar::Navbar(QWidget *parent) : QWidget(parent) {
     setupLayout();
     setupWidgets();
@@ -67,8 +68,8 @@ void Navbar::setupWidgets() {
 void Navbar::setupLayout() {
     setLayout(new QHBoxLayout());
     layout()->setSpacing(0);
-    layout()->setContentsMargins(0, ApplicationSettings::applicationTopPadding, 0, 0);
-    setFixedHeight(45 + ApplicationSettings::applicationTopPadding);
+    layout()->setContentsMargins(0, 0, 0, 0);
+    setFixedHeight(45);
 }
 
 void Navbar::setupLeftButton() {

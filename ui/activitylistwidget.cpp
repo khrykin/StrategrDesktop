@@ -129,6 +129,7 @@ void ActivityListWidget::showNewActivityMenu() {
     if (navbar->rightButton()) {
         topOffset = mapToGlobal(navbar->rightButton()->geometry().bottomLeft()).y();
     }
+
     auto center = QPoint(mapToGlobal(geometry().topRight()).x() -
                          newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);

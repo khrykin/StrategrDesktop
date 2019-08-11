@@ -6,12 +6,24 @@
 #include <QWidget>
 #include "colorprovider.h"
 
+#define DEBUG_NAVBAR false
+
+#if !defined(Q_OS_MAC) || DEBUG_NAVBAR
+#define SHOW_NAVBAR
+#endif
+
 class Navbar : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     explicit Navbar(QWidget *parent = nullptr);
 
     void setTitle(const QString &title);
+
+    QPushButton *leftButton() const;
+    QPushButton *rightButton() const;
+    QLabel *titleLabel() const;
+
+#ifndef SHOW_NAVBAR
 
     template<typename Method>
     void setLeftButton(
@@ -28,11 +40,7 @@ public:
 
     }
 
-    QPushButton *leftButton() const;
-    QPushButton *rightButton() const;
-    QLabel *titleLabel() const;
-
-#ifndef Q_OS_MAC
+#else
     QString title() const;
 
     template<typename Method>
