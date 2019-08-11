@@ -95,6 +95,7 @@ void ActivityListItemWidget::mousePressEvent(QMouseEvent *event) {
     if (event->buttons() == Qt::LeftButton) {
         isClicked = true;
         update();
+        emit hovered();
     }
 }
 
@@ -102,6 +103,8 @@ void ActivityListItemWidget::mouseReleaseEvent(QMouseEvent *event) {
     auto wasClicked = isClicked;
     isClicked = false;
     update();
+
+    emit unhovered();
 
     if (wasClicked)
             emit selected();

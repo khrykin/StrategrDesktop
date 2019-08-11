@@ -5,12 +5,12 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="Strategr_autogen" />
+      <config projectName="Strategr" targetName="models_tests" />
+      <config projectName="Strategr" targetName="Models" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
       <config projectName="Strategr" targetName="ui_tests" />
-      <config projectName="Strategr" targetName="Models" />
-      <config projectName="Strategr" targetName="models_tests" />
+      <config projectName="Strategr" targetName="Strategr" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -28,9 +28,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitylistitemwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistitemwidget.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/activitylistwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/navbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/navbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/navbar.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/navbar.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -212,7 +211,8 @@
       <workItem from="1564927701320" duration="325000" />
       <workItem from="1564928047560" duration="31775000" />
       <workItem from="1565189369150" duration="8768000" />
-      <workItem from="1565473218083" duration="18361000" />
+      <workItem from="1565473218083" duration="19546000" />
+      <workItem from="1565552606408" duration="296000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -522,7 +522,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565542887918</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="Debug Navbar macro">
+      <created>1565544047263</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1565544047263</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TodoView">
@@ -576,7 +583,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Strategy activity sessions tests" />
     <MESSAGE value="CMake integration" />
     <MESSAGE value="UI tests setup" />
     <MESSAGE value="MainWindow" />
@@ -601,6 +607,7 @@
     <MESSAGE value="Improved macOS toolbar" />
     <MESSAGE value="Activities validation" />
     <MESSAGE value="MacOS back button upgrade" />
-    <option name="LAST_COMMIT_MESSAGE" value="MacOS back button upgrade" />
+    <MESSAGE value="Debug Navbar macro" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debug Navbar macro" />
   </component>
 </project>

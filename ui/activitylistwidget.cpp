@@ -48,8 +48,12 @@ void ActivityListWidget::layoutChildWidgets() {
 
     scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
-    scrollArea->setStyleSheet("QScrollArea { border: none; }");
+    scrollArea->setStyleSheet("QScrollArea { "
+                              "border: none;"
+                              "background: rgba(255, 255, 255, 0);"
+                              " }");
     scrollArea->setWidget(listWidget);
+    listWidget->setStyleSheet("background: rgba(255, 255, 255, 0);");
 
     layout()->addWidget(scrollArea);
 
