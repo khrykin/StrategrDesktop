@@ -1,14 +1,12 @@
 //
 // Created by Dmitry Khrykin on 2019-07-08.
 //
+#include <iostream>
 
 #include "mainwindow.h"
 #include "application.h"
 #include "alert.h"
 #include "macoswindow.h"
-
-#include <QMessageBox>
-#include <iostream>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setup();
@@ -47,7 +45,7 @@ void MainWindow::setup() {
 }
 
 MainWindow::~MainWindow() {
-    tearDown();
+    teardown();
 }
 
 MainScene *MainWindow::scene() const {
@@ -170,20 +168,16 @@ bool MainWindow::wantToClose() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
-        tearDown();
+        teardown();
         event->accept();
     } else {
         event->ignore();
     }
 }
 
-void MainWindow::tearDown() {
+void MainWindow::teardown() {
     WindowGeometryManager::saveGeometry(this);
     Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
-
-#ifdef Q_OS_MAC
-    MacOSWindow::teardown(this);
-#endif
 }
 
 MainWindow *MainWindow::createLastOpened() {

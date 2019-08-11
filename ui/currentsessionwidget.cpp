@@ -190,8 +190,8 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
 }
 
 void CurrentSessionWidget::updateUI() {
-    auto startTimeText = qStringForMinutes(activitySession.beginTime());
-    auto endTimeText = qStringForMinutes(activitySession.endTime());
+    auto startTimeText = QStringForMinutes(activitySession.beginTime());
+    auto endTimeText = QStringForMinutes(activitySession.endTime());
 
     auto activityText = makeActivitySessionTitle();
 

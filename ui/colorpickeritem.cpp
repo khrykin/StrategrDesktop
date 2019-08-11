@@ -9,12 +9,14 @@ ColorPickerItem::ColorPickerItem(QColor color, QWidget *parent)
     setFixedHeight(24);
 }
 
-void ColorPickerItem::paintEvent(QPaintEvent *event) {
+void ColorPickerItem::paintEvent(QPaintEvent *) {
     QPainter painter(this);
     auto bgColor = QColor(_color);
     if (isClicked) {
         bgColor = ColorUtils::darken(bgColor, 0.2);
     }
+
+    auto baseRect = QRect(0, 0, width(), height());
 
     painter.setRenderHint(QPainter::Antialiasing);
 
@@ -24,12 +26,12 @@ void ColorPickerItem::paintEvent(QPaintEvent *event) {
                           ? QColor(0, 0, 0, 50)
                           : QColor(0, 0, 0, 0);
         painter.setBrush(brushColor);
-        painter.drawEllipse(event->rect().adjusted(1, 1, -1, -1));
+        painter.drawEllipse(baseRect.adjusted(1, 1, -1, -1));
     }
 
     painter.setBrush(bgColor);
     painter.setPen(ColorUtils::darken(bgColor, 0.2));
-    painter.drawEllipse(event->rect().adjusted(5, 5, -5, -5));
+    painter.drawEllipse(baseRect.adjusted(5, 5, -5, -5));
 
     painter.end();
 }

@@ -14,12 +14,6 @@
 StrategySettingsWidget::StrategySettingsWidget(Strategy *strategy,
                                                QWidget *parent)
         : strategy(strategy), QWidget(parent) {
-    auto backgroundColor = palette().color(QPalette::Base).name();
-
-    setStyleSheet("StrategySettingsWidget {"
-                  "background-color: " + backgroundColor + ";" +
-                  "}");
-
     setSizePolicy(QSizePolicy::Expanding,
                   QSizePolicy::Fixed);
 
@@ -52,11 +46,7 @@ void StrategySettingsWidget::createHeader() {
 
     auto *label = new ColoredLabel(tr("Settings"));
     label->setStyleSheet("text-transform: uppercase;");
-    label->setDynamicColor([]() {
-        return ColorUtils::qColorOverlayWithAlpha(
-                QApplication::palette().color(QPalette::Text),
-                0.5 * ColorUtils::shadesAlphaFactor());
-    });
+    label->setDynamicColor(&ColorProvider::secondaryTextColor);
 
     label->setBold(true);
 
@@ -150,7 +140,7 @@ void StrategySettingsWidget::createEndTimeForm() {
 
 
 QColor StrategySettingsWidget::labelColor() const {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             palette().color(QPalette::Text),
             0.75 * ColorUtils::shadesAlphaFactor(),
             palette().color(QPalette::Base));
@@ -189,8 +179,8 @@ ColoredLabel *StrategySettingsWidget::makeFormLabel(QString text) {
 
 void StrategySettingsWidget::updateUI() {
     auto slotDuration = strategy->timeSlotDuration();
-    auto beginTime = qTimeFromMinutes(strategy->beginTime());
-    auto endTime = qTimeFromMinutes(strategy->endTime());
+    auto beginTime = QTimeFromMinutes(strategy->beginTime());
+    auto endTime = QTimeFromMinutes(strategy->endTime());
 
     dontSave = true;
 
@@ -260,7 +250,7 @@ void StrategySettingsWidget::endTimeChanged(const QTime &time) {
     }
 
     if (mins != minutesFromQTime(time)) {
-        endTimeEdit->setTime(qTimeFromMinutes(mins));
+        endTimeEdit->setTime(QTimeFromMinutes(mins));
     }
 
     save();

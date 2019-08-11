@@ -11,7 +11,7 @@
 class ColoredLabel : public QWidget {
 public:
 
-    explicit ColoredLabel(const QString &text = "", QWidget *parent = nullptr);
+    explicit ColoredLabel(QString text = "", QWidget *parent = nullptr);
 
     const QColor &color() const;
     void setColor(const QColor &color);
@@ -25,10 +25,13 @@ public:
     void setAlignment(const Qt::Alignment &alignment);
 
     void setBold(bool isBold);
+    void setFontHeight(double fontHeight);
 
-    void setDynamicColor(const std::function<QColor()> &newColorSetter);
+    void setDynamicColor(const std::function<QColor()> &newColorGetter);
+
+    QSize sizeHint() const override;
 private:
-    std::function<QColor()> colorSetter = nullptr;
+    std::function<QColor()> colorGetter = nullptr;
     QColor _color;
     QString _text;
     Qt::Alignment _alignment = Qt::AlignLeft | Qt::AlignVCenter;

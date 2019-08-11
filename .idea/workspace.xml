@@ -9,6 +9,7 @@
       <config projectName="Strategr" targetName="Strategr_autogen" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
       <config projectName="Strategr" targetName="ui_tests" />
+      <config projectName="Strategr" targetName="Models" />
       <config projectName="Strategr" targetName="models_tests" />
     </generated>
   </component>
@@ -26,16 +27,49 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/cocoalineedit.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/cocoalineedit.mm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/separator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/separator.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitieslistitem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activity.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activityinvalidpropertyexception.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activityinvalidpropertyexception.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activityinvalidpropertyexception.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activityinvalidpropertyexception.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitylist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitylist.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategyhistory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategyhistory.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategyhistory.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategyhistory.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistitemwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistitemwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitieslistwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitieslistwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/alert.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/alert.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/colorpicker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpicker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/newactivitymenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/newactivitymenu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotsmousehandler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/colorpicker.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpicker.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/colorpickeritem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpickeritem.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/colorprovider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/colorprovider.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/macoswindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/mainscene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainscene.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/mainscene.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainscene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/mainwindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activityeditormenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activityeditormenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/slotruler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotruler.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/colorutils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/colorutils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.h" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
-    <ignored path="$PROJECT_DIR$/cmake-build-release/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,151 +97,6 @@
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/macoswindow.mm">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1212">
-              <caret line="61" column="32" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
-              <folding>
-                <element signature="e#51#76#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="411">
-              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="mock:///disassembly">
-          <provider selected="true" editor-type-id="memory-view">
-            <state relative-caret-position="43">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/activitieslistitem.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="109">
-              <caret line="266" column="35" selection-start-line="266" selection-start-column="35" selection-end-line="266" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="203" column="48" selection-start-line="203" selection-start-column="48" selection-end-line="203" selection-end-column="48" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/newactivitymenu.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/ui/newactivitymenu.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui/colorpicker.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-355">
-              <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/optional">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="943" column="29" lean-forward="true" selection-start-line="943" selection-start-column="29" selection-end-line="943" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>DIRECTION</find>
-      <find>Direction change!</find>
-      <find>printMovements</find>
-      <find>newDraggedIndices</find>
-      <find>printHis</find>
-      <find>draggedSession =</find>
-      <find>updateDra</find>
-      <find>previousMouseTop =</find>
-      <find>handle</find>
-      <find>delta</find>
-      <find>previousMouseTop</find>
-      <find>toolbarPages</find>
-      <find>updateSlotsLayout</find>
-      <find>8</find>
-      <find>resizeCircleSlotIndex =</find>
-      <find>sourceIndex(</find>
-      <find>sourceIndex</find>
-      <find>handleSlotIndex =</find>
-      <find>resizeBoundarySlotIndex =</find>
-      <find>update()</find>
-      <find>handleSlotIndex</find>
-      <find>selectSlotAtIndex</find>
-      <find>determineMouseZone</find>
-      <find>currentSessionIndex =</find>
-      <find>handleDragOpe</find>
-      <find>draggedSessionIndex</find>
-      <find>mousePressHappened =</find>
-      <find>centr</find>
-      <find>updateWidth</find>
-      <find>wantToSetCustomColor</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>Index</replace>
-      <replace>Item</replace>
-      <replace>Calculator</replace>
-      <replace>make_shared</replace>
-      <replace>strategy()</replace>
-      <replace>strategy()-&gt;</replace>
-      <replace>strategy-&gt;</replace>
-      <replace>slotsLayout</replace>
-      <replace>activity()-&gt;</replace>
-      <replace>strategy</replace>
-      <replace>currentSeconds</replace>
-      <replace>ToolbarItem</replace>
-    </replaceStrings>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -216,90 +105,10 @@
       </map>
     </option>
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/ui/slotboard.h" />
-        <option value="$PROJECT_DIR$/ui/windowgeometrymanager.h" />
-        <option value="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" />
-        <option value="$PROJECT_DIR$/ui/macoswindow.h" />
-        <option value="$PROJECT_DIR$/ui/enterpresseater.cpp" />
-        <option value="$PROJECT_DIR$/ui/enterpresseater.h" />
-        <option value="$PROJECT_DIR$/ui/mainwindow.h" />
-        <option value="$PROJECT_DIR$/ui/mainscene.h" />
-        <option value="$PROJECT_DIR$/ui/sessionsmainwidget.h" />
-        <option value="$PROJECT_DIR$/ui/slotswidget.h" />
-        <option value="$PROJECT_DIR$/ui/currentsessionwidget.h" />
-        <option value="$PROJECT_DIR$/models/activitysessionslist.h" />
-        <option value="$PROJECT_DIR$/models/timeslotsstate.h" />
-        <option value="$PROJECT_DIR$/models/draggingmanager.h" />
-        <option value="$PROJECT_DIR$/models/tests/strategy_timeslots_test.cpp" />
-        <option value="$PROJECT_DIR$/models/activitysession.h" />
-        <option value="$PROJECT_DIR$/models/dragoperation.cpp" />
-        <option value="$PROJECT_DIR$/models/dragoperation.h" />
-        <option value="$PROJECT_DIR$/models/timeslotsstate.cpp" />
-        <option value="$PROJECT_DIR$/ui/activitysessionwidget.h" />
-        <option value="$PROJECT_DIR$/ui/colorprovider.h" />
-        <option value="$PROJECT_DIR$/ui/colorprovider.cpp" />
-        <option value="$PROJECT_DIR$/ui/cursorprovider.h" />
-        <option value="$PROJECT_DIR$/ui/cursorprovider.cpp" />
-        <option value="$PROJECT_DIR$/utility/utils.h" />
-        <option value="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" />
-        <option value="$PROJECT_DIR$/ui/currentsessionwidget.cpp" />
-        <option value="$PROJECT_DIR$/models/resizeoperation.cpp" />
-        <option value="$PROJECT_DIR$/models/resizeoperation.h" />
-        <option value="$PROJECT_DIR$/models/strategy.h" />
-        <option value="$PROJECT_DIR$/ui/slotboard.cpp" />
-        <option value="$PROJECT_DIR$/ui/slotswidget.cpp" />
-        <option value="$PROJECT_DIR$/utility/applicationsettings.h" />
-        <option value="$PROJECT_DIR$/models/strategy.cpp" />
-        <option value="$PROJECT_DIR$/ui/slotruler.cpp" />
-        <option value="$PROJECT_DIR$/ui/slotsmousehandler.h" />
-        <option value="$PROJECT_DIR$/ui/selectionwidget.h" />
-        <option value="$PROJECT_DIR$/ui/selectionwidget.cpp" />
-        <option value="$PROJECT_DIR$/ui/activitysessionwidget.cpp" />
-        <option value="$PROJECT_DIR$/utility/utils.cpp" />
-        <option value="$PROJECT_DIR$/ui/mainwindow.cpp" />
-        <option value="$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h" />
-        <option value="$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m" />
-        <option value="$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m" />
-        <option value="$PROJECT_DIR$/ui/macoswindow.mm" />
-        <option value="$PROJECT_DIR$/ui/activitieslistitem.cpp" />
-        <option value="$PROJECT_DIR$/ui/slotsmousehandler.cpp" />
-        <option value="$PROJECT_DIR$/ui/colorpicker.cpp" />
-        <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/ui/newactivitymenu.cpp" />
-        <option value="$PROJECT_DIR$/ui/newactivitymenu.h" />
-      </list>
-    </option>
-  </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="y" value="23" />
-    <option name="width" value="1440" />
-    <option name="height" value="840" />
-  </component>
+  <component name="ProjectId" id="1Oxmbfu2Y4Q9HEXubiaMW4BQ2gx" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
-  </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="Strategr" type="b2602c69:ProjectViewProjectNode" />
-              <item name="strategrqt" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
@@ -345,6 +154,11 @@
         <option name="BeforeTestRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Models" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="Models" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Strategr" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="Strategr" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="Strategr">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -375,6 +189,7 @@
       <item itemvalue="Catch.Strategy activity sessions" />
       <item itemvalue="CMake Application.Strategr" />
       <item itemvalue="CMake Application.Strategr_autogen" />
+      <item itemvalue="CMake Application.Models" />
       <item itemvalue="CMake Application.models_tests" />
       <item itemvalue="CMake Application.ui_tests" />
       <item itemvalue="CMake Application.ui_tests_autogen" />
@@ -429,7 +244,13 @@
       <workItem from="1564857931991" duration="1519000" />
       <workItem from="1564860457988" duration="1510000" />
       <workItem from="1564905051195" duration="3115000" />
-      <workItem from="1564908302923" duration="8831000" />
+      <workItem from="1564908302923" duration="9670000" />
+      <workItem from="1564926960182" duration="37000" />
+      <workItem from="1564927017760" duration="43000" />
+      <workItem from="1564927701320" duration="325000" />
+      <workItem from="1564928047560" duration="31775000" />
+      <workItem from="1565189369150" duration="8768000" />
+      <workItem from="1565473218083" duration="15795000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -718,7 +539,14 @@
       <option name="project" value="LOCAL" />
       <updated>1564914711313</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Improved macOS toolbar">
+      <created>1564925831044</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1564925831044</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -753,9 +581,6 @@
       <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
     </history-entry>
   </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="576196000" />
-  </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -764,34 +589,6 @@
       <are-packages-shown value="true" />
       <is-autoscroll-to-source value="true" />
     </todo-panel>
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="840" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.5442478" visible="true" weight="0.17310444" />
-      <window_info id="Structure" order="1" sideWeight="0.45575222" side_tool="true" weight="0.021459227" />
-      <window_info id="Favorites" order="2" sideWeight="0.4509044" side_tool="true" weight="0.20600858" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.4224599" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4985694" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.23930481" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.32650602" />
-      <window_info anchor="bottom" id="Database Changes" order="7" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3529412" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.39438504" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50143063" side_tool="true" weight="0.08847185" />
-      <window_info active="true" anchor="bottom" id="Messages" order="11" visible="true" weight="0.40240642" />
-      <window_info anchor="bottom" id="CMake" order="12" weight="0.28342247" />
-      <window_info anchor="bottom" id="Inspection Results" order="13" weight="0.5201072" />
-      <window_info anchor="bottom" id="Profiler" order="14" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Database" order="3" weight="0.3297568" />
-    </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -802,20 +599,7 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="RECENTLY_FILTERED_USER_GROUPS">
-                <collection />
-              </option>
-              <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
-                <collection />
-              </option>
-              <option name="COLUMN_ORDER">
-                <list>
-                  <option value="0" />
-                  <option value="1" />
-                  <option value="2" />
-                  <option value="3" />
-                </list>
-              </option>
+              <option name="COLUMN_ORDER" />
             </State>
           </value>
         </entry>
@@ -873,443 +657,5 @@
     <MESSAGE value="Fix stretch operation bug at boundary condition" />
     <MESSAGE value="Improved macOS toolbar" />
     <option name="LAST_COMMIT_MESSAGE" value="Improved macOS toolbar" />
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="evaluateExpression">
-      <expression>
-        <expression-string>draggingIndices.size()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;slotsLayout-&gt;itemAt(0)</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;slotsLayout-&gt;itemAt(0)-&gt;widget()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;slotsLayout-&gt;itemAt(0)-&gt;</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(1)</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(1)-&gt;widget()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(0)-&gt;widget()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(0)</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>slotsWidget-&gt;layout()-&gt;itemAt(0)-&gt;widget()-&gt;geometry()-&gt;top()</expression-string>
-        <language-id>ObjectiveC</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ui/cursorprovider.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="9" column="12" selection-start-line="9" selection-start-column="12" selection-end-line="9" selection-end-column="12" />
-          <folding>
-            <element signature="e#209#243#0" expanded="true" />
-            <element signature="e#403#440#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/macoswindow.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#114#131#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/clang_64/lib/QtCore.framework/Headers/qnamespace.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2056">
-          <caret line="1188" column="8" selection-start-line="1188" selection-start-column="8" selection-end-line="1188" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/dragoperation.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="31" column="26" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="26" />
-          <folding>
-            <element signature="e#118#135#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/dragoperation.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="101">
-          <caret line="299" column="64" lean-forward="true" selection-start-line="299" selection-start-column="64" selection-end-line="299" selection-end-column="64" />
-          <folding>
-            <element signature="e#51#77#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/cursorprovider.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/mainscene.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="69">
-          <caret line="17" column="17" lean-forward="true" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/mainscene.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="15" column="34" selection-start-line="15" selection-start-column="34" selection-end-line="15" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/currentsessionwidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="186" column="67" selection-start-line="186" selection-start-column="67" selection-end-line="186" selection-end-column="67" />
-          <folding>
-            <element signature="e#1#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/sessionsmainwidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="89" column="12" lean-forward="true" selection-start-line="89" selection-start-column="12" selection-end-line="89" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/sessionsmainwidget.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotboard.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="61" column="11" selection-start-line="61" selection-start-column="11" selection-end-line="61" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/mainwindow.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="20" column="6" selection-start-line="20" selection-start-column="6" selection-end-line="20" selection-end-column="6" />
-          <folding>
-            <element signature="e#101#123#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/resizeoperation.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotboard.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="42" column="25" selection-start-line="42" selection-start-column="25" selection-end-line="42" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/resizeoperation.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="292">
-          <caret line="14" column="36" lean-forward="true" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utility/applicationsettings.h">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotruler.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="11" column="6" selection-start-line="11" selection-start-column="6" selection-end-line="11" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotruler.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="9" column="21" lean-forward="true" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#22#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotswidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="209" column="29" selection-start-line="209" selection-start-column="29" selection-end-line="209" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/colorprovider.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="27" column="22" selection-start-line="27" selection-start-column="22" selection-end-line="27" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/vector">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="683" selection-start-line="683" selection-end-line="683" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Qt/5.13.0/clang_64/lib/QtGui.framework/Headers/qscreen.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2688">
-          <caret line="121" column="10" selection-start-line="121" selection-start-column="10" selection-end-line="121" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/windowgeometrymanager.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
-          <folding>
-            <element signature="e#116#148#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/windowgeometrymanager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1920">
-          <caret line="80" column="18" selection-start-line="80" selection-start-column="18" selection-end-line="80" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotswidget.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="936">
-          <caret line="39" column="12" selection-start-line="39" selection-start-column="12" selection-end-line="39" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/timeslot.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/strategy.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1848">
-          <caret line="77" column="22" selection-start-line="77" selection-start-column="22" selection-end-line="77" selection-end-column="22" />
-          <folding>
-            <element signature="e#39#60#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utility/utils.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1229">
-          <caret line="58" column="16" selection-start-line="58" selection-start-column="16" selection-end-line="58" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/activitieslistitem.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="57" column="14" selection-start-line="57" selection-start-column="14" selection-end-line="57" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/activitysessionwidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="92" column="30" selection-start-line="92" selection-start-column="30" selection-end-line="92" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/selectionwidget.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/selectionwidget.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="174" column="54" selection-start-line="174" selection-start-column="54" selection-end-line="174" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/strategy.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="158" column="18" selection-start-line="158" selection-start-column="18" selection-end-line="158" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="654">
-          <caret line="104" selection-start-line="104" selection-end-line="104" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/timeslotsstate.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1248">
-          <caret line="52" column="53" selection-start-line="52" selection-start-column="53" selection-end-line="52" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="10" column="30" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/mainwindow.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="696">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="27" column="28" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/macoswindow.mm">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1212">
-          <caret line="61" column="32" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="32" />
-          <folding>
-            <element signature="e#51#76#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/optional">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="943" column="29" lean-forward="true" selection-start-line="943" selection-start-column="29" selection-end-line="943" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/activitieslistitem.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="266" column="35" selection-start-line="266" selection-start-column="35" selection-end-line="266" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/slotsmousehandler.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="203" column="48" selection-start-line="203" selection-start-column="48" selection-end-line="203" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/colorpicker.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-355">
-          <caret line="30" column="40" selection-start-line="30" selection-start-column="40" selection-end-line="30" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="137" column="105" selection-start-line="137" selection-start-column="105" selection-end-line="137" selection-end-column="105" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="411">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/newactivitymenu.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ui/newactivitymenu.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>

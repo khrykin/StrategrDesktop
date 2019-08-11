@@ -10,17 +10,19 @@
 #include <QDesktopWidget>
 #include <QScreen>
 
+/* Time */
+
 QString humanTimeForMinutes(int mins);
 
 int minutesFromQTime(const QTime &time);
 
-QTime qTimeFromMinutes(int minutes);
-
-QString qStringForMinutes(int minutes);
+QTime QTimeFromMinutes(int minutes);
+QString QStringForMinutes(int minutes);
 
 int currentMinutes();
 int currentSeconds();
 
+/* Widgets */
 template<class T>
 T *findParentWidget(QWidget *childWidget) {
     auto *widget = childWidget->parentWidget();
@@ -37,5 +39,11 @@ T *findParentWidget(QWidget *childWidget) {
 }
 
 double devicePixelRatio();
+
+
+/* Strings */
+namespace StringUtils {
+    QString toSentenceCase(QString string);
+}
 
 #endif // UTILS_H

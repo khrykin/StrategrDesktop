@@ -82,11 +82,11 @@ QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
     for (auto &timeSlot : strategy->timeSlots()) {
-        auto label = qStringForMinutes(timeSlot.beginTime);
+        auto label = QStringForMinutes(timeSlot.beginTime);
         labels.append(TimeLabel{label, timeSlot.beginTime});
     }
 
-    auto endTimeLabel = qStringForMinutes(strategy->endTime());
+    auto endTimeLabel = QStringForMinutes(strategy->endTime());
     labels.append(TimeLabel{endTimeLabel, strategy->endTime()});
 
     return labels;

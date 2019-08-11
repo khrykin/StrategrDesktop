@@ -60,10 +60,10 @@ set(UI
         third-party/stacklayout.h
         ui/sessionsmainwidget.cpp
         ui/sessionsmainwidget.h
-        ui/activitieslistwidget.cpp
-        ui/activitieslistwidget.h
-        ui/activitieslistitem.cpp
-        ui/activitieslistitem.h
+        ui/activitylistwidget.cpp
+        ui/activitylistwidget.h
+        ui/activitylistitemwidget.cpp
+        ui/activitylistitemwidget.h
         ui/strategysettingswidget.cpp
         ui/strategysettingswidget.h
         ui/slotboard.cpp
@@ -88,8 +88,8 @@ set(UI
         ui/colorpicker.h
         ui/enterpresseater.cpp
         ui/mainscene.h
-        ui/newactivitymenu.cpp
-        ui/newactivitymenu.h
+        ui/activityeditormenu.cpp
+        ui/activityeditormenu.h
         ui/currenttimemarker.cpp
         ui/currenttimemarker.h
         ui/parentwindowaccessible.cpp
@@ -110,7 +110,10 @@ set(UI
         ui/coloredlabel.h
         ui/colorprovider.cpp
         ui/colorprovider.h
-        ui/macoswindow.h ui/cursorprovider.cpp ui/cursorprovider.h)
+        ui/macoswindow.h
+        ui/cursorprovider.cpp
+        ui/cursorprovider.h
+        ui/separator.cpp ui/separator.h ui/cocoalineedit.mm ui/cocoalineedit.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -154,13 +157,16 @@ add_executable(models_tests
         ${MODELS}
         ${MODELS_TESTS})
 
+add_library(Models STATIC ${MODELS})
+set_target_properties(Models PROPERTIES
+        FRAMEWORK TRUE)
+
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
 
 add_executable(Strategr
         main.cpp
         ${PLATFORM_FILES}
-        ${MODELS}
         ${UI}
         ${UTILITY}
         ${RESOURCES})
@@ -168,7 +174,6 @@ add_executable(Strategr
 add_executable(ui_tests
         qt_tests_main.cpp
         ${PLATFORM_FILES}
-        ${MODELS}
         ${UI}
         ${UTILITY}
         ${UI_TESTS}
@@ -176,11 +181,12 @@ add_executable(ui_tests
 
 target_link_libraries(models_tests Catch2::Catch2)
 target_link_libraries(ui_tests
+        Models
         Catch2::Catch2
         Qt5::Widgets
         Qt5::Test)
 
-target_link_libraries(Strategr Qt5::Widgets Qt5::MacExtras)
+target_link_libraries(Strategr Models Qt5::Widgets Qt5::MacExtras)
 
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES

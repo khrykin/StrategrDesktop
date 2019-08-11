@@ -13,7 +13,7 @@ public:
     static int showAskToSave(const QString &title, const QString &message);
     static int showWarning(QWidget *parent,
                            const QString &title,
-                           const QString &message);
+                           const QString &message = "");
 };
 
 

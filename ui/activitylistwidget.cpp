@@ -1,5 +1,5 @@
-#include "activitieslistwidget.h"
-#include "activitieslistitem.h"
+#include "activitylistwidget.h"
+#include "activitylistitemwidget.h"
 #include "mainscene.h"
 #include "slotboard.h"
 
@@ -11,12 +11,14 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QApplication>
+#include "activityinvalidpropertyexception.h"
+#include "alert.h"
 
-ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
-                                           QWidget *parent)
+ActivityListWidget::ActivityListWidget(Strategy *strategy,
+                                       QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     strategy->activities()
-            .setOnChangeCallback(this, &ActivitiesListWidget::updateList);
+            .setOnChangeCallback(this, &ActivityListWidget::updateList);
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
@@ -29,16 +31,16 @@ ActivitiesListWidget::ActivitiesListWidget(Strategy *strategy,
     updateList();
 }
 
-void ActivitiesListWidget::setupActions() {
+void ActivityListWidget::setupActions() {
     auto *getBackAction = new QAction("Back", this);
     getBackAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(getBackAction);
 
     connect(getBackAction, &QAction::triggered, this,
-            &ActivitiesListWidget::getBack);
+            &ActivityListWidget::getBack);
 }
 
-void ActivitiesListWidget::layoutChildWidgets() {
+void ActivityListWidget::layoutChildWidgets() {
     listWidget = new QWidget();
     listWidget->setLayout(new QVBoxLayout());
     listWidget->layout()->setSpacing(0);
@@ -51,29 +53,29 @@ void ActivitiesListWidget::layoutChildWidgets() {
 
     layout()->addWidget(scrollArea);
 
-    newActivityMenu = new NewActivityMenu(this);
+    newActivityMenu = new ActivityEditorMenu(std::nullopt, this);
 
     connect(newActivityMenu,
-            &NewActivityMenu::addNewActivity,
+            &ActivityEditorMenu::submitActivity,
             [&](const Activity &activity) {
                 strategy->addActivity(activity);
             });
 }
 
-void ActivitiesListWidget::setupNavbar() {
+void ActivityListWidget::setupNavbar() {
     navbar = new Navbar();
     layout()->addWidget(navbar);
 
     navbar->setTitle("Activities");
     navbar->setLeftButton("Back",
                           this,
-                          &ActivitiesListWidget::getBack);
+                          &ActivityListWidget::getBack);
     navbar->setRightButton("New",
                            this,
-                           &ActivitiesListWidget::showNewActivityMenu);
+                           &ActivityListWidget::showNewActivityMenu);
 }
 
-void ActivitiesListWidget::paintEvent(QPaintEvent *) {
+void ActivityListWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
 
     painter.setPen(Qt::NoPen);
@@ -82,43 +84,45 @@ void ActivitiesListWidget::paintEvent(QPaintEvent *) {
     painter.drawRect(QRect(0, 0, width(), height()));
 }
 
-MainScene *ActivitiesListWidget::mainScene() {
+MainScene *ActivityListWidget::mainScene() {
     return qobject_cast<MainScene *>(parentWidget());
 }
 
-void ActivitiesListWidget::getBack() {
+void ActivityListWidget::getBack() {
     emit wantToGetBack();
 }
 
-void ActivitiesListWidget::reconnectItemAtIndex(int index,
-                                                ActivitiesListItemWidget *item) {
+void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
+                                              ActivityListItemWidget *item) {
     item->disconnect();
 
-    connect(item,
-            &ActivitiesListItemWidget::selected,
+    connect(item, &ActivityListItemWidget::selected,
             [=]() {
-                strategy->putActivityInTimeSlotsAtIndices(
-                        index,
-                        mainScene()->selection()
-                );
-
+                strategy->putActivityInTimeSlotsAtIndices(itemIndex,
+                                                          mainScene()->selection());
                 getBack();
             });
 
-    connect(item,
-            &ActivitiesListItemWidget::wantToDelete,
+    connect(item, &ActivityListItemWidget::activityDeleted,
             [=]() {
-                strategy->removeActivityAtIndex(index);
+                strategy->removeActivityAtIndex(itemIndex);
             });
 
-    connect(item,
-            &ActivitiesListItemWidget::activityEdited,
+    connect(item, &ActivityListItemWidget::activityEdited,
             [=](const Activity &newActivity) {
-                strategy->editActivityAtIndex(index, newActivity);
+                strategy->editActivityAtIndex(itemIndex, newActivity);
             });
+
+    connect(item, &ActivityListItemWidget::hovered, [=]() {
+        removeBorderBeforeIndex(itemIndex);
+    });
+
+    connect(item, &ActivityListItemWidget::unhovered, [=]() {
+        removeBorderBeforeIndex(0);
+    });
 }
 
-void ActivitiesListWidget::showNewActivityMenu() {
+void ActivityListWidget::showNewActivityMenu() {
     const auto margin = 10;
 
     int topOffset = mapToGlobal(QPoint(0, 0)).y();
@@ -132,31 +136,45 @@ void ActivitiesListWidget::showNewActivityMenu() {
     newActivityMenu->exec(center);
 }
 
-void ActivitiesListWidget::setStrategy(Strategy *newStrategy) {
+void ActivityListWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     strategy->activities()
-            .setOnChangeCallback(this, &ActivitiesListWidget::updateList);
+            .setOnChangeCallback(this, &ActivityListWidget::updateList);
 
     updateList();
 }
 
-int ActivitiesListWidget::numberOfItems() {
+int ActivityListWidget::numberOfItems() {
     return strategy->activities().size();
 }
 
-QVBoxLayout *ActivitiesListWidget::listLayout() {
+QVBoxLayout *ActivityListWidget::listLayout() {
     return qobject_cast<QVBoxLayout *>(listWidget->layout());
 }
 
-void ActivitiesListWidget::reuseItemAtIndex(int index, ActivitiesListItemWidget *itemWidget) {
+void ActivityListWidget::reuseItemAtIndex(int index, ActivityListItemWidget *itemWidget) {
     auto activity = strategy->activities().at(index);
     itemWidget->setActivity(activity);
     reconnectItemAtIndex(index, itemWidget);
 }
 
-ActivitiesListItemWidget *ActivitiesListWidget::makeNewItemAtIndex(int index) {
+ActivityListItemWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
     auto activity = strategy->activities().at(index);
-    auto itemWidget = new ActivitiesListItemWidget(activity);
+    auto itemWidget = new ActivityListItemWidget(activity);
     reconnectItemAtIndex(index, itemWidget);
     return itemWidget;
+}
+
+void ActivityListWidget::removeBorderBeforeIndex(int index) {
+    for (auto i = 0; i < listLayout()->count(); i++) {
+        if (!listLayout()->itemAt(i)->widget())
+            continue;
+
+        auto itemWidget = qobject_cast<ActivityListItemWidget *>(listLayout()->itemAt(i)->widget());
+
+        if (!itemWidget)
+            continue;
+
+        itemWidget->setDrawsBorder(i != index - 1);
+    }
 }

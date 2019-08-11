@@ -39,13 +39,13 @@ int minutesFromQTime(const QTime &time) {
     return time.msecsSinceStartOfDay() / 60 / 1000;
 }
 
-QTime qTimeFromMinutes(int minutes) {
+QTime QTimeFromMinutes(int minutes) {
     return QTime(0, 0, 0).addSecs(minutes * 60);
 }
 
-QString qStringForMinutes(int minutes) {
+QString QStringForMinutes(int minutes) {
     auto timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
-    return qTimeFromMinutes(minutes).toString(timeFormat);
+    return QTimeFromMinutes(minutes).toString(timeFormat);
 }
 
 int currentMinutes() {
@@ -59,4 +59,13 @@ int currentSeconds() {
 double devicePixelRatio() {
     auto screenNumber = QApplication::desktop()->screenNumber();
     return QGuiApplication::screens()[screenNumber]->devicePixelRatio();
+}
+
+QString StringUtils::toSentenceCase(QString string) {
+    if (string.isEmpty()) {
+        return string;
+    }
+
+    string[0] = string[0].toUpper();
+    return string;
 }

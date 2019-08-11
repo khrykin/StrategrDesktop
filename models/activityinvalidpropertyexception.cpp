@@ -3,16 +3,13 @@
 //
 
 #include "activityinvalidpropertyexception.h"
-
+#include <iostream>
+#include <utility>
 
 const char *Activity::InvalidPropertyException::what() const noexcept {
-    auto whatMessage = propertyName + ": " + message;
-    return whatMessage.data();
+    return message.c_str();
 }
 
-Activity::InvalidPropertyException::InvalidPropertyException(
-        std::string propertyName,
-        std::string message) :
+Activity::InvalidPropertyException::InvalidPropertyException(std::string message) :
         std::exception(),
-        message(std::move(message)),
-        propertyName(std::move(propertyName)) {}
+        message(std::move(message)) {}

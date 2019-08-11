@@ -9,10 +9,12 @@
 #include "strategy.h"
 
 #include "sessionsmainwidget.h"
-#include "activitieslistwidget.h"
+#include "activitylistwidget.h"
 #include "parentwindowaccessible.h"
 
-class MainScene : public SlidingStackedWidget, public ParentWindowAccessible<MainScene> {
+class MainScene :
+        public SlidingStackedWidget,
+        public ParentWindowAccessible<MainScene> {
 Q_OBJECT
 public:
     explicit MainScene(Strategy *strategy,
@@ -34,7 +36,7 @@ public:
 private:
     Strategy *strategy;
     SessionsMainWidget *sessionsMainWidget;
-    ActivitiesListWidget *activitiesWidget;
+    ActivityListWidget *activitiesWidget;
 
 };
 

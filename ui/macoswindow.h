@@ -14,7 +14,6 @@ class MainWindow;
 class MacOSWindow {
 public:
     static void setup(MainWindow *window);
-    static void teardown(MainWindow *window);
 
     static void pageChange(MainWindow *window, int pageIndex);
     static void updateWindowTitle(MainWindow *window);
@@ -26,6 +25,7 @@ public:
     static QPixmap openHandCursor();
     static QPixmap dragCopyCursor();
 private:
+    static NSString *makeToolbarIdentifier(const MainWindow *window);
 };
 
 #endif

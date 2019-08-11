@@ -14,13 +14,13 @@ MainScene::MainScene(Strategy *strategy, QWidget *parent)
         : SlidingStackedWidget(parent), strategy(strategy) {
 
     sessionsMainWidget = new SessionsMainWidget(strategy);
-    activitiesWidget = new ActivitiesListWidget(strategy);
+    activitiesWidget = new ActivityListWidget(strategy);
 
     addWidget(sessionsMainWidget);
     addWidget(activitiesWidget);
 
     connect(activitiesWidget,
-            &ActivitiesListWidget::wantToGetBack,
+            &ActivityListWidget::wantToGetBack,
             this,
             &MainScene::showSessions);
 }

@@ -28,7 +28,7 @@ int SlotRuler::calculateLabelWidth() const {
     font.setBold(true);
 
     return QFontMetrics(font)
-            .horizontalAdvance(qStringForMinutes(0));
+            .horizontalAdvance(QStringForMinutes(0));
 }
 
 QVector<TimeLabel> SlotRuler::labels() const {

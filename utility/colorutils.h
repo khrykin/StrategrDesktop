@@ -26,7 +26,7 @@ namespace ColorUtils {
         return scale(color, 1 - factor);
     }
 
-    inline QColor qColorFromStdString(const std::string &hex) {
+    inline QColor QColorFromStdString(const std::string &hex) {
         return QColor(QString::fromStdString(hex));
     }
 
@@ -45,9 +45,9 @@ namespace ColorUtils {
                 .arg(color.alpha());
     }
 
-    inline QColor qColorOverlayWithAlpha(const QColor &overlay,
-                                         double alpha = 1.0,
-                                         const QColor &substrate = QApplication::palette().color(QPalette::Base)) {
+    inline QColor overlayWithAlpha(const QColor &overlay,
+                                   double alpha = 1.0,
+                                   const QColor &substrate = QApplication::palette().color(QPalette::Base)) {
         auto redComponent = substrate.redF()
                             + (overlay.redF() - substrate.redF()) * alpha;
         auto greenComponent = substrate.greenF()

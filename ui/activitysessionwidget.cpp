@@ -1,6 +1,5 @@
 #include <cmath>
 
-#include <QDebug>
 #include <QLayout>
 #include <QPaintEvent>
 #include <QPainter>
@@ -16,18 +15,16 @@
 #include "colorutils.h"
 #include "fontutils.h"
 
-#include "third-party/stacklayout.h"
-
-ActivitySessionWidget::ActivitySessionWidget(const ActivitySession &activitySession,
+ActivitySessionWidget::ActivitySessionWidget(ActivitySession activitySession,
                                              QWidget *parent)
-        : activitySession(activitySession),
+        : activitySession(std::move(activitySession)),
           QWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
     updateUI();
 }
 
-void ActivitySessionWidget::paintEvent(QPaintEvent *event) {
+void ActivitySessionWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
 
     painter.setPen(Qt::NoPen);
@@ -48,7 +45,7 @@ void ActivitySessionWidget::drawRulers(QPainter &painter) const {
     auto baseColor = palette().color(QPalette::Base);
     auto alphaFactor = ColorUtils::shadesAlphaFactor(8);
 
-    auto rulerColor = ColorUtils::qColorOverlayWithAlpha(
+    auto rulerColor = ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
             0.06 * alphaFactor,
             baseColor);
@@ -56,7 +53,7 @@ void ActivitySessionWidget::drawRulers(QPainter &painter) const {
     painter.setBrush(rulerColor);
 
     for (auto &timeSlot : activitySession.timeSlots) {
-        auto timeSlotIndex = &timeSlot - &activitySession.timeSlots[0];
+        auto timeSlotIndex = static_cast<int>(&timeSlot - &activitySession.timeSlots[0]);
 
         if (timeSlotIndex == activitySession.length() - 1) {
             break;
@@ -94,8 +91,8 @@ QColor ActivitySessionWidget::selectedBackgroundColor() const {
     using namespace ColorUtils;
 
     if (!activitySession.activity) {
-        return qColorOverlayWithAlpha(textColor(),
-                                      0.05 * shadesAlphaFactor());
+        return overlayWithAlpha(textColor(),
+                                0.05 * shadesAlphaFactor());
     }
 
     auto backgroundColor = sessionColor().lighter(110);
@@ -131,7 +128,7 @@ void ActivitySessionWidget::drawBorder(QPainter &painter) {
 }
 
 QColor ActivitySessionWidget::borderColor() {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
             0.35,
             QApplication::palette().color(QPalette::Base));
@@ -173,26 +170,10 @@ void ActivitySessionWidget::updateUI() {
     } else {
         update();
     }
-//
-//    if (activityChanged || endTimeChanged) {
-//        update();
-//    }
-//
-//    if (activityChanged || durationChanged) {
-//        updateLabel();
-//    }
 
     previousActivitySession = activitySession;
     previousDuration = activitySession.duration();
     previousEndTime = activitySession.endTime();
-}
-
-void ActivitySessionWidget::updateLabel() {
-//    auto currentLabelText = makeLabelTextComponents();
-//    if (currentLabelText != previousLabelText) {
-//        setLabelText(makeLabelTextComponents);
-//        previousLabelText = currentLabelText;
-//    }
 }
 
 QStringList ActivitySessionWidget::makeLabelTextComponents() const {
@@ -220,7 +201,7 @@ void ActivitySessionWidget::setSlotHeight(int newSlotHeight) {
 }
 
 int ActivitySessionWidget::expectedHeight() {
-    return activitySession.length() * slotHeight;
+    return static_cast<int>(activitySession.length()) * slotHeight;
 }
 
 void ActivitySessionWidget::drawLabel(QPainter &painter) const {
@@ -232,12 +213,12 @@ void ActivitySessionWidget::drawLabel(QPainter &painter) const {
 
     painter.setFont(font);
 
-    auto durationColor = ColorUtils::qColorOverlayWithAlpha(
+    auto durationColor = ColorUtils::overlayWithAlpha(
             palette().color(QPalette::WindowText),
             0.5);
 
     auto color = safeForegroundColor(
-            qColorFromStdString(activitySession.activity->color())
+            QColorFromStdString(activitySession.activity->color())
     );
 
     auto textComponents = makeLabelTextComponents();

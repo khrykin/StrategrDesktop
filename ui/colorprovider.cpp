@@ -10,13 +10,13 @@ QColor ColorProvider::baseColor() {
 }
 
 QColor ColorProvider::borderColor() {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
             0.25 * ColorUtils::shadesAlphaFactor());
 }
 
 QColor ColorProvider::hardBorderColor() {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
             0.9 * ColorUtils::shadesAlphaFactor(100));
 }
@@ -36,25 +36,30 @@ QColor ColorProvider::textColor() {
     return QApplication::palette().color(QPalette::Text);
 }
 
-
 QColor ColorProvider::windowColor() {
     return QApplication::palette().color(QPalette::Window);
 }
 
 QColor ColorProvider::panelColor() {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Window),
             0.6 * ColorUtils::shadesAlphaFactor());
 }
 
 QColor ColorProvider::darkPanelColor() {
-    return ColorUtils::qColorOverlayWithAlpha(
+    return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Window),
             0.95 * ColorUtils::shadesAlphaFactor());
 }
 
 QColor ColorProvider::highlightedTextColor() {
     return QApplication::palette().color(QPalette::HighlightedText);
+}
+
+QColor ColorProvider::secondaryTextColor() {
+    return ColorUtils::overlayWithAlpha(
+            QApplication::palette().color(QPalette::Text),
+            0.5 * ColorUtils::shadesAlphaFactor());
 }
 
 

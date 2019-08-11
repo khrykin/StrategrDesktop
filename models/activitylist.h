@@ -55,7 +55,7 @@ private:
 };
 
 struct ActivityList::AlreadyPresentException : public std::exception {
-    static constexpr auto message = "Already present";
+    static constexpr auto message = "this activity is already present";
     const char *what() const noexcept override;
 };
 

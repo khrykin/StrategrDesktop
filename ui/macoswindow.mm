@@ -1,14 +1,18 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-nullptr"
+#pragma ide diagnostic ignored "hicpp-use-auto"
 //
 // Created by Dmitry Khrykin on 2019-07-26.
 //
 
 #import <AppKit/AppKit.h>
+
+#include <QtMac>
+
 #import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
 
 #include "macoswindow.h"
 #include "mainwindow.h"
-
-#include <QtMac>
 
 const NSString *ToolbarItemActivitiesIdentifier = @"Activities";
 const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
@@ -32,11 +36,27 @@ const NSArray *activitiesPage = @[ToolbarItemNewActivityIdentifier,
 
 const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 
-
-NSWindow *nsWindowFromQWindow(const MainWindow *window) {
+NSWindow *NSWindowFromQWindow(const MainWindow *window) {
     auto *nsView = reinterpret_cast<NSView *>(window->winId());
     return nsView.window;
 }
+
+@interface Toolbar : NSToolbar
+@property(atomic, retain) id retainedDelegate;
+@end
+
+@implementation Toolbar
+- (void)setDelegate:(id)delegate {
+    [super setDelegate:delegate];
+    self.retainedDelegate = delegate;
+}
+
+- (void)dealloc {
+    [super dealloc];
+    [self.retainedDelegate release];
+}
+@end
+
 
 @interface ToolbarDelegate : NSObject <NSToolbarDelegate>
 
@@ -45,7 +65,6 @@ NSWindow *nsWindowFromQWindow(const MainWindow *window) {
 @property(retain) NSToolbar *toolbar;
 
 - (void)setPage:(unsigned int)index;
-
 @end
 
 @implementation ToolbarDelegate
@@ -55,8 +74,8 @@ NSWindow *nsWindowFromQWindow(const MainWindow *window) {
     NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
 
     if ([itemIdentifier isEqual:TAAdaptiveSpaceItemIdentifier]) {
-        return [[TAAdaptiveSpaceItem alloc]
-                initWithItemIdentifier:(NSString *) TAAdaptiveSpaceItemIdentifier];
+        return [[[TAAdaptiveSpaceItem alloc]
+                initWithItemIdentifier:(NSString *) TAAdaptiveSpaceItemIdentifier] autorelease];
     }
 
     if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier] ||
@@ -108,7 +127,7 @@ NSWindow *nsWindowFromQWindow(const MainWindow *window) {
         btn.image = [NSImage imageNamed:NSImageNameActionTemplate];
     } else if ([itemIdentifier isEqual:ToolbarItemBackButtonIdentifier]) {
         btn.image = [NSImage imageNamed:NSImageNameGoBackTemplate];
-        btn.bordered = NO;
+//        btn.bordered = NO;
     } else if ([itemIdentifier isEqual:ToolbarItemNewActivityIdentifier]) {
         btn.image = [NSImage imageNamed:NSImageNameAddTemplate];
     } else if ([itemIdentifier isEqual:ToolbarItemActivitiesIdentifier]) {
@@ -185,22 +204,20 @@ NSWindow *nsWindowFromQWindow(const MainWindow *window) {
 
 void MacOSWindow::setup(MainWindow *window) {
     @autoreleasepool {
-        NSWindow *nsWindow = nsWindowFromQWindow(window);
+        NSWindow *nsWindow = NSWindowFromQWindow(window);
         nsWindow.titleVisibility = NSWindowTitleHidden;
 
         [nsWindow.contentView setWantsLayer:YES];
 
         // Generate unique identifier to ensure that every window
         // has it's own toolbar
-        auto integerPointer = reinterpret_cast<std::uintptr_t>(window);
-        auto toolbarIdentifier = QString::number(integerPointer).toNSString();
+        NSString *toolbarIdentifier = makeToolbarIdentifier(window);
 
-        NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
+        Toolbar *toolbar = [[[Toolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
         toolbar.allowsUserCustomization = NO;
         toolbar.displayMode = NSToolbarDisplayModeIconOnly;
 
-        // We must call teardown() function to release toolbarDelegate
-        ToolbarDelegate *toolbarDelegate = [[ToolbarDelegate alloc] init];
+        ToolbarDelegate *toolbarDelegate = [[[ToolbarDelegate alloc] init] autorelease];
         toolbarDelegate.toolbar = toolbar;
         toolbarDelegate.qWindow = window;
 
@@ -213,24 +230,21 @@ void MacOSWindow::setup(MainWindow *window) {
     }
 }
 
-
-void MacOSWindow::teardown(MainWindow *window) {
-    @autoreleasepool {
-        auto *toolbarDelegate = (ToolbarDelegate *) nsWindowFromQWindow(window).toolbar.delegate;
-        [toolbarDelegate release];
-    }
+NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
+    auto integerPointer = reinterpret_cast<uintptr_t>(window);
+    return QString::number(integerPointer).toNSString();
 }
 
 void MacOSWindow::pageChange(MainWindow *window, int pageIndex) {
     @autoreleasepool {
-        auto *toolbarDelegate = (ToolbarDelegate *) nsWindowFromQWindow(window).toolbar.delegate;
+        auto *toolbarDelegate = (ToolbarDelegate *) NSWindowFromQWindow(window).toolbar.delegate;
         [toolbarDelegate setPage:(unsigned int) pageIndex];
     }
 }
 
 void MacOSWindow::updateWindowTitle(MainWindow *window) {
     @autoreleasepool {
-        auto *toolbarDelegate = (ToolbarDelegate *) nsWindowFromQWindow(window).toolbar.delegate;
+        auto *toolbarDelegate = (ToolbarDelegate *) NSWindowFromQWindow(window).toolbar.delegate;
         [toolbarDelegate setPage:toolbarDelegate.currentPage];
     }
 }
@@ -260,10 +274,12 @@ QPixmap MacOSWindow::dragCopyCursor() {
 }
 
 QRect MacOSWindow::geometry(MainWindow *window) {
-    CGRect frame = nsWindowFromQWindow(window).frame;
+    CGRect frame = NSWindowFromQWindow(window).frame;
     return QRect(static_cast<int>(frame.origin.x),
                  static_cast<int>(frame.origin.y),
                  static_cast<int>(frame.size.width),
                  static_cast<int>(frame.size.height));
 }
 
+
+#pragma clang diagnostic pop

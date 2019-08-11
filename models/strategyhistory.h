@@ -27,52 +27,15 @@ public:
         }
     };
 
-    explicit StrategyHistory(Entry currentState)
-            : currentState(std::move(currentState)) {}
+    explicit StrategyHistory(Entry currentState);
 
+    void commit(const Entry &newState);
 
-    void commit(const Entry &newState) {
-        if (newState != currentState) {
-            undoStack.push_back(currentState);
-            redoStack.clear();
+    std::optional<Entry> undo();
+    std::optional<Entry> redo();
 
-            currentState = newState;
-        }
-    }
-
-    std::optional<Entry> undo() {
-        if (hasPrevoiusState()) {
-            redoStack.push_back(currentState);
-
-            currentState = undoStack.back();
-            undoStack.pop_back();
-
-            return currentState;
-        }
-
-        return std::nullopt;
-    }
-
-    std::optional<Entry> redo() {
-        if (hasNextState()) {
-            undoStack.push_back(currentState);
-
-            currentState = redoStack.back();
-            redoStack.pop_back();
-
-            return currentState;
-        }
-
-        return std::nullopt;
-    }
-
-    bool hasPrevoiusState() {
-        return !undoStack.empty();
-    }
-
-    bool hasNextState() {
-        return !redoStack.empty();
-    }
+    bool hasPrevoiusState();
+    bool hasNextState();
 
 private:
     Entry currentState;

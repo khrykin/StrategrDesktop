@@ -16,9 +16,8 @@ bool Activity::isValid(const Activity::Name &name) {
 }
 
 Activity::InvalidPropertyException Activity::emptyNameException() {
-    const auto message = "can't be empty";
-    return InvalidPropertyException(InvalidPropertyException::nameProperty,
-                                    message);
+    const auto message = "activity name can't be empty";
+    return InvalidPropertyException(message);
 }
 
 const Activity::Name &Activity::name() const {

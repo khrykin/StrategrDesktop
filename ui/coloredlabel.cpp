@@ -3,11 +3,13 @@
 //
 
 #include <QPainter>
+#include <QFontMetrics>
+#include <utility>
 
 #include "coloredlabel.h"
 
-ColoredLabel::ColoredLabel(const QString &text, QWidget *parent)
-        : _text(text),
+ColoredLabel::ColoredLabel(QString text, QWidget *parent)
+        : _text(std::move(text)),
           QWidget(parent) {
 }
 
@@ -56,16 +58,30 @@ void ColoredLabel::setBold(bool isBold) {
     setFont(newFont);
 }
 
-void ColoredLabel::setDynamicColor(const std::function<QColor()> &newColorSetter) {
-    colorSetter = newColorSetter;
+void ColoredLabel::setFontHeight(double fontHeight) {
+    auto newFont = QFont(font());
+    newFont.setPointSizeF(fontHeight);
+
+    setFont(newFont);
+}
+
+
+void ColoredLabel::setDynamicColor(const std::function<QColor()> &newColorGetter) {
+    colorGetter = newColorGetter;
     update();
 }
 
 QColor ColoredLabel::dynamicColor() {
-    if (colorSetter) {
-        return colorSetter();
+    if (colorGetter) {
+        return colorGetter();
     }
 
     return color();
 }
+
+QSize ColoredLabel::sizeHint() const {
+    auto metrics = QFontMetrics(font());
+    return QSize(metrics.horizontalAdvance(_text), metrics.height());
+}
+
 

@@ -9,17 +9,10 @@
 
 class Activity::InvalidPropertyException : public std::exception {
 public:
-    static constexpr auto nameProperty = "name";
-    static constexpr auto colorProperty = "color";
-    static constexpr auto defaultMessage = "invalid value";
-
-    explicit InvalidPropertyException(std::string propertyName,
-                                      std::string message = defaultMessage);
-
+    explicit InvalidPropertyException(std::string message);
     const char *what() const noexcept override;
 
 private:
-    std::string propertyName;
     std::string message;
 };
 

@@ -16,16 +16,17 @@ public:
 
 signals:
     void colorChanged(const std::optional<QColor> &color);
-
-public slots:
+    void colorChangedByClick(const std::optional<QColor> &color);
 private:
-    void deselectAll();
+    static const QVector<QColor> defaultColors;
+
     std::optional<QColor> _color;
     const QVector<QColor> colors = ColorPicker::defaultColors;
-    static inline const QVector<QColor> defaultColors = {
-            QColor("#FF4136"), QColor("#FFB700"), QColor("#FFD700"),
-            QColor("#A463F2"), QColor("#D5008F"), QColor("#19A974"),
-            QColor("#357EDD"), QColor("#000000"), QColor("#777777")};
+
+    void deselectAll();
+
+    void setColorFromPalette(const std::optional<QColor> &color);
+
 };
 
 #endif // COLORPICKER_H

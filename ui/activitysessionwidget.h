@@ -13,7 +13,7 @@ class ActivitySessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 
 public:
-    explicit ActivitySessionWidget(const ActivitySession &activitySession,
+    explicit ActivitySessionWidget(ActivitySession activitySession,
                                    QWidget *parent = nullptr);
 
 
@@ -34,18 +34,13 @@ private:
     ActivitySession activitySession;
     ActivitySession previousActivitySession = ActivitySession();
 
-    int previousDuration = 0;
+    Strategy::Duration previousDuration = 0;
     Strategy::Time previousEndTime = 0;
-
-    QString lableText = "";
-    QString previousLabelText = "";
-
 
     void drawBorder(QPainter &painter);
 
     void updateUI();
     int expectedHeight();
-    void updateLabel();
 
     QStringList makeLabelTextComponents() const;
 
