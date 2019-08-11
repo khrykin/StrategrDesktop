@@ -8,8 +8,8 @@
 
 #define DEBUG_NAVBAR false
 
-#if !defined(Q_OS_MAC) || DEBUG_NAVBAR
-#define SHOW_NAVBAR
+#if defined(Q_OS_MAC) && !DEBUG_NAVBAR
+#define HIDE_NAVBAR
 #endif
 
 class Navbar : public QWidget, public ColorProvider {
@@ -23,7 +23,7 @@ public:
     QPushButton *rightButton() const;
     QLabel *titleLabel() const;
 
-#ifndef SHOW_NAVBAR
+#ifdef HIDE_NAVBAR
 
     template<typename Method>
     void setLeftButton(

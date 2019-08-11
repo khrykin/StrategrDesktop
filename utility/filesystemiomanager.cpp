@@ -36,7 +36,7 @@ void FileSystemIOManager::saveAs(const Strategy &strategy) {
     auto saveAsFilepath = QFileDialog::getSaveFileName(
             window,
             QObject::tr("Save Strategy As"),
-            destinationDir(),
+            destinationDir() + "/" + fileInfo().fileName(),
             searchPattern);
 
     QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);

@@ -33,7 +33,7 @@ public:
     const Activity &operator[](ActivityIndex itemIndex) const;
     Activity *at(ActivityIndex itemIndex) const;
 
-    std::optional<Index> indexOf(const Activity *activity) const;;
+    std::optional<Index> indexOf(const Activity *activity) const;
 
 
     ActivityList &operator=(const ActivityList &newList);

@@ -1,24 +1,21 @@
+#include <QAction>
+#include <QLabel>
+#include <QLayout>
+#include <QPainter>
+#include <QStyle>
+#include <QStyleOption>
+
+#include "activityinvalidpropertyexception.h"
 #include "activitylistwidget.h"
 #include "activitylistitemwidget.h"
 #include "mainscene.h"
 #include "slotboard.h"
 
-#include <QAction>
-#include <QLabel>
-#include <QLayout>
-#include <QPainter>
-#include <QPushButton>
-#include <QStyle>
-#include <QStyleOption>
-#include <QApplication>
-#include "activityinvalidpropertyexception.h"
-#include "alert.h"
-
 ActivityListWidget::ActivityListWidget(Strategy *strategy,
                                        QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     strategy->activities()
-            .setOnChangeCallback(this, &ActivityListWidget::updateList);
+            .setOnChangeCallback(this, &ActivityListWidget::updateUI);
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
@@ -28,7 +25,7 @@ ActivityListWidget::ActivityListWidget(Strategy *strategy,
     layoutChildWidgets();
     setupActions();
 
-    updateList();
+    updateUI();
 }
 
 void ActivityListWidget::setupActions() {
@@ -42,6 +39,7 @@ void ActivityListWidget::setupActions() {
 
 void ActivityListWidget::layoutChildWidgets() {
     listWidget = new QWidget();
+    listWidget->setProperty("listWidget", true);
     listWidget->setLayout(new QVBoxLayout());
     listWidget->layout()->setSpacing(0);
     listWidget->layout()->setMargin(0);
@@ -53,8 +51,17 @@ void ActivityListWidget::layoutChildWidgets() {
                               "background: rgba(255, 255, 255, 0);"
                               " }");
     scrollArea->setWidget(listWidget);
-    listWidget->setStyleSheet("background: rgba(255, 255, 255, 0);");
+    listWidget->setStyleSheet("[listWidget] {"
+                              "background: rgba(255, 255, 255, 0);"
+                              "}");
 
+    auto buttonName = navbar->rightButton() ? "Add" : "+";
+    emptyListNotice = new ColoredLabel(QString("Click \"%1\" to add activities").arg(buttonName));
+    emptyListNotice->setDynamicColor(&ColorProvider::secondaryTextColor);
+    emptyListNotice->setAlignment(Qt::AlignCenter);
+    emptyListNotice->setFontHeight(14);
+
+    layout()->addWidget(emptyListNotice);
     layout()->addWidget(scrollArea);
 
     newActivityMenu = new ActivityEditorMenu(std::nullopt, this);
@@ -74,7 +81,7 @@ void ActivityListWidget::setupNavbar() {
     navbar->setLeftButton("Back",
                           this,
                           &ActivityListWidget::getBack);
-    navbar->setRightButton("New",
+    navbar->setRightButton("Add",
                            this,
                            &ActivityListWidget::showNewActivityMenu);
 }
@@ -102,6 +109,9 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
 
     connect(item, &ActivityListItemWidget::selected,
             [=]() {
+                if (mainScene()->selection().empty())
+                    return;
+
                 strategy->putActivityInTimeSlotsAtIndices(itemIndex,
                                                           mainScene()->selection());
                 getBack();
@@ -144,9 +154,9 @@ void ActivityListWidget::showNewActivityMenu() {
 void ActivityListWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     strategy->activities()
-            .setOnChangeCallback(this, &ActivityListWidget::updateList);
+            .setOnChangeCallback(this, &ActivityListWidget::updateUI);
 
-    updateList();
+    updateUI();
 }
 
 int ActivityListWidget::numberOfItems() {
@@ -181,5 +191,17 @@ void ActivityListWidget::removeBorderBeforeIndex(int index) {
             continue;
 
         itemWidget->setDrawsBorder(i != index - 1);
+    }
+}
+
+void ActivityListWidget::updateUI() {
+    updateList();
+
+    if (strategy->activities().empty()) {
+        scrollArea->hide();
+        emptyListNotice->show();
+    } else {
+        scrollArea->show();
+        emptyListNotice->hide();
     }
 }

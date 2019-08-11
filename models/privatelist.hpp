@@ -56,6 +56,10 @@ public:
         return _vector.back();
     }
 
+    bool empty() const {
+        return _vector.empty();
+    }
+
     bool hasIndex(Index itemIndex) const {
         if (_vector.empty()) {
             return false;

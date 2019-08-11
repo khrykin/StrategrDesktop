@@ -159,7 +159,9 @@ void ActivityEditorMenu::addColorWidgetAction() {
         currentColor = activityColor;
     } else {
         colorPicker->setRandomColor();
+        currentColor = *colorPicker->color();
     }
+
 
     connect(colorPicker,
             &ColorPicker::colorChanged,

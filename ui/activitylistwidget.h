@@ -5,13 +5,14 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-#include "models/strategy.h"
+#include "strategy.h"
 #include "navbar.h"
 #include "activityeditormenu.h"
 #include "third-party/slidingstackedwidget.h"
 #include "activitylistitemwidget.h"
 #include "reactivelist.hpp"
 #include "colorprovider.h"
+#include "coloredlabel.h"
 
 class MainScene;
 class ActivityListWidget : public QWidget,
@@ -32,6 +33,7 @@ private:
     Strategy *strategy = nullptr;
     Navbar *navbar = nullptr;
     ActivityEditorMenu *newActivityMenu = nullptr;
+    ColoredLabel *emptyListNotice = nullptr;
 
     MainScene *mainScene();
 
@@ -42,6 +44,8 @@ private:
     void getBack();
 
     void removeBorderBeforeIndex(int index);
+
+    void updateUI();
 
     // ReactiveList
     int numberOfItems() override;

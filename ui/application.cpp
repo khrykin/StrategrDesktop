@@ -28,9 +28,10 @@ bool Application::event(QEvent *event) {
         launchedByOpenEvent = true;
 
         auto openEvent = static_cast<QFileOpenEvent *>(event);
-        auto window = new MainWindow();
 
+        auto window = new MainWindow();
         window->loadFile(openEvent->file(), MainWindow::LoadInCurrentWindow);
+        window->show();
     }
 
     return QApplication::event(event);

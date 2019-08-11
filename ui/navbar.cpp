@@ -6,9 +6,10 @@
 #include <QVariant>
 #include "applicationsettings.h"
 
-#ifndef SHOW_NAVBAR
+#ifdef HIDE_NAVBAR
 
 Navbar::Navbar(QWidget *parent) : QWidget(parent) {
+    setFixedHeight(0);
 }
 
 void Navbar::setTitle(const QString &title) {}
