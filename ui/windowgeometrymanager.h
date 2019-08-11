@@ -13,7 +13,7 @@
 class MainWindow;
 class WindowGeometryManager {
 public:
-    static void setInitialGeometry(QWidget *window);
+    static void setInitialGeometry(MainWindow *window);
     static void saveGeometry(MainWindow *window);
     static void resetSavedGeometry();
 

@@ -186,7 +186,11 @@ target_link_libraries(ui_tests
         Qt5::Widgets
         Qt5::Test)
 
-target_link_libraries(Strategr Models Qt5::Widgets Qt5::MacExtras)
+target_link_libraries(Strategr Models Qt5::Widgets)
+
+if (APPLE)
+    target_link_libraries(Strategr Qt5::MacExtras)
+endif ()
 
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES

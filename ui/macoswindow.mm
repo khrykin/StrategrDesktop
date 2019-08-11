@@ -1,15 +1,16 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-nullptr"
-#pragma ide diagnostic ignored "hicpp-use-auto"
 //
 // Created by Dmitry Khrykin on 2019-07-26.
 //
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-nullptr"
+#pragma ide diagnostic ignored "hicpp-use-auto"
+
 #import <AppKit/AppKit.h>
 
-#include <QtMac>
-
 #import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
+
+#include <QtMac>
 
 #include "macoswindow.h"
 #include "mainwindow.h"
@@ -19,7 +20,6 @@ const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
 const NSString *ToolbarItemNewActivityIdentifier = @"New";
 const NSString *ToolbarItemActivitiesTitleIdentifier = @"Title:Activities";
 const NSString *ToolbarItemBackButtonIdentifier = @"Back";
-const NSString *ToolbarItemBackAndNewActivityIdentifier = @"BackAndNewActivity";
 const NSString *ToolbarItemSettingsIdentifier = @"Settings";
 const NSString *TAAdaptiveSpaceItemIdentifier = @"TAAdaptiveSpaceItem";
 
@@ -290,24 +290,18 @@ QPixmap MacOSWindow::closedHandCursor() {
     return QtMac::fromCGImageRef(cgRef);
 }
 
-QPixmap MacOSWindow::openHandCursor() {
-    NSCursor *cursor = [NSCursor openHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:NULL context:nil hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
-}
-
-QPixmap MacOSWindow::dragCopyCursor() {
-    NSCursor *cursor = [NSCursor dragCopyCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:NULL context:nil hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
-}
-
 QRect MacOSWindow::geometry(MainWindow *window) {
-    CGRect frame = NSWindowFromQWindow(window).frame;
-    return QRect(static_cast<int>(frame.origin.x),
-                 static_cast<int>(frame.origin.y),
-                 static_cast<int>(frame.size.width),
-                 static_cast<int>(frame.size.height));
+    // What is 16? I've no idea...
+    auto yDifference = 16;
+    // What is 22? God only knows.
+    auto heightDifference = 22;
+
+    auto qRect = QRect(window->geometry().x(),
+                       window->geometry().y() - yDifference,
+                       window->geometry().width(),
+                       window->geometry().height() - heightDifference);
+
+    return qRect;
 }
 
 

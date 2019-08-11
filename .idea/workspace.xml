@@ -5,12 +5,12 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="Strategr_autogen" />
-      <config projectName="Strategr" targetName="models_tests" />
-      <config projectName="Strategr" targetName="Models" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
       <config projectName="Strategr" targetName="ui_tests" />
-      <config projectName="Strategr" targetName="Strategr" />
+      <config projectName="Strategr" targetName="Models" />
+      <config projectName="Strategr" targetName="models_tests" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -28,15 +28,12 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitylist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitylist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/privatelist.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/privatelist.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activityeditormenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activityeditormenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitylistwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitylistwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/navbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/navbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/navbar.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/navbar.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/filesystemiomanager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/filesystemiomanager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/macoswindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/windowgeometrymanager.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/windowgeometrymanager.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -219,7 +216,7 @@
       <workItem from="1564928047560" duration="31775000" />
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
-      <workItem from="1565552606408" duration="3784000" />
+      <workItem from="1565552606408" duration="11301000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -543,7 +540,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565552937161</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Activities minor bugs fixes">
+      <created>1565556507650</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1565556507650</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -588,7 +592,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="UI tests setup" />
     <MESSAGE value="MainWindow" />
     <MESSAGE value="SlotBoard" />
     <MESSAGE value="Activities" />
@@ -613,6 +616,7 @@
     <MESSAGE value="MacOS back button upgrade" />
     <MESSAGE value="Debug Navbar macro" />
     <MESSAGE value="Activities background fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Activities background fix" />
+    <MESSAGE value="Activities minor bugs fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Activities minor bugs fixes" />
   </component>
 </project>

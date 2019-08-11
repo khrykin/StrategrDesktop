@@ -10,7 +10,7 @@
 
 QWidgetList WindowGeometryManager::windows;
 
-void WindowGeometryManager::setInitialGeometry(QWidget *window) {
+void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
     windows.append(window);
 
     window->setMinimumWidth(ApplicationSettings::windowMinimumWidth);

@@ -54,9 +54,7 @@ public:
     Time endTime() const;
 
     void addActivity(const Activity &activity);
-
     void removeActivityAtIndex(ActivityIndex activityIndex);
-
     void editActivityAtIndex(ActivityIndex activityIndex,
                              const Activity &newActivity);
 
@@ -64,7 +62,6 @@ public:
 
     void putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
                                          const std::vector<TimeSlotIndex> &timeSlotIndices);
-
     void emptyTimeSlotsAtIndices(const std::vector<TimeSlotIndex> &timeSlotIndices);
 
     void beginResizing();
