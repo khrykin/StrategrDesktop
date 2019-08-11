@@ -19,6 +19,7 @@ const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
 const NSString *ToolbarItemNewActivityIdentifier = @"New";
 const NSString *ToolbarItemActivitiesTitleIdentifier = @"Title:Activities";
 const NSString *ToolbarItemBackButtonIdentifier = @"Back";
+const NSString *ToolbarItemBackAndNewActivityIdentifier = @"BackAndNewActivity";
 const NSString *ToolbarItemSettingsIdentifier = @"Settings";
 const NSString *TAAdaptiveSpaceItemIdentifier = @"TAAdaptiveSpaceItem";
 
@@ -87,11 +88,32 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
         return item;
     }
 
+    if ([itemIdentifier isEqual:ToolbarItemBackButtonIdentifier]) {
+        NSSegmentedControl *segmentedControl = [self makeBackButton];
+        item.view = segmentedControl;
+
+        return item;
+    }
+
+
     item.view = [self makeButtonForItemIdentifier:itemIdentifier];
     item.target = self;
     item.action = [self getActionSelectorForItemIdentifier:itemIdentifier];
 
     return item;
+}
+
+- (NSSegmentedControl *)makeBackButton {
+    NSArray<NSImage *> *images = @[[NSImage imageNamed:NSImageNameGoBackTemplate]];
+
+    NSSegmentedControl *segmentedControl
+            = [NSSegmentedControl segmentedControlWithImages:images
+                                                trackingMode:NSSegmentSwitchTrackingMomentary
+                                                      target:self
+                                                      action:@selector(openSessions:)];
+
+    segmentedControl.segmentStyle = NSSegmentStyleSeparated;
+    return segmentedControl;
 }
 
 - (NSTextField *)makeTextFieldForItemIdentifier:(NSString *)itemIdentifier {
@@ -125,9 +147,6 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 
     if ([itemIdentifier isEqual:ToolbarItemSettingsIdentifier]) {
         btn.image = [NSImage imageNamed:NSImageNameActionTemplate];
-    } else if ([itemIdentifier isEqual:ToolbarItemBackButtonIdentifier]) {
-        btn.image = [NSImage imageNamed:NSImageNameGoBackTemplate];
-//        btn.bordered = NO;
     } else if ([itemIdentifier isEqual:ToolbarItemNewActivityIdentifier]) {
         btn.image = [NSImage imageNamed:NSImageNameAddTemplate];
     } else if ([itemIdentifier isEqual:ToolbarItemActivitiesIdentifier]) {
@@ -179,6 +198,16 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 
 - (void)openNewActivityMenu:(id)sender {
     _qWindow->scene()->showNewActivityMenu();
+}
+
+- (void)goBackOrCreateNewActivity:(NSSegmentedControl *)segmentedControl {
+    if (segmentedControl.selectedSegment == 0) {
+        [self openSessions:nil];
+    }
+
+    if (segmentedControl.selectedSegment == 1) {
+        [self openNewActivityMenu:nil];
+    }
 }
 
 - (void)setPage:(unsigned int)index {

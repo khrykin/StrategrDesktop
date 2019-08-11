@@ -27,48 +27,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/cocoalineedit.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/cocoalineedit.mm" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/separator.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/separator.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activity.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activity.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activityinvalidpropertyexception.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activityinvalidpropertyexception.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activityinvalidpropertyexception.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activityinvalidpropertyexception.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitylist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitylist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategyhistory.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategyhistory.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategyhistory.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategyhistory.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistitemwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistitem.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistitemwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitieslistwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitylistwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/activitysessionwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activitysessionwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/alert.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/alert.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorpicker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpicker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorpicker.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpicker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorpickeritem.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorpickeritem.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorprovider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/colorprovider.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainscene.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainscene.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainscene.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainscene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/mainwindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/mainwindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activityeditormenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/newactivitymenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/activityeditormenu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotruler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotruler.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/colorutils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/colorutils.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/utils.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -250,7 +210,7 @@
       <workItem from="1564927701320" duration="325000" />
       <workItem from="1564928047560" duration="31775000" />
       <workItem from="1565189369150" duration="8768000" />
-      <workItem from="1565473218083" duration="15795000" />
+      <workItem from="1565473218083" duration="17225000" />
     </task>
     <task id="LOCAL-00001" summary="Strategy activity sessions tests">
       <created>1562419227111</created>
@@ -546,40 +506,15 @@
       <option name="project" value="LOCAL" />
       <updated>1564925831044</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Activities validation">
+      <created>1565541359959</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1565541359960</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
-  </component>
-  <component name="TestHistory">
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 03m 24s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 04m 39s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 13m 22s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.28 at 22h 17m 23s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 38m 16s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 40m 43s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 42m 06s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 42m 52s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 44m 16s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
-    <history-entry file="Strategy_activity_sessions - 2019.07.29 at 04h 44m 22s.xml">
-      <configuration name="Strategy activity sessions" configurationId="CMakeCatchTestRunConfigurationType" />
-    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -656,6 +591,7 @@
     <MESSAGE value="Stretch operation" />
     <MESSAGE value="Fix stretch operation bug at boundary condition" />
     <MESSAGE value="Improved macOS toolbar" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved macOS toolbar" />
+    <MESSAGE value="Activities validation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Activities validation" />
   </component>
 </project>
