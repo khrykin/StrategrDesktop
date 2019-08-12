@@ -28,9 +28,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,17 +53,24 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectId" id="1Oxmbfu2Y4Q9HEXubiaMW4BQ2gx" />
@@ -84,11 +89,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmake/modules" />
       <recent name="$PROJECT_DIR$/resources" />
       <recent name="$PROJECT_DIR$/utility" />
       <recent name="$PROJECT_DIR$/ui/v0" />
       <recent name="$PROJECT_DIR$/ui" />
-      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -160,6 +165,8 @@
       <list>
         <item itemvalue="Catch.Strategy activity sessions" />
         <item itemvalue="Catch.Strategy activities" />
+        <item itemvalue="Catch.Strategy activity sessions" />
+        <item itemvalue="Catch.Strategy activities" />
       </list>
     </recent_temporary>
   </component>
@@ -213,21 +220,7 @@
       <workItem from="1564928047560" duration="31775000" />
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
-      <workItem from="1565552606408" duration="28559000" />
-    </task>
-    <task id="LOCAL-00003" summary="Strategy activity sessions tests">
-      <created>1562583656990</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1562583656991</updated>
-    </task>
-    <task id="LOCAL-00004" summary="CMake integration">
-      <created>1562586663909</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1562586663909</updated>
+      <workItem from="1565552606408" duration="36328000" />
     </task>
     <task id="LOCAL-00005" summary="CMake integration">
       <created>1562586680909</created>
@@ -558,7 +551,21 @@
       <option name="project" value="LOCAL" />
       <updated>1565625379770</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="MainWindow saveAs fix">
+      <created>1565626743860</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1565626743860</updated>
+    </task>
+    <task id="LOCAL-00053" summary="App version via Git &amp; &quot;About&quot; window">
+      <created>1565634578935</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1565634578935</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -603,7 +610,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Activities" />
     <MESSAGE value="ReactiveList" />
     <MESSAGE value="CurrentActivitySession" />
     <MESSAGE value="File Open Event" />
@@ -628,6 +634,7 @@
     <MESSAGE value="Activities minor bugs fixes" />
     <MESSAGE value="MacOS window geometry restoration fix" />
     <MESSAGE value="MainWindow saveAs fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="MainWindow saveAs fix" />
+    <MESSAGE value="App version via Git &amp; &quot;About&quot; window" />
+    <option name="LAST_COMMIT_MESSAGE" value="App version via Git &amp; &quot;About&quot; window" />
   </component>
 </project>

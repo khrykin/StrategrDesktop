@@ -1,0 +1,8 @@
+//
+// Created by Dmitry Khrykin on 2019-08-12.
+//
+
+#include "../utility/applicationsettings.h"
+
+const auto ApplicationSettings::version = "@VERSION@";
+const auto ApplicationSettings::shortVersion = "@VERSION_SHORT@";

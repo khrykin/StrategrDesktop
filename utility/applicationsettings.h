@@ -23,6 +23,9 @@ namespace ApplicationSettings {
     const auto rowBorderColor = "#ccc";
 
     const auto currentSessionHeight = 39;
+
+    extern const char *const version;
+    extern const char *const shortVersion;
 }
 
 #endif //APPLICATIONSETTINGS_H

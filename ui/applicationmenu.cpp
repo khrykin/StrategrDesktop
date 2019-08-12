@@ -5,8 +5,10 @@
 #include <QAction>
 #include <QMessageBox>
 
+#include "applicationsettings.h"
 #include "applicationmenu.h"
 #include "mainwindow.h"
+#include "aboutwindow.h"
 
 ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupFileMenu();
@@ -15,7 +17,8 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 
     addMenu(helpMenu);
     helpMenu->addAction("About", [=]() {
-        QMessageBox::about(window, "Strategr", "Strategr");
+        auto aboutWindow = new AboutWindow(window);
+        aboutWindow->show();
     });
 
     window->setMenuBar(this);

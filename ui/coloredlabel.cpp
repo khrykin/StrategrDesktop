@@ -81,7 +81,22 @@ QColor ColoredLabel::dynamicColor() {
 
 QSize ColoredLabel::sizeHint() const {
     auto metrics = QFontMetrics(font());
-    return QSize(metrics.horizontalAdvance(_text), metrics.height());
+
+    auto lines = _text.split("\n");
+    auto maxLineLength = 0;
+    auto totalHeight = 0;
+
+    for (auto &line : lines) {
+        auto length = metrics.horizontalAdvance(line);
+        if (length > maxLineLength) {
+            maxLineLength = length;
+        }
+
+        totalHeight += metrics.boundingRect(line).height();
+    }
+
+    return QSize(maxLineLength,
+                 totalHeight + (lines.count() - 1) * metrics.lineSpacing());
 }
 
 

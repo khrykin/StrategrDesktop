@@ -11,6 +11,12 @@ include_directories(models)
 include_directories(ui)
 include_directories(utility)
 
+set(CMAKE_MODULE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
+        ${CMAKE_MODULE_PATH})
+
+include(GenerateVersionFile)
+
 set(MODELS
         models/activity.cpp
         models/activity.h
@@ -113,7 +119,7 @@ set(UI
         ui/macoswindow.h
         ui/cursorprovider.cpp
         ui/cursorprovider.h
-        ui/separator.cpp ui/separator.h ui/visualeffectwidget.mm ui/visualeffectwidget.h)
+        ui/separator.cpp ui/separator.h ui/visualeffectwidget.mm ui/visualeffectwidget.h ui/aboutwindow.cpp ui/aboutwindow.h ui/applicationicon.cpp ui/applicationicon.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -127,7 +133,8 @@ set(UTILITY
         utility/notifier.h
         utility/notifierbackend.h
         utility/fontutils.cpp
-        utility/fontutils.h)
+        utility/fontutils.h
+        )
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -143,6 +150,7 @@ if (APPLE)
     set(PLATFORM_FILES
             ui/alert.mm
             ui/macoswindow.mm
+            ui/applicationicon.mm
             utility/notifierbackend.mm
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
@@ -169,7 +177,8 @@ add_executable(Strategr
         ${PLATFORM_FILES}
         ${UI}
         ${UTILITY}
-        ${RESOURCES})
+        ${RESOURCES}
+        ${version_file})
 
 add_executable(ui_tests
         qt_tests_main.cpp
