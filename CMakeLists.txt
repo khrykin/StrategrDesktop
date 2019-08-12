@@ -133,8 +133,7 @@ set(UTILITY
         utility/notifier.h
         utility/notifierbackend.h
         utility/fontutils.cpp
-        utility/fontutils.h
-        )
+        utility/fontutils.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -152,12 +151,16 @@ if (APPLE)
             ui/macoswindow.mm
             ui/applicationicon.mm
             utility/notifierbackend.mm
+            utility/cocoautils.h
+            utility/cocoautils.mm
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h)
 
-    list(APPEND RESOURCES deployment/Strategr.icns)
+    list(APPEND RESOURCES
+            deployment/Strategr.icns
+            deployment/Strategy.icns)
 endif ()
 
 add_executable(models_tests
@@ -173,6 +176,7 @@ set_target_properties(Models PROPERTIES
 set(CMAKE_AUTOMOC ON)
 
 add_executable(Strategr
+        MACOSX_BUNDLE
         main.cpp
         ${PLATFORM_FILES}
         ${UI}
@@ -199,10 +203,24 @@ target_link_libraries(Strategr Models Qt5::Widgets)
 
 if (APPLE)
     target_link_libraries(Strategr Qt5::MacExtras)
+
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        add_custom_command(TARGET Strategr
+                POST_BUILD
+                COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR})
+    endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif ()
 
+#set()
+#set(INFO_PLIST_PATH )
+#configure_file()
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/deployment/Info.plist"
-        RESOURCE deployment/Strategr.icns)
+        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/deployment/Info.plist
+        MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_SHORT}
+        MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
+        RESOURCE "${RESOURCES}")
+
+

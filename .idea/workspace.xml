@@ -15,20 +15,19 @@
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_PREFIX_PATH=~/Qt/5.13.0/clang_64/lib/cmake">
-        <ADDITIONAL_GENERATION_ENVIRONMENT>
-          <envs>
-            <env name="CMAKE_PREFIX_PATH" value="/usr/local/" />
-          </envs>
-        </ADDITIONAL_GENERATION_ENVIRONMENT>
-      </configuration>
-      <configuration PROFILE_NAME="Release" CONFIG_NAME="Release" GENERATION_OPTIONS="-DCMAKE_PREFIX_PATH=~/Qt/5.13.0/clang_64/lib/cmake" />
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Release" CONFIG_NAME="Release" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
+    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="App version via Git &amp; &quot;About&quot; window">
+      <change afterPath="$PROJECT_DIR$/scripts/cert_id.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility/cocoautils.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility/cocoautils.mm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/applicationicon.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationicon.mm" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -53,7 +52,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -81,13 +80,16 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/deployment" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/deployment" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/cmake/modules" />
       <recent name="$PROJECT_DIR$/resources" />
@@ -221,20 +223,7 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-    </task>
-    <task id="LOCAL-00005" summary="CMake integration">
-      <created>1562586680909</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1562586680909</updated>
-    </task>
-    <task id="LOCAL-00006" summary="CMake integration">
-      <created>1562593713512</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1562593713512</updated>
+      <workItem from="1565648310732" duration="4125000" />
     </task>
     <task id="LOCAL-00007" summary="UI tests setup">
       <created>1562596168511</created>
@@ -565,7 +554,21 @@
       <option name="project" value="LOCAL" />
       <updated>1565634578935</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="App version via Git &amp; &quot;About&quot; window">
+      <created>1565635830651</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1565635830651</updated>
+    </task>
+    <task id="LOCAL-00055" summary="MacOS icons">
+      <created>1565651041120</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1565651041121</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -610,7 +613,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="ReactiveList" />
     <MESSAGE value="CurrentActivitySession" />
     <MESSAGE value="File Open Event" />
     <MESSAGE value="Fonts issue fix" />
@@ -635,6 +637,7 @@
     <MESSAGE value="MacOS window geometry restoration fix" />
     <MESSAGE value="MainWindow saveAs fix" />
     <MESSAGE value="App version via Git &amp; &quot;About&quot; window" />
-    <option name="LAST_COMMIT_MESSAGE" value="App version via Git &amp; &quot;About&quot; window" />
+    <MESSAGE value="MacOS icons" />
+    <option name="LAST_COMMIT_MESSAGE" value="MacOS icons" />
   </component>
 </project>
