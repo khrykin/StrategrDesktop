@@ -5,18 +5,19 @@
 #ifndef STRATEGR_COLOREDLABEL_H
 #define STRATEGR_COLOREDLABEL_H
 
-#include <QLabel>
 #include <functional>
+#include <QLabel>
 
 class ColoredLabel : public QWidget {
+Q_OBJECT
 public:
-
     explicit ColoredLabel(QString text = "", QWidget *parent = nullptr);
 
     const QColor &color() const;
     void setColor(const QColor &color);
 
     QColor dynamicColor();
+    void setDynamicColor(const std::function<QColor()> &newColorGetter);
 
     const QString &text() const;
     void setText(const QString &text);
@@ -26,8 +27,6 @@ public:
 
     void setBold(bool isBold);
     void setFontHeight(double fontHeight);
-
-    void setDynamicColor(const std::function<QColor()> &newColorGetter);
 
     QSize sizeHint() const override;
 private:

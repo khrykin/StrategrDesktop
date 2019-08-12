@@ -1,34 +1,37 @@
 #include "alert.h"
 #include <QMessageBox>
 #include <QAbstractButton>
-#include <AppKit/NSAlert.h>
+#include <QTimer>
+
+#import <AppKit/NSAlert.h>
+#import <AppKit/NSImage.h>
 
 int Alert::showAskToSave(const QString &title, const QString &message) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSModalResponse result;
 
-    QMessageBox messageBox;
-    messageBox.setStandardButtons(QMessageBox::Save
-                                  | QMessageBox::Discard
-                                  | QMessageBox::Cancel);
+    @autoreleasepool {
+        QMessageBox messageBox;
+        messageBox.setStandardButtons(QMessageBox::Save
+                                      | QMessageBox::Discard
+                                      | QMessageBox::Cancel);
 
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert addButtonWithTitle:
-            messageBox.button(QMessageBox::Save)->text()
-                    .toNSString()];
-    [alert addButtonWithTitle:
-            messageBox.button(QMessageBox::Cancel)->text()
-                    .toNSString()];
-    [alert addButtonWithTitle:
-            messageBox.button(QMessageBox::Discard)->text()
-                    .toNSString()];
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert addButtonWithTitle:
+                messageBox.button(QMessageBox::Save)->text()
+                        .toNSString()];
+        [alert addButtonWithTitle:
+                messageBox.button(QMessageBox::Cancel)->text()
+                        .toNSString()];
+        [alert addButtonWithTitle:
+                messageBox.button(QMessageBox::Discard)->text()
+                        .toNSString()];
 
-    [alert setMessageText:title.toNSString()];
-    [alert setInformativeText:message.toNSString()];
-    [alert setAlertStyle:NSAlertStyleWarning];
+        [alert setMessageText:title.toNSString()];
+        [alert setInformativeText:message.toNSString()];
+        [alert setAlertStyle:NSAlertStyleWarning];
 
-    NSModalResponse result = [alert runModal];
-
-    [pool drain];
+        result = [alert runModal];
+    }
 
     switch (result) {
         case NSAlertFirstButtonReturn:
@@ -42,9 +45,27 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
     }
 }
 
-int Alert::showWarning(QWidget *parent,
+int Alert::showWarning(QWidget *,
                        const QString &title,
                        const QString &message) {
-    QMessageBox::warning(parent, title, message);
-    return 0;
+    QTimer::singleShot(0, [title, message]() {
+        @autoreleasepool {
+            QMessageBox messageBox;
+            messageBox.setStandardButtons(QMessageBox::Save
+                                          | QMessageBox::Discard
+                                          | QMessageBox::Cancel);
+
+            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+            alert.alertStyle = NSAlertStyleCritical;
+            alert.icon = [NSImage imageNamed:NSImageNameCaution];
+
+            [alert setMessageText:title.toNSString()];
+            [alert setInformativeText:message.toNSString()];
+            [alert setAlertStyle:NSAlertStyleWarning];
+
+            [alert runModal];
+        }
+    });
+
+    return QMessageBox::Ok;
 }

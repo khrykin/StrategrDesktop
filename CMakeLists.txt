@@ -113,7 +113,7 @@ set(UI
         ui/macoswindow.h
         ui/cursorprovider.cpp
         ui/cursorprovider.h
-        ui/separator.cpp ui/separator.h ui/cocoalineedit.mm ui/cocoalineedit.h)
+        ui/separator.cpp ui/separator.h ui/visualeffectwidget.mm ui/visualeffectwidget.h)
 
 set(UTILITY
         utility/jsonserializer.cpp

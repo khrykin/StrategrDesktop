@@ -56,6 +56,8 @@ private:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
     const QString makeActivitySessionTitle() const;
     double getProgress() const;
 };

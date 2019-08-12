@@ -3,6 +3,7 @@
 //
 
 #include <QAction>
+#include <QMessageBox>
 
 #include "applicationmenu.h"
 #include "mainwindow.h"
@@ -11,6 +12,11 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupFileMenu();
     setupEditMenu();
     setupViewMenu();
+
+    addMenu(helpMenu);
+    helpMenu->addAction("About", [=]() {
+        QMessageBox::about(window, "Strategr", "Strategr");
+    });
 
     window->setMenuBar(this);
 }

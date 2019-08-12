@@ -13,7 +13,6 @@ namespace ApplicationSettings {
     const auto windowInitialWidth = 400;
 
     const auto defaultSlotHeight = 35;
-    const auto defaultRulerWidth = 60;
     const auto defaultActivityItemHeight = 40;
     const auto defaultPadding = 8;
 
@@ -23,7 +22,7 @@ namespace ApplicationSettings {
 
     const auto rowBorderColor = "#ccc";
 
-    const auto currentSessionHeight = 40;
+    const auto currentSessionHeight = 39;
 }
 
 #endif //APPLICATIONSETTINGS_H

@@ -1,11 +1,4 @@
-#include "ui/mainwindow.h"
-
-#include <QFontDatabase>
-#include <QDebug>
-#include <QWidget>
-#include <QLayout>
-#include <QLabel>
-
+#include "mainwindow.h"
 #include "application.h"
 
 void setupCredentials() {

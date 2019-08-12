@@ -3,16 +3,17 @@
 
 #include <QStringList>
 #include <QWidget>
-#include <QLabel>
 
 #include "applicationsettings.h"
 #include "reactivelist.hpp"
 #include "timelabel.h"
+#include "coloredlabel.h"
+#include "colorprovider.h"
 
 class SlotRuler : public QWidget,
-                  public ReactiveList<QLabel> {
+                  public ReactiveList<ColoredLabel>,
+                  public ColorProvider {
 Q_OBJECT
-
 public:
     explicit SlotRuler(QVector<TimeLabel> labels,
                        int cellHeight,
@@ -25,19 +26,23 @@ public:
     void setCellHeight(int cellHeight);
 
 private:
+    using ColorGetter = QColor (*)();
     QVector<TimeLabel> _labels;
     int _cellHeight = ApplicationSettings::defaultSlotHeight;
 
-    void paintEvent(QPaintEvent *) override;
+    int calculateLabelWidth() const;
+    bool isIntegerHourAtIndex(int index) const;
+
+    ColorGetter labelColorGetterAtIndex(int index);
 
     // ReactiveList
-
     int numberOfItems() override;
     QVBoxLayout *listLayout() override;
-    void reuseItemAtIndex(int index, QLabel *itemWidget) override;
-    QLabel *makeNewItemAtIndex(int index) override;
+    void reuseItemAtIndex(int index, ColoredLabel *itemWidget) override;
+    ColoredLabel *makeNewItemAtIndex(int index) override;
     QString makeStyleSheetForLabelIndex(int index) const;
-    int calculateLabelWidth() const;
+
+    void paintEvent(QPaintEvent *) override;
 };
 
 #endif // SLOTRULER_H

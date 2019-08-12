@@ -55,6 +55,8 @@ Strategy::Time Strategy::beginTime() const {
 
 void Strategy::setBeginTime(Time beginTime) {
     _timeSlots.setBeginTime(beginTime);
+
+    commitToHistory();
 }
 
 Strategy::Duration Strategy::timeSlotDuration() const {
@@ -63,8 +65,19 @@ Strategy::Duration Strategy::timeSlotDuration() const {
 
 void Strategy::setTimeSlotDuration(Duration timeSlotDuration) {
     _timeSlots.setSlotDuration(timeSlotDuration);
+
+    commitToHistory();
 }
 
+Strategy::StateSize Strategy::numberOfTimeSlots() const {
+    return _timeSlots.numberOfSlots();
+}
+
+void Strategy::setNumberOfTimeSlots(StateSize numberOfTimeSlots) {
+    _timeSlots.setNumberOfSlots(numberOfTimeSlots);
+
+    commitToHistory();
+}
 
 void Strategy::timeSlotsChanged() {
     _activitySessions.recalculateForTimeSlotsState(_timeSlots);
@@ -99,14 +112,6 @@ void Strategy::fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex) {
     }
 
     currentResizeOperation->fillSlots(fromIndex, tillIndex);
-}
-
-Strategy::StateSize Strategy::numberOfTimeSlots() const {
-    return _timeSlots.numberOfSlots();
-}
-
-void Strategy::setNumberOfTimeSlots(StateSize numberOfTimeSlots) {
-    _timeSlots.setNumberOfSlots(numberOfTimeSlots);
 }
 
 const ActivitySessionsList &Strategy::activitySessions() const {

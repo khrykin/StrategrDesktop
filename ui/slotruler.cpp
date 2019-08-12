@@ -64,32 +64,41 @@ QVBoxLayout *SlotRuler::listLayout() {
     return dynamic_cast<QVBoxLayout *>(layout());
 }
 
-void SlotRuler::reuseItemAtIndex(int index, QLabel *itemWidget) {
+void SlotRuler::reuseItemAtIndex(int index, ColoredLabel *itemWidget) {
     itemWidget->setText(labels()[index].label);
     itemWidget->setFixedHeight(cellHeight());
     itemWidget->setStyleSheet(makeStyleSheetForLabelIndex(index));
+    itemWidget->setDynamicColor(labelColorGetterAtIndex(index));
 }
 
-QLabel *SlotRuler::makeNewItemAtIndex(int index) {
-    auto label = new QLabel();
+SlotRuler::ColorGetter SlotRuler::labelColorGetterAtIndex(int index) {
+    auto colorGetter = this->isIntegerHourAtIndex(index)
+                       ? &SlotRuler::secondaryTextColor
+                       : &SlotRuler::tertiaryTextColor;
+    return colorGetter;
+}
+
+ColoredLabel *SlotRuler::makeNewItemAtIndex(int index) {
+    auto label = new ColoredLabel();
     label->setAlignment(Qt::AlignCenter);
     label->setFixedHeight(cellHeight());
     label->setStyleSheet(makeStyleSheetForLabelIndex(index));
+    label->setDynamicColor(labelColorGetterAtIndex(index));
     label->setText(labels()[index].label);
     return label;
 }
 
 QString SlotRuler::makeStyleSheetForLabelIndex(int index) const {
-    auto &timeLabel = labels()[index];
-
-    auto isIntegerHour = timeLabel.time % 60 == 0;
-    auto color = isIntegerHour ? "#777" : "#aaa";
-    auto fontSize = isIntegerHour ? 10 : 9;
+    auto fontSize = isIntegerHourAtIndex(index) ? 10 : 9;
 
     return QString("font-size: %1pt;"
-                   "font-weight: bold;"
-                   "color: %2")
-            .arg(QString::number(fontSize))
-            .arg(color);
+                   "font-weight: bold;")
+            .arg(QString::number(fontSize));
+}
+
+bool SlotRuler::isIntegerHourAtIndex(int index) const {
+    auto &timeLabel = labels()[index];
+    auto isIntegerHour = timeLabel.time % 60 == 0;
+    return isIntegerHour;
 }
 

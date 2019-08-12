@@ -28,7 +28,6 @@ public:
     void slideAndHide(const std::function<void()> &onFinishedCallback = nullptr);
     void slideAndShow(const std::function<void()> &onFinishedCallback = nullptr);
 
-    void getBack();
 signals:
     void strategySettingsUpdated();
 
@@ -51,7 +50,7 @@ private:
 
     RowWidget *makeFormRowWidget();
 
-    ColoredLabel *makeFormLabel(QString text);
+    ColoredLabel *makeFormLabel(const QString &text);
 
     void updateUI();
 

@@ -167,12 +167,10 @@ void StrategySettingsWidget::paintEvent(QPaintEvent *) {
     painter.drawRect(QRect(0, 0, width(), height()));
 }
 
-ColoredLabel *StrategySettingsWidget::makeFormLabel(QString text) {
+ColoredLabel *StrategySettingsWidget::makeFormLabel(const QString &text) {
     auto label = new ColoredLabel(text);
-//    label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     label->setBold(true);
-
-    label->setDynamicColor(std::bind(&StrategySettingsWidget::labelColor, this));
+    label->setDynamicColor(&ColorProvider::textColorJustLighter);
 
     return label;
 }
@@ -205,11 +203,6 @@ void StrategySettingsWidget::updateUI() {
     }
 
     dontSave = false;
-}
-
-void StrategySettingsWidget::getBack() {
-    save();
-    slideAndHide();
 }
 
 void StrategySettingsWidget::save() {

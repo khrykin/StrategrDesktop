@@ -1,17 +1,15 @@
-
-#include <QDebug>
 #include <QLayout>
 #include <QPaintEvent>
 #include <QPainter>
-#include <QPropertyAnimation>
 #include <QTime>
 #include <QTimer>
 
 #include "currentsessionwidget.h"
 #include "slidinganimator.h"
 #include "utils.h"
-#include "colorutils.h"
 #include "applicationsettings.h"
+
+#include "coloredlabel.h"
 
 CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
         : QWidget(parent) {
@@ -40,18 +38,18 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
     auto *currentLabel = new QLabel(tr("Current"));
     currentLabel->setStyleSheet("font-weight: bold;"
                                 "text-transform: uppercase;"
+                                "background-color: rgba(0,0,0,0);"
                                 "font-size: 10pt;"
                                 "color: #999");
 
-    currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+    currentLabel->setAlignment(Qt::AlignCenter);
 
     activityLabel = new QLabel();
     activityLabel->setStyleSheet("font-weight: bold;"
                                  "font-size: 14pt;"
                                  "color: #888");
 
-    activityLabel->setFixedHeight(25);
-    activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+    activityLabel->setAlignment(Qt::AlignHCenter);
 
     startTimeLabel = new QLabel();
     startTimeLabel->setStyleSheet("font-weight: bold;"
@@ -83,11 +81,19 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
     leftLayout->addWidget(passedTimeLabel);
     leftLayout->addWidget(startTimeLabel);
 
+    startTimeLabel->setFixedHeight(height() / 2);
+    passedTimeLabel->setFixedHeight(height() / 2);
+
     centerLayout->addWidget(currentLabel);
     centerLayout->addWidget(activityLabel);
 
+    activityLabel->setFixedHeight(static_cast<int>(0.6 * height()));
+
     rightLayout->addWidget(leftTimeLabel);
     rightLayout->addWidget(endTimeLabel);
+
+    leftTimeLabel->setFixedHeight(height() / 2);
+    endTimeLabel->setFixedHeight(height() / 2);
 
     for (auto *widget : findChildren<QWidget *>()) {
         widget->setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -97,16 +103,17 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
 void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
     auto painter = QPainter(this);
 
-    auto baseRect = QRect(QPoint(0, 0), geometry().size());
-    auto borderRect = QRect(baseRect.bottomLeft().x(),
-                            baseRect.bottomLeft().y(),
-                            baseRect.width(),
+    auto backgroundRect = QRect(QPoint(0, 0), geometry().size());
+
+    auto borderRect = QRect(backgroundRect.bottomLeft().x(),
+                            backgroundRect.bottomLeft().y(),
+                            backgroundRect.width(),
                             1);
 
-    auto progressRect = QRect(baseRect.topLeft().x(),
-                              baseRect.topLeft().y(),
-                              static_cast<int>(baseRect.width() * progress()),
-                              baseRect.height());
+    auto progressRect = QRect(backgroundRect.topLeft().x(),
+                              backgroundRect.topLeft().y(),
+                              static_cast<int>(backgroundRect.width() * progress()),
+                              backgroundRect.height());
 
     auto progressBorderColor = hardBorderColor();
     progressBorderColor.setAlpha(0.5 * 255);
@@ -114,7 +121,7 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
     painter.setPen(Qt::NoPen);
 
     painter.setBrush(panelColor());
-    painter.drawRect(baseRect);
+    painter.drawRect(backgroundRect);
 
     painter.setBrush(darkPanelColor());
     painter.drawRect(progressRect);
@@ -254,4 +261,9 @@ void CurrentSessionWidget::setActivitySession(
     }
 
     updateUI();
+}
+
+void CurrentSessionWidget::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+//    visualEffectWidget->setGeometry(geometry());
 }

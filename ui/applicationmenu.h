@@ -22,6 +22,7 @@ private:
     QMenu *fileMenu = new QMenu(tr("File"));
     QMenu *editMenu = new QMenu(tr("Edit"));
     QMenu *viewMenu = new QMenu(tr("View"));
+    QMenu *helpMenu = new QMenu(tr("Help"));
 
     QMenu *recentMenu = new QMenu(tr("Open Recent"));
 

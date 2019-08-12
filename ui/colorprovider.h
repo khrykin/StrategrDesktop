@@ -24,7 +24,9 @@ public:
     static QColor highlightedTextColor();
     static QColor selectionColor();
     static QColor textColor();
+    static QColor textColorJustLighter();
     static QColor secondaryTextColor();
+    static QColor tertiaryTextColor();
 };
 
 

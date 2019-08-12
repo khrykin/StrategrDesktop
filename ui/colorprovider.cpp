@@ -59,7 +59,19 @@ QColor ColorProvider::highlightedTextColor() {
 QColor ColorProvider::secondaryTextColor() {
     return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Text),
-            0.5 * ColorUtils::shadesAlphaFactor());
+            0.5 * ColorUtils::shadesAlphaFactor(2));
+}
+
+QColor ColorProvider::tertiaryTextColor() {
+    return ColorUtils::overlayWithAlpha(
+            QApplication::palette().color(QPalette::Text),
+            0.35 * ColorUtils::shadesAlphaFactor());
+}
+
+QColor ColorProvider::textColorJustLighter() {
+    return ColorUtils::overlayWithAlpha(
+            QApplication::palette().color(QPalette::Text),
+            0.75);
 }
 
 

@@ -61,7 +61,9 @@ private:
     void write(const Strategy &strategy);
     void updateLastOpened();
     int showAreYouSureDialog();
-    void showCantOpenDialog(const QFile &file);
+    void showCantOpenDialog(const QFile &file,
+                            const QString &path,
+                            const QString &errorMessage);
     void showCantSaveDialog(const QSaveFile &file);
 
 };

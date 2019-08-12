@@ -28,12 +28,9 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/windowgeometrymanager.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/windowgeometrymanager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +55,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -216,21 +213,7 @@
       <workItem from="1564928047560" duration="31775000" />
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
-      <workItem from="1565552606408" duration="11301000" />
-    </task>
-    <task id="LOCAL-00001" summary="Strategy activity sessions tests">
-      <created>1562419227111</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1562419227112</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Strategy activity sessions tests">
-      <created>1562501622491</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1562501622491</updated>
+      <workItem from="1565552606408" duration="28559000" />
     </task>
     <task id="LOCAL-00003" summary="Strategy activity sessions tests">
       <created>1562583656990</created>
@@ -547,7 +530,35 @@
       <option name="project" value="LOCAL" />
       <updated>1565556507650</updated>
     </task>
-    <option name="localTasksCounter" value="48" />
+    <task id="LOCAL-00048" summary="MacOS window geometry restoration fix">
+      <created>1565563991647</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1565563991647</updated>
+    </task>
+    <task id="LOCAL-00049" summary="MainWindow saveAs fix">
+      <created>1565609681642</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1565609681642</updated>
+    </task>
+    <task id="LOCAL-00050" summary="MainWindow saveAs fix">
+      <created>1565610331749</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1565610331749</updated>
+    </task>
+    <task id="LOCAL-00051" summary="MainWindow saveAs fix">
+      <created>1565625379770</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1565625379770</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -592,8 +603,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="MainWindow" />
-    <MESSAGE value="SlotBoard" />
     <MESSAGE value="Activities" />
     <MESSAGE value="ReactiveList" />
     <MESSAGE value="CurrentActivitySession" />
@@ -617,6 +626,8 @@
     <MESSAGE value="Debug Navbar macro" />
     <MESSAGE value="Activities background fix" />
     <MESSAGE value="Activities minor bugs fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Activities minor bugs fixes" />
+    <MESSAGE value="MacOS window geometry restoration fix" />
+    <MESSAGE value="MainWindow saveAs fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="MainWindow saveAs fix" />
   </component>
 </project>

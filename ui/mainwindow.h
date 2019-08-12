@@ -20,25 +20,22 @@
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
-
-    void *toolbarDelegate = nullptr;
 public:
     static const bool LoadInCurrentWindow = false;
 
     explicit MainWindow(QWidget *parent = nullptr);
 
     static MainWindow *createLastOpened();
+    static void openNewWindow();
 
     ~MainWindow() override;
 
     MainScene *scene() const;
     ApplicationMenu *menu() const;
 
-    void openNewWindow();
     void openFile();
     void openRecentFile();
     void loadFile(const QString &path, bool inNewWindow = true);
-
     void saveFile();
     void saveFileAs();
 
@@ -67,9 +64,11 @@ private:
     void updateWindowTitle();
 
     bool wantToClose();
+
     void setup();
     void teardown();
 
+protected:
     void closeEvent(QCloseEvent *event) override;
 };
 

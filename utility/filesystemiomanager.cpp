@@ -66,11 +66,9 @@ FileSystemIOManager::read(const QString &readFilepath) {
         return nullptr;
     }
 
-    filepath = readFilepath;
-
-    QFile file(filepath);
+    QFile file(readFilepath);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        showCantOpenDialog(file);
+        showCantOpenDialog(file, readFilepath, file.errorString());
         return nullptr;
     };
 
@@ -80,8 +78,10 @@ FileSystemIOManager::read(const QString &readFilepath) {
     file.close();
 
     if (!strategy) {
-        showCantOpenDialog(file);
+        auto errorMessage = QObject::tr("The file is corrupt or has a wrong format");
+        showCantOpenDialog(file, readFilepath, errorMessage);
     } else {
+        filepath = readFilepath;
         updateLastOpened();
         setIsSaved(true);
     }
@@ -219,19 +219,21 @@ void FileSystemIOManager::updateLastOpened() {
         }
 }
 
-void FileSystemIOManager::showCantOpenDialog(const QFile &file) {
+void FileSystemIOManager::showCantOpenDialog(const QFile &file,
+                                             const QString &path,
+                                             const QString &errorMessage) {
     Alert::showWarning(window,
-                       QObject::tr("Open Strategy"),
-                       QObject::tr("Can't read file %1:\n%2.")
-                               .arg(filepath)
-                               .arg(file.errorString()));
+                       QObject::tr("Strategy can't be opened"),
+                       QObject::tr("Can't read file \"%1\":\n\n%2.")
+                               .arg(path)
+                               .arg(errorMessage));
 }
 
 
 void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
     Alert::showWarning(window,
-                       QObject::tr("Save Strategy"),
-                       QObject::tr("Can't write to file %1:\n%2.")
+                       QObject::tr("Strategy can't be saved"),
+                       QObject::tr("Can't write to file \"%1\":\n\n%2.")
                                .arg(filepath)
                                .arg(file.errorString()));
 }

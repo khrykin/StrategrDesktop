@@ -16,6 +16,9 @@ MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
         : fsIOManager(std::move(fsIOManager)),
           strategy(this->fsIOManager.lastOpened()),
           QMainWindow(parent) {
+    if (!strategy)
+        strategy = fsIOManager.openDefaultStrategy();
+
     this->fsIOManager.setWindow(this);
 
     if (!this->fsIOManager.fileInfo().filePath().isEmpty()) {
@@ -74,8 +77,15 @@ void MainWindow::saveFile() {
 }
 
 void MainWindow::saveFileAs() {
+    auto oldFilePath = fsIOManager.fileInfo().filePath();
+
     fsIOManager.saveAs(*strategy);
     setIsSaved(fsIOManager.isSaved());
+
+    if (fsIOManager.isSaved()) {
+        Application::openedFiles.removeAll(oldFilePath);
+        Application::openedFiles.append(fsIOManager.fileInfo().filePath());
+    }
 }
 
 void MainWindow::saveCurrentStrategyAsDefault() {
