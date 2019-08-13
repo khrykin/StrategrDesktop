@@ -22,7 +22,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +48,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -219,14 +220,7 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-      <workItem from="1565648310732" duration="18324000" />
-    </task>
-    <task id="LOCAL-00014" summary="ReactiveList">
-      <created>1562932105529</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1562932105529</updated>
+      <workItem from="1565648310732" duration="18981000" />
     </task>
     <task id="LOCAL-00015" summary="CurrentActivitySession">
       <created>1562944610061</created>
@@ -564,7 +558,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565667102428</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="StrategrCore as Framework">
+      <created>1565667247776</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1565667247776</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

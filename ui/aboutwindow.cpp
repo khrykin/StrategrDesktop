@@ -11,7 +11,7 @@
 
 AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
     setLayout(new QVBoxLayout());
-    layout()->setSpacing(5);
+    layout()->setSpacing(8);
     layout()->setContentsMargins(8, 8, 8, 8);
     setFixedWidth(300);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
