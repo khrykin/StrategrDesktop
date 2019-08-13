@@ -5,12 +5,14 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="Strategr_autogen" />
-      <config projectName="Strategr" targetName="ui_tests_autogen" />
       <config projectName="Strategr" targetName="StrategrCore" />
-      <config projectName="Strategr" targetName="ui_tests" />
+      <config projectName="Strategr" targetName="updater" />
+      <config projectName="Strategr" targetName="ui_tests_autogen" />
+      <config projectName="Strategr" targetName="updater_autogen" />
       <config projectName="Strategr" targetName="models_tests" />
+      <config projectName="Strategr" targetName="ui_tests" />
+      <config projectName="Strategr" targetName="Strategr" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -21,16 +23,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/updater.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility/updatechecker.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utility/updatechecker.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake/modules/version.cpp.in" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/version.cpp.in" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/macos_deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/macos_deploy.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/repo_name.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/repo_name.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/application.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -157,6 +163,16 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="updater" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="updater">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="updater_autogen" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater_autogen" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Catch.Strategy activities" />
       <item itemvalue="Catch.Strategy activity sessions" />
@@ -166,6 +182,8 @@
       <item itemvalue="CMake Application.models_tests" />
       <item itemvalue="CMake Application.ui_tests" />
       <item itemvalue="CMake Application.ui_tests_autogen" />
+      <item itemvalue="CMake Application.updater" />
+      <item itemvalue="CMake Application.updater_autogen" />
     </list>
     <recent_temporary>
       <list>
@@ -227,21 +245,8 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-      <workItem from="1565648310732" duration="27443000" />
-    </task>
-    <task id="LOCAL-00017" summary="CurrentActivitySession">
-      <created>1563175651927</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1563175651927</updated>
-    </task>
-    <task id="LOCAL-00018" summary="File Open Event">
-      <created>1563300057276</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1563300057276</updated>
+      <workItem from="1565648310732" duration="45571000" />
+      <workItem from="1565807531024" duration="906000" />
     </task>
     <task id="LOCAL-00019" summary="Fonts issue fix">
       <created>1563300454947</created>
@@ -572,7 +577,21 @@
       <option name="project" value="LOCAL" />
       <updated>1565672881609</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="Repo name script">
+      <created>1565700191208</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1565700191208</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Update archive">
+      <created>1565701405998</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1565701405998</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -617,7 +636,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="SlotBoard Redesign" />
     <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
@@ -642,6 +660,7 @@
     <MESSAGE value="StrategrCore as Framework" />
     <MESSAGE value="ColoredLabel height fix" />
     <MESSAGE value="Repo name script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Repo name script" />
+    <MESSAGE value="Update archive" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update archive" />
   </component>
 </project>

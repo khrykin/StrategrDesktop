@@ -5,10 +5,10 @@
 #include <QAction>
 #include <QMessageBox>
 
-#include "applicationsettings.h"
 #include "applicationmenu.h"
 #include "mainwindow.h"
 #include "aboutwindow.h"
+#include "application.h"
 
 ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupFileMenu();
@@ -16,9 +16,18 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupViewMenu();
 
     addMenu(helpMenu);
-    helpMenu->addAction("About", [=]() {
+    helpMenu->addAction(tr("About"), [=]() {
         auto aboutWindow = new AboutWindow(window);
         aboutWindow->show();
+    });
+
+    helpMenu->addAction(tr("Check For Updates..."), [=]() {
+        Application::updateChecker().check([](bool hasUpdate) {
+            qDebug() << "hasUpdate" << hasUpdate;
+            if (hasUpdate) {
+                Application::updateChecker().performUpdate();
+            }
+        });
     });
 
     window->setMenuBar(this);

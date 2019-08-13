@@ -17,8 +17,10 @@ public:
     Application(int &argc, char **argv);
     static QStringList openedFiles;
 
+    const static UpdateChecker &updateChecker();
 private:
     bool launchedByOpenEvent = false;
+    static UpdateChecker _updateChecker;
 
     MainWindow *initialWindow = nullptr;
 
