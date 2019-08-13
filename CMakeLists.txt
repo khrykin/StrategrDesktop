@@ -161,6 +161,8 @@ if (APPLE)
     list(APPEND RESOURCES
             deployment/Strategr.icns
             deployment/Strategy.icns)
+
+    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
 endif ()
 
 add_executable(models_tests
@@ -168,9 +170,15 @@ add_executable(models_tests
         ${MODELS}
         ${MODELS_TESTS})
 
-add_library(Models STATIC ${MODELS})
-set_target_properties(Models PROPERTIES
-        FRAMEWORK TRUE)
+add_library(StrategrCore SHARED ${MODELS})
+set_target_properties(StrategrCore PROPERTIES
+        FRAMEWORK TRUE
+        PUBLIC_HEADER models/strategy.h
+        VERSION ${VERSION_SHORT}
+        MACOSX_FRAMEWORK_LONG_VERSION_STRING ${VERSION}
+        MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION_SHORT}
+        MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
+        XCODE_ATTRIBUTE_INSTALL_PATH @executable_path/../Frameworks/)
 
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
@@ -194,12 +202,12 @@ add_executable(ui_tests
 
 target_link_libraries(models_tests Catch2::Catch2)
 target_link_libraries(ui_tests
-        Models
+        StrategrCore
         Catch2::Catch2
         Qt5::Widgets
         Qt5::Test)
 
-target_link_libraries(Strategr Models Qt5::Widgets)
+target_link_libraries(Strategr StrategrCore Qt5::Widgets)
 
 if (APPLE)
     target_link_libraries(Strategr Qt5::MacExtras)
@@ -211,9 +219,6 @@ if (APPLE)
     endif (CMAKE_BUILD_TYPE MATCHES Release)
 endif ()
 
-#set()
-#set(INFO_PLIST_PATH )
-#configure_file()
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES
         MACOSX_BUNDLE TRUE
