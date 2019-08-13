@@ -20,14 +20,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="App version via Git &amp; &quot;About&quot; window">
-      <change afterPath="$PROJECT_DIR$/scripts/cert_id.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility/cocoautils.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility/cocoautils.mm" afterDir="false" />
+    <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/applicationicon.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationicon.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/deployment/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/deployment/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/release.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/release.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -52,7 +49,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -80,14 +77,15 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/deployment" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/scripts" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="CMakeSettings" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
       <recent name="$PROJECT_DIR$/deployment" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -223,28 +221,7 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-      <workItem from="1565648310732" duration="4125000" />
-    </task>
-    <task id="LOCAL-00007" summary="UI tests setup">
-      <created>1562596168511</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1562596168511</updated>
-    </task>
-    <task id="LOCAL-00008" summary="UI tests setup">
-      <created>1562596635027</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1562596635027</updated>
-    </task>
-    <task id="LOCAL-00009" summary="MainWindow">
-      <created>1562696072415</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1562696072415</updated>
+      <workItem from="1565648310732" duration="13304000" />
     </task>
     <task id="LOCAL-00010" summary="MainWindow">
       <created>1562699977542</created>
@@ -568,7 +545,28 @@
       <option name="project" value="LOCAL" />
       <updated>1565651041121</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="MacOS icons">
+      <created>1565652563127</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1565652563127</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Release script">
+      <created>1565657024076</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1565657024076</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Release script">
+      <created>1565658399758</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1565658399758</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -613,7 +611,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="CurrentActivitySession" />
     <MESSAGE value="File Open Event" />
     <MESSAGE value="Fonts issue fix" />
     <MESSAGE value="Ready to deploy" />
@@ -638,6 +635,7 @@
     <MESSAGE value="MainWindow saveAs fix" />
     <MESSAGE value="App version via Git &amp; &quot;About&quot; window" />
     <MESSAGE value="MacOS icons" />
-    <option name="LAST_COMMIT_MESSAGE" value="MacOS icons" />
+    <MESSAGE value="Release script" />
+    <option name="LAST_COMMIT_MESSAGE" value="Release script" />
   </component>
 </project>

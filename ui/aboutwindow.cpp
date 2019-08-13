@@ -1,6 +1,7 @@
 //
 // Created by Dmitry Khrykin on 2019-08-12.
 //
+#include <QDate>
 
 #include "aboutwindow.h"
 #include "applicationicon.h"
@@ -28,8 +29,16 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
                                 QSizePolicy::Fixed);
     versionLabel->setFontHeight(12);
 
-    auto *copyLabel = new ColoredLabel(QString("Copyright © 2019 Dmitry Khrykin.\n"
-                                               "All Rights Reserved."));
+    QString years = "2019";
+    auto currentYear = QDate::currentDate().year();
+    if (currentYear != 2019) {
+        years += "-" + QString::number(currentYear);
+    }
+
+    auto *copyLabel = new ColoredLabel(QString("Copyright © %1 %2.\n"
+                                               "All Rights Reserved.")
+                                               .arg(years)
+                                               .arg(QApplication::organizationName()));
     copyLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     copyLabel->setAlignment(Qt::AlignCenter);
     copyLabel->setSizePolicy(QSizePolicy::Expanding,

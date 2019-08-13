@@ -18,8 +18,6 @@
 	<string>com.khrykin.strategr</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>CFBundleLongVersionString</key>
-	<string></string>
 	<key>CFBundleName</key>
 	<string>Strategr</string>
 	<key>CFBundlePackageType</key>
