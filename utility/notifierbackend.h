@@ -12,7 +12,6 @@ public:
                              QObject *parent = nullptr);
 
     void sendMessage(const QString &title, const QString &message);
-
 private:
     QSystemTrayIcon *trayIcon;
 };

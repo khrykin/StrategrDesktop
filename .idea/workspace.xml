@@ -22,8 +22,15 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/coloredlabel.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/coloredlabel.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -220,21 +227,7 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-      <workItem from="1565648310732" duration="18981000" />
-    </task>
-    <task id="LOCAL-00015" summary="CurrentActivitySession">
-      <created>1562944610061</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1562944610061</updated>
-    </task>
-    <task id="LOCAL-00016" summary="CurrentActivitySession">
-      <created>1563013777667</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1563013777667</updated>
+      <workItem from="1565648310732" duration="27443000" />
     </task>
     <task id="LOCAL-00017" summary="CurrentActivitySession">
       <created>1563175651927</created>
@@ -565,7 +558,21 @@
       <option name="project" value="LOCAL" />
       <updated>1565667247776</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="ColoredLabel height fix">
+      <created>1565667951094</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1565667951095</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Repo name script">
+      <created>1565672881609</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1565672881609</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -610,8 +617,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Ready to deploy" />
-    <MESSAGE value="Settings close button" />
     <MESSAGE value="SlotBoard Redesign" />
     <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
@@ -635,6 +640,8 @@
     <MESSAGE value="Release script" />
     <MESSAGE value="Upload to latest release script" />
     <MESSAGE value="StrategrCore as Framework" />
-    <option name="LAST_COMMIT_MESSAGE" value="StrategrCore as Framework" />
+    <MESSAGE value="ColoredLabel height fix" />
+    <MESSAGE value="Repo name script" />
+    <option name="LAST_COMMIT_MESSAGE" value="Repo name script" />
   </component>
 </project>

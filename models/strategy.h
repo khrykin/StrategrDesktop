@@ -7,12 +7,12 @@
 #include <string>
 #include <vector>
 
+#include "notifiableonchange.h"
 #include "activity.h"
 #include "activitylist.h"
 #include "timeslotsstate.h"
 #include "activitysessionslist.h"
 #include "strategyhistory.h"
-#include "notifiableonchange.h"
 #include "dragoperation.h"
 #include "resizeoperation.h"
 
@@ -91,7 +91,9 @@ private:
     void setupTimeSlotsCallback();
 
     StrategyHistory::Entry makeHistoryEntry();
-    DragOperation::IndicesVector globalSlotIndicesFromSession(const ActivitySession &session) const;
+
+    std::vector<TimeSlotIndex>
+    globalSlotIndicesFromSession(const ActivitySession &session) const;
 };
 
 #endif // STRATEGY_H

@@ -20,9 +20,7 @@ ActivitySessionsCalculator::calculate() {
     ResultType result;
 
     auto numberOfSlots = timeSlotsState.numberOfSlots();
-    for (timeSlotIndex = 0;
-         (timeSlotIndex < numberOfSlots);
-         timeSlotIndex++) {
+    for (timeSlotIndex = 0; timeSlotIndex < numberOfSlots; timeSlotIndex++) {
         if (currentSlotHasActivity()) {
             processSlotWithActivity(result);
         } else {

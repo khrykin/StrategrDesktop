@@ -25,8 +25,27 @@ ActivitySessionsList::sessionIndexForTimeSlotIndex(
 }
 
 void ActivitySessionsList::recalculateForTimeSlotsState(const TimeSlotsState &timeSlotsState) {
-    _vector = ActivitySessionsCalculator::
-    calculateForTimeSlotsState(timeSlotsState);
+    _vector = ActivitySessionsCalculator::calculateForTimeSlotsState(timeSlotsState);
 
     onChangeEvent();
+}
+
+std::optional<ActivitySession>
+ActivitySessionsList::sessionAfter(const ActivitySession &activitySession) const {
+    auto it = findConst(activitySession);
+    return it < _vector.end() - 1
+           ? std::make_optional(*(it + 1))
+           : std::nullopt;
+}
+
+std::optional<ActivitySession>
+ActivitySessionsList::sessionBefore(const ActivitySession &activitySession) const {
+    auto it = findConst(activitySession);
+    return it > _vector.begin()
+           ? std::make_optional(*(it - 1))
+           : std::nullopt;
+}
+
+std::string ActivitySessionsList::classPrintName() const {
+    return "ActivitySessionsList";
 }

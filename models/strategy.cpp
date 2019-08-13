@@ -1,8 +1,7 @@
-#include "strategy.h"
-
 #include <algorithm>
-#include <string>
 #include <vector>
+
+#include "strategy.h"
 
 Strategy::Strategy(Time beginTime,
                    Duration timeSlotDuration,
@@ -196,7 +195,8 @@ void Strategy::beginDragging(ActivitySessionIndex sessionIndex) {
     currentDragOperation = std::make_unique<DragOperation>(_timeSlots, initialIndices);
 }
 
-DragOperation::IndicesVector Strategy::globalSlotIndicesFromSession(const ActivitySession &session) const {
+std::vector<Strategy::TimeSlotIndex>
+Strategy::globalSlotIndicesFromSession(const ActivitySession &session) const {
     DragOperation::IndicesVector initialIndices;
     std::transform(session.timeSlots.begin(),
                    session.timeSlots.end(),

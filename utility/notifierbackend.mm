@@ -16,23 +16,27 @@
 };
 @end
 
+
 NotifierBackend::NotifierBackend(QSystemTrayIcon *trayIcon, QObject *parent)
         : QObject(parent), trayIcon(trayIcon) {
 }
 
 void NotifierBackend::sendMessage(const QString &title, const QString &message) {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSUserNotification *notification = [[NSUserNotification alloc] init];
-    notification.title = title.toNSString();
-    notification.informativeText = message.toNSString();
-    notification.soundName = NSUserNotificationDefaultSoundName;
-    NSUserNotificationCenter *nc =
-            [NSUserNotificationCenter defaultUserNotificationCenter];
-    NotificationDelegate *delegate = [[NotificationDelegate alloc] init];
-    nc.delegate = delegate;
-    [nc deliverNotification:notification];
+    @autoreleasepool {
+        NSUserNotification *notification = [[[NSUserNotification alloc] init] autorelease];
+        notification.title = title.toNSString();
+        notification.informativeText = message.toNSString();
+        notification.soundName = NSUserNotificationDefaultSoundName;
 
-    [notification autorelease];
+        NSUserNotificationCenter *nc =
+                [NSUserNotificationCenter defaultUserNotificationCenter];
 
-    [pool drain];
+        if (!nc.delegate) {
+            NotificationDelegate *delegate = [[[NotificationDelegate alloc] init] autorelease];
+            nc.delegate = delegate;
+        }
+
+        [nc deliverNotification:notification];
+    }
 }
+

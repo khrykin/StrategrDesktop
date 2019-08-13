@@ -8,6 +8,7 @@
 #include <ctime>
 #include <chrono>
 #include <iostream>
+
 #include "activitysession.h"
 
 class Strategy;
@@ -32,11 +33,11 @@ private:
     constexpr static auto timestampFromDayComponents = std::mktime;
 
     static Timestamp startOfADayFromTimestamp(Timestamp timestamp);
-
     static Duration currentDayDuration();
-
     static Seconds currentMinutes();
-    static std::optional<ActivitySession> currentSessionForStrategy(const Strategy &strategy);
+
+    static std::optional<ActivitySession>
+    currentSessionForStrategy(const Strategy &strategy);
 };
 
 

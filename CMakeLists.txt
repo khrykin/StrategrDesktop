@@ -40,7 +40,12 @@ set(MODELS
         models/strategyhistory.cpp
         models/strategyhistory.h
         models/currentactivitysession.cpp
-        models/currentactivitysession.h models/activitysession.cpp models/dragoperation.cpp models/dragoperation.h models/resizeoperation.cpp models/resizeoperation.h)
+        models/currentactivitysession.h
+        models/activitysession.cpp
+        models/dragoperation.cpp
+        models/dragoperation.h
+        models/resizeoperation.cpp
+        models/resizeoperation.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -119,7 +124,13 @@ set(UI
         ui/macoswindow.h
         ui/cursorprovider.cpp
         ui/cursorprovider.h
-        ui/separator.cpp ui/separator.h ui/visualeffectwidget.mm ui/visualeffectwidget.h ui/aboutwindow.cpp ui/aboutwindow.h ui/applicationicon.cpp ui/applicationicon.h)
+        ui/separator.cpp ui/separator.h
+        ui/visualeffectwidget.mm
+        ui/visualeffectwidget.h
+        ui/aboutwindow.cpp
+        ui/aboutwindow.h
+        ui/applicationicon.cpp
+        ui/applicationicon.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -144,8 +155,14 @@ qt5_add_resources(RESOURCES
         resources/fonts.qrc)
 
 if (APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework AppKit -framework UserNotifications -w")
     set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+
+    set(PLATFORM_LIBRARIES
+            "-framework Foundation"
+            "-framework AppKit"
+            "-framework UserNotifications"
+            Qt5::MacExtras)
+
     set(PLATFORM_FILES
             ui/alert.mm
             ui/macoswindow.mm
@@ -162,7 +179,7 @@ if (APPLE)
             deployment/Strategr.icns
             deployment/Strategy.icns)
 
-    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
 endif ()
 
 add_executable(models_tests
@@ -207,11 +224,12 @@ target_link_libraries(ui_tests
         Qt5::Widgets
         Qt5::Test)
 
-target_link_libraries(Strategr StrategrCore Qt5::Widgets)
+target_link_libraries(Strategr
+        StrategrCore
+        Qt5::Widgets
+        ${PLATFORM_LIBRARIES})
 
 if (APPLE)
-    target_link_libraries(Strategr Qt5::MacExtras)
-
     if (CMAKE_BUILD_TYPE MATCHES Release)
         add_custom_command(TARGET Strategr
                 POST_BUILD

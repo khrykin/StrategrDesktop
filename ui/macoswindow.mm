@@ -43,7 +43,7 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 }
 
 @interface Toolbar : NSToolbar
-@property(atomic, retain) id retainedDelegate;
+@property(retain) id retainedDelegate;
 @end
 
 @implementation Toolbar
@@ -53,11 +53,10 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 }
 
 - (void)dealloc {
-    [super dealloc];
     [self.retainedDelegate release];
+    [super dealloc];
 }
 @end
-
 
 @interface ToolbarDelegate : NSObject <NSToolbarDelegate>
 
@@ -82,7 +81,6 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
     if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier] ||
         [itemIdentifier isEqual:ToolbarItemStrategyTitleIdentifier]) {
         NSTextField *textField = [self makeTextFieldForItemIdentifier:itemIdentifier];
-
         item.view = textField;
 
         return item;
@@ -198,16 +196,6 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 
 - (void)openNewActivityMenu:(id)sender {
     _qWindow->scene()->showNewActivityMenu();
-}
-
-- (void)goBackOrCreateNewActivity:(NSSegmentedControl *)segmentedControl {
-    if (segmentedControl.selectedSegment == 0) {
-        [self openSessions:nil];
-    }
-
-    if (segmentedControl.selectedSegment == 1) {
-        [self openNewActivityMenu:nil];
-    }
 }
 
 - (void)setPage:(unsigned int)index {

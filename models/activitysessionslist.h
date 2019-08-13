@@ -22,26 +22,16 @@ class ActivitySessionsList :
         public NotifiableOnChange,
         public StreamableList<ActivitySessionsList> {
 public:
-    std::string classPrintName() const override {
-        return "ActivitySessionsList";
-    }
+    std::string classPrintName() const override;
 
     std::optional<Index>
     sessionIndexForTimeSlotIndex(TimeSlotsState::Index timeSlotIndex) const;
 
-    std::optional<ActivitySession> sessionAfter(const ActivitySession &activitySession) const {
-        auto it = findConst(activitySession);
-        return it < _vector.end() - 1
-               ? std::make_optional(*(it + 1))
-               : std::nullopt;
-    }
+    std::optional<ActivitySession>
+    sessionAfter(const ActivitySession &activitySession) const;
 
-    std::optional<ActivitySession> sessionBefore(const ActivitySession &activitySession) const {
-        auto it = findConst(activitySession);
-        return it > _vector.begin()
-               ? std::make_optional(*(it - 1))
-               : std::nullopt;
-    }
+    std::optional<ActivitySession>
+    sessionBefore(const ActivitySession &activitySession) const;
 
 private:
     using ActivitySessionsListBase::ActivitySessionsListBase;

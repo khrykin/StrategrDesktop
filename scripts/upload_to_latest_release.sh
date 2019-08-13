@@ -3,11 +3,7 @@
 set -e
 [ -z "$DEBUG" ] || set -x;
 
-remote_origin_url=$(git config --get remote.origin.url)
-repo_name="${remote_origin_url##*.com/}"
-repo_name="${repo_name%.git}"
-
-REPO="$repo_name"
+REPO=$(scripts/repo_name.sh)
 
 ASSETS="$@"
 
