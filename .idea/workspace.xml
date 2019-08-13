@@ -22,9 +22,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/deployment/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/deployment/Info.plist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/release.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/release.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/upload_to_latest_release.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/upload_to_latest_release.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -221,21 +219,7 @@
       <workItem from="1565189369150" duration="8768000" />
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
-      <workItem from="1565648310732" duration="13304000" />
-    </task>
-    <task id="LOCAL-00010" summary="MainWindow">
-      <created>1562699977542</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1562699977542</updated>
-    </task>
-    <task id="LOCAL-00011" summary="SlotBoard">
-      <created>1562848629882</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1562848629882</updated>
+      <workItem from="1565648310732" duration="14850000" />
     </task>
     <task id="LOCAL-00012" summary="Activities">
       <created>1562866785603</created>
@@ -566,7 +550,21 @@
       <option name="project" value="LOCAL" />
       <updated>1565658399758</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Release script">
+      <created>1565662156266</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1565662156266</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Upload to latest release script">
+      <created>1565663593870</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1565663593870</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -611,7 +609,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="File Open Event" />
     <MESSAGE value="Fonts issue fix" />
     <MESSAGE value="Ready to deploy" />
     <MESSAGE value="Settings close button" />
@@ -636,6 +633,7 @@
     <MESSAGE value="App version via Git &amp; &quot;About&quot; window" />
     <MESSAGE value="MacOS icons" />
     <MESSAGE value="Release script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Release script" />
+    <MESSAGE value="Upload to latest release script" />
+    <option name="LAST_COMMIT_MESSAGE" value="Upload to latest release script" />
   </component>
 </project>
