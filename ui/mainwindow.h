@@ -5,7 +5,6 @@
 #ifndef UI_MAINWINDOW_H
 #define UI_MAINWINDOW_H
 
-
 #include <QMainWindow>
 #include <QDebug>
 #include <QMenu>

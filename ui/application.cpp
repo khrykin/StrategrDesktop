@@ -21,6 +21,10 @@ Application::Application(int &argc, char **argv)
     Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     setupFonts();
+
+#ifdef Q_OS_MAC
+    setupCocoaDelegate();
+#endif
 }
 
 bool Application::event(QEvent *event) {

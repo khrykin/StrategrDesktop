@@ -173,7 +173,7 @@ if (APPLE)
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
-            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h)
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h ui/application.mm)
 
     list(APPEND RESOURCES
             deployment/Strategr.icns

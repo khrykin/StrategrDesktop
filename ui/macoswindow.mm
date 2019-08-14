@@ -62,7 +62,7 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
 
 @property(readonly) unsigned int currentPage;
 @property MainWindow *qWindow;
-@property(retain) NSToolbar *toolbar;
+@property(assign) NSToolbar *toolbar;
 
 - (void)setPage:(unsigned int)index;
 @end
@@ -121,7 +121,21 @@ NSWindow *NSWindowFromQWindow(const MainWindow *window) {
     if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier]) {
         textField.stringValue = @"Activities";
     } else {
-        textField.stringValue = _qWindow->windowTitle().toNSString();
+        // qtWindowTitle includes "[*]" at the end.
+        // see QWidget::windowModified()
+
+        NSString *qtWindowTitle = _qWindow->windowTitle().toNSString();
+        NSError *error = nil;
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\[\\*\\]$"
+                                                                               options:NSRegularExpressionCaseInsensitive
+                                                                                 error:&error];
+
+        NSString *windowTitle = [regex stringByReplacingMatchesInString:qtWindowTitle
+                                                                options:0
+                                                                  range:NSMakeRange(0, [qtWindowTitle length])
+                                                           withTemplate:@""];
+
+        textField.stringValue = windowTitle;
     }
 
     textField.editable = NO;
@@ -261,20 +275,25 @@ void MacOSWindow::pageChange(MainWindow *window, int pageIndex) {
 
 void MacOSWindow::updateWindowTitle(MainWindow *window) {
     @autoreleasepool {
-        auto *toolbarDelegate = (ToolbarDelegate *) NSWindowFromQWindow(window).toolbar.delegate;
+        NSWindow *nativeWindow = NSWindowFromQWindow(window);
+        auto *toolbarDelegate = (ToolbarDelegate *) nativeWindow.toolbar.delegate;
         [toolbarDelegate setPage:toolbarDelegate.currentPage];
     }
 }
 
 QPixmap MacOSWindow::resizeCursor() {
     NSCursor *cursor = [NSCursor resizeUpDownCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:NULL context:nil hints:nil];
+    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
+                                                    context:nil
+                                                      hints:nil];
     return QtMac::fromCGImageRef(cgRef);
 }
 
 QPixmap MacOSWindow::closedHandCursor() {
     NSCursor *cursor = [NSCursor closedHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:NULL context:nil hints:nil];
+    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
+                                                    context:nil
+                                                      hints:nil];
     return QtMac::fromCGImageRef(cgRef);
 }
 

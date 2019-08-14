@@ -12,19 +12,34 @@
 
 #include "mainwindow.h"
 
+Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
+
 class Application : public QApplication {
 public:
     Application(int &argc, char **argv);
+
+#ifdef  Q_OS_MAC
+
+    ~Application() override {
+        releaseCocoaDelegate();
+    }
+
+#endif
+
     static QStringList openedFiles;
 
 private:
+    static void setupFonts();
+
     bool launchedByOpenEvent = false;
 
-    MainWindow *initialWindow = nullptr;
+#ifdef Q_OS_MAC
+    static CocoaDelegate *cocoaDelegate;
+    void setupCocoaDelegate();
+    void releaseCocoaDelegate();
+#endif
 
     bool event(QEvent *event) override;
-
-    static void setupFonts();
 };
 
 #endif //STRATEGR_APPLICATION_H

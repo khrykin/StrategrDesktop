@@ -21,16 +21,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionscalculator.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionscalculator.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/macoswindow.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/macoswindow.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/application.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.mm" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +46,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -69,7 +60,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="auot_updates" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -228,13 +219,6 @@
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
       <workItem from="1565648310732" duration="27443000" />
-    </task>
-    <task id="LOCAL-00017" summary="CurrentActivitySession">
-      <created>1563175651927</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1563175651927</updated>
     </task>
     <task id="LOCAL-00018" summary="File Open Event">
       <created>1563300057276</created>
@@ -572,7 +556,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565672881609</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="Improved macOS integration">
+      <created>1565824306531</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1565824306531</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -617,7 +608,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="SlotBoard Redesign" />
     <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
@@ -642,6 +632,7 @@
     <MESSAGE value="StrategrCore as Framework" />
     <MESSAGE value="ColoredLabel height fix" />
     <MESSAGE value="Repo name script" />
-    <option name="LAST_COMMIT_MESSAGE" value="Repo name script" />
+    <MESSAGE value="Improved macOS integration" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improved macOS integration" />
   </component>
 </project>

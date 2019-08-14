@@ -1,42 +1,43 @@
-#include "notifierbackend.h"
+#include <QSettings>
+
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 
-#include <QDebug>
-
-@interface NotificationDelegate : NSObject <NSUserNotificationCenterDelegate>
-- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center
-     shouldPresentNotification:(NSUserNotification *)notification;
-@end
-
-@implementation NotificationDelegate
-- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center
-     shouldPresentNotification:(NSUserNotification *)notification {
-    return YES;
-};
-@end
-
+#include "notifierbackend.h"
 
 NotifierBackend::NotifierBackend(QSystemTrayIcon *trayIcon, QObject *parent)
-        : QObject(parent), trayIcon(trayIcon) {
+        : QObject(parent), trayIcon(nullptr) {
 }
 
 void NotifierBackend::sendMessage(const QString &title, const QString &message) {
     @autoreleasepool {
-        NSUserNotification *notification = [[[NSUserNotification alloc] init] autorelease];
-        notification.title = title.toNSString();
-        notification.informativeText = message.toNSString();
-        notification.soundName = NSUserNotificationDefaultSoundName;
+        if (@available(macOS 10.14, *)) {
+            UNMutableNotificationContent *content = [[[UNMutableNotificationContent alloc] init] autorelease];
+            content.title = title.toNSString();
+            content.body = message.toNSString();
+            content.sound = [UNNotificationSound defaultSound];
 
-        NSUserNotificationCenter *nc =
-                [NSUserNotificationCenter defaultUserNotificationCenter];
+            UNTimeIntervalNotificationTrigger *trigger
+                    = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:0.1
+                                                                         repeats:NO];
 
-        if (!nc.delegate) {
-            NotificationDelegate *delegate = [[[NotificationDelegate alloc] init] autorelease];
-            nc.delegate = delegate;
+            UNNotificationRequest *request
+                    = [UNNotificationRequest requestWithIdentifier:[NSUUID UUID].UUIDString
+                                                           content:content
+                                                           trigger:trigger];
+
+            [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request
+                                                                   withCompletionHandler:nil];
+        } else {
+            NSUserNotification *notification = [[[NSUserNotification alloc] init] autorelease];
+            notification.title = title.toNSString();
+            notification.informativeText = message.toNSString();
+            notification.soundName = NSUserNotificationDefaultSoundName;
+
+            NSUserNotificationCenter *userNotificationCenter =
+                    [NSUserNotificationCenter defaultUserNotificationCenter];
+
+            [userNotificationCenter deliverNotification:notification];
         }
-
-        [nc deliverNotification:notification];
     }
 }
-

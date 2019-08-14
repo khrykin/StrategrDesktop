@@ -118,9 +118,8 @@ void MainWindow::setIsSaved(bool isSaved) {
         strategyTitle = "Untitled";
     }
 
-    auto windowTitle = strategyTitle + (isSaved ? "" : "*");
-
-    setWindowTitle(windowTitle);
+    setWindowModified(!isSaved);
+    setWindowTitle(strategyTitle + "[*]");
 
 #ifdef Q_OS_MAC
     MacOSWindow::updateWindowTitle(this);
