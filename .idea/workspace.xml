@@ -21,21 +21,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/overview.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/overview.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/overviewwidget.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/overviewwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/slotboard.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -233,13 +219,6 @@
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
       <workItem from="1565648310732" duration="27443000" />
-    </task>
-    <task id="LOCAL-00019" summary="Fonts issue fix">
-      <created>1563300454947</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1563300454947</updated>
     </task>
     <task id="LOCAL-00020" summary="Ready to deploy">
       <created>1563557088817</created>
@@ -577,7 +556,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565824406060</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="Overview Widget">
+      <created>1565834519019</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1565834519019</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,7 +608,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
     <MESSAGE value="Naive implementation" />
@@ -647,6 +632,7 @@
     <MESSAGE value="ColoredLabel height fix" />
     <MESSAGE value="Repo name script" />
     <MESSAGE value="Improved macOS integration" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved macOS integration" />
+    <MESSAGE value="Overview Widget" />
+    <option name="LAST_COMMIT_MESSAGE" value="Overview Widget" />
   </component>
 </project>

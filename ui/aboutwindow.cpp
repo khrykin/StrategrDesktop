@@ -22,7 +22,7 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
                              QSizePolicy::Fixed);
 
     auto *versionLabel = new ColoredLabel(QString("Version %1")
-                                                  .arg(ApplicationSettings::shortVersion));
+                                                  .arg(ApplicationSettings::version));
     versionLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     versionLabel->setAlignment(Qt::AlignCenter);
     versionLabel->setSizePolicy(QSizePolicy::Expanding,
