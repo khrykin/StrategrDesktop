@@ -45,10 +45,12 @@ private:
     bool currentSessionWidgetIsVisible = false;
 
     void layoutChildWidgets();
-    void updateCurrentSessionWidget();
+    void updateTimerDependants();
 
     void paintEvent(QPaintEvent *paintEvent) override;
     void updateOverviewWidget() const;
+
+    void resizeEvent(QResizeEvent *) override;
 };
 
 

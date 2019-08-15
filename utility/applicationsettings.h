@@ -5,8 +5,6 @@
 #ifndef APPLICATIONSETTINGS_H
 #define APPLICATIONSETTINGS_H
 
-#include <QDesktopWidget>
-
 namespace ApplicationSettings {
     const auto windowMinimumWidth = 300;
     const auto windowMinimumHeight = 200;
@@ -22,11 +20,14 @@ namespace ApplicationSettings {
 
     const auto rowBorderColor = "#ccc";
 
-    const auto currentSessionHeight = 39;
-    const auto overviewHeight = 5;
+    const auto currentSessionHeight = 38;
+    const auto overviewHeight = 8;
+
+    const auto currentTimeMarkerColor = "#FF725C";
 
     extern const char *const version;
     extern const char *const shortVersion;
 }
+
 
 #endif //APPLICATIONSETTINGS_H

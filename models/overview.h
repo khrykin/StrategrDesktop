@@ -20,13 +20,28 @@ public:
         Activity::Color color;
     };
 
-    explicit Overview(const Strategy &strategy);
+    struct ViewportMarker {
+        int originX = 0;
+        int width = 0;
+    };
 
-    std::vector<const OverviewItem> elementsForWidth(int width);
-    std::vector<const OverviewItem> elementsForWidth(float width = 0.0);
+    explicit Overview(const Strategy &strategy, float width);
+    explicit Overview(const Strategy &strategy, int width);
+
+    std::vector<Overview::OverviewItem> elements();
+
+    ViewportMarker viewportMarkerFor(int viewportHeight,
+                                     int slotboardHeight,
+                                     int viewportTopOffset);
+    ViewportMarker viewportMarkerFor(float viewportHeight,
+                                     float slotboardHeight,
+                                     float viewportTopOffset);
+
+    int currentTimePosition();;
 
 private:
     const Strategy &strategy;
+    float width = 0.0;
 };
 
 

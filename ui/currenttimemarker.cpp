@@ -12,7 +12,7 @@ void CurrentTimeMarker::paintEvent(QPaintEvent *event) {
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    auto background = QBrush(QColor("#FF725C"));
+    auto background = QBrush(ApplicationSettings::currentTimeMarkerColor);
     auto rulerRect = QRect(0, markerSize, geometry().width(), 1);
 
     painter.fillRect(rulerRect, background);

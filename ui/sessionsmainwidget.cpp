@@ -53,7 +53,7 @@ void SessionsMainWidget::layoutChildWidgets() {
     connect(slotBoard,
             &SlotBoard::timerTick,
             this,
-            &SessionsMainWidget::updateCurrentSessionWidget);
+            &SessionsMainWidget::updateTimerDependants);
 
     connect(slotBoard,
             &SlotBoard::timeSlotsChange,
@@ -61,12 +61,12 @@ void SessionsMainWidget::layoutChildWidgets() {
             &SessionsMainWidget::updateOverviewWidget);
 
     slotBoardScrollArea->setWidget(slotBoard);
-    overviewWidget = new OverviewWidget(strategy);
+    overviewWidget = new OverviewWidget(strategy, slotBoardScrollArea);
 
     layout()->addWidget(strategySettingsWidget);
+    layout()->addWidget(overviewWidget);
     layout()->addWidget(currentSessionWidget);
     layout()->addWidget(slotBoardScrollArea);
-    layout()->addWidget(overviewWidget);
 }
 
 void SessionsMainWidget::updateOverviewWidget() const { overviewWidget->update(); }
@@ -87,8 +87,9 @@ const SelectionWidget::RawSelectionState &SessionsMainWidget::selection() {
     return slotBoard->selection();
 }
 
-void SessionsMainWidget::updateCurrentSessionWidget() {
+void SessionsMainWidget::updateTimerDependants() {
     strategySettingsWidget->setStrategy(strategy);
+    overviewWidget->update();
 
     auto currentSession = CurrentActivitySession::forStrategy(*strategy);
     if (currentSession) {
@@ -111,4 +112,8 @@ void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
     painter.setPen(Qt::NoPen);
     painter.setBrush(baseColor());
     painter.drawRect(0, 0, width(), height());
+}
+
+void SessionsMainWidget::resizeEvent(QResizeEvent *) {
+    overviewWidget->update();
 }

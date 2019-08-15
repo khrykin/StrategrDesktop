@@ -21,7 +21,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/ui/aboutwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/aboutwindow.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/currenttime.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/currenttime.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/currentactivitysession.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/currentactivitysession.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/overview.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/overview.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/overview.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/overview.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currentsessionwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/currenttimemarker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/currenttimemarker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/overviewwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/overviewwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/overviewwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/overviewwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/windowgeometrymanager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +61,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -219,13 +234,6 @@
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
       <workItem from="1565648310732" duration="27443000" />
-    </task>
-    <task id="LOCAL-00020" summary="Ready to deploy">
-      <created>1563557088817</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1563557088817</updated>
     </task>
     <task id="LOCAL-00021" summary="Settings close button">
       <created>1563887769092</created>
@@ -563,7 +571,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565834519019</updated>
     </task>
-    <option name="localTasksCounter" value="69" />
+    <task id="LOCAL-00069" summary="Full version in about window">
+      <created>1565834715603</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1565834715603</updated>
+    </task>
+    <option name="localTasksCounter" value="70" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -608,7 +623,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
     <MESSAGE value="Naive implementation" />
     <MESSAGE value="Drag history" />
@@ -633,6 +647,7 @@
     <MESSAGE value="Repo name script" />
     <MESSAGE value="Improved macOS integration" />
     <MESSAGE value="Overview Widget" />
-    <option name="LAST_COMMIT_MESSAGE" value="Overview Widget" />
+    <MESSAGE value="Full version in about window" />
+    <option name="LAST_COMMIT_MESSAGE" value="Full version in about window" />
   </component>
 </project>

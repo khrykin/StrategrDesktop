@@ -3,6 +3,7 @@
 //
 
 #include <QApplication>
+#include <QDesktopWidget>
 
 #include "windowgeometrymanager.h"
 #include "mainwindow.h"

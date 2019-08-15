@@ -3,19 +3,20 @@
 //
 
 #include "overview.h"
+#include "currenttime.h"
 
-Overview::Overview(const Strategy &strategy) : strategy(strategy) {
+Overview::Overview(const Strategy &strategy, float width) :
+        strategy(strategy), width(width) {
 }
 
-std::vector<const Overview::OverviewItem>
-Overview::elementsForWidth(int width) {
-    return elementsForWidth(static_cast<float>(width));
+Overview::Overview(const Strategy &strategy, int width) :
+        strategy(strategy), width(static_cast<float>(width)) {
 }
 
-std::vector<const Overview::OverviewItem>
-Overview::elementsForWidth(float width) {
+std::vector<Overview::OverviewItem>
+Overview::elements() {
     auto &activitySessions = strategy.activitySessions();
-    std::vector<const OverviewItem> result;
+    std::vector<OverviewItem> result;
 
     auto prevOriginX = 0;
     for (auto &item : activitySessions.overview()) {
@@ -37,4 +38,34 @@ Overview::elementsForWidth(float width) {
     }
 
     return result;
+
 }
+
+Overview::ViewportMarker Overview::viewportMarkerFor(int viewportHeight,
+                                                     int slotboardHeight,
+                                                     int viewportTopOffset) {
+
+    return viewportMarkerFor(static_cast<float>(viewportHeight),
+                             static_cast<float>(slotboardHeight),
+                             static_cast<float>(viewportTopOffset));
+}
+
+Overview::ViewportMarker Overview::viewportMarkerFor(float viewportHeight,
+                                                     float slotboardHeight,
+                                                     float viewportTopOffset) {
+    auto viewportMarkerOriginX = std::roundl(viewportTopOffset / slotboardHeight * width);
+    auto viewportMarkerWidth = std::roundl(viewportHeight / slotboardHeight * width);
+
+    return ViewportMarker{
+            static_cast<int>(viewportMarkerOriginX),
+            static_cast<int>(viewportMarkerWidth)};
+}
+
+int Overview::currentTimePosition() {
+    auto minutes = CurrentTime::currentMinutes();
+    auto rel = static_cast<float>(minutes - strategy.beginTime()) / strategy.duration();
+
+    return static_cast<int>(std::roundl(rel * width));
+}
+
+

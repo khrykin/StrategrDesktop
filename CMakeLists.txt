@@ -45,7 +45,7 @@ set(MODELS
         models/dragoperation.cpp
         models/dragoperation.h
         models/resizeoperation.cpp
-        models/resizeoperation.h models/overview.cpp models/overview.h)
+        models/resizeoperation.h models/overview.cpp models/overview.h models/currenttime.cpp models/currenttime.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp

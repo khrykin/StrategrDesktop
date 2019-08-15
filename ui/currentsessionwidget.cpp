@@ -42,14 +42,14 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
                                 "font-size: 10pt;"
                                 "color: #999");
 
-    currentLabel->setAlignment(Qt::AlignCenter);
+    currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
 
     activityLabel = new QLabel();
     activityLabel->setStyleSheet("font-weight: bold;"
                                  "font-size: 14pt;"
                                  "color: #888");
 
-    activityLabel->setAlignment(Qt::AlignHCenter);
+    activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 
     startTimeLabel = new QLabel();
     startTimeLabel->setStyleSheet("font-weight: bold;"
@@ -105,13 +105,8 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
 
     auto backgroundRect = QRect(QPoint(0, 0), geometry().size());
 
-    auto borderRect = QRect(backgroundRect.bottomLeft().x(),
-                            backgroundRect.bottomLeft().y(),
-                            backgroundRect.width(),
-                            1);
-
-    auto progressRect = QRect(backgroundRect.topLeft().x(),
-                              backgroundRect.topLeft().y(),
+    auto progressRect = QRect(backgroundRect.x(),
+                              backgroundRect.y(),
                               static_cast<int>(backgroundRect.width() * progress()),
                               backgroundRect.height());
 
@@ -135,18 +130,21 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
         auto fadeColor = QColor("#000");
         fadeColor.setAlpha(0.05 * 255);
         painter.setBrush(fadeColor);
-        painter.drawRect(geometry());
+        painter.drawRect(backgroundRect);
     }
 
     if (isClicked) {
         auto fadeColor = QColor("#000");
         fadeColor.setAlpha(0.08 * 255);
         painter.setBrush(fadeColor);
-        painter.drawRect(geometry());
+        painter.drawRect(backgroundRect);
     }
 
     painter.setBrush(hardBorderColor());
-    painter.drawRect(borderRect);
+    painter.drawRect(QRect(0,
+                           height() - 1,
+                           width(),
+                           1));
 }
 
 void CurrentSessionWidget::mousePressEvent(QMouseEvent *) {
