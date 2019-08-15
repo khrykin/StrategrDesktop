@@ -2,6 +2,7 @@
 // Created by Dmitry Khrykin on 2019-07-06.
 //
 
+#include <algorithm>
 #include "activitysessionslist.h"
 
 std::optional<ActivitySessionsList::Index>
@@ -48,4 +49,38 @@ ActivitySessionsList::sessionBefore(const ActivitySession &activitySession) cons
 
 std::string ActivitySessionsList::classPrintName() const {
     return "ActivitySessionsList";
+}
+
+std::vector<const ActivitySessionsList::OverviewItem>
+ActivitySessionsList::overview() const {
+    if (_vector.empty()) {
+        return {};
+    }
+
+    auto overallBeginTime = _vector.front().beginTime();
+    auto totalDuraion = _vector.back().endTime() - overallBeginTime;
+
+    std::vector<const OverviewItem> result;
+    std::transform(_vector.begin(),
+                   _vector.end(),
+                   std::back_inserter(result),
+                   [totalDuraion, overallBeginTime](auto &session) {
+                       auto durationPercentage = static_cast<float>(session.duration())
+                                                 / totalDuraion;
+                       auto beginPercentage = static_cast<float>(session.beginTime()
+                                                                 - overallBeginTime)
+                                              / totalDuraion;
+
+                       auto color = session.activity
+                                    ? std::make_optional(session.activity->color())
+                                    : std::nullopt;
+
+                       return OverviewItem{
+                               durationPercentage,
+                               beginPercentage,
+                               color
+                       };
+                   });
+
+    return result;
 }

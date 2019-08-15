@@ -21,7 +21,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/ui/application.mm" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.mm" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/overview.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/overview.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/overviewwidget.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/overviewwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/activitysessionslist.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/activitysessionslist.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/strategy.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/strategy.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/sessionsmainwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sessionsmainwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/slotboard.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/slotboard.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/slotboard.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +60,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -219,13 +233,6 @@
       <workItem from="1565473218083" duration="19546000" />
       <workItem from="1565552606408" duration="36328000" />
       <workItem from="1565648310732" duration="27443000" />
-    </task>
-    <task id="LOCAL-00018" summary="File Open Event">
-      <created>1563300057276</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1563300057276</updated>
     </task>
     <task id="LOCAL-00019" summary="Fonts issue fix">
       <created>1563300454947</created>
@@ -563,7 +570,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565824306531</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="Improved macOS integration">
+      <created>1565824406060</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1565824406060</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

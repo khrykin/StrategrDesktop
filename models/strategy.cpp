@@ -235,3 +235,11 @@ void Strategy::endResizing() {
 
     currentResizeOperation.reset();
 }
+
+Strategy::Duration Strategy::duration() const {
+    if (timeSlots().empty()) {
+        return 0;
+    }
+
+    return timeSlots().last().endTime() - timeSlots().first().beginTime;
+}

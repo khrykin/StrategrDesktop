@@ -23,6 +23,7 @@ namespace ApplicationSettings {
     const auto rowBorderColor = "#ccc";
 
     const auto currentSessionHeight = 39;
+    const auto overviewHeight = 5;
 
     extern const char *const version;
     extern const char *const shortVersion;

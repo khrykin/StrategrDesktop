@@ -16,6 +16,7 @@
 #include "strategy.h"
 #include "notifier.h"
 #include "colorprovider.h"
+#include "overviewwidget.h"
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
 public:
@@ -37,6 +38,7 @@ private:
     CurrentSessionWidget *currentSessionWidget = nullptr;
     QScrollArea *slotBoardScrollArea = nullptr;
     SlotBoard *slotBoard = nullptr;
+    OverviewWidget *overviewWidget = nullptr;
 
     // Qt's isVisible() could be glitchy for some reason,
     // so we dont't rely on it and use this flag
@@ -46,6 +48,7 @@ private:
     void updateCurrentSessionWidget();
 
     void paintEvent(QPaintEvent *paintEvent) override;
+    void updateOverviewWidget() const;
 };
 
 

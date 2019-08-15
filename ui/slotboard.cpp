@@ -44,7 +44,7 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     connect(slotsWidget,
             &SlotsWidget::activitySessionsChanged,
             this,
-            &SlotBoard::timeSlotsChange);
+            &SlotBoard::handleTimeSlotsChange);
 
     slotRuler = new SlotRuler(makeLabelsForStrategy(),
                               slotsWidget->slotHeight());
@@ -177,10 +177,11 @@ QScrollArea *SlotBoard::parentScrollArea() {
     return qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
 }
 
-void SlotBoard::timeSlotsChange() {
+void SlotBoard::handleTimeSlotsChange() {
     updateCurrentTimeMarker();
-
     slotRuler->setLabels(makeLabelsForStrategy());
+
+    emit timeSlotsChange();
 }
 
 void SlotBoard::paintEvent(QPaintEvent *event) {

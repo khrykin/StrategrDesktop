@@ -52,6 +52,7 @@ public:
     void setNumberOfTimeSlots(StateSize numberOfTimeSlots);
 
     Time endTime() const;
+    Duration duration() const;
 
     void addActivity(const Activity &activity);
     void removeActivityAtIndex(ActivityIndex activityIndex);

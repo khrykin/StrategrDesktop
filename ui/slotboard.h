@@ -31,7 +31,7 @@ public:
 
 signals:
     void timerTick();
-
+    void timeSlotsChange();
 private:
     Strategy *strategy;
 
@@ -48,7 +48,7 @@ private:
 
     QVector<TimeLabel> makeLabelsForStrategy();
 
-    void timeSlotsChange();
+    void handleTimeSlotsChange();
     void updateUI();
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);

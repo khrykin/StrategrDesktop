@@ -36,11 +36,9 @@ void SessionsMainWidget::focusOnCurrentTime() {
 
 void SessionsMainWidget::layoutChildWidgets() {
     strategySettingsWidget = new StrategySettingsWidget(strategy);
-    layout()->addWidget(strategySettingsWidget);
 
     currentSessionWidget = new CurrentSessionWidget();
     currentSessionWidget->hide();
-    layout()->addWidget(currentSessionWidget);
 
     connect(currentSessionWidget,
             &CurrentSessionWidget::clicked, this,
@@ -57,16 +55,28 @@ void SessionsMainWidget::layoutChildWidgets() {
             this,
             &SessionsMainWidget::updateCurrentSessionWidget);
 
-    slotBoardScrollArea->setWidget(slotBoard);
+    connect(slotBoard,
+            &SlotBoard::timeSlotsChange,
+            this,
+            &SessionsMainWidget::updateOverviewWidget);
 
+    slotBoardScrollArea->setWidget(slotBoard);
+    overviewWidget = new OverviewWidget(strategy);
+
+    layout()->addWidget(strategySettingsWidget);
+    layout()->addWidget(currentSessionWidget);
     layout()->addWidget(slotBoardScrollArea);
+    layout()->addWidget(overviewWidget);
 }
+
+void SessionsMainWidget::updateOverviewWidget() const { overviewWidget->update(); }
 
 void SessionsMainWidget::setStrategy(Strategy *newStrategy) {
     strategy = newStrategy;
     slotBoard->setStrategy(newStrategy);
     strategySettingsWidget->setStrategy(newStrategy);
     notifier->setStrategy(newStrategy);
+    overviewWidget->setStrategy(newStrategy);
 }
 
 void SessionsMainWidget::clearSelection() {

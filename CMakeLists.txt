@@ -45,7 +45,7 @@ set(MODELS
         models/dragoperation.cpp
         models/dragoperation.h
         models/resizeoperation.cpp
-        models/resizeoperation.h)
+        models/resizeoperation.h models/overview.cpp models/overview.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -130,7 +130,7 @@ set(UI
         ui/aboutwindow.cpp
         ui/aboutwindow.h
         ui/applicationicon.cpp
-        ui/applicationicon.h)
+        ui/applicationicon.h ui/overviewwidget.cpp ui/overviewwidget.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -164,6 +164,7 @@ if (APPLE)
             Qt5::MacExtras)
 
     set(PLATFORM_FILES
+            ui/application.mm
             ui/alert.mm
             ui/macoswindow.mm
             ui/applicationicon.mm
@@ -173,7 +174,7 @@ if (APPLE)
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
-            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h ui/application.mm)
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h)
 
     list(APPEND RESOURCES
             deployment/Strategr.icns

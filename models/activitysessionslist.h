@@ -22,6 +22,12 @@ class ActivitySessionsList :
         public NotifiableOnChange,
         public StreamableList<ActivitySessionsList> {
 public:
+    struct OverviewItem {
+        float durationPercentage = 0.0;
+        float beginPercentage = 0.0;
+        std::optional<Activity::Color> color = std::nullopt;
+    };
+
     std::string classPrintName() const override;
 
     std::optional<Index>
@@ -32,6 +38,8 @@ public:
 
     std::optional<ActivitySession>
     sessionBefore(const ActivitySession &activitySession) const;
+
+    std::vector<const OverviewItem> overview() const;
 
 private:
     using ActivitySessionsListBase::ActivitySessionsListBase;
