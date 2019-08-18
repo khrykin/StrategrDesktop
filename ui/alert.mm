@@ -48,19 +48,17 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
 int Alert::showWarning(QWidget *,
                        const QString &title,
                        const QString &message) {
-    QTimer::singleShot(0, [title, message]() {
-        @autoreleasepool {
-            QMessageBox messageBox;
-            messageBox.setStandardButtons(QMessageBox::Save
-                                          | QMessageBox::Discard
-                                          | QMessageBox::Cancel);
+    NSString *nsTitle = title.toNSString();
+    NSString *nsMessage = message.toNSString();
 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @autoreleasepool {
             NSAlert *alert = [[[NSAlert alloc] init] autorelease];
             alert.alertStyle = NSAlertStyleCritical;
             alert.icon = [NSImage imageNamed:NSImageNameCaution];
 
-            [alert setMessageText:title.toNSString()];
-            [alert setInformativeText:message.toNSString()];
+            [alert setMessageText:nsTitle];
+            [alert setInformativeText:nsMessage];
             [alert setAlertStyle:NSAlertStyleWarning];
 
             [alert runModal];

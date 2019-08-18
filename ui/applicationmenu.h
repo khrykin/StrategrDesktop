@@ -34,6 +34,7 @@ private:
     void setupEditMenu();
 
     void createRecentFilesActions();
+    void addExportToCalendarAction() const;
 };
 
 

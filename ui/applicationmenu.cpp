@@ -4,11 +4,17 @@
 
 #include <QAction>
 #include <QMessageBox>
+#include <QSettings>
 
-#include "applicationsettings.h"
 #include "applicationmenu.h"
 #include "mainwindow.h"
 #include "aboutwindow.h"
+
+#ifdef Q_OS_MAC
+
+#include "macoscalendarexporter.h"
+
+#endif
 
 ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupFileMenu();
@@ -105,6 +111,27 @@ void ApplicationMenu::setupFileMenu() {
                         window,
                         &MainWindow::saveCurrentStrategyAsDefault,
                         QKeySequence(Qt::CTRL + Qt::Key_D));
+
+    addExportToCalendarAction();
+}
+
+void ApplicationMenu::addExportToCalendarAction() const {
+#ifdef Q_OS_MAC
+    fileMenu->addSeparator();
+    fileMenu->addAction(tr("Export To Calendar"), [this]() {
+        auto optionsWasSet = !QSettings().value("calendarExportOptions").isNull();
+        auto initialOptions = optionsWasSet
+                              ? QSettings().value("calendarExportOptions").toUInt()
+                              : MacOSCalendarExporter::defaultOptions;
+
+        auto[result, options, date] = MacOSCalendarExporter::showOptionsAlert(initialOptions);
+
+        if (result == MacOSCalendarExporter::Response::Export) {
+            QSettings().setValue("calendarExportOptions", options);
+            MacOSCalendarExporter::exportStrategy(*window->strategy, options, date);
+        }
+    });
+#endif
 }
 
 void ApplicationMenu::setupRecentMenu() {

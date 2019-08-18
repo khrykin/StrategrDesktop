@@ -8,6 +8,8 @@ find_package(Qt5 COMPONENTS Widgets Test MacExtras REQUIRED)
 
 include_directories(.)
 include_directories(models)
+include_directories(models/apple)
+
 include_directories(ui)
 include_directories(utility)
 
@@ -17,7 +19,15 @@ set(CMAKE_MODULE_PATH
 
 include(GenerateVersionFile)
 
-set(MODELS
+if (APPLE)
+    set(MODELS_PLATFORM_FILES
+            models/apple/NSColor+HexColor.h
+            models/apple/NSColor+HexColor.m
+            models/apple/SGCalendarManager.m
+            models/apple/SGCalendarManager.h)
+endif ()
+
+set(MODELS ${MODELS_PLATFORM_FILES}
         models/activity.cpp
         models/activity.h
         models/strategy.cpp
@@ -45,7 +55,11 @@ set(MODELS
         models/dragoperation.cpp
         models/dragoperation.h
         models/resizeoperation.cpp
-        models/resizeoperation.h models/overview.cpp models/overview.h models/currenttime.cpp models/currenttime.h)
+        models/resizeoperation.h
+        models/overview.cpp
+        models/overview.h
+        models/currenttime.cpp
+        models/currenttime.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -155,12 +169,17 @@ qt5_add_resources(RESOURCES
         resources/fonts.qrc)
 
 if (APPLE)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
+    set(MODELS_PLATFORM_LIBRARIES
+            "-framework Foundation"
+            "-framework AppKit"
+            "-framework EventKit")
 
     set(PLATFORM_LIBRARIES
             "-framework Foundation"
             "-framework AppKit"
             "-framework UserNotifications"
+            "-framework EventKit"
             Qt5::MacExtras)
 
     set(PLATFORM_FILES
@@ -168,13 +187,21 @@ if (APPLE)
             ui/alert.mm
             ui/macoswindow.mm
             ui/applicationicon.mm
+            ui/cocoa/SGCalendarExportOptionsView.h
+            ui/cocoa/SGCalendarExportOptionsView.m
+            ui/cocoa/SGProgressWindow.h
+            ui/cocoa/SGProgressWindow.m
             utility/notifierbackend.mm
             utility/cocoautils.h
             utility/cocoautils.mm
+            utility/macoscalendarexporter.mm
+            utility/macoscalendarexporter.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
-            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h)
+            third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h
+            ui/cocoa/SGOptionsViewController.m
+            ui/cocoa/SGOptionsViewController.h ui/cocoa/SGCalendarExportProgressWindow.h ui/cocoa/SGCalendarExportProgressWindow.m)
 
     list(APPEND RESOURCES
             deployment/Strategr.icns
@@ -189,6 +216,9 @@ add_executable(models_tests
         ${MODELS_TESTS})
 
 add_library(StrategrCore SHARED ${MODELS})
+
+target_link_libraries(StrategrCore ${MODELS_PLATFORM_LIBRARIES})
+
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE
         PUBLIC_HEADER models/strategy.h
@@ -236,6 +266,7 @@ if (APPLE)
                 POST_BUILD
                 COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR})
     endif (CMAKE_BUILD_TYPE MATCHES Release)
+
 endif ()
 
 # Set a custom plist file for the app bundle
