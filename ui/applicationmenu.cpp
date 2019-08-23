@@ -5,10 +5,11 @@
 #include <QAction>
 #include <QMessageBox>
 
+#include "application.h"
 #include "applicationmenu.h"
 #include "mainwindow.h"
 #include "aboutwindow.h"
-#include "application.h"
+#include "updatedialog.h"
 
 ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupFileMenu();
@@ -16,19 +17,24 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupViewMenu();
 
     addMenu(helpMenu);
-    helpMenu->addAction(tr("About"), [=]() {
-        auto aboutWindow = new AboutWindow(window);
-        aboutWindow->show();
+
+    helpMenu->addAction(tr("About"), [=] {
+        if (!Application::aboutWindow) {
+            Application::aboutWindow = new AboutWindow(window);
+        }
+
+        Application::aboutWindow->show();
     });
 
-    helpMenu->addAction(tr("Check For Updates..."), [=]() {
-        Application::updateChecker().check([](bool hasUpdate) {
-            qDebug() << "hasUpdate" << hasUpdate;
-            if (hasUpdate) {
-                Application::updateChecker().performUpdate();
-            }
-        });
+    auto *updateAction = helpMenu->addAction(tr("Check For Updates..."), [=] {
+        if (!Application::updateDialog) {
+            Application::updateDialog = new UpdateDialog(window);
+        }
+
+        Application::updateDialog->show();
     });
+
+    updateAction->setMenuRole(QAction::ApplicationSpecificRole);
 
     window->setMenuBar(this);
 }
@@ -126,7 +132,6 @@ void ApplicationMenu::setupRecentMenu() {
     }
 
     recentMenu->addSeparator();
-
     recentMenu->addAction(tr("Clear List"),
                           window,
                           &MainWindow::clearRecentFilesList);

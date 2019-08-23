@@ -10,23 +10,29 @@
 #include <QtDebug>
 #include <QTimer>
 
+#include "aboutwindow.h"
+#include "updatedialog.h"
 #include "mainwindow.h"
 
 class Application : public QApplication {
 public:
     Application(int &argc, char **argv);
-    static QStringList openedFiles;
 
-    const static UpdateChecker &updateChecker();
+    static QStringList openedFiles;
+    static AboutWindow *aboutWindow;
+    static UpdateDialog *updateDialog;
+
+    static const SelfUpdater &updater();
 private:
+    static SelfUpdater _updater;
+
     bool launchedByOpenEvent = false;
-    static UpdateChecker _updateChecker;
 
     MainWindow *initialWindow = nullptr;
 
-    bool event(QEvent *event) override;
-
     static void setupFonts();
+
+    bool event(QEvent *event) override;
 };
 
 #endif //STRATEGR_APPLICATION_H

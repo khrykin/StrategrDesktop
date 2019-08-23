@@ -130,7 +130,7 @@ set(UI
         ui/aboutwindow.cpp
         ui/aboutwindow.h
         ui/applicationicon.cpp
-        ui/applicationicon.h)
+        ui/applicationicon.h ui/updatedialog.cpp ui/updatedialog.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -144,7 +144,7 @@ set(UTILITY
         utility/notifier.h
         utility/notifierbackend.h
         utility/fontutils.cpp
-        utility/fontutils.h utility/updatechecker.cpp utility/updatechecker.h)
+        utility/fontutils.h utility/selfupdater.cpp utility/selfupdater.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -233,9 +233,8 @@ target_link_libraries(Strategr
         Qt5::Network
         ${PLATFORM_LIBRARIES})
 
-target_link_libraries(updater
-        Qt5::Core
-        Qt5::Network)
+target_link_libraries(updater)
+add_dependencies(Strategr updater)
 
 if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Release)
@@ -243,6 +242,9 @@ if (APPLE)
                 POST_BUILD
                 COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR})
     endif (CMAKE_BUILD_TYPE MATCHES Release)
+
+    set_target_properties(updater PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/MacOS")
 endif ()
 
 # Set a custom plist file for the app bundle

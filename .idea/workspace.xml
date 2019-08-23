@@ -5,14 +5,14 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="Strategr" targetName="Strategr_autogen" />
-      <config projectName="Strategr" targetName="StrategrCore" />
       <config projectName="Strategr" targetName="updater" />
+      <config projectName="Strategr" targetName="Strategr" />
+      <config projectName="Strategr" targetName="Strategr_autogen" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
+      <config projectName="Strategr" targetName="StrategrCore" />
+      <config projectName="Strategr" targetName="ui_tests" />
       <config projectName="Strategr" targetName="updater_autogen" />
       <config projectName="Strategr" targetName="models_tests" />
-      <config projectName="Strategr" targetName="ui_tests" />
-      <config projectName="Strategr" targetName="Strategr" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -23,20 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/updater.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility/updatechecker.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utility/updatechecker.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/GenerateVersionFile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake/modules/version.cpp.in" beforeDir="false" afterPath="$PROJECT_DIR$/cmake/modules/version.cpp.in" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/macos_deploy.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/macos_deploy.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/repo_name.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/repo_name.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/application.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/application.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/application.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/applicationmenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/applicationmenu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/applicationsettings.h" beforeDir="false" afterPath="$PROJECT_DIR$/utility/applicationsettings.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/selfupdater.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/selfupdater.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +49,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -163,7 +151,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="updater" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="updater">
+    <configuration name="updater" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="22501 &quot;$PROJECT_DIR$/cmake-build-debug/Strategr.app&quot;" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="updater">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -247,34 +235,7 @@
       <workItem from="1565552606408" duration="36328000" />
       <workItem from="1565648310732" duration="45571000" />
       <workItem from="1565807531024" duration="906000" />
-    </task>
-    <task id="LOCAL-00019" summary="Fonts issue fix">
-      <created>1563300454947</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1563300454947</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Ready to deploy">
-      <created>1563557088817</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1563557088817</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Settings close button">
-      <created>1563887769092</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1563887769092</updated>
-    </task>
-    <task id="LOCAL-00022" summary="SlotBoard Redesign">
-      <created>1564073840448</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1564073840448</updated>
+      <workItem from="1566561763992" duration="30173000" />
     </task>
     <task id="LOCAL-00023" summary="Remove backtrace">
       <created>1564074121035</created>
@@ -591,7 +552,35 @@
       <option name="project" value="LOCAL" />
       <updated>1565701405998</updated>
     </task>
-    <option name="localTasksCounter" value="68" />
+    <task id="LOCAL-00068" summary="macOS self-update beta">
+      <created>1566581772403</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1566581772403</updated>
+    </task>
+    <task id="LOCAL-00069" summary="macOS self-update beta">
+      <created>1566655485842</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1566655485842</updated>
+    </task>
+    <task id="LOCAL-00070" summary="macOS self-update beta">
+      <created>1566655590416</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1566655590416</updated>
+    </task>
+    <task id="LOCAL-00071" summary="macOS self-update beta">
+      <created>1566659539443</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1566659539443</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -636,7 +625,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Remove backtrace" />
     <MESSAGE value="ActivitySessionWidget update optimization" />
     <MESSAGE value="Custom macOS window" />
     <MESSAGE value="Naive implementation" />
@@ -661,6 +649,7 @@
     <MESSAGE value="ColoredLabel height fix" />
     <MESSAGE value="Repo name script" />
     <MESSAGE value="Update archive" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update archive" />
+    <MESSAGE value="macOS self-update beta" />
+    <option name="LAST_COMMIT_MESSAGE" value="macOS self-update beta" />
   </component>
 </project>

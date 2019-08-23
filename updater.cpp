@@ -2,42 +2,45 @@
 // Created by Dmitry Khrykin on 2019-08-13.
 //
 
-#include <QCoreApplication>
-#include <QtNetwork>
-#include <QtCore>
-#include <QObject>
+#include <cstdlib>
+#include <string>
+#include <iostream>
+
+std::string commandWithArgsApplied(const std::string &command,
+                                   const std::string &args) {
+    return command
+           + (command.empty() ? "" : " ")
+           + args;
+}
 
 int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+    using namespace std;
 
-    auto nam = QNetworkAccessManager();
-    QObject::connect(&nam, &QNetworkAccessManager::finished,
-                     [](QNetworkReply *reply) {
-                         if (reply->error() == QNetworkReply::NoError) {
+    if (argc != 3) {
+        return 1;
+    }
 
-                             QStringList propertyNames;
-                             QStringList propertyKeys;
+    string pid = argv[1];
+    string launchDestination = "\"" + string{argv[2]} + "\"";
+    string launchCommand;
+    string killCommand = "pkill -9";
 
-                             QString strReply = (QString) reply->readAll();
+#if defined(__APPLE__)
+    launchCommand = "open";
+    killCommand = "kill -9";
+#endif
 
-                             qDebug() << strReply;
+    auto kill = commandWithArgsApplied(killCommand, pid);
+    auto killResult = std::system(kill.c_str());
+    std::cout << "kill: " << kill << " result: " << killResult << std::endl;
 
-                             QJsonDocument jsonResponse = QJsonDocument::fromJson(strReply.toUtf8());
+    if (killResult != 0)
+        return 1;
 
-                             QJsonObject jsonObject = jsonResponse.object();
+    auto command = commandWithArgsApplied(launchCommand, launchDestination);
 
-                             qDebug() << "jsonObject" << jsonObject;
+    auto launchResult = std::system(command.c_str());
+    std::cout << "open: " << command << " result: " << launchResult << std::endl;
 
-                         } else {
-                             qDebug() << "ERROR";
-                         }
-                     });
-
-    QUrl url("https://api.github.com/repos/khrykin/StrategrDesktop/releases/latest");
-    QNetworkReply *reply = nam.get(QNetworkRequest(url));
-
-    qDebug() << "Reply" << reply;
-
-
-    return QCoreApplication::exec();
+    return launchResult != 0;
 }

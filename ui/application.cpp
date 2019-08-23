@@ -8,7 +8,11 @@
 
 auto Application::openedFiles = QStringList();
 
-auto Application::_updateChecker = UpdateChecker();
+auto Application::_updater = SelfUpdater();
+
+AboutWindow *Application::aboutWindow = nullptr;
+
+UpdateDialog *Application::updateDialog = nullptr;
 
 Application::Application(int &argc, char **argv)
         : QApplication(argc, argv) {
@@ -50,6 +54,6 @@ void Application::setupFonts() {
         qWarning() << "FontAwesome cannot be loaded !";
 }
 
-const UpdateChecker &Application::updateChecker() {
-    return Application::_updateChecker;
+const SelfUpdater &Application::updater() {
+    return Application::_updater;
 }

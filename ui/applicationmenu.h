@@ -7,7 +7,7 @@
 
 #include <QMenuBar>
 #include <QMenu>
-#include "updatechecker.h"
+#include "selfupdater.h"
 
 class MainWindow;
 
