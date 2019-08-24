@@ -4,7 +4,7 @@ project(Strategr)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(catch2 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Test MacExtras REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Test MacExtras Network REQUIRED)
 
 include_directories(.)
 include_directories(models)
@@ -144,7 +144,11 @@ set(UI
         ui/aboutwindow.cpp
         ui/aboutwindow.h
         ui/applicationicon.cpp
-        ui/applicationicon.h ui/overviewwidget.cpp ui/overviewwidget.h)
+        ui/applicationicon.h
+        ui/updatedialog.cpp
+        ui/updatedialog.h
+        ui/overviewwidget.cpp
+        ui/overviewwidget.h)
 
 set(UTILITY
         utility/jsonserializer.cpp
@@ -158,7 +162,9 @@ set(UTILITY
         utility/notifier.h
         utility/notifierbackend.h
         utility/fontutils.cpp
-        utility/fontutils.h)
+        utility/fontutils.h
+        utility/selfupdater.cpp
+        utility/selfupdater.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -240,6 +246,9 @@ add_executable(Strategr
         ${RESOURCES}
         ${version_file})
 
+add_executable(updater
+        updater.cpp)
+
 add_executable(ui_tests
         qt_tests_main.cpp
         ${PLATFORM_FILES}
@@ -258,7 +267,11 @@ target_link_libraries(ui_tests
 target_link_libraries(Strategr
         StrategrCore
         Qt5::Widgets
+        Qt5::Network
         ${PLATFORM_LIBRARIES})
+
+target_link_libraries(updater)
+add_dependencies(Strategr updater)
 
 if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Release)
@@ -267,13 +280,15 @@ if (APPLE)
                 COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR})
     endif (CMAKE_BUILD_TYPE MATCHES Release)
 
+    set_target_properties(updater PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/MacOS")
 endif ()
 
 # Set a custom plist file for the app bundle
 set_target_properties(Strategr PROPERTIES
         MACOSX_BUNDLE TRUE
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/deployment/Info.plist
-        MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_SHORT}
+        MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION}
         MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
         RESOURCE "${RESOURCES}")

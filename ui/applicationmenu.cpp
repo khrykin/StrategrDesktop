@@ -6,9 +6,11 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#include "application.h"
 #include "applicationmenu.h"
 #include "mainwindow.h"
 #include "aboutwindow.h"
+#include "updatedialog.h"
 
 #ifdef Q_OS_MAC
 
@@ -22,10 +24,24 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     setupViewMenu();
 
     addMenu(helpMenu);
-    helpMenu->addAction("About", [=]() {
-        auto aboutWindow = new AboutWindow(window);
-        aboutWindow->show();
+
+    helpMenu->addAction(tr("About"), [=] {
+        if (!Application::aboutWindow) {
+            Application::aboutWindow = new AboutWindow(window);
+        }
+
+        Application::aboutWindow->show();
     });
+
+    auto *updateAction = helpMenu->addAction(tr("Check For Updates..."), [=] {
+        if (!Application::updateDialog) {
+            Application::updateDialog = new UpdateDialog(window);
+        }
+
+        Application::updateDialog->show();
+    });
+
+    updateAction->setMenuRole(QAction::ApplicationSpecificRole);
 
     window->setMenuBar(this);
 }
@@ -144,7 +160,6 @@ void ApplicationMenu::setupRecentMenu() {
     }
 
     recentMenu->addSeparator();
-
     recentMenu->addAction(tr("Clear List"),
                           window,
                           &MainWindow::clearRecentFilesList);

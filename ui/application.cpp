@@ -8,6 +8,12 @@
 
 auto Application::openedFiles = QStringList();
 
+auto Application::_updater = SelfUpdater();
+
+AboutWindow *Application::aboutWindow = nullptr;
+
+UpdateDialog *Application::updateDialog = nullptr;
+
 Application::Application(int &argc, char **argv)
         : QApplication(argc, argv) {
     QTimer::singleShot(0, [=]() {
@@ -19,6 +25,9 @@ Application::Application(int &argc, char **argv)
 
     Application::setAttribute(Qt::AA_EnableHighDpiScaling);
     Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+    QSettings().setProperty("lastLaunchedVersion",
+                            ApplicationSettings::version);
 
     setupFonts();
 
@@ -47,4 +56,8 @@ void Application::setupFonts() {
 
     if (QFontDatabase::addApplicationFont(":/fonts/ionicons.ttf") < 0)
         qWarning() << "FontAwesome cannot be loaded !";
+}
+
+const SelfUpdater &Application::updater() {
+    return Application::_updater;
 }

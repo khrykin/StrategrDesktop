@@ -6,3 +6,4 @@
 
 const auto ApplicationSettings::version = "@VERSION@";
 const auto ApplicationSettings::shortVersion = "@VERSION_SHORT@";
+const auto ApplicationSettings::repoName = "@REPO_NAME@";

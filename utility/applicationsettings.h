@@ -27,6 +27,8 @@ namespace ApplicationSettings {
 
     extern const char *const version;
     extern const char *const shortVersion;
+    extern const char *const repoName;
+
 }
 
 

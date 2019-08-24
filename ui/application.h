@@ -10,6 +10,8 @@
 #include <QtDebug>
 #include <QTimer>
 
+#include "aboutwindow.h"
+#include "updatedialog.h"
 #include "mainwindow.h"
 
 Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
@@ -26,10 +28,16 @@ public:
 
 #endif
 
-    static QStringList openedFiles;
 
+    static QStringList openedFiles;
+    static AboutWindow *aboutWindow;
+    static UpdateDialog *updateDialog;
+
+    static const SelfUpdater &updater();
 private:
     static void setupFonts();
+
+    static SelfUpdater _updater;
 
     bool launchedByOpenEvent = false;
 

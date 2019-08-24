@@ -5,11 +5,13 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="Strategr" targetName="updater" />
       <config projectName="Strategr" targetName="Strategr" />
       <config projectName="Strategr" targetName="Strategr_autogen" />
       <config projectName="Strategr" targetName="ui_tests_autogen" />
       <config projectName="Strategr" targetName="StrategrCore" />
       <config projectName="Strategr" targetName="ui_tests" />
+      <config projectName="Strategr" targetName="updater_autogen" />
       <config projectName="Strategr" targetName="models_tests" />
     </generated>
   </component>
@@ -22,6 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utility/selfupdater.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/selfupdater.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/apple/SGCalendarManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/apple/SGCalendarManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utility/macoscalendarexporter.mm" beforeDir="false" afterPath="$PROJECT_DIR$/utility/macoscalendarexporter.mm" afterDir="false" />
     </list>
@@ -84,10 +87,14 @@
     <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scripts" />
+      <recent name="$PROJECT_DIR$/deployment" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/utility" />
       <recent name="$PROJECT_DIR$/cmake/modules" />
       <recent name="$PROJECT_DIR$/resources" />
+      <recent name="$PROJECT_DIR$/utility" />
       <recent name="$PROJECT_DIR$/ui/v0" />
       <recent name="$PROJECT_DIR$/ui" />
     </key>
@@ -151,6 +158,16 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="updater" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="22501 &quot;$PROJECT_DIR$/cmake-build-debug/Strategr.app&quot;" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="updater">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="updater_autogen" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="updater_autogen" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Catch.Strategy activities" />
       <item itemvalue="Catch.Strategy activity sessions" />
@@ -160,6 +177,8 @@
       <item itemvalue="CMake Application.models_tests" />
       <item itemvalue="CMake Application.ui_tests" />
       <item itemvalue="CMake Application.ui_tests_autogen" />
+      <item itemvalue="CMake Application.updater" />
+      <item itemvalue="CMake Application.updater_autogen" />
     </list>
     <recent_temporary>
       <list>
@@ -225,6 +244,23 @@
       <workItem from="1565882306878" duration="16109000" />
       <workItem from="1566054501981" duration="598000" />
       <workItem from="1566055378312" duration="33201000" />
+      <workItem from="1565648310732" duration="45571000" />
+      <workItem from="1565807531024" duration="906000" />
+      <workItem from="1566561763992" duration="30173000" />
+    </task>
+    <task id="LOCAL-00023" summary="Remove backtrace">
+      <created>1564074121035</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1564074121035</updated>
+    </task>
+    <task id="LOCAL-00024" summary="ActivitySessionWidget update optimization">
+      <created>1564074729247</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1564074729247</updated>
     </task>
     <task id="LOCAL-00025" summary="Custom macOS window">
       <created>1564188659616</created>
@@ -570,6 +606,49 @@
       <updated>1566156558958</updated>
     </task>
     <option name="localTasksCounter" value="74" />
+    <task id="LOCAL-00066" summary="Repo name script">
+      <created>1565700191208</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1565700191208</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Update archive">
+      <created>1565701405998</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1565701405998</updated>
+    </task>
+    <task id="LOCAL-00068" summary="macOS self-update beta">
+      <created>1566581772403</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1566581772403</updated>
+    </task>
+    <task id="LOCAL-00069" summary="macOS self-update beta">
+      <created>1566655485842</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1566655485842</updated>
+    </task>
+    <task id="LOCAL-00070" summary="macOS self-update beta">
+      <created>1566655590416</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1566655590416</updated>
+    </task>
+    <task id="LOCAL-00071" summary="macOS self-update beta">
+      <created>1566659539443</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1566659539443</updated>
+    </task>
+    <option name="localTasksCounter" value="72" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -614,6 +693,9 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
+    <MESSAGE value="ActivitySessionWidget update optimization" />
+    <MESSAGE value="Custom macOS window" />
+    <MESSAGE value="Naive implementation" />
     <MESSAGE value="Drag history" />
     <MESSAGE value="Refactor" />
     <MESSAGE value="Intelligent drag operation" />
@@ -634,6 +716,9 @@
     <MESSAGE value="StrategrCore as Framework" />
     <MESSAGE value="ColoredLabel height fix" />
     <MESSAGE value="Repo name script" />
+    <MESSAGE value="Update archive" />
+    <MESSAGE value="macOS self-update beta" />
+    <option name="LAST_COMMIT_MESSAGE" value="macOS self-update beta" />
     <MESSAGE value="Improved macOS integration" />
     <MESSAGE value="Overview Widget" />
     <MESSAGE value="Full version in about window" />
