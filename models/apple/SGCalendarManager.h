@@ -22,8 +22,6 @@
 
 - (instancetype)initWithStore:(EKEventStore *)store;
 
-- (NSArray<EKCalendar *> *)calendarsWithTitle:(NSString *)title;
-
 - (EKCalendar *)findOrCreateCalendarWithTitle:(NSString *)title
                                      andColor:(NSColor *)color;
 
@@ -34,8 +32,6 @@
           includeNotifications:(BOOL)includeNotifications;
 
 - (void)removeAllEventsForDate:(NSDate *)date;
-
-- (NSArray<EKCalendar *> *)fetchCalendars;
 
 + (void)launchCalendarApp;
 @end

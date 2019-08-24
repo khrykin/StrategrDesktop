@@ -24,9 +24,8 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/selfupdater.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/utility/selfupdater.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/apple/SGCalendarManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/models/apple/SGCalendarManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utility/macoscalendarexporter.mm" beforeDir="false" afterPath="$PROJECT_DIR$/utility/macoscalendarexporter.mm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests_main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests_main.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -51,7 +50,7 @@
     <expand />
     <select />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FavoritesManager">
     <favorites_list name="Strategr" />
   </component>
@@ -115,7 +114,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.Strategr">
+  <component name="RunManager" selected="CMake Application.models_tests">
     <configuration name="Strategy activities" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="models_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="models_tests" TEST_CLASS="[strategy][activities]" TEST_METHOD="Strategy activities" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -247,27 +246,6 @@
       <workItem from="1565648310732" duration="45571000" />
       <workItem from="1565807531024" duration="906000" />
       <workItem from="1566561763992" duration="30173000" />
-    </task>
-    <task id="LOCAL-00023" summary="Remove backtrace">
-      <created>1564074121035</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1564074121035</updated>
-    </task>
-    <task id="LOCAL-00024" summary="ActivitySessionWidget update optimization">
-      <created>1564074729247</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1564074729247</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Custom macOS window">
-      <created>1564188659616</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1564188659616</updated>
     </task>
     <task id="LOCAL-00026" summary="Custom macOS window">
       <created>1564189221474</created>
@@ -549,63 +527,6 @@
       <option name="project" value="LOCAL" />
       <updated>1565672881609</updated>
     </task>
-    <task id="LOCAL-00066" summary="Improved macOS integration">
-      <created>1565824306531</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1565824306531</updated>
-    </task>
-    <task id="LOCAL-00067" summary="Improved macOS integration">
-      <created>1565824406060</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1565824406060</updated>
-    </task>
-    <task id="LOCAL-00068" summary="Overview Widget">
-      <created>1565834519019</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1565834519019</updated>
-    </task>
-    <task id="LOCAL-00069" summary="Full version in about window">
-      <created>1565834715603</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1565834715603</updated>
-    </task>
-    <task id="LOCAL-00070" summary="Overall view upgrade">
-      <created>1565849021375</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1565849021375</updated>
-    </task>
-    <task id="LOCAL-00071" summary="MacOS export to Calendar">
-      <created>1566155187634</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1566155187635</updated>
-    </task>
-    <task id="LOCAL-00072" summary="MacOS export to Calendar">
-      <created>1566156432114</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1566156432114</updated>
-    </task>
-    <task id="LOCAL-00073" summary="MacOS export to Calendar">
-      <created>1566156558958</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1566156558958</updated>
-    </task>
-    <option name="localTasksCounter" value="74" />
     <task id="LOCAL-00066" summary="Repo name script">
       <created>1565700191208</created>
       <option name="number" value="00066" />
@@ -648,7 +569,28 @@
       <option name="project" value="LOCAL" />
       <updated>1566659539443</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="Auto-updates merged">
+      <created>1566660516895</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1566660516895</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Auto-updates merged">
+      <created>1566661220798</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1566661220798</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Auto-updates merged">
+      <created>1566661332216</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1566661332216</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -693,9 +635,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="ActivitySessionWidget update optimization" />
-    <MESSAGE value="Custom macOS window" />
-    <MESSAGE value="Naive implementation" />
     <MESSAGE value="Drag history" />
     <MESSAGE value="Refactor" />
     <MESSAGE value="Intelligent drag operation" />
@@ -718,12 +657,12 @@
     <MESSAGE value="Repo name script" />
     <MESSAGE value="Update archive" />
     <MESSAGE value="macOS self-update beta" />
-    <option name="LAST_COMMIT_MESSAGE" value="macOS self-update beta" />
     <MESSAGE value="Improved macOS integration" />
     <MESSAGE value="Overview Widget" />
     <MESSAGE value="Full version in about window" />
     <MESSAGE value="Overall view upgrade" />
     <MESSAGE value="MacOS export to Calendar" />
-    <option name="LAST_COMMIT_MESSAGE" value="MacOS export to Calendar" />
+    <MESSAGE value="Auto-updates merged" />
+    <option name="LAST_COMMIT_MESSAGE" value="Auto-updates merged" />
   </component>
 </project>
