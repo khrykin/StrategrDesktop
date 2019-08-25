@@ -25,9 +25,6 @@
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/colorprovider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/rowwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/rowwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/rowwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/rowwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -248,13 +245,6 @@
       <workItem from="1565648310732" duration="45571000" />
       <workItem from="1565807531024" duration="906000" />
       <workItem from="1566561763992" duration="30173000" />
-    </task>
-    <task id="LOCAL-00028" summary="Custom macOS window">
-      <created>1564192449015</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1564192449015</updated>
     </task>
     <task id="LOCAL-00029" summary="Custom macOS window">
       <created>1564193711229</created>
@@ -592,7 +582,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566732973443</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Current session UI refinement">
+      <created>1566733462568</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1566733462569</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -637,7 +634,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Intelligent drag operation" />
     <MESSAGE value="Stretch operation" />
     <MESSAGE value="Fix stretch operation bug at boundary condition" />
     <MESSAGE value="Improved macOS toolbar" />

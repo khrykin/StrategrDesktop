@@ -18,7 +18,7 @@ QColor ColorProvider::borderColor() {
 QColor ColorProvider::hardBorderColor() {
     return ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
-            0.9 * ColorUtils::shadesAlphaFactor(100));
+            0.9 * ColorUtils::shadesAlphaFactor(8, 0.1));
 }
 
 QColor ColorProvider::highlightColor() {
