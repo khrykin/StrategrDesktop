@@ -145,6 +145,15 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
                            height() - 1,
                            width(),
                            1));
+
+    auto topBorderColor = QColor(Qt::white);
+    topBorderColor.setAlphaF(0.6 * ColorUtils::shadesAlphaFactor(10, 0.1));
+
+    painter.setBrush(topBorderColor);
+    painter.drawRect(QRect(0,
+                           0,
+                           width(),
+                           1));
 }
 
 void CurrentSessionWidget::mousePressEvent(QMouseEvent *) {

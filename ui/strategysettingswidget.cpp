@@ -117,9 +117,13 @@ void StrategySettingsWidget::createStartTimeForm() {
 }
 
 void StrategySettingsWidget::createEndTimeForm() {
-
     auto *formWidget = makeFormRowWidget();
-    formWidget->setIsHardBorder(true);
+
+    formWidget->setBorderColor([] {
+        auto textColor = ColorProvider::textColor();
+        textColor.setAlphaF(0.05);
+        return textColor;
+    });
 
     endTimeEdit = new SteppedTimeEdit();
     endTimeEdit->setAlignment(Qt::AlignRight);
@@ -138,11 +142,10 @@ void StrategySettingsWidget::createEndTimeForm() {
             &StrategySettingsWidget::endTimeChanged);
 }
 
-
 QColor StrategySettingsWidget::labelColor() const {
     return ColorUtils::overlayWithAlpha(
             palette().color(QPalette::Text),
-            0.75 * ColorUtils::shadesAlphaFactor(),
+            0.75 * ColorUtils::shadesAlphaFactor(0),
             palette().color(QPalette::Base));
 }
 

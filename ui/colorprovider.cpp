@@ -12,7 +12,7 @@ QColor ColorProvider::baseColor() {
 QColor ColorProvider::borderColor() {
     return ColorUtils::overlayWithAlpha(
             QColor(ApplicationSettings::rowBorderColor),
-            0.25 * ColorUtils::shadesAlphaFactor());
+            0.25 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::hardBorderColor() {
@@ -29,7 +29,6 @@ QColor ColorProvider::selectionColor() {
     auto selectionColor = highlightColor();
     selectionColor.setAlphaF(0.5);
     return selectionColor;
-
 }
 
 QColor ColorProvider::textColor() {
@@ -43,13 +42,13 @@ QColor ColorProvider::windowColor() {
 QColor ColorProvider::panelColor() {
     return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Window),
-            0.6 * ColorUtils::shadesAlphaFactor());
+            0.6 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::darkPanelColor() {
     return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Window),
-            0.95 * ColorUtils::shadesAlphaFactor());
+            0.95 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::highlightedTextColor() {
@@ -65,7 +64,7 @@ QColor ColorProvider::secondaryTextColor() {
 QColor ColorProvider::tertiaryTextColor() {
     return ColorUtils::overlayWithAlpha(
             QApplication::palette().color(QPalette::Text),
-            0.35 * ColorUtils::shadesAlphaFactor());
+            0.35 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::textColorJustLighter() {

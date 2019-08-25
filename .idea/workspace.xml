@@ -24,8 +24,10 @@
   <component name="ChangeListManager">
     <list default="true" id="42309e78-cf40-4e50-82ce-a0e71022e6a4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests_main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/tests_main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/colorprovider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/colorprovider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/rowwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/rowwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/rowwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/ui/rowwidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ui/strategysettingswidget.cpp" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +116,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="CMake Application.models_tests">
+  <component name="RunManager" selected="CMake Application.Strategr">
     <configuration name="Strategy activities" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" temporary="true" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Strategr" TARGET_NAME="models_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Strategr" RUN_TARGET_NAME="models_tests" TEST_CLASS="[strategy][activities]" TEST_METHOD="Strategy activities" TEST_MODE="SUITE_TEST">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -246,20 +248,6 @@
       <workItem from="1565648310732" duration="45571000" />
       <workItem from="1565807531024" duration="906000" />
       <workItem from="1566561763992" duration="30173000" />
-    </task>
-    <task id="LOCAL-00026" summary="Custom macOS window">
-      <created>1564189221474</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1564189221474</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Custom macOS window">
-      <created>1564191968832</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1564191968832</updated>
     </task>
     <task id="LOCAL-00028" summary="Custom macOS window">
       <created>1564192449015</created>
@@ -590,7 +578,21 @@
       <option name="project" value="LOCAL" />
       <updated>1566661332216</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Auto-updates merged">
+      <created>1566661592372</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1566661592372</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Current session UI refinement">
+      <created>1566732973443</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1566732973443</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -635,8 +637,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
-    <MESSAGE value="Drag history" />
-    <MESSAGE value="Refactor" />
     <MESSAGE value="Intelligent drag operation" />
     <MESSAGE value="Stretch operation" />
     <MESSAGE value="Fix stretch operation bug at boundary condition" />
@@ -663,6 +663,7 @@
     <MESSAGE value="Overall view upgrade" />
     <MESSAGE value="MacOS export to Calendar" />
     <MESSAGE value="Auto-updates merged" />
-    <option name="LAST_COMMIT_MESSAGE" value="Auto-updates merged" />
+    <MESSAGE value="Current session UI refinement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Current session UI refinement" />
   </component>
 </project>

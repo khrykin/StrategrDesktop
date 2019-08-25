@@ -61,11 +61,13 @@ namespace ColorUtils {
     }
 
     inline double shadesAlphaFactor(int power = 4,
+                                    float offset = 0.5,
                                     const QColor &source = QApplication::palette().color(QPalette::Base)) {
         power = power - power % 2;
-        return std::pow(2, power - 1)
+        return std::pow(2, power)
+               * (1 - offset)
                * std::pow(source.lightnessF() - 0.5, power)
-               + 0.5;
+               + offset;
     }
 
     inline QColor safeForegroundColor(const QColor &color) {

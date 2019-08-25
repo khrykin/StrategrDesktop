@@ -221,6 +221,8 @@ add_executable(models_tests
         ${MODELS}
         ${MODELS_TESTS})
 
+target_link_libraries(models_tests Catch2::Catch2 ${MODELS_PLATFORM_LIBRARIES})
+
 add_library(StrategrCore SHARED ${MODELS})
 
 target_link_libraries(StrategrCore ${MODELS_PLATFORM_LIBRARIES})
@@ -248,6 +250,7 @@ add_executable(Strategr
 
 add_executable(updater
         updater.cpp)
+add_dependencies(Strategr updater)
 
 add_executable(ui_tests
         qt_tests_main.cpp
@@ -257,7 +260,6 @@ add_executable(ui_tests
         ${UI_TESTS}
         ${RESOURCES})
 
-target_link_libraries(models_tests Catch2::Catch2)
 target_link_libraries(ui_tests
         StrategrCore
         Catch2::Catch2
@@ -270,8 +272,6 @@ target_link_libraries(Strategr
         Qt5::Network
         ${PLATFORM_LIBRARIES})
 
-target_link_libraries(updater)
-add_dependencies(Strategr updater)
 
 if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Release)

@@ -14,7 +14,9 @@
 #include "updatedialog.h"
 #include "mainwindow.h"
 
+#ifdef Q_OS_MAC
 Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
+#endif
 
 class Application : public QApplication {
 public:
@@ -27,7 +29,6 @@ public:
     }
 
 #endif
-
 
     static QStringList openedFiles;
     static AboutWindow *aboutWindow;
@@ -42,9 +43,11 @@ private:
     bool launchedByOpenEvent = false;
 
 #ifdef Q_OS_MAC
+
     static CocoaDelegate *cocoaDelegate;
     void setupCocoaDelegate();
     void releaseCocoaDelegate();
+
 #endif
 
     bool event(QEvent *event) override;

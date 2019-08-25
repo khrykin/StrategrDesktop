@@ -92,7 +92,7 @@ QColor ActivitySessionWidget::selectedBackgroundColor() const {
 
     if (!activitySession.activity) {
         return overlayWithAlpha(textColor(),
-                                0.05 * shadesAlphaFactor());
+                                0.05 * shadesAlphaFactor(0));
     }
 
     auto backgroundColor = sessionColor().lighter(110);

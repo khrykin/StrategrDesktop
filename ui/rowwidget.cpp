@@ -19,11 +19,7 @@ void RowWidget::paintEvent(QPaintEvent *event) {
     painter.setBrush(QApplication::palette().color(QPalette::Base));
     painter.drawRect(QRect(0, 0, width(), height()));
 
-    const auto borderColor = isHardBorder()
-                             ? hardBorderColor()
-                             : RowWidget::borderColor();
-
-    painter.setBrush(borderColor);
+    painter.setBrush(_borderColor());
     auto borderRect = QRect(0, height() - 1, width(), 1);
     painter.drawRect(borderRect);
 }
@@ -34,5 +30,14 @@ bool RowWidget::isHardBorder() const {
 
 void RowWidget::setIsHardBorder(bool isHardBorder) {
     _isHardBorder = isHardBorder;
+    update();
+}
+
+const QColor &RowWidget::borderColor() const {
+    return _borderColor();
+}
+
+void RowWidget::setBorderColor(const std::function<QColor(void)> &borderColor) {
+    _borderColor = borderColor;
     update();
 }
