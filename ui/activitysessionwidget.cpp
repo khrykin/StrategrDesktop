@@ -209,7 +209,7 @@ void ActivitySessionWidget::drawLabel(QPainter &painter) const {
 
     auto font = QFont();
     font.setBold(true);
-    font.setPointSize(15);
+    font.setPixelSize(15);
 
     painter.setFont(font);
 

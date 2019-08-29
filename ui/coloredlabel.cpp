@@ -58,9 +58,9 @@ void ColoredLabel::setBold(bool isBold) {
     setFont(newFont);
 }
 
-void ColoredLabel::setFontHeight(double fontHeight) {
+void ColoredLabel::setFontHeight(int fontHeight) {
     auto newFont = QFont(font());
-    newFont.setPointSizeF(fontHeight);
+    newFont.setPixelSize(fontHeight);
 
     setFont(newFont);
 }

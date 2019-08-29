@@ -6,9 +6,9 @@
 
 #include "application.h"
 
-auto Application::openedFiles = QStringList();
+QStringList Application::openedFiles = QStringList();
 
-auto Application::_updater = SelfUpdater();
+SelfUpdater Application::_updater = SelfUpdater();
 
 AboutWindow *Application::aboutWindow = nullptr;
 

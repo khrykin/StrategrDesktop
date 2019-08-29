@@ -51,7 +51,7 @@ std::string ActivitySessionsList::classPrintName() const {
     return "ActivitySessionsList";
 }
 
-std::vector<const ActivitySessionsList::OverviewItem>
+std::vector<ActivitySessionsList::OverviewItem>
 ActivitySessionsList::overview() const {
     if (_vector.empty()) {
         return {};
@@ -60,7 +60,7 @@ ActivitySessionsList::overview() const {
     auto overallBeginTime = _vector.front().beginTime();
     auto totalDuraion = _vector.back().endTime() - overallBeginTime;
 
-    std::vector<const OverviewItem> result;
+    std::vector<OverviewItem> result;
     std::transform(_vector.begin(),
                    _vector.end(),
                    std::back_inserter(result),

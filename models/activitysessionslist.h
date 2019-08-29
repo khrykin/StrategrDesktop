@@ -39,7 +39,7 @@ public:
     std::optional<ActivitySession>
     sessionBefore(const ActivitySession &activitySession) const;
 
-    std::vector<const OverviewItem> overview() const;
+    std::vector<OverviewItem> overview() const;
 
 private:
     using ActivitySessionsListBase::ActivitySessionsListBase;

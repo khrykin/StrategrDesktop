@@ -5,7 +5,7 @@
 #include "colorpicker.h"
 #include "colorpickeritem.h"
 
-const auto ColorPicker::defaultColors = QVector{
+const QVector<QColor> ColorPicker::defaultColors = QVector{
         QColor("#FF4136"),
         QColor("#FFB700"),
         QColor("#FFD700"),

@@ -4,7 +4,11 @@ project(Strategr)
 set(CMAKE_CXX_STANDARD 17)
 
 find_package(catch2 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Test MacExtras Network REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
+
+if (APPLE)
+    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+endif ()
 
 include_directories(.)
 include_directories(models)
@@ -138,9 +142,8 @@ set(UI
         ui/macoswindow.h
         ui/cursorprovider.cpp
         ui/cursorprovider.h
-        ui/separator.cpp ui/separator.h
-        ui/visualeffectwidget.mm
-        ui/visualeffectwidget.h
+        ui/separator.cpp
+        ui/separator.h
         ui/aboutwindow.cpp
         ui/aboutwindow.h
         ui/applicationicon.cpp
@@ -151,6 +154,7 @@ set(UI
         ui/overviewwidget.h)
 
 set(UTILITY
+        ${version_file}
         utility/jsonserializer.cpp
         utility/jsonserializer.h
         utility/filesystemiomanager.cpp
@@ -161,6 +165,7 @@ set(UTILITY
         utility/notifier.cpp
         utility/notifier.h
         utility/notifierbackend.h
+        utility/notifierbackend.cpp
         utility/fontutils.cpp
         utility/fontutils.h
         utility/selfupdater.cpp
@@ -207,7 +212,9 @@ if (APPLE)
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h
             ui/cocoa/SGOptionsViewController.m
-            ui/cocoa/SGOptionsViewController.h ui/cocoa/SGCalendarExportProgressWindow.h ui/cocoa/SGCalendarExportProgressWindow.m)
+            ui/cocoa/SGOptionsViewController.h
+            ui/cocoa/SGCalendarExportProgressWindow.h
+            ui/cocoa/SGCalendarExportProgressWindow.m)
 
     list(APPEND RESOURCES
             deployment/Strategr.icns
@@ -223,7 +230,11 @@ add_executable(models_tests
 
 target_link_libraries(models_tests Catch2::Catch2 ${MODELS_PLATFORM_LIBRARIES})
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 add_library(StrategrCore SHARED ${MODELS})
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
 target_link_libraries(StrategrCore ${MODELS_PLATFORM_LIBRARIES})
 
@@ -236,6 +247,9 @@ set_target_properties(StrategrCore PROPERTIES
         MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
         XCODE_ATTRIBUTE_INSTALL_PATH @executable_path/../Frameworks/)
 
+add_executable(updater
+        updater.cpp)
+
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
 
@@ -245,11 +259,8 @@ add_executable(Strategr
         ${PLATFORM_FILES}
         ${UI}
         ${UTILITY}
-        ${RESOURCES}
-        ${version_file})
+        ${RESOURCES})
 
-add_executable(updater
-        updater.cpp)
 add_dependencies(Strategr updater)
 
 add_executable(ui_tests
@@ -264,6 +275,7 @@ target_link_libraries(ui_tests
         StrategrCore
         Catch2::Catch2
         Qt5::Widgets
+        Qt5::Network
         Qt5::Test)
 
 target_link_libraries(Strategr

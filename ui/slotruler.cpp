@@ -24,7 +24,7 @@ SlotRuler::SlotRuler(QVector<TimeLabel> labels,
 
 int SlotRuler::calculateLabelWidth() const {
     auto font = QFont();
-    font.setPointSize(10);
+    font.setPixelSize(10);
     font.setBold(true);
 
     return QFontMetrics(font)
@@ -91,7 +91,7 @@ ColoredLabel *SlotRuler::makeNewItemAtIndex(int index) {
 QString SlotRuler::makeStyleSheetForLabelIndex(int index) const {
     auto fontSize = isIntegerHourAtIndex(index) ? 10 : 9;
 
-    return QString("font-size: %1pt;"
+    return QString("font-size: %1px;"
                    "font-weight: bold;")
             .arg(QString::number(fontSize));
 }

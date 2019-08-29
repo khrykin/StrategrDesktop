@@ -26,7 +26,7 @@ public:
     void setAlignment(const Qt::Alignment &alignment);
 
     void setBold(bool isBold);
-    void setFontHeight(double fontHeight);
+    void setFontHeight(int fontHeight);
 
     QSize sizeHint() const override;
 private:

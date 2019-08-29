@@ -39,41 +39,41 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
     currentLabel->setStyleSheet("font-weight: bold;"
                                 "text-transform: uppercase;"
                                 "background-color: rgba(0,0,0,0);"
-                                "font-size: 10pt;"
+                                "font-size: 10px;"
                                 "color: #999");
 
     currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
 
     activityLabel = new QLabel();
     activityLabel->setStyleSheet("font-weight: bold;"
-                                 "font-size: 14pt;"
+                                 "font-size: 14px;"
                                  "color: #888");
 
     activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 
     startTimeLabel = new QLabel();
     startTimeLabel->setStyleSheet("font-weight: bold;"
-                                  "font-size: 12pt;"
+                                  "font-size: 12px;"
                                   "color: #777");
 
     startTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     endTimeLabel = new QLabel();
     endTimeLabel->setStyleSheet("font-weight: bold;"
-                                "font-size: 12pt;"
+                                "font-size: 12px;"
                                 "color: #777");
 
     endTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
 
     passedTimeLabel = new QLabel();
     passedTimeLabel->setStyleSheet("font-weight: bold;"
-                                   "font-size: 12pt;"
+                                   "font-size: 12px;"
                                    "color: #999");
     passedTimeLabel->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
     leftTimeLabel = new QLabel();
     leftTimeLabel->setStyleSheet("font-weight: bold;"
-                                 "font-size: 12pt;"
+                                 "font-size: 12px;"
                                  "color: #999");
 
     leftTimeLabel->setAlignment(Qt::AlignBottom | Qt::AlignRight);

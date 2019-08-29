@@ -3,6 +3,12 @@
 //
 #include <QStandardPaths>
 #include <QProcess>
+#include <QNetworkReply>
+#include <QDir>
+#include <QRegularExpression>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "selfupdater.h"
 
@@ -294,7 +300,7 @@ QString SelfUpdater::launchDestination() const {
     launchDestinationDir.cdUp();
     launchDestinantion = launchDestinationDir.absolutePath();
 #elif defined(Q_OS_WIN32)
-    launchDestinantion = launchDestinationDir.absolutePath() + "\" + "Strategr.exe";
+    launchDestinantion = launchDestinationDir.absolutePath() + "\\" + "Strategr.exe";
 #else
         launchDestinantion = launchDestinationDir.absolutePath() + "/" + "Strategr";
 #endif

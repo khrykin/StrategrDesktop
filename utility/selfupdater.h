@@ -8,8 +8,10 @@
 #include <functional>
 #include <optional>
 
-#include <QtNetwork>
+#include <QFileInfo>
 #include <QApplication>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "alert.h"
 #include "applicationsettings.h"

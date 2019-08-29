@@ -115,7 +115,7 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
 
     lineEdit = new QLineEdit(lineEditWrapper);
     lineEdit->setStyleSheet("font-weight: bold;"
-                            "font-size: 18pt;"
+                            "font-size: 18px;"
                             "border: transparent;"
                             "background: transparent;");
     lineEdit->setText(defaultLineEditText());

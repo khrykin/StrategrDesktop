@@ -23,10 +23,11 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
     return messageBox.exec();
 }
 
-void Alert::showWarning(QWidget *parent,
+int Alert::showWarning(QWidget *parent,
                         const QString &title,
                         const QString &message) {
     QMessageBox::warning(parent, title, message);
+    return 0;
 }
 
 #endif

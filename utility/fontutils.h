@@ -45,6 +45,14 @@ namespace FontUtils {
 
         painter.setPen(Qt::NoPen);
     }
+
+    inline int defaultFontPointSize() {
+       return QFont().pointSize();
+    }
+
+    inline int defaultFontPixelSize() {
+       return QFont().pixelSize();
+    }
 }
 
 #endif //STRATEGR_FONTUTILS_H

@@ -4,6 +4,6 @@
 
 #include "../utility/applicationsettings.h"
 
-const auto ApplicationSettings::version = "@VERSION@";
-const auto ApplicationSettings::shortVersion = "@VERSION_SHORT@";
-const auto ApplicationSettings::repoName = "@REPO_NAME@";
+const char *const ApplicationSettings::version = "@VERSION@";
+const char *const ApplicationSettings::shortVersion = "@VERSION_SHORT@";
+const char *const ApplicationSettings::repoName = "@REPO_NAME@";

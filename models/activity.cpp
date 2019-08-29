@@ -1,6 +1,8 @@
+#include <iostream>
+#include <algorithm>
+
 #include "activity.h"
 #include "activityinvalidpropertyexception.h"
-#include <iostream>
 
 Activity::Activity(Name name, Color color) : _color(std::move(color)) {
     if (!isValid(name)) {

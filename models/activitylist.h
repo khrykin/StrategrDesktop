@@ -54,7 +54,7 @@ private:
     void rotateRight(ActivityIndex fromIndex, ActivityIndex toIndex);
 };
 
-struct ActivityList::AlreadyPresentException : public std::exception {
+class ActivityList::AlreadyPresentException : public std::exception {
     static constexpr auto message = "this activity is already present";
     const char *what() const noexcept override;
 };
