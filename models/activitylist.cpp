@@ -40,7 +40,7 @@ bool ActivityList::has(const Activity &searchedActivity) const {
     }
 
     return false;
-};
+}
 
 void ActivityList::drag(ActivityIndex fromIndex, ActivityIndex toIndex) {
     if (fromIndex == toIndex) {

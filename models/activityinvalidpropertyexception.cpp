@@ -3,7 +3,6 @@
 //
 
 #include "activityinvalidpropertyexception.h"
-#include <iostream>
 #include <utility>
 
 const char *Activity::InvalidPropertyException::what() const noexcept {

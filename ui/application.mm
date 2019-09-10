@@ -24,7 +24,7 @@
     UNNotificationPresentationOptions options = UNNotificationPresentationOptionSound
                                                 | UNNotificationPresentationOptionBadge;
     completionHandler(options);
-};
+}
 
 @end
 
@@ -36,7 +36,7 @@ void Application::setupCocoaDelegate() {
     if (@available(macOS 10.14, *)) {
         [UNUserNotificationCenter currentNotificationCenter].delegate = cocoaDelegate;
     }
-};
+}
 
 void Application::releaseCocoaDelegate() {
     [cocoaDelegate release];

@@ -33,7 +33,7 @@ void RowWidget::setIsHardBorder(bool isHardBorder) {
     update();
 }
 
-const QColor &RowWidget::borderColor() const {
+QColor RowWidget::borderColor() const {
     return _borderColor();
 }
 

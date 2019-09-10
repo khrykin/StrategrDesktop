@@ -15,7 +15,7 @@ public:
     bool isHardBorder() const;
     void setIsHardBorder(bool isHardBorder);
 
-    const QColor &borderColor() const;
+    QColor borderColor() const;
     void setBorderColor(const std::function<QColor(void)> &borderColor);
 private:
     void paintEvent(QPaintEvent *event) override;

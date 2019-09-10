@@ -307,8 +307,6 @@ SlotsMouseHandler::determineOperationForMouseZone(MouseZone mouseZone) {
             return Operation::StretchTop;
         case MouseZone::BottomStretchZone:
             return Operation::StretchBottom;
-        default:
-            return std::nullopt;
     }
 }
 

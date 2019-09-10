@@ -147,7 +147,7 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
                            1));
 
     auto topBorderColor = QColor(Qt::white);
-    topBorderColor.setAlphaF(0.6 * ColorUtils::shadesAlphaFactor(10, 0.1));
+    topBorderColor.setAlphaF(0.4 * ColorUtils::shadesAlphaFactor(10, 0.1));
 
     painter.setBrush(topBorderColor);
     painter.drawRect(QRect(0,
