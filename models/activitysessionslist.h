@@ -28,6 +28,8 @@ public:
         std::optional<Activity::Color> color = std::nullopt;
     };
 
+    std::vector<ActivitySession> nonEmpty() const;
+
     std::string classPrintName() const override;
 
     std::optional<Index>

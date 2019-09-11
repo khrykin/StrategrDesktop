@@ -106,6 +106,9 @@
                      currentIndex:(unsigned)currentIndex
                     numberOfEvent:(unsigned)numberOfEvents {
     double progress = (float) currentIndex / (float) numberOfEvents;
+    NSLog(@"currentIndex %d", currentIndex);
+    NSLog(@"numberOfEvents %d", numberOfEvents);
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate calendarManagerProgressChanged:progress];
     });

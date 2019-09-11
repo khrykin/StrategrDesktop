@@ -79,23 +79,24 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
     progressBlock = ^{
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
         SGCalendarManager *calendarManager = [[[SGCalendarManager alloc] initWithStore:store] autorelease];
-        progressWindow.numberOfEvents = static_cast<unsigned>(strategy.activitySessions().size());
+        auto nonEmptySessions = strategy.activitySessions().nonEmpty();
+
+        progressWindow.numberOfEvents = static_cast<unsigned>(nonEmptySessions.size());
         calendarManager.delegate = progressWindow;
 
         if (optionEnabled(options, OverridePreviousEvents)) {
             [calendarManager removeAllEventsForDate:date];
         }
 
-        for (auto &session : strategy.activitySessions()) {
+        for (auto &session : nonEmptySessions) {
             if (!session.activity) {
                 continue;
             }
 
             progressWindow.currentEventIndex
-                    = static_cast<unsigned >(&session -
-                                             &strategy.activitySessions()[0]);
-            exportSession(session, calendarManager, options, dateSecsFromEpoch);
+                    = static_cast<unsigned >(&session - &nonEmptySessions[0]);
 
+            exportSession(session, calendarManager, options, dateSecsFromEpoch);
         }
 
         [SGCalendarManager launchCalendarApp];

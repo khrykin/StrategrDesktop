@@ -84,3 +84,15 @@ ActivitySessionsList::overview() const {
 
     return result;
 }
+
+std::vector<ActivitySession> ActivitySessionsList::nonEmpty() const {
+    std::vector<ActivitySession> result;
+    std::copy_if(_vector.begin(),
+                 _vector.end(),
+                 std::back_inserter(result),
+                 [](auto &session) {
+                     return session.activity != TimeSlot::NoActivity;
+                 });
+
+    return result;
+}
