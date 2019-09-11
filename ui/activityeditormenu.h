@@ -37,6 +37,14 @@ private:
 
     QColor currentColor;
 
+    int platformPadding =
+        #ifdef Q_OS_WIN32
+            20
+        #else
+            0
+        #endif
+            ;
+
     void addLineEditWidgetAction();
     void addColorWidgetAction();
     void addSaveCancelWidgetAction();

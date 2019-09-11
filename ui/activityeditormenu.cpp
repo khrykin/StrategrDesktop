@@ -108,7 +108,7 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
     auto *lineEditLayout = new QVBoxLayout(lineEditWrapper);
     lineEditLayout->setSpacing(0);
     lineEditLayout->setContentsMargins(
-            lineEditLayout->contentsMargins().left(), 0,
+            lineEditLayout->contentsMargins().left() + platformPadding, 0,
             lineEditLayout->contentsMargins().right(), 0);
 
     lineEditWrapper->setLayout(lineEditLayout);
@@ -148,7 +148,7 @@ void ActivityEditorMenu::addColorWidgetAction() {
     using namespace ColorUtils;
 
     colorPicker = new ColorPicker(this);
-    colorPicker->setContentsMargins(defaultPadding + 2,
+    colorPicker->setContentsMargins(defaultPadding + 2 + platformPadding,
                                     0,
                                     defaultPadding,
                                     defaultPadding / 2);
