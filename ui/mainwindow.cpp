@@ -22,7 +22,7 @@ MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
     this->fsIOManager.setWindow(this);
 
     if (!this->fsIOManager.fileInfo().filePath().isEmpty()) {
-        Application::openedFiles.append(this->fsIOManager.fileInfo().filePath());
+        Application::registerOpenedFile(this->fsIOManager.fileInfo().filePath());
     }
 
     setup();
@@ -83,8 +83,8 @@ void MainWindow::saveFileAs() {
     setIsSaved(fsIOManager.isSaved());
 
     if (fsIOManager.isSaved()) {
-        Application::openedFiles.removeAll(oldFilePath);
-        Application::openedFiles.append(fsIOManager.fileInfo().filePath());
+        Application::markFileClosed(oldFilePath);
+        Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
     }
 }
 
@@ -134,7 +134,7 @@ void MainWindow::loadFile(const QString &path, bool inNewWindow) {
         return;
     }
 
-    if (Application::openedFiles.indexOf(newFsIOManger.fileInfo().filePath()) >= 0) {
+    if (Application::fileIsOpened(newFsIOManger.fileInfo().filePath())) {
         return;
     }
 
@@ -144,7 +144,7 @@ void MainWindow::loadFile(const QString &path, bool inNewWindow) {
         newWindow->setStrategy(std::move(loadedStrategy));
         newWindow->show();
     } else {
-        Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
+        Application::markFileClosed(fsIOManager.fileInfo().filePath());
         fsIOManager = newFsIOManger;
         setStrategy(std::move(loadedStrategy));
     }
@@ -154,7 +154,7 @@ void MainWindow::setStrategy(std::unique_ptr<Strategy> newStrategy) {
     strategy = std::move(newStrategy);
     strategy->setOnChangeCallback(this, &MainWindow::strategyStateChanged);
 
-    Application::openedFiles.append(fsIOManager.fileInfo().filePath());
+    Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
 
     setIsSaved(true);
 
@@ -186,7 +186,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 
 void MainWindow::teardown() {
     WindowGeometryManager::saveGeometry(this);
-    Application::openedFiles.removeAll(fsIOManager.fileInfo().filePath());
+    Application::markFileClosed(fsIOManager.fileInfo().filePath());
 }
 
 MainWindow *MainWindow::createLastOpened() {

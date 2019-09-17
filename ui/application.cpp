@@ -61,3 +61,19 @@ void Application::setupFonts() {
 const SelfUpdater &Application::updater() {
     return Application::_updater;
 }
+
+void Application::registerOpenedFile(const QString &filePath) {
+    openedFiles.append(filePath);
+
+#ifdef Q_OS_MAC
+    registerCocoaRecentFile(filePath);
+#endif
+}
+
+void Application::markFileClosed(const QString &filePath) {
+    openedFiles.removeAll(filePath);
+}
+
+bool Application::fileIsOpened(const QString &filePath) {
+    return openedFiles.indexOf(filePath) >= 0;
+}

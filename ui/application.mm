@@ -2,8 +2,9 @@
 // Created by Dmitry Khrykin on 2019-08-15.
 //
 
-#include <Foundation/Foundation.h>
-#include <UserNotifications/UNUserNotificationCenter.h>
+#import <Foundation/Foundation.h>
+#import <UserNotifications/UNUserNotificationCenter.h>
+#import <AppKit/NSDocumentController.h>
 
 #include "application.h"
 
@@ -13,6 +14,8 @@
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(
         macosx(10.14));
+
++ (void)registerRecentFile:(NSString *)filePath;
 
 @end
 
@@ -26,9 +29,18 @@
     completionHandler(options);
 }
 
++ (void)registerRecentFile:(NSString *)filePath {
+    [[NSDocumentController sharedDocumentController]
+            noteNewRecentDocumentURL:[NSURL fileURLWithPath:filePath]];
+}
+
 @end
 
 CocoaDelegate *Application::cocoaDelegate = nullptr;
+
+void Application::registerCocoaRecentFile(const QString &filePath) {
+    [CocoaDelegate registerRecentFile:filePath.toNSString()];
+}
 
 void Application::setupCocoaDelegate() {
     cocoaDelegate = [[CocoaDelegate alloc] init];

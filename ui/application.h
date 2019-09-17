@@ -35,6 +35,10 @@ public:
     static UpdateDialog *updateDialog;
 
     static const SelfUpdater &updater();
+
+    static void registerOpenedFile(const QString &filePath);
+    static void markFileClosed(const QString &filePath);
+    static bool fileIsOpened(const QString &filePath);
 private:
     static void setupFonts();
 
@@ -45,6 +49,7 @@ private:
 #ifdef Q_OS_MAC
 
     static CocoaDelegate *cocoaDelegate;
+    static void registerCocoaRecentFile(const QString &filePath);
     void setupCocoaDelegate();
     void releaseCocoaDelegate();
 
