@@ -7,8 +7,7 @@
 
 
 Notifier::Notifier(Strategy *strategy, QObject *parent)
-        : QObject(parent), strategy(strategy) {
-
+        : strategy(strategy), QObject(parent) {
     setupTrayIcon();
 
     backend = new NotifierBackend(trayIcon, this);

@@ -37,7 +37,6 @@ private:
     Strategy *strategy;
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
-
 };
 
 #endif //STRATEGR_MAINSCENE_H
