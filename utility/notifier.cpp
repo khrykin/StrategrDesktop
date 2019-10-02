@@ -34,6 +34,7 @@ void Notifier::setupTrayIcon() {
 Notifier::~Notifier() {
     delete contextMenu;
     delete trayIcon;
+    timer->stop();
 }
 
 void Notifier::timerTick() {
