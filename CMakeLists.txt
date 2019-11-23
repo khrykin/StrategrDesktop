@@ -180,7 +180,7 @@ qt5_add_resources(RESOURCES
         resources/fonts.qrc)
 
 if (APPLE)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
     set(MODELS_PLATFORM_LIBRARIES
             "-framework Foundation"
             "-framework AppKit"
@@ -229,6 +229,18 @@ add_executable(models_tests
         ${MODELS_TESTS})
 
 target_link_libraries(models_tests Catch2::Catch2 ${MODELS_PLATFORM_LIBRARIES})
+
+#if (CMAKE_BUILD_TYPE MATCHES Coverage)
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
+    target_compile_options(models_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
+    target_link_options(models_tests PUBLIC -fprofile-instr-generate)
+    #Uncomment in case of linker errors
+    #    target_link_libraries(models_tests clang_rt.profile-x86_64)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL GNU)
+    target_compile_options(models_tests PUBLIC --coverage)
+    #Uncomment in case of linker errors
+    #target_link_libraries(models_tests gcov)
+endif ()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 

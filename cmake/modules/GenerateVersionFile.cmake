@@ -16,8 +16,6 @@ set(VERSION_SHORT "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/repo_name.sh
         OUTPUT_VARIABLE REPO_NAME)
 
-message(REPO_NAME \"${REPO_NAME}\")
-
 set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 
 file(REMOVE ${version_file})
