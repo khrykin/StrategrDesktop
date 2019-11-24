@@ -2,6 +2,7 @@
 #define ACTIVITY_H
 
 #include <string>
+#include <nlohmann/json.hpp>
 
 struct Activity {
     using Color = std::string;
@@ -24,9 +25,17 @@ struct Activity {
     friend std::ostream &operator<<(std::ostream &os,
                                     const Activity &activity);
 
+    nlohmann::json toJson();
+    static Activity fromJson(const nlohmann::json &j);
+
 private:
     Name _name;
     Color _color;
+
+    struct Keys {
+        static constexpr auto name = "name";
+        static constexpr auto color = "color";
+    };
 
     static InvalidPropertyException emptyNameException();
 

@@ -71,8 +71,9 @@ public:
 
     std::string classPrintName() const override;
 
-    Index indexOf(const TimeSlot *slot) const;
+//    Index indexOf(const TimeSlot *slot) const;
 
+    const TimeSlot &at(TimeSlotsState::Index index);
 private:
     Time _beginTime = 0;
     Duration _slotDuration = 0;

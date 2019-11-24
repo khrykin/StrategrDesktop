@@ -35,7 +35,6 @@ public:
 
     std::optional<Index> indexOf(const Activity *activity) const;
 
-
     ActivityList &operator=(const ActivityList &newList);
 
     std::string classPrintName() const override;

@@ -17,8 +17,8 @@ struct TimeSlot {
 
     static constexpr auto NoActivity = nullptr;
 
-    Time beginTime;
-    Duration duration;
+    Time beginTime = 0;
+    Duration duration = 0;
 
     Activity *activity = NoActivity;
 
@@ -36,7 +36,10 @@ struct TimeSlot {
 
     friend bool operator==(const TimeSlot &lhs, const TimeSlot &rhs);
     friend bool operator!=(const TimeSlot &lhs, const TimeSlot &rhs);
-
+private:
+    struct Keys {
+        static constexpr auto beginTime = "startTime";
+    };
 };
 
 

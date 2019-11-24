@@ -13,7 +13,7 @@ struct ActivitySession {
     using Length = unsigned int;
     using Time = TimeSlot::Time;
     using Duration = TimeSlot::Duration;
-    using TimeSlotsState  = std::vector<const TimeSlot *>;
+    using TimeSlotsState  = std::vector<TimeSlot>;
 
     TimeSlotsState timeSlots{};
     Activity *activity = TimeSlot::NoActivity;

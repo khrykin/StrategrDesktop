@@ -57,3 +57,21 @@ Activity Activity::copyChangingName(const Name &name) const {
 Activity Activity::copyChangingColor(const Color &color) const {
     return Activity(name(), color);
 }
+
+nlohmann::json Activity::toJson() {
+    nlohmann::json j;
+    j[Keys::name] = this->name();
+    j[Keys::color] = this->color();
+    return j;
+}
+
+Activity Activity::fromJson(const nlohmann::json &j) {
+    auto name = j[Keys::name];
+
+    std::string color = Activity::defaultColor;
+    if (j.count(Keys::color) && !j[Keys::color].is_null()) {
+        color = j[Keys::color];
+    }
+
+    return Activity{name, color};
+}

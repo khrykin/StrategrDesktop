@@ -209,9 +209,9 @@ void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex,
     onChangeEvent();
 }
 
-TimeSlotsState::Index TimeSlotsState::indexOf(const TimeSlot *slot) const {
-    return slot - &_vector[0];
-}
+//TimeSlotsState::Index TimeSlotsState::indexOf(const TimeSlot *slot) const {
+//    return slot - &_vector[0];
+//}
 
 void TimeSlotsState::swap(Index firstIndex,
                           Index secondIndex) {
@@ -225,4 +225,8 @@ void TimeSlotsState::silentlySwap(Index firstIndex,
     auto activity = _vector[firstIndex].activity;
     _vector[firstIndex].activity = _vector[secondIndex].activity;
     _vector[secondIndex].activity = activity;
+}
+
+const TimeSlot &TimeSlotsState::at(TimeSlotsState::Index index) {
+    return _vector.at(index);
 }

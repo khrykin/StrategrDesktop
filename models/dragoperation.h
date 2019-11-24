@@ -29,7 +29,7 @@ public:
     using IndicesCacheEntry = std::tuple<OldIndex, Activity *>;
     using IndicesCache = std::vector<IndicesCacheEntry>;
 
-    explicit DragOperation(TimeSlotsState &timeSlots,
+    explicit DragOperation(TimeSlotsState *timeSlots,
                            IndicesVector initialIndices);
 
     void recordDrag(const ActivitySession::TimeSlotsState &timeSlotsToDrag,
@@ -47,8 +47,8 @@ private:
         unsigned int size() const;
     };
 
-    TimeSlotsState &timeSlots;
-    TimeSlotsState initialTimeSlotsState = timeSlots;
+    TimeSlotsState *timeSlots;
+    TimeSlotsState initialTimeSlotsState = *timeSlots;
 
     IndicesVector initialDraggedIndices;
     IndicesVector draggedIndices = {};

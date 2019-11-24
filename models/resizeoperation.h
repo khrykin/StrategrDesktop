@@ -10,15 +10,15 @@
 
 class ResizeOperation {
 public:
-    explicit ResizeOperation(TimeSlotsState &timeSlots);
+    explicit ResizeOperation(TimeSlotsState *timeSlots);
 
     void fillSlots(TimeSlotsState::Index fromIndex,
                    TimeSlotsState::Index tillIndex);
 
     bool stateChanged();
 private:
-    TimeSlotsState &timeSlots;
-    TimeSlotsState initialTimeSlotsState = timeSlots;
+    TimeSlotsState *timeSlots;
+    TimeSlotsState initialTimeSlotsState = *timeSlots;
 };
 
 

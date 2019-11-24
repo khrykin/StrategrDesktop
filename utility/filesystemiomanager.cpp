@@ -8,8 +8,6 @@
 #include <QTextStream>
 
 #include "filesystemiomanager.h"
-#include "jsonserializer.h"
-#include "notifierbackend.h"
 #include "ui/mainwindow.h"
 #include "alert.h"
 
@@ -53,27 +51,27 @@ void FileSystemIOManager::saveAs(const Strategy &strategy) {
 
 void FileSystemIOManager::saveAsDefault(const Strategy &strategy) {
     QSettings().setValue(Settings::defaultStrategyKey,
-                         JSONSerializer(strategy).write());
+                         QString::fromStdString(strategy.toJsonString()));
     QMessageBox msgBox(window);
     msgBox.setText("Current strategy has been saved as your default.");
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.exec();
 }
 
-std::unique_ptr<Strategy>
+std::optional<Strategy>
 FileSystemIOManager::read(const QString &readFilepath) {
     if (readFilepath.isEmpty()) {
-        return nullptr;
+        return std::nullopt;
     }
 
     QFile file(readFilepath);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         showCantOpenDialog(file, readFilepath, file.errorString());
-        return nullptr;
-    };
+        return std::nullopt;
+    }
 
     QTextStream in(&file);
-    auto strategy = JSONSerializer::read(in.readAll());
+    auto strategy = Strategy::fromJsonString(in.readAll().toStdString());
 
     file.close();
 
@@ -89,18 +87,18 @@ FileSystemIOManager::read(const QString &readFilepath) {
     return strategy;
 }
 
-std::unique_ptr<Strategy>
-FileSystemIOManager::lastOpened() {
+std::optional<QString>
+FileSystemIOManager::lastOpenedFilePath() {
     QSettings settings;
     if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
         auto lastFilepath = settings
                 .value(Settings::lastOpenedStrategyKey)
                 .toString();
 
-        return read(lastFilepath);
+        return lastFilepath;
     }
 
-    return nullptr;
+    return std::nullopt;
 }
 
 void FileSystemIOManager::resetFilepath() {
@@ -119,25 +117,24 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-std::unique_ptr<Strategy>
+Strategy
 FileSystemIOManager::openDefaultStrategy() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
                 .value(Settings::defaultStrategyKey)
-                .toString();
+                .toString()
+                .toStdString();
 
-        auto defaultStrategy = JSONSerializer::read(defaultStrategyString);
+        auto defaultStrategy = Strategy::fromJsonString(defaultStrategyString);
 
         resetFilepath();
 
-        return defaultStrategy
-               ? std::move(defaultStrategy)
-               : std::make_unique<Strategy>();
+        return defaultStrategy.value_or(Strategy());
     }
 
     resetFilepath();
 
-    return std::make_unique<Strategy>();
+    return Strategy();
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
@@ -162,14 +159,14 @@ QStringList FileSystemIOManager::recentFileNames() {
 }
 
 void FileSystemIOManager::write(const Strategy &strategy) {
-    auto json = JSONSerializer(strategy).write();
+    auto json = strategy.toJsonString();
     QSaveFile file(filepath);
 
     if (file.open(QIODevice::WriteOnly
                   | QIODevice::Truncate
                   | QIODevice::Text)) {
         QTextStream stream(&file);
-        stream << json << endl;
+        stream << QString::fromStdString(json) << endl;
 
         if (!file.commit()) {
             showCantSaveDialog(file);
@@ -224,7 +221,7 @@ void FileSystemIOManager::showCantOpenDialog(const QFile &file,
                                              const QString &errorMessage) {
     Alert::showWarning(window,
                        QObject::tr("Strategy can't be opened"),
-                       QObject::tr("Can't read file \"%1\":\n\n%2.")
+                       QObject::tr("Can't parse file \"%1\":\n\n%2.")
                                .arg(path)
                                .arg(errorMessage));
 }
@@ -233,7 +230,7 @@ void FileSystemIOManager::showCantOpenDialog(const QFile &file,
 void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
     Alert::showWarning(window,
                        QObject::tr("Strategy can't be saved"),
-                       QObject::tr("Can't write to file \"%1\":\n\n%2.")
+                       QObject::tr("Can't serialize to file \"%1\":\n\n%2.")
                                .arg(filepath)
                                .arg(file.errorString()));
 }

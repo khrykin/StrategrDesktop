@@ -3,12 +3,15 @@ project(Strategr)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
 endif ()
+
+find_package(nlohmann_json REQUIRED)
 
 include_directories(.)
 include_directories(models)
@@ -63,7 +66,9 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/overview.cpp
         models/overview.h
         models/currenttime.cpp
-        models/currenttime.h)
+        models/currenttime.h
+        models/JSON.cpp
+        models/JSON.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -71,7 +76,10 @@ set(MODELS_TESTS
         models/tests/strategy_settings_test.cpp
         models/tests/strategy_timeslots_test.cpp
         models/tests/strategy_activities_slots_interaction_test.cpp
-        models/tests/strategy_history_test.cpp)
+        models/tests/strategy_history_test.cpp models/tests/json_tests.cpp)
+
+set(MODELS_LIBRARIES
+        nlohmann_json::nlohmann_json)
 
 set(UI
         ui/mainwindow.cpp
@@ -155,8 +163,6 @@ set(UI
 
 set(UTILITY
         ${version_file}
-        utility/jsonserializer.cpp
-        utility/jsonserializer.h
         utility/filesystemiomanager.cpp
         utility/filesystemiomanager.h
         utility/applicationsettings.h
@@ -228,18 +234,25 @@ add_executable(models_tests
         ${MODELS}
         ${MODELS_TESTS})
 
-target_link_libraries(models_tests Catch2::Catch2 ${MODELS_PLATFORM_LIBRARIES})
+target_link_libraries(models_tests
+        Catch2::Catch2
+        Boost::filesystem
+        ${MODELS_LIBRARIES}
+        ${MODELS_PLATFORM_LIBRARIES})
 
-#if (CMAKE_BUILD_TYPE MATCHES Coverage)
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
-    target_compile_options(models_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
-    target_link_options(models_tests PUBLIC -fprofile-instr-generate)
-    #Uncomment in case of linker errors
-    #    target_link_libraries(models_tests clang_rt.profile-x86_64)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL GNU)
-    target_compile_options(models_tests PUBLIC --coverage)
-    #Uncomment in case of linker errors
-    #target_link_libraries(models_tests gcov)
+option(COVERAGE "Generate code coverage" OFF)
+
+if (COVERAGE)
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
+        target_compile_options(models_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
+        target_link_options(models_tests PUBLIC -fprofile-instr-generate)
+        #Uncomment in case of linker errors
+        #    target_link_libraries(models_tests clang_rt.profile-x86_64)
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL GNU)
+        target_compile_options(models_tests PUBLIC --coverage)
+        #Uncomment in case of linker errors
+        #target_link_libraries(models_tests gcov)
+    endif ()
 endif ()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -248,7 +261,9 @@ add_library(StrategrCore SHARED ${MODELS})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
-target_link_libraries(StrategrCore ${MODELS_PLATFORM_LIBRARIES})
+target_link_libraries(StrategrCore
+        ${MODELS_LIBRARIES}
+        ${MODELS_PLATFORM_LIBRARIES})
 
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE

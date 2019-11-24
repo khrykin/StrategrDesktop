@@ -87,7 +87,7 @@ const Activity &ActivityList::operator[](ActivityIndex itemIndex) const {
 }
 
 Activity *ActivityList::at(ActivityIndex itemIndex) const {
-    return _vector[itemIndex].get();
+    return _vector.at(itemIndex).get();
 }
 
 ActivityList &ActivityList::operator=(const ActivityList &newList) {

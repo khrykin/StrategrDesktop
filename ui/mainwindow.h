@@ -55,10 +55,10 @@ private:
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
-    std::unique_ptr<Strategy> strategy = fsIOManager.openDefaultStrategy();
+    Strategy strategy = fsIOManager.openDefaultStrategy();
 
     void setIsSaved(bool isSaved);
-    void setStrategy(std::unique_ptr<Strategy> newStrategy);
+    void setStrategy(const Strategy &newStrategy);
     void strategyStateChanged();
     void updateWindowTitle();
 

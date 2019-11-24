@@ -5,7 +5,7 @@
 #include "dragoperation.h"
 #include "strategy.h"
 
-DragOperation::DragOperation(TimeSlotsState &timeSlots, IndicesVector initialIndices)
+DragOperation::DragOperation(TimeSlotsState *timeSlots, IndicesVector initialIndices)
         : timeSlots(timeSlots),
           initialDraggedIndices(std::move(initialIndices)) {
 }
@@ -15,8 +15,8 @@ void DragOperation::recordDrag(const ActivitySession::TimeSlotsState &timeSlotsT
         return;
     }
 
-    auto rangeToDrag = IndicesRange{timeSlots.indexOf(timeSlotsToDrag.front()),
-                                    timeSlots.indexOf(timeSlotsToDrag.back())};
+    auto rangeToDrag = IndicesRange{*timeSlots->indexOf(timeSlotsToDrag.front()),
+                                    *timeSlots->indexOf(timeSlotsToDrag.back())};
 
     auto newDraggedIndices = silentlyDrag(rangeToDrag, distance);
 
@@ -29,7 +29,7 @@ DragOperation::silentlyDrag(const IndicesRange &rangeToDrag, int distance) {
                             ? rangeToDrag.first + distance
                             : rangeToDrag.last + distance;
 
-    if (destinationIndex > timeSlots.size() - 1) {
+    if (destinationIndex > timeSlots->size() - 1) {
         return {};
     }
 
@@ -48,7 +48,11 @@ DragOperation::silentlyDrag(const IndicesRange &rangeToDrag, int distance) {
         movements[oldIndex] = insertAtIndex;
 
         newDraggedIndices.push_back(insertAtIndex);
-        timeSlots.silentlySetActivityAtIndex(timeSlots[oldIndex].activity, insertAtIndex);
+
+        timeSlots->silentlySetActivityAtIndex(
+                timeSlots->at(oldIndex).activity,
+                insertAtIndex
+        );
     }
 
     restoreCache(restoreCacheRange, cache, movements);
@@ -67,7 +71,7 @@ void DragOperation::restoreCache(const IndicesRange &restoreCacheRange,
 
         movements[historyIndex] = insertAtIndex;
 
-        timeSlots.silentlySetActivityAtIndex(activity, insertAtIndex);
+        timeSlots->silentlySetActivityAtIndex(activity, insertAtIndex);
     }
 }
 
@@ -124,7 +128,7 @@ DragOperation::IndicesCache
 DragOperation::makeCache(IndicesRange cacheIndices) const {
     IndicesCache cache;
     for (auto i = cacheIndices.first; i <= cacheIndices.last; i++) {
-        auto cacheEntry = std::make_tuple(i, timeSlots[i].activity);
+        auto cacheEntry = std::make_tuple(i, timeSlots->at(i).activity);
         cache.push_back(cacheEntry);
     }
 
@@ -147,7 +151,7 @@ void DragOperation::invalidateDrag(const IndicesVector &newDraggedIndices) {
             auto slotIsDragged = std::find(draggedIndices.begin(),
                                            draggedIndices.end(),
                                            currentIndex) != draggedIndices.end();
-            auto slotIsEmpty = timeSlots[currentIndex].activity == Strategy::NoActivity;
+            auto slotIsEmpty = timeSlots->at(currentIndex).activity == Strategy::NoActivity;
 
             if (slotIsDragged || slotIsEmpty) {
                 cantMoveCount++;
@@ -245,8 +249,8 @@ DragOperation::findSessionRangeFor(TimeSlotIndex timeSlotIndex) {
     auto endIndex = timeSlotIndex;
 
     if (timeSlotIndex > 0) {
-        for (auto i = timeSlotIndex - 1; i < timeSlots.size(); i--) {
-            if (timeSlots[i].activity == timeSlots[timeSlotIndex].activity) {
+        for (auto i = timeSlotIndex - 1; i < timeSlots->size(); i--) {
+            if (timeSlots->at(i).activity == timeSlots->at(timeSlotIndex).activity) {
                 beginIndex = i;
             } else {
                 break;
@@ -254,9 +258,9 @@ DragOperation::findSessionRangeFor(TimeSlotIndex timeSlotIndex) {
         }
     }
 
-    if (timeSlotIndex < timeSlots.size() - 1) {
-        for (auto i = timeSlotIndex + 1; i < timeSlots.size(); i++) {
-            if (timeSlots[i].activity == timeSlots[timeSlotIndex].activity) {
+    if (timeSlotIndex < timeSlots->size() - 1) {
+        for (auto i = timeSlotIndex + 1; i < timeSlots->size(); i++) {
+            if (timeSlots->at(i).activity == timeSlots->at(timeSlotIndex).activity) {
                 endIndex = i;
             } else {
                 break;
@@ -281,8 +285,8 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
         }
 
         for (auto i = sessionRange.first - 1; i >= targetIndex; i--) {
-            if (timeSlots[i].activity == Strategy::NoActivity ||
-                timeSlots[i].activity == timeSlots[sessionRange.first].activity) {
+            if (timeSlots->at(i).activity == Strategy::NoActivity ||
+                timeSlots->at(i).activity == timeSlots->at(sessionRange.first).activity) {
                 result = i;
             } else {
                 break;
@@ -291,14 +295,14 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
     }
 
     if (wantsDown) {
-        if (sessionRange.last == timeSlots.size() - 1 ||
-            targetIndex + sessionRange.size() >= timeSlots.size()) {
+        if (sessionRange.last == timeSlots->size() - 1 ||
+            targetIndex + sessionRange.size() >= timeSlots->size()) {
             return result;
         }
 
         for (auto i = sessionRange.last + 1; i <= targetIndex + sessionRange.size() - 1; i++) {
-            if (timeSlots[i].activity == Strategy::NoActivity ||
-                timeSlots[i].activity == timeSlots[sessionRange.last].activity) {
+            if (timeSlots->at(i).activity == Strategy::NoActivity ||
+                timeSlots->at(i).activity == timeSlots->at(sessionRange.last).activity) {
                 result = i - sessionRange.size() + 1;
             } else {
                 break;
@@ -310,7 +314,7 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
 }
 
 bool DragOperation::stateChanged() {
-    return timeSlots != initialTimeSlotsState;
+    return *timeSlots != initialTimeSlotsState;
 }
 
 unsigned int DragOperation::IndicesRange::size() const {

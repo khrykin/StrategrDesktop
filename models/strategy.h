@@ -42,6 +42,9 @@ public:
 
     Strategy(const TimeSlotsState &timeSlots, const ActivityList &activities);
 
+    static std::optional<Strategy> fromJsonString(const std::string &jsonString);
+    std::string toJsonString() const;
+
     Time beginTime() const;
     void setBeginTime(Time beginTime);
 
@@ -85,8 +88,8 @@ private:
     ActivitySessionsList _activitySessions;
     StrategyHistory history;
 
-    std::unique_ptr<DragOperation> currentDragOperation = nullptr;
-    std::unique_ptr<ResizeOperation> currentResizeOperation = nullptr;
+    std::shared_ptr<DragOperation> currentDragOperation = nullptr;
+    std::shared_ptr<ResizeOperation> currentResizeOperation = nullptr;
 
     void timeSlotsChanged();
     void setupTimeSlotsCallback();

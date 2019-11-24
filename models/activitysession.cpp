@@ -14,7 +14,7 @@ ActivitySession::Time ActivitySession::beginTime() const {
         return 0;
     }
 
-    return timeSlots.front()->beginTime;
+    return timeSlots.front().beginTime;
 }
 
 ActivitySession::Time ActivitySession::endTime() const {
@@ -22,7 +22,7 @@ ActivitySession::Time ActivitySession::endTime() const {
         return 0;
     }
 
-    return timeSlots.back()->endTime();
+    return timeSlots.back().endTime();
 }
 
 ActivitySession::Duration ActivitySession::duration() const {

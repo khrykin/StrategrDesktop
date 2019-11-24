@@ -51,13 +51,13 @@ void ApplicationMenu::setupEditMenu() {
 
     editMenu->addAction(tr("Undo"),
                         [=]() {
-                            window->strategy->undo();
+                            window->strategy.undo();
                         },
                         QKeySequence(Qt::CTRL + Qt::Key_Z));
 
     editMenu->addAction(tr("Redo"),
                         [=]() {
-                            window->strategy->redo();
+                            window->strategy.redo();
                         },
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 }
@@ -144,7 +144,7 @@ void ApplicationMenu::addExportToCalendarAction() const {
 
         if (result == MacOSCalendarExporter::Response::Export) {
             QSettings().setValue("calendarExportOptions", options);
-            MacOSCalendarExporter::exportStrategy(*window->strategy, options, date);
+            MacOSCalendarExporter::exportStrategy(window->strategy, options, date);
         }
     });
 #endif

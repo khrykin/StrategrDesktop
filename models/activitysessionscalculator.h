@@ -39,7 +39,7 @@ private:
 
     const Activity *previousActivity();
 
-    const TimeSlot *currentTimeSlot();
+    const TimeSlot & currentTimeSlot();
 
     bool currentSlotIsLast();
 

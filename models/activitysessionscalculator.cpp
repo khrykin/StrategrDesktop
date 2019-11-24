@@ -54,17 +54,17 @@ processEmptySlot(ResultType &result) {
 }
 
 ActivitySession ActivitySessionsCalculator::defaultSession() {
-    const auto &timeSlot = timeSlotsState[timeSlotIndex];
+    auto &timeSlot = timeSlotsState[timeSlotIndex];
 
     auto defaultActivitySession = ActivitySession();
     defaultActivitySession.activity = timeSlot.activity;
-    defaultActivitySession.timeSlots.push_back(&timeSlot);
+    defaultActivitySession.timeSlots.push_back(timeSlot);
 
     return defaultActivitySession;
 }
 
 const Activity *ActivitySessionsCalculator::currentActivity() {
-    return currentTimeSlot()->activity;
+    return currentTimeSlot().activity;
 }
 
 const Activity *ActivitySessionsCalculator::previousActivity() {
@@ -73,8 +73,8 @@ const Activity *ActivitySessionsCalculator::previousActivity() {
            : NoActivity;
 }
 
-const TimeSlot *ActivitySessionsCalculator::currentTimeSlot() {
-    return &timeSlotsState[timeSlotIndex];
+const TimeSlot &ActivitySessionsCalculator::currentTimeSlot() {
+    return timeSlotsState[timeSlotIndex];
 }
 
 bool ActivitySessionsCalculator::currentSlotIsLast() {

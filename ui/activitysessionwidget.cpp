@@ -59,7 +59,7 @@ void ActivitySessionWidget::drawRulers(QPainter &painter) const {
             break;
         }
 
-        auto thickness = timeSlot->endTime() % 60 == 0 ? 2 : 1;
+        auto thickness = timeSlot.endTime() % 60 == 0 ? 2 : 1;
         auto rulerRect = QRect(0,
                                slotHeight * (timeSlotIndex + 1) - 1,
                                width(),
@@ -78,7 +78,7 @@ void ActivitySessionWidget::drawSelection(QPainter &painter) const {
     painter.setBrush(selectedBackgroundColor());
 
     auto lastTimeSlot = activitySession.timeSlots.back();
-    auto bottomMargin = lastTimeSlot->endTime() % 60 == 0 || isBorderSelected ? 1 : 0;
+    auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 || isBorderSelected ? 1 : 0;
     auto selectionRect = QRect(1,
                                2,
                                width() - 2,
@@ -113,7 +113,7 @@ QColor ActivitySessionWidget::sessionColor() const {
 
 
 void ActivitySessionWidget::drawBorder(QPainter &painter) {
-    auto thickBorder = activitySession.timeSlots.back()->endTime() % 60 == 0 ||
+    auto thickBorder = activitySession.timeSlots.back().endTime() % 60 == 0 ||
                        isBorderSelected;
 
     auto borderThickness = thickBorder ? 2 : 1;

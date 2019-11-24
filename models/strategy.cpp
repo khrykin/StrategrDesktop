@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "strategy.h"
+#include "JSON.h"
 
 Strategy::Strategy(Time beginTime,
                    Duration timeSlotDuration,
@@ -10,6 +11,7 @@ Strategy::Strategy(Time beginTime,
                                     timeSlotDuration,
                                     numberOfTimeSlots)),
           history(makeHistoryEntry()) {
+    timeSlotsChanged();
     setupTimeSlotsCallback();
 }
 
@@ -18,6 +20,7 @@ Strategy::Strategy(const TimeSlotsState &timeSlots,
         _timeSlots(timeSlots),
         _activities(activities),
         history(makeHistoryEntry()) {
+    timeSlotsChanged();
     setupTimeSlotsCallback();
 }
 
@@ -122,7 +125,6 @@ Strategy::Time Strategy::endTime() const {
 }
 
 void Strategy::setupTimeSlotsCallback() {
-    timeSlotsChanged();
     _timeSlots.setOnChangeCallback(this, &Strategy::timeSlotsChanged);
 }
 
@@ -192,7 +194,7 @@ void Strategy::beginDragging(ActivitySessionIndex sessionIndex) {
     auto &session = activitySessions()[sessionIndex];
     auto initialIndices = globalSlotIndicesFromSession(session);
 
-    currentDragOperation = std::make_unique<DragOperation>(_timeSlots, initialIndices);
+    currentDragOperation = std::make_shared<DragOperation>(&_timeSlots, initialIndices);
 }
 
 std::vector<Strategy::TimeSlotIndex>
@@ -201,8 +203,8 @@ Strategy::globalSlotIndicesFromSession(const ActivitySession &session) const {
     std::transform(session.timeSlots.begin(),
                    session.timeSlots.end(),
                    std::back_inserter(initialIndices),
-                   [this](const TimeSlot *slot) -> TimeSlotsState::Index {
-                       return _timeSlots.indexOf(slot);
+                   [this](auto &slot) -> TimeSlotsState::Index {
+                       return *_timeSlots.indexOf(slot);
                    });
 
     return initialIndices;
@@ -221,7 +223,7 @@ void Strategy::endDragging() {
 }
 
 void Strategy::beginResizing() {
-    currentResizeOperation = std::make_unique<ResizeOperation>(_timeSlots);
+    currentResizeOperation = std::make_shared<ResizeOperation>(&_timeSlots);
 }
 
 void Strategy::endResizing() {
@@ -242,4 +244,12 @@ Strategy::Duration Strategy::duration() const {
     }
 
     return timeSlots().last().endTime() - timeSlots().first().beginTime;
+}
+
+std::string Strategy::toJsonString() const {
+    return JSON::serialize(*this);
+}
+
+std::optional<Strategy> Strategy::fromJsonString(const std::string &jsonString) {
+    return JSON::parse(jsonString);
 }
