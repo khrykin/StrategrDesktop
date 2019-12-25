@@ -254,7 +254,7 @@ int FileSystemIOManager::showAreYouSureDialog() {
                        : "Document "
                          + fileInfo().fileName()
                          + " has been modified";
-    
+
     return Alert::showAskToSave(title,
                                 "Do you want to save your changes?");
 }

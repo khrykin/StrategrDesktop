@@ -60,6 +60,14 @@ void ApplicationMenu::setupEditMenu() {
                             window->strategy.redo();
                         },
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+
+    editMenu->addSeparator();
+
+    editMenu->addAction(tr("Reorder Activities By Usage"),
+                        window->scene(),
+                        &MainScene::reorderActivitiesByUsage,
+                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+
 }
 
 void ApplicationMenu::setupViewMenu() {
@@ -67,19 +75,17 @@ void ApplicationMenu::setupViewMenu() {
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction(tr("Edit Activities"),
+    viewMenu->addAction(tr("Activities"),
                         window->scene(),
                         &MainScene::showActivities,
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction(tr("Go to Current TimeUtils"),
+    viewMenu->addAction(tr("Go to Current Time"),
                         window->scene(),
                         &MainScene::focusOnCurrentTime,
                         QKeySequence(Qt::CTRL + Qt::Key_Slash));
-
-    viewMenu->addSeparator();
 }
 
 void ApplicationMenu::setupFileMenu() {

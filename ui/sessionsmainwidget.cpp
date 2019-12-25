@@ -6,6 +6,11 @@
 #include <QPainter>
 
 #include "sessionsmainwidget.h"
+#include "notifierimplementation.h"
+#include "overviewwidget.h"
+#include "strategysettingswidget.h"
+#include "currentsessionwidget.h"
+#include "slotboard.h"
 
 SessionsMainWidget::SessionsMainWidget(Strategy &strategy,
                                        QWidget *parent)
@@ -44,9 +49,9 @@ void SessionsMainWidget::layoutChildWidgets() {
             this,
             &SessionsMainWidget::focusOnCurrentTime);
 
-    slotBoardScrollArea = new QScrollArea();
-    slotBoardScrollArea->setWidgetResizable(true);
-    slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
+    _slotBoardScrollArea = new QScrollArea();
+    _slotBoardScrollArea->setWidgetResizable(true);
+    _slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
     slotBoard = new SlotBoard(strategy);
 
@@ -60,13 +65,13 @@ void SessionsMainWidget::layoutChildWidgets() {
             this,
             &SessionsMainWidget::updateOverviewWidget);
 
-    slotBoardScrollArea->setWidget(slotBoard);
-    overviewWidget = new OverviewWidget(strategy, slotBoardScrollArea);
+    _slotBoardScrollArea->setWidget(slotBoard);
+    overviewWidget = new OverviewWidget(strategy, _slotBoardScrollArea);
 
     layout()->addWidget(strategySettingsWidget);
     layout()->addWidget(overviewWidget);
     layout()->addWidget(currentSessionWidget);
-    layout()->addWidget(slotBoardScrollArea);
+    layout()->addWidget(_slotBoardScrollArea);
 }
 
 void SessionsMainWidget::updateOverviewWidget() const {
@@ -104,8 +109,8 @@ void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
 }
 
 void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
-//    overviewWidget->update();
-//    slotBoard->resizeEvent();
-//
-//    qDebug() << "SessionsMainWidget::resizeEvent";
+}
+
+QScrollArea *SessionsMainWidget::slotBoardScrollArea() const {
+    return _slotBoardScrollArea;
 }

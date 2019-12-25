@@ -20,16 +20,20 @@ public:
     QString text();
     void setText(const QString &string);
 
+    void focus();
 signals:
     void textEdited(const QString &);
 protected:
     void paintEvent(QPaintEvent *) override;
+    bool eventFilter(QObject *object, QEvent *event) override;
 private:
     QLineEdit *lineEdit;
 
     static constexpr auto iconText = "\uf002";
     QFont iconFont() const;
     QRect iconRect() const;
+
+    void reloadPalette() const;
 };
 
 

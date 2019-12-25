@@ -10,15 +10,19 @@
 #include <QLabel>
 #include <QScrollArea>
 
-#include "strategysettingswidget.h"
-#include "currentsessionwidget.h"
-#include "slotboard.h"
 #include "Strategy.h"
-#include "notifierimplementation.h"
 #include "colorprovider.h"
-#include "overviewwidget.h"
+#include "selectionwidget.h"
+
+class NotifierImplementation;
+class StrategySettingsWidget;
+class CurrentSessionWidget;
+class QScrollArea;
+class SlotBoard;
+class OverviewWidget;
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
+Q_OBJECT
 public:
     explicit SessionsMainWidget(Strategy &strategy,
                                 QWidget *parent = nullptr);
@@ -28,21 +32,18 @@ public:
 
     const SelectionWidget::RawSelectionState &selection();
     void clearSelection();
-
     void reloadStrategy();
+
+    QScrollArea *slotBoardScrollArea() const;
 private:
     Strategy &strategy;
 
     NotifierImplementation *notifier = nullptr;
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
-    QScrollArea *slotBoardScrollArea = nullptr;
+    QScrollArea *_slotBoardScrollArea = nullptr;
     SlotBoard *slotBoard = nullptr;
     OverviewWidget *overviewWidget = nullptr;
-
-    // Qt's isVisible() could be glitchy for some reason,
-    // so we dont't rely on it and use this flag
-    bool currentSessionWidgetIsVisible = false;
 
     void layoutChildWidgets();
     void updateTimerDependants();

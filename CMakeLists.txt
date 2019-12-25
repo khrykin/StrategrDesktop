@@ -157,7 +157,7 @@ set(UI
         ui/updatedialog.cpp
         ui/updatedialog.h
         ui/overviewwidget.cpp
-        ui/overviewwidget.h ui/searchbox.cpp ui/searchbox.h)
+        ui/overviewwidget.h ui/searchbox.cpp ui/searchbox.h ui/dynamicpalette.cpp ui/dynamicpalette.h)
 
 set(UTILITY
         ${version_file}

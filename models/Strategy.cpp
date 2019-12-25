@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <vector>
+#include <map>
 
 #include "Strategy.h"
 #include "JSON.h"
@@ -288,4 +289,53 @@ const Session *Strategy::upcomingSession() const {
     return nextSession && nextSession->activity
            ? nextSession
            : nullptr;
+}
+
+void Strategy::reorderActivitiesByUsage() {
+    std::map<Activity *, Duration> usage;
+
+    for (auto &session : sessions()) {
+        if (session.activity == NoActivity)
+            continue;
+
+        usage[session.activity] += session.duration();
+    }
+
+    std::vector<std::pair<Activity *, Duration>> pairs;
+    for (const auto &elem : usage) {
+        pairs.emplace_back(elem);
+    }
+
+    std::sort(pairs.begin(),
+              pairs.end(),
+              [=](auto &a, auto &b) {
+                  return a.second > b.second;
+              });
+
+    std::vector<std::shared_ptr<Activity>> reordered;
+    for (auto &elem : pairs) {
+        if (!elem.first)
+            continue;
+
+        auto index = *activities().indexOf(elem.first);
+        auto activity = _activities._vector[index];
+
+        reordered.push_back(activity);
+    }
+
+    for (auto &activity : _activities) {
+        if (std::find_if(reordered.begin(),
+                         reordered.end(),
+                         [activity](auto a) {
+                             return a == activity;
+                         }) == reordered.end()) {
+
+            reordered.push_back(activity);
+        };
+    }
+
+    _activities._vector = reordered;
+    _activities.onChangeEvent();
+
+    commitToHistory();
 }

@@ -219,6 +219,9 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
 void CurrentSessionWidget::updateUI() {
     auto activitySession = strategy.activeSession();
 
+    if (!activitySession)
+        return;
+
     auto startTimeText = QStringForMinutes(activitySession->beginTime());
     auto endTimeText = QStringForMinutes(activitySession->endTime());
 

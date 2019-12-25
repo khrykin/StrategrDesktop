@@ -30,6 +30,9 @@ public:
     const SelectionWidget::RawSelectionState &selection();
 
     void reloadStrategy();
+
+    void reorderActivitiesByUsage();
+
 private:
     Strategy &strategy;
     SessionsMainWidget *sessionsMainWidget;

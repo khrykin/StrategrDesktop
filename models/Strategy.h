@@ -32,10 +32,6 @@ public:
 
     static constexpr auto NoActivity = TimeSlot::NoActivity;
 
-    const ActivityList &activities() const;
-    const SessionsList &sessions() const;
-    const TimeSlotsState &timeSlots() const;
-
     explicit Strategy(Time beginTime = Defaults::beginTime,
                       Duration timeSlotDuration = Defaults::timeSlotDuration,
                       StateSize numberOfTimeSlots = Defaults::numberOfTimeSlots);
@@ -44,6 +40,10 @@ public:
 
     static std::optional<Strategy> fromJsonString(const std::string &jsonString);
     std::string toJsonString() const;
+
+    const ActivityList &activities() const;
+    const SessionsList &sessions() const;
+    const TimeSlotsState &timeSlots() const;
 
     Time beginTime() const;
     void setBeginTime(Time beginTime);
@@ -80,6 +80,8 @@ public:
     void endDragging();
 
     void shiftBelowTimeSlot(TimeSlotIndex fromIndex, int length);
+
+    void reorderActivitiesByUsage();
 
     void commitToHistory();
     void undo();

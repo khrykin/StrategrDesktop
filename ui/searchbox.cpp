@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QPainter>
 #include <QFontMetrics>
+#include <QPalette>
+#include <QAction>
 
 #include "searchbox.h"
 #include "applicationsettings.h"
@@ -15,6 +17,7 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setFocusPolicy(Qt::ClickFocus);
+    installEventFilter(this);
 
     lineEdit = new QLineEdit();
     lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -24,6 +27,7 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
                             "}");
     lineEdit->setAlignment(Qt::AlignCenter);
     lineEdit->setPlaceholderText(placeholder);
+    reloadPalette();
 
     connect(lineEdit,
             &QLineEdit::textEdited,
@@ -37,6 +41,12 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
                                ApplicationSettings::defaultPadding,
                                iconRect().width() + 3 * ApplicationSettings::defaultPadding,
                                ApplicationSettings::defaultPadding);
+}
+
+void SearchBox::reloadPalette() const {
+    auto palette = QApplication::palette();
+    palette.setColor(QPalette::Text, textColorJustLighter());
+    lineEdit->setPalette(palette);
 }
 
 QString SearchBox::text() {
@@ -77,7 +87,18 @@ QRect SearchBox::iconRect() const {
 QFont SearchBox::iconFont() const {
     QFont iconFont;
     iconFont.setFamily(ApplicationSettings::fontResourcePath);
-//    iconFont.setPixelSize(font().pixelSize());
     return iconFont;
+}
+
+bool SearchBox::eventFilter(QObject *object, QEvent *event) {
+    if (object == this && event->type() == QEvent::ApplicationPaletteChange) {
+        reloadPalette();
+    }
+
+    return false;
+}
+
+void SearchBox::focus() {
+    lineEdit->setFocus();
 }
 

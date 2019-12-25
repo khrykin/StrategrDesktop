@@ -26,6 +26,15 @@ ActivityListWidget::ActivityListWidget(Strategy &strategy,
     layoutChildWidgets();
     setupActions();
 
+    auto *action = new QAction("Search Activities...", this);
+    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    connect(action,
+            &QAction::triggered,
+            searchBox,
+            &SearchBox::focus);
+
+    addAction(action);
+
     updateUI();
 }
 

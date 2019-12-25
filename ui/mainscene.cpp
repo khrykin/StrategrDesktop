@@ -70,3 +70,7 @@ const SelectionWidget::RawSelectionState &MainScene::selection() {
 void MainScene::showNewActivityMenu() {
     activitiesWidget->showNewActivityMenu();
 }
+
+void MainScene::reorderActivitiesByUsage() {
+    strategy.reorderActivitiesByUsage();
+}

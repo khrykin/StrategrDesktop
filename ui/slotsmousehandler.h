@@ -10,9 +10,11 @@
 #include "Strategy.h"
 #include "cursorprovider.h"
 #include "colorprovider.h"
+#include "sessionsmainwidget.h"
 
 class SlotsWidget;
 class SessionWidget;
+class QPropertyAnimation;
 
 class SlotsMouseHandler :
         public QFrame,
@@ -63,6 +65,8 @@ private:
 
     bool mousePressHappened = false;
 
+    QPropertyAnimation *autoscrollAnimation = nullptr;
+
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
     SessionWidget *sessionWidgetAtSlotIndex(int timeSlotIndex);
 
@@ -72,8 +76,13 @@ private:
     int firstSlotTopOffset();
 
     template<class Event>
+    int relativeTop(Event *event) {
+        return event->pos().y() - firstSlotTopOffset();
+    }
+
+    template<class Event>
     int slotIndexForEvent(Event *event) {
-        return (event->pos().y() - firstSlotTopOffset()) / slotHeight();
+        return relativeTop(event) / slotHeight();
     }
 
     bool hasSelection();
@@ -98,7 +107,7 @@ private:
     void handleMouseHover(const QMouseEvent *event);
     void handleStretchOperation(QMouseEvent *event);
     void handleLeftButtonPress(const QMouseEvent *event);
-    void handleDirectionChange(const std::optional<Direction> &previousDirection);
+    void handleResizeDirectionChange(const std::optional<Direction> &previousDirection);
 
     void checkForDirectionChange(const QMouseEvent *event);
 
@@ -112,6 +121,11 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void initDragSelectedOperation();
+
+    QScrollArea *slotBoardScrollArea() const;
+    QScrollBar *verticalScrollBar() const;
+    void handleAutoScroll(const QMouseEvent *event);
+    void resetAutoscrollAnimation();
 };
 
 
