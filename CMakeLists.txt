@@ -20,6 +20,8 @@ include_directories(models/apple)
 include_directories(ui)
 include_directories(utility)
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 set(CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
         ${CMAKE_MODULE_PATH})
@@ -35,40 +37,38 @@ if (APPLE)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
-        models/activity.cpp
-        models/activity.h
-        models/strategy.cpp
-        models/strategy.h
-        models/activityinvalidpropertyexception.cpp
-        models/activityinvalidpropertyexception.h
-        models/activitylist.cpp
-        models/activitylist.h
-        models/privatelist.hpp
-        models/notifiableonchange.h
-        models/timeslot.cpp
-        models/timeslot.h
-        models/timeslotsstate.cpp
-        models/timeslotsstate.h
-        models/activitysessionslist.cpp
-        models/activitysessionslist.h
-        models/streamablelist.h
-        models/activitysessionscalculator.cpp
-        models/activitysessionscalculator.h
-        models/strategyhistory.cpp
-        models/strategyhistory.h
-        models/currentactivitysession.cpp
-        models/currentactivitysession.h
-        models/activitysession.cpp
-        models/dragoperation.cpp
-        models/dragoperation.h
-        models/resizeoperation.cpp
-        models/resizeoperation.h
-        models/overview.cpp
-        models/overview.h
-        models/currenttime.cpp
-        models/currenttime.h
+        models/Activity.cpp
+        models/Activity.h
+        models/Strategy.cpp
+        models/Strategy.h
+        models/ActivityInvalidPropertyException.cpp
+        models/ActivityInvalidPropertyException.h
+        models/ActivityList.cpp
+        models/ActivityList.h
+        models/PrivateList.hpp
+        models/NotifiableOnChange.h
+        models/TimeSlot.cpp
+        models/TimeSlot.h
+        models/TimeSlotsState.cpp
+        models/TimeSlotsState.h
+        models/SessionsList.cpp
+        models/SessionsList.h
+        models/StreamableList.h
+        models/SessionsCalculator.cpp
+        models/SessionsCalculator.h
+        models/StrategyHistory.cpp
+        models/StrategyHistory.h
+        models/Session.cpp
+        models/DragOperation.cpp
+        models/DragOperation.h
+        models/ResizeOperation.cpp
+        models/ResizeOperation.h
+        models/Overview.cpp
+        models/Overview.h
+        models/TimeUtils.cpp
+        models/TimeUtils.h
         models/JSON.cpp
-        models/JSON.h)
+        models/JSON.h models/Timer.cpp models/Timer.h models/CurrentTimeMarker.cpp models/CurrentTimeMarker.h models/Rect.hpp models/Notifier.cpp models/Notifier.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -111,8 +111,8 @@ set(UI
         ui/slotboard.h
         ui/slotruler.cpp
         ui/slotruler.h
-        ui/activitysessionwidget.cpp
-        ui/activitysessionwidget.h
+        ui/sessionwidget.cpp
+        ui/sessionwidget.h
         ui/slotsmousehandler.cpp
         ui/slotsmousehandler.h
         ui/selectionwidget.cpp
@@ -127,10 +127,8 @@ set(UI
         ui/mainscene.h
         ui/activityeditormenu.cpp
         ui/activityeditormenu.h
-        ui/currenttimemarker.cpp
-        ui/currenttimemarker.h
-        ui/parentwindowaccessible.cpp
-        ui/parentwindowaccessible.h
+        ui/currenttimemarkerwidget.cpp
+        ui/currenttimemarkerwidget.h
         ui/reactivelist.hpp
         ui/currentsessionwidget.cpp
         ui/currentsessionwidget.h
@@ -159,7 +157,7 @@ set(UI
         ui/updatedialog.cpp
         ui/updatedialog.h
         ui/overviewwidget.cpp
-        ui/overviewwidget.h)
+        ui/overviewwidget.h ui/searchbox.cpp ui/searchbox.h)
 
 set(UTILITY
         ${version_file}
@@ -168,8 +166,8 @@ set(UTILITY
         utility/applicationsettings.h
         utility/utils.cpp
         utility/utils.h
-        utility/notifier.cpp
-        utility/notifier.h
+        utility/notifierimplementation.cpp
+        utility/notifierimplementation.h
         utility/notifierbackend.h
         utility/notifierbackend.cpp
         utility/fontutils.cpp
@@ -267,7 +265,7 @@ target_link_libraries(StrategrCore
 
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE
-        PUBLIC_HEADER models/strategy.h
+        PUBLIC_HEADER models/Strategy.h
         VERSION ${VERSION_SHORT}
         MACOSX_FRAMEWORK_LONG_VERSION_STRING ${VERSION}
         MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION_SHORT}
@@ -310,7 +308,6 @@ target_link_libraries(Strategr
         Qt5::Widgets
         Qt5::Network
         ${PLATFORM_LIBRARIES})
-
 
 if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Release)

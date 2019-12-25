@@ -50,6 +50,6 @@
 		</dict>
 	</array>
 	<key>NSCalendarsUsageDescription</key>
-    <string>Strategr would be able to export activity sessions as events to the Calendar</string>
+	<string>Strategr would be able to export activity sessions as events to the Calendar</string>
 </dict>
 </plist>

@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
-#include "strategy.h"
+#include "Strategy.h"
 
 TEST_CASE("Strategy history", "[strategy][history]") {
     auto strategy = Strategy();
@@ -74,7 +74,7 @@ TEST_CASE("Strategy history", "[strategy][history]") {
 
         strategy.undo();
         REQUIRE(strategy.activities()[0] == initialActivity);
-        REQUIRE(strategy.activitySessions()[0].length() == 2);
+        REQUIRE(strategy.sessions()[0].length() == 2);
 
     }
 
@@ -84,6 +84,6 @@ TEST_CASE("Strategy history", "[strategy][history]") {
 
         strategy.undo();
 
-        REQUIRE(strategy.activitySessions()[0].length() == 2);
+        REQUIRE(strategy.sessions()[0].length() == 2);
     }
 }

@@ -13,14 +13,14 @@
 #include "strategysettingswidget.h"
 #include "currentsessionwidget.h"
 #include "slotboard.h"
-#include "strategy.h"
-#include "notifier.h"
+#include "Strategy.h"
+#include "notifierimplementation.h"
 #include "colorprovider.h"
 #include "overviewwidget.h"
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
 public:
-    explicit SessionsMainWidget(Strategy *strategy,
+    explicit SessionsMainWidget(Strategy &strategy,
                                 QWidget *parent = nullptr);
 
     void toggleStrategySettingsOpen();
@@ -29,11 +29,11 @@ public:
     const SelectionWidget::RawSelectionState &selection();
     void clearSelection();
 
-    void setStrategy(Strategy *newStrategy);
+    void reloadStrategy();
 private:
-    Strategy *strategy;
+    Strategy &strategy;
 
-    Notifier *notifier = nullptr;
+    NotifierImplementation *notifier = nullptr;
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
     QScrollArea *slotBoardScrollArea = nullptr;

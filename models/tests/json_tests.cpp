@@ -6,7 +6,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 
-#include "strategy.h"
+#include "Strategy.h"
 #include "JSON.h"
 
 std::string readTestFile(const std::string &filename) {

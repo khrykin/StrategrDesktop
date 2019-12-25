@@ -57,7 +57,7 @@ std::optional<Strategy> JSON::parse(const std::string &jsonString) {
 std::vector<TimeSlot>
 JSON::parseTimeSlots(const nlohmann::json &json,
                      const ActivityList &activities) {
-    std::__1::vector<TimeSlot> timeSlotsVector;
+    std::vector<TimeSlot> timeSlotsVector;
 
     auto timeSlotDuration = Strategy::Defaults::timeSlotDuration;
     if (!json[Keys::slotDuration].is_null())
@@ -94,12 +94,12 @@ JSON::parseTimeSlots(const nlohmann::json &json,
         }
     }
 
-    return
-            timeSlotsVector;
+    return timeSlotsVector;
 }
 
 std::vector<Activity> JSON::parseActivities(const nlohmann::json &json) {
-    std::__1::vector<Activity> activitiesVector;
+    std::vector<Activity> activitiesVector;
+
     if (!json[Keys::activities].is_null()) {
         for (const auto &activityJson : json[Keys::activities]) {
             activitiesVector.emplace_back(Activity::fromJson(activityJson));

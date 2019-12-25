@@ -7,7 +7,7 @@
 #include <QWidgetAction>
 
 #include "colorpicker.h"
-#include "activity.h"
+#include "Activity.h"
 #include "coloredlabel.h"
 
 class ActivityEditorMenu : public QMenu {

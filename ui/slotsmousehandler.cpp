@@ -45,7 +45,7 @@ void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
         return;
     }
 
-    if (strategy()->timeSlots()[currentSlotIndex].activity == Strategy::NoActivity) {
+    if (strategy().timeSlots()[currentSlotIndex].activity == Strategy::NoActivity) {
         initDragSelectedOperation();
         return;
     }
@@ -63,11 +63,11 @@ void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
 
     if (operation == Operation::Drag) {
         selectSessionAtSlotIndex(currentSlotIndex);
-        strategy()->beginDragging(sessionIndexForSlotIndex(currentSlotIndex));
+        strategy().beginDragging(sessionIndexForSlotIndex(currentSlotIndex));
     } else if (operation == Operation::StretchTop ||
                operation == Operation::StretchBottom) {
         selectStetchingSessions(handleSlotIndex);
-        strategy()->beginResizing();
+        strategy().beginResizing();
     }
 
     updateCursor();
@@ -192,7 +192,7 @@ void SlotsMouseHandler::handleStretchOperation(QMouseEvent *event) {
             handleSlotIndex = *resizeBoundarySlotIndex + 1;
     }
 
-    strategy()->fillTimeSlots(handleSlotIndex, currentSlotIndex);
+    strategy().fillTimeSlots(handleSlotIndex, currentSlotIndex);
 
     handleSlotIndex = currentSlotIndex;
 
@@ -201,9 +201,10 @@ void SlotsMouseHandler::handleStretchOperation(QMouseEvent *event) {
 
 
 void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
-    auto firstSelectionIndex = static_cast<int>(*strategy()
-            ->activitySessions()
-            .sessionIndexForTimeSlotIndex(sourceIndex));
+    auto firstSelectionIndex = static_cast<int>(
+            *strategy().sessions()
+                    .sessionIndexForTimeSlotIndex(sourceIndex)
+    );
 
     if (operation == Operation::StretchTop &&
         direction == Direction::Down) {
@@ -222,11 +223,11 @@ void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
     }
 
     if (firstSelectionIndex < 0 ||
-        firstSelectionIndex >= strategy()->activitySessions().size() ||
+        firstSelectionIndex >= strategy().sessions().size() ||
         secondSelectionIndex < 0 ||
-        secondSelectionIndex >= strategy()->activitySessions().size() ||
-        (strategy()->activitySessions()[firstSelectionIndex].activity == Strategy::NoActivity &&
-         strategy()->activitySessions()[secondSelectionIndex].activity == Strategy::NoActivity)) {
+        secondSelectionIndex >= strategy().sessions().size() ||
+        (strategy().sessions()[firstSelectionIndex].activity == Strategy::NoActivity &&
+         strategy().sessions()[secondSelectionIndex].activity == Strategy::NoActivity)) {
         deselectAllSessions();
         resizeBoundarySlotIndex = std::nullopt;
         update();
@@ -236,14 +237,14 @@ void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
 
     auto selectBorderIndex = std::min(firstSelectionIndex, secondSelectionIndex);
 
-    for (int i = 0; i < strategy()->activitySessions().size(); i++) {
+    for (int i = 0; i < strategy().sessions().size(); i++) {
         sessionWidgetAtIndex(i)->setSelectBorder(i == selectBorderIndex);
     }
 
     selectSessionsAtIndices({firstSelectionIndex, secondSelectionIndex});
 
-    auto borderSlot = strategy()->activitySessions()[selectBorderIndex].timeSlots.back();
-    resizeBoundarySlotIndex = strategy()->timeSlots().indexOf(borderSlot);
+    auto borderSlot = strategy().sessions()[selectBorderIndex].timeSlots.back();
+    resizeBoundarySlotIndex = strategy().timeSlots().indexOf(borderSlot);
 
     update();
 }
@@ -266,7 +267,7 @@ void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
 void SlotsMouseHandler::handleDragOperation(QMouseEvent *event) {
     auto distance = currentSlotIndex - handleSlotIndex;
 
-    strategy()->dragActivitySession(clickedSessionIndex, distance);
+    strategy().dragActivitySession(clickedSessionIndex, distance);
 
     handleSlotIndex = currentSlotIndex;
     clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
@@ -287,13 +288,13 @@ void SlotsMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
 
 
 int SlotsMouseHandler::sessionIndexForSlotIndex(int slotIndex) {
-    return strategy()->activitySessions()
+    return strategy().sessions()
             .sessionIndexForTimeSlotIndex(slotIndex).value_or(-1);
 }
 
 std::optional<SlotsMouseHandler::Operation>
 SlotsMouseHandler::determineOperationForMouseZone(MouseZone mouseZone) {
-    auto currentSlotIsEmpty = strategy()->timeSlots()[currentSlotIndex].activity
+    auto currentSlotIsEmpty = strategy().timeSlots()[currentSlotIndex].activity
                               == Strategy::NoActivity;
 
     switch (mouseZone) {
@@ -332,7 +333,7 @@ SlotsMouseHandler::determineMouseZone(const QMouseEvent *event, int sessionIndex
 }
 
 void SlotsMouseHandler::updateCursor() {
-    auto currentSession = strategy()->activitySessions()[clickedSessionIndex];
+    auto currentSession = strategy().sessions()[clickedSessionIndex];
     if (currentSession.activity == Strategy::NoActivity) {
         unsetCursor();
         return;
@@ -347,7 +348,7 @@ void SlotsMouseHandler::updateCursor() {
     } else if (currentSlotIndex == 0 &&
                currentMouseZone == MouseZone::TopStretchZone) {
         unsetCursor();
-    } else if (currentSlotIndex == strategy()->timeSlots().size() - 1 &&
+    } else if (currentSlotIndex == strategy().timeSlots().size() - 1 &&
                currentMouseZone == MouseZone::BottomStretchZone) {
         unsetCursor();
     } else {
@@ -358,7 +359,7 @@ void SlotsMouseHandler::updateCursor() {
 
 void SlotsMouseHandler::contextMenuEvent(QContextMenuEvent *event) {
     auto currentSlotIndex = slotIndexForEvent(event);
-    auto &currentSlot = strategy()->timeSlots()[currentSlotIndex];
+    auto &currentSlot = strategy().timeSlots()[currentSlotIndex];
 
     QMenu menu(slotsWidget);
     menu.addAction(slotsWidget->setActivityAction);
@@ -386,7 +387,7 @@ bool SlotsMouseHandler::hasSelection() {
 
 void SlotsMouseHandler::selectSlotAtIndex(int slotIndex) {
     if (slotIndex < 0 ||
-        slotIndex >= strategy()->numberOfTimeSlots()) {
+        slotIndex >= strategy().numberOfTimeSlots()) {
         return;
     }
 
@@ -395,8 +396,7 @@ void SlotsMouseHandler::selectSlotAtIndex(int slotIndex) {
 }
 
 void SlotsMouseHandler::selectSessionAtSlotIndex(int slotIndex) {
-    auto sessionIndex = strategy()
-            ->activitySessions()
+    auto sessionIndex = strategy().sessions()
             .sessionIndexForTimeSlotIndex(slotIndex);
 
     if (sessionIndex) {
@@ -433,14 +433,14 @@ int SlotsMouseHandler::slotHeight() {
     return slotsWidget->_slotHeight;
 }
 
-ActivitySessionWidget
+SessionWidget
 *SlotsMouseHandler::sessionWidgetAtIndex(int sessionIndex) {
     auto sessionWidget = slotsWidget
             ->slotsLayout
             ->itemAt(sessionIndex)
             ->widget();
 
-    return qobject_cast<ActivitySessionWidget *>(sessionWidget);
+    return qobject_cast<SessionWidget *>(sessionWidget);
 }
 
 int SlotsMouseHandler::firstSlotTopOffset() {
@@ -452,18 +452,18 @@ int SlotsMouseHandler::firstSlotTopOffset() {
     return firstItem->geometry().top();
 }
 
-Strategy *SlotsMouseHandler::strategy() {
+Strategy &SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
 }
 
 void SlotsMouseHandler::reset() {
     if (operation == Operation::Drag) {
-        strategy()->endDragging();
+        strategy().endDragging();
     }
 
     if (operation == Operation::StretchBottom ||
         operation == Operation::StretchTop) {
-        strategy()->endResizing();
+        strategy().endResizing();
     }
 
     mousePressHappened = false;
@@ -484,9 +484,8 @@ void SlotsMouseHandler::reset() {
     update();
 }
 
-ActivitySessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
-    auto sessionIndex = strategy()
-            ->activitySessions()
+SessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
+    auto sessionIndex = strategy().sessions()
             .sessionIndexForTimeSlotIndex(slotIndex);
 
     if (!sessionIndex) {

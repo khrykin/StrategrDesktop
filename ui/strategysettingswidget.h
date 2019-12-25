@@ -7,23 +7,21 @@
 #include <QSpinBox>
 #include <QWidget>
 
-#include "strategy.h"
+#include "Strategy.h"
 #include "navbar.h"
 #include "steppedtimeedit.h"
 #include "coloredlabel.h"
-#include "parentwindowaccessible.h"
 #include "rowwidget.h"
 
 class MainWindow;
-class StrategySettingsWidget : public QWidget,
-                               public ParentWindowAccessible<StrategySettingsWidget> {
+class StrategySettingsWidget : public QWidget {
 Q_OBJECT
 
 public:
-    explicit StrategySettingsWidget(Strategy *strategy,
+    explicit StrategySettingsWidget(Strategy &strategy,
                                     QWidget *parent = nullptr);
 
-    void setStrategy(Strategy *strategy);
+    void reloadStrategy();
 
     void slideAndHide(const std::function<void()> &onFinishedCallback = nullptr);
     void slideAndShow(const std::function<void()> &onFinishedCallback = nullptr);
@@ -32,14 +30,13 @@ signals:
     void strategySettingsUpdated();
 
 private:
-    Strategy *strategy;
-    QVBoxLayout *mainLayout;
-
+    Strategy &strategy;
     bool dontSave = false;
 
-    QSpinBox *slotDurationEdit;
-    SteppedTimeEdit *beginTimeEdit;
-    SteppedTimeEdit *endTimeEdit;
+    QVBoxLayout *mainLayout = nullptr;
+    QSpinBox *slotDurationEdit = nullptr;
+    SteppedTimeEdit *beginTimeEdit = nullptr;
+    SteppedTimeEdit *endTimeEdit = nullptr;
 
     void createLayout();
 
@@ -50,7 +47,7 @@ private:
 
     RowWidget *makeFormRowWidget();
 
-    ColoredLabel *makeFormLabel(const QString &text);
+    static ColoredLabel *makeFormLabel(const QString &text);
 
     void updateUI();
 

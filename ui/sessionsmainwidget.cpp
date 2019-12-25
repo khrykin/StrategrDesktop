@@ -6,9 +6,8 @@
 #include <QPainter>
 
 #include "sessionsmainwidget.h"
-#include "currentactivitysession.h"
 
-SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
+SessionsMainWidget::SessionsMainWidget(Strategy &strategy,
                                        QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
@@ -19,7 +18,7 @@ SessionsMainWidget::SessionsMainWidget(Strategy *strategy,
 
     layoutChildWidgets();
 
-    notifier = new Notifier(strategy, this);
+    notifier = new NotifierImplementation(&strategy, this);
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {
@@ -37,11 +36,12 @@ void SessionsMainWidget::focusOnCurrentTime() {
 void SessionsMainWidget::layoutChildWidgets() {
     strategySettingsWidget = new StrategySettingsWidget(strategy);
 
-    currentSessionWidget = new CurrentSessionWidget();
+    currentSessionWidget = new CurrentSessionWidget(strategy);
     currentSessionWidget->hide();
 
     connect(currentSessionWidget,
-            &CurrentSessionWidget::clicked, this,
+            &CurrentSessionWidget::clicked,
+            this,
             &SessionsMainWidget::focusOnCurrentTime);
 
     slotBoardScrollArea = new QScrollArea();
@@ -69,14 +69,17 @@ void SessionsMainWidget::layoutChildWidgets() {
     layout()->addWidget(slotBoardScrollArea);
 }
 
-void SessionsMainWidget::updateOverviewWidget() const { overviewWidget->update(); }
+void SessionsMainWidget::updateOverviewWidget() const {
+    overviewWidget->update();
+}
 
-void SessionsMainWidget::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
-    slotBoard->setStrategy(newStrategy);
-    strategySettingsWidget->setStrategy(newStrategy);
-    notifier->setStrategy(newStrategy);
-    overviewWidget->setStrategy(newStrategy);
+void SessionsMainWidget::reloadStrategy() {
+    slotBoard->reloadStrategy();
+    strategySettingsWidget->reloadStrategy();
+    overviewWidget->reloadStrategy();
+    currentSessionWidget->reloadStrategy();
+
+    notifier->setStrategy(&strategy);
 }
 
 void SessionsMainWidget::clearSelection() {
@@ -88,22 +91,8 @@ const SelectionWidget::RawSelectionState &SessionsMainWidget::selection() {
 }
 
 void SessionsMainWidget::updateTimerDependants() {
-    strategySettingsWidget->setStrategy(strategy);
     overviewWidget->update();
-
-    auto currentSession = CurrentActivitySession::forStrategy(*strategy);
-    if (currentSession) {
-        currentSessionWidget->setActivitySession(*currentSession);
-        if (!currentSessionWidgetIsVisible) {
-            currentSessionWidgetIsVisible = true;
-            currentSessionWidget->slideAndShow();
-        }
-    } else {
-        if (currentSessionWidgetIsVisible) {
-            currentSessionWidgetIsVisible = false;
-            currentSessionWidget->slideAndHide();
-        }
-    }
+    currentSessionWidget->reloadSessionIfNeeded();
 }
 
 void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
@@ -114,6 +103,9 @@ void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
     painter.drawRect(0, 0, width(), height());
 }
 
-void SessionsMainWidget::resizeEvent(QResizeEvent *) {
-    overviewWidget->update();
+void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
+//    overviewWidget->update();
+//    slotBoard->resizeEvent();
+//
+//    qDebug() << "SessionsMainWidget::resizeEvent";
 }

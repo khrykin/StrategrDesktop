@@ -11,6 +11,8 @@
 class ColoredLabel : public QWidget {
 Q_OBJECT
 public:
+    std::function<void(QPainter *, const QString &)> customRenderer = nullptr;
+
     explicit ColoredLabel(QString text = "", QWidget *parent = nullptr);
 
     const QColor &color() const;
@@ -31,6 +33,7 @@ public:
     QSize sizeHint() const override;
 private:
     std::function<QColor()> colorGetter = nullptr;
+
     QColor _color;
     QString _text;
     Qt::Alignment _alignment = Qt::AlignLeft | Qt::AlignVCenter;

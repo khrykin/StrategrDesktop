@@ -8,7 +8,7 @@
 #include "selectionwidget.h"
 #include "colorutils.h"
 
-SelectionWidget::SelectionWidget(Strategy *strategy,
+SelectionWidget::SelectionWidget(Strategy &strategy,
                                  int slotHeight,
                                  QWidget *parent)
         : strategy(strategy), QWidget(parent) {
@@ -79,7 +79,7 @@ void SelectionWidget::drawSelectionForItem(RawSelectionState &selectionItem,
 
     auto widgetHeight = selectionItem.size() * slotHeight;
 
-    const auto &lastTimeSlot = strategy->timeSlots()[selectionItem.back()];
+    const auto &lastTimeSlot = strategy.timeSlots()[selectionItem.back()];
     auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 ? 1 : 0;
 
     auto rect = QRect(contentsMargins().left(),
@@ -122,8 +122,7 @@ bool SelectionWidget::selectionIsContinuous() const {
     return selectionState.size() == 1;
 }
 
-void SelectionWidget::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
+void SelectionWidget::reloadStrategy() {
     updateUI();
 }
 
@@ -171,8 +170,8 @@ void SelectionWidget::fillSelected(int fromIndex, int toIndex) {
         fromIndex = 0;
     }
 
-    if (toIndex >= strategy->numberOfTimeSlots()) {
-        fromIndex = strategy->numberOfTimeSlots() - 1;
+    if (toIndex >= strategy.numberOfTimeSlots()) {
+        fromIndex = strategy.numberOfTimeSlots() - 1;
     }
 
     for (auto i = fromIndex; i <= toIndex; i++) {

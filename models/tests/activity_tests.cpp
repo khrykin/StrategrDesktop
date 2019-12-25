@@ -4,8 +4,8 @@
 #include <sstream>
 
 #include <catch2/catch.hpp>
-#include "activity.h"
-#include "activityinvalidpropertyexception.h"
+#include "Activity.h"
+#include "ActivityInvalidPropertyException.h"
 
 const auto BLACK_COLOR = "#000000";
 const auto RED_COLOR = "#ff0000";

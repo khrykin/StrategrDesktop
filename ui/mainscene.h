@@ -6,18 +6,15 @@
 #define STRATEGR_MAINSCENE_H
 
 #include "third-party/slidingstackedwidget.h"
-#include "strategy.h"
+#include "Strategy.h"
 
 #include "sessionsmainwidget.h"
 #include "activitylistwidget.h"
-#include "parentwindowaccessible.h"
 
-class MainScene :
-        public SlidingStackedWidget,
-        public ParentWindowAccessible<MainScene> {
+class MainScene : public SlidingStackedWidget {
 Q_OBJECT
 public:
-    explicit MainScene(Strategy *strategy,
+    explicit MainScene(Strategy &strategy,
                        QWidget *parent = nullptr);
 
     void showActivities();
@@ -32,9 +29,9 @@ public:
 
     const SelectionWidget::RawSelectionState &selection();
 
-    void setStrategy(Strategy *newStrategy);
+    void reloadStrategy();
 private:
-    Strategy *strategy;
+    Strategy &strategy;
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
 };

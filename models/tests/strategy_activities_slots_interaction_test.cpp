@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
-#include "strategy.h"
+#include "Strategy.h"
 #include <iostream>
 
 TEST_CASE("Strategy activities and slots interaction") {
@@ -16,7 +16,7 @@ TEST_CASE("Strategy activities and slots interaction") {
 
     SECTION("deleting activity should also remove it from slots") {
         strategy.removeActivityAtIndex(0);
-        REQUIRE(strategy.activitySessions()[0].activity
+        REQUIRE(strategy.sessions()[0].activity
                 == Strategy::NoActivity);
     }
 
@@ -24,10 +24,10 @@ TEST_CASE("Strategy activities and slots interaction") {
         strategy.editActivityAtIndex(0, Activity("Some Edited"));
         const auto &updatedActivity = strategy.activities()[0];
 
-        REQUIRE(strategy.activitySessions()[0].activity
+        REQUIRE(strategy.sessions()[0].activity
                 == &updatedActivity);
 
-        REQUIRE(strategy.activitySessions()[2].activity
+        REQUIRE(strategy.sessions()[2].activity
                 == &updatedActivity);
     }
 }

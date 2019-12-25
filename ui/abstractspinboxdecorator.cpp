@@ -1,6 +1,8 @@
-#include "abstractspinboxdecorator.h"
 #include <QtCore>
 #include <QtWidgets>
+
+#include "abstractspinboxdecorator.h"
+#include "applicationsettings.h"
 
 int AbstractSpinBoxDecorator::getFontPixelSize() const { return fontPixelSize; }
 
@@ -98,7 +100,7 @@ QPushButton *AbstractSpinBoxDecorator::makeButton(QString text) {
                           "}");
 
     QFont font;
-    font.setFamily(fontResourcePath);
+    font.setFamily(ApplicationSettings::fontResourcePath);
     font.setPixelSize(buttonsWidth / 2);
 
     button->setFont(font);

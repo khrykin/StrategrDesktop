@@ -7,12 +7,12 @@
 
 #include <QMouseEvent>
 #include <QFrame>
-#include "strategy.h"
+#include "Strategy.h"
 #include "cursorprovider.h"
 #include "colorprovider.h"
 
 class SlotsWidget;
-class ActivitySessionWidget;
+class SessionWidget;
 
 class SlotsMouseHandler :
         public QFrame,
@@ -63,10 +63,10 @@ private:
 
     bool mousePressHappened = false;
 
-    ActivitySessionWidget *sessionWidgetAtIndex(int sessionIndex);
-    ActivitySessionWidget *sessionWidgetAtSlotIndex(int timeSlotIndex);
+    SessionWidget *sessionWidgetAtIndex(int sessionIndex);
+    SessionWidget *sessionWidgetAtSlotIndex(int timeSlotIndex);
 
-    Strategy *strategy();
+    Strategy &strategy();
     int slotHeight();
 
     int firstSlotTopOffset();

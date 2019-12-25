@@ -8,7 +8,7 @@
 #include <QWidget>
 
 #include "applicationsettings.h"
-#include "strategy.h"
+#include "Strategy.h"
 #include "colorprovider.h"
 
 class SelectionWidget : public QWidget, public ColorProvider {
@@ -16,7 +16,7 @@ Q_OBJECT
 public:
     using RawSelectionState = std::vector<Strategy::TimeSlotIndex>;
 
-    explicit SelectionWidget(Strategy *strategy,
+    explicit SelectionWidget(Strategy &strategy,
                              int slotHeight,
                              QWidget *parent = nullptr);
 
@@ -32,7 +32,7 @@ public:
     bool selectionIsContinuous() const;
     bool isSlotIndexSelected(Strategy::TimeSlotIndex slotIndex);
 
-    void setStrategy(Strategy *strategy);
+    void reloadStrategy();
 
     bool isClicked() const;
     void setIsClicked(bool isClicked);
@@ -40,7 +40,8 @@ signals:
     void selectionChanged();
 private:
     using SelectionState = std::vector<RawSelectionState>;
-    Strategy *strategy;
+
+    Strategy &strategy;
     RawSelectionState rawSelectionState;
     SelectionState selectionState;
 

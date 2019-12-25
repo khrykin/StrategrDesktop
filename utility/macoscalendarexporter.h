@@ -10,7 +10,7 @@
 #include <tuple>
 #include <ctime>
 
-#include "strategy.h"
+#include "Strategy.h"
 
 #ifdef __OBJC__
 #define OBJC_CLASS(name) @class name
@@ -48,7 +48,7 @@ private:
     static bool optionEnabled(Options optionsMask,
                               Options setting);
 
-    static void exportSession(const ActivitySession &strategy,
+    static void exportSession(const Session &strategy,
                               SGCalendarManager *calendarManager,
                               Options options,
                               time_t dateSecsFromEpoch);

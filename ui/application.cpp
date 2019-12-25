@@ -55,7 +55,7 @@ void Application::setupFonts() {
         qWarning() << "FontAwesome cannot be loaded !";
 
     if (QFontDatabase::addApplicationFont(":/fonts/ionicons.ttf") < 0)
-        qWarning() << "FontAwesome cannot be loaded !";
+        qWarning() << "Ionicons cannot be loaded !";
 }
 
 const SelfUpdater &Application::updater() {

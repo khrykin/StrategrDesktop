@@ -10,7 +10,9 @@
 #include <QDesktopWidget>
 #include <QScreen>
 
-/* Time */
+#include "Rect.hpp"
+
+/* TimeUtils */
 
 QString humanTimeForMinutes(int mins);
 
@@ -40,10 +42,16 @@ T *findParentWidget(QWidget *childWidget) {
 
 double devicePixelRatio();
 
+QRect QRectFromRect(const Strategr::Rect &rect);
+Strategr::Rect RectFromQRect(const QRect &rect);
 
 /* Strings */
 namespace StringUtils {
     QString toSentenceCase(QString string);
 }
+
+/* Multithreading */
+
+void dispatchToMainThread(const std::function<void()> &callback);
 
 #endif // UTILS_H

@@ -14,7 +14,7 @@ namespace ApplicationSettings {
     const auto defaultActivityItemHeight = 40;
     const auto defaultPadding = 8;
 
-    const auto currentTimeTimerInterval = 1 * 1000;
+    const auto currentTimeTimerSecondsInterval = 1;
     const auto notifierTimerTimeInterval = 15 * 1000;
     const auto currentSessionShowDelay = 500;
 
@@ -24,6 +24,7 @@ namespace ApplicationSettings {
     const auto overviewHeight = 8;
 
     const auto currentTimeMarkerColor = "#FF725C";
+    const auto fontResourcePath = "FontAwesome";
 
     extern const char *const version;
     extern const char *const shortVersion;

@@ -122,6 +122,7 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
     lineEdit->setPlaceholderText("Activity Name");
     lineEdit->setFocus();
     lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
+    lineEdit->setContextMenuPolicy(Qt::NoContextMenu);
 
     auto *enterPressEater = new EnterPressEater(lineEdit);
     lineEdit->installEventFilter(enterPressEater);

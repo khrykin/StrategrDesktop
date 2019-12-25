@@ -7,21 +7,21 @@
 
 #include <QWidget>
 #include <QScrollArea>
-#include <models/overview.h>
-#include "strategy.h"
+#include <models/Overview.h>
+#include "Strategy.h"
 #include "colorprovider.h"
 
 class OverviewWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit OverviewWidget(Strategy *strategy,
+    explicit OverviewWidget(Strategy &strategy,
                             QScrollArea *scrollArea,
                             QWidget *parent = nullptr);
 
-    void setStrategy(Strategy *newStrategy);
+    void reloadStrategy();
 
 private:
-    Strategy *strategy;
+    Strategy &strategy;
     QScrollArea *scrollArea;
 
     void paintEvent(QPaintEvent *) override;

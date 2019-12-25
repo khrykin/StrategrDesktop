@@ -10,7 +10,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 
-#include "strategy.h"
+#include "Strategy.h"
 #include "filesystemiomanager.h"
 #include "windowgeometrymanager.h"
 #include "mainscene.h"
@@ -41,7 +41,7 @@ public:
     void saveCurrentStrategyAsDefault();
     void clearRecentFilesList();
 
-    void updateUI();
+    void reloadStrategy();
 private:
     friend ApplicationMenu;
 

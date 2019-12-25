@@ -26,7 +26,6 @@ private:
     static const auto buttonsWidth = 19;
     static const auto buttonsHeight = buttonsWidth / 2;
     static const auto defaultFontPixelSize = 14;
-    static constexpr auto fontResourcePath = "FontAwesome";
 
     QVBoxLayout *buttonsLayout;
     QWidget *buttonsWidget;

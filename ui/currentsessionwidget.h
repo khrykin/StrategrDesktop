@@ -8,41 +8,46 @@
 #include <QWidget>
 #include <QTimeLine>
 
-#include "strategy.h"
+#include "Strategy.h"
 #include "colorprovider.h"
 
-class CurrentSessionWidget : public QWidget, public ColorProvider {
+class ColoredLabel;
+class CurrentSessionWidget :
+        public QWidget,
+        public ColorProvider {
 Q_OBJECT
 public:
-    explicit CurrentSessionWidget(QWidget *parent = nullptr);
+    explicit CurrentSessionWidget(Strategy &strategy, QWidget *parent = nullptr);
 
     double progress() const;
     void setProgress(double progress);
 
-    Strategy *strategy() const;
-    void setStrategy(Strategy *strategy);
+    void reloadStrategy();
     void slideAndHide(const std::function<void()> &onFinishedCallback = nullptr);
     void slideAndShow(const std::function<void()> &onFinishedCallback = nullptr);
 
-    void setActivitySession(
-            const ActivitySession &newActivitySession);
+    void reloadSessionIfNeeded();
 
 signals:
     void clicked();
 
 public slots:
 private:
+    // Qt's isVisible() could be glitchy for some reason,
+    // so we dont't rely on it and use this flag
+    bool isVisible = false;
+
     double _progress = 0.0;
 
-    ActivitySession activitySession;
-    ActivitySession previousSession;
+    Session previousSession;
 
-    Strategy *_strategy = nullptr;
-    QLabel *activityLabel = nullptr;
-    QLabel *startTimeLabel = nullptr;
-    QLabel *endTimeLabel = nullptr;
-    QLabel *passedTimeLabel = nullptr;
-    QLabel *leftTimeLabel = nullptr;
+    Strategy &strategy;
+
+    ColoredLabel *activityLabel = nullptr;
+    ColoredLabel *startTimeLabel = nullptr;
+    ColoredLabel *endTimeLabel = nullptr;
+    ColoredLabel *passedTimeLabel = nullptr;
+    ColoredLabel *leftTimeLabel = nullptr;
 
     QTimeLine *paddingAnimator = nullptr;
 
@@ -58,8 +63,7 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-    const QString makeActivitySessionTitle() const;
-    double getProgress() const;
+    QString makeActivitySessionTitle() const;
 };
 
 #endif // CURRENTACTIVITYWIDGET_H

@@ -12,11 +12,11 @@
 #include "mainwindow.h"
 #include "utils.h"
 
-SlotsWidget::SlotsWidget(Strategy *strategy, QWidget *parent)
+SlotsWidget::SlotsWidget(Strategy &strategy, QWidget *parent)
         : strategy(strategy),
           QWidget(parent) {
-    strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+    strategy.sessions()
+            .addOnChangeCallback(this, &SlotsWidget::updateUI);
 
     setLayout(new StackLayout());
     layout()->setSpacing(0);
@@ -109,7 +109,7 @@ void SlotsWidget::openActivitiesWindow() {
 }
 
 void SlotsWidget::deleteActivityInSelection() {
-    strategy->emptyTimeSlotsAtIndices(selectionWidget->selection());
+    strategy.emptyTimeSlotsAtIndices(selectionWidget->selection());
     selectionWidget->deselectAll();
 }
 
@@ -118,15 +118,14 @@ void SlotsWidget::deselectAllSlots() {
 }
 
 void SlotsWidget::selectAllSlots() {
-    selectionWidget->selectAll(strategy->numberOfTimeSlots());
+    selectionWidget->selectAll(strategy.numberOfTimeSlots());
 }
 
-void SlotsWidget::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
-    strategy->activitySessions()
-            .setOnChangeCallback(this, &SlotsWidget::updateUI);
+void SlotsWidget::reloadStrategy() {
+    strategy.sessions()
+            .addOnChangeCallback(this, &SlotsWidget::updateUI);
 
-    selectionWidget->setStrategy(strategy);
+    selectionWidget->reloadStrategy();
 
     updateList();
     mouseHandler->reset();
@@ -141,30 +140,31 @@ const SelectionWidget::RawSelectionState &SlotsWidget::selection() {
 }
 
 int SlotsWidget::numberOfItems() {
-    return strategy->activitySessions().size();
+    return strategy.sessions().size();
 }
 
 QVBoxLayout *SlotsWidget::listLayout() {
     return slotsLayout;
 }
 
-void SlotsWidget::reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) {
-    const auto session = strategy->activitySessions()[index];
+void SlotsWidget::reuseItemAtIndex(int index, SessionWidget *itemWidget) {
+    const auto session = strategy.sessions()[index];
     itemWidget->setActivitySession(session);
 }
 
-ActivitySessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
-    const auto session = strategy->activitySessions()[index];
-    auto itemWidget = new ActivitySessionWidget(session);
+SessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
+    const auto session = strategy.sessions()[index];
+    auto itemWidget = new SessionWidget(session);
     itemWidget->setSlotHeight(slotHeight());
 
     return itemWidget;
 }
 
 void SlotsWidget::updateUI() {
+    emit sessionsChanged();
+
     updateContentsMargins();
     updateList();
-    emit activitySessionsChanged();
 }
 
 void SlotsWidget::onSelectionChange() {
@@ -180,15 +180,15 @@ void SlotsWidget::shiftAllSlotsBelow() {
     }
 
     auto bottomTimeSlotIndex = selectionWidget->selection().front();
-    strategy->shiftBelowTimeSlot(bottomTimeSlotIndex,
-                                 selectionWidget->selection().size());
+    strategy.shiftBelowTimeSlot(bottomTimeSlotIndex,
+                                selectionWidget->selection().size());
 
     selectionWidget->deselectAll();
 }
 
 bool SlotsWidget::onlyEmptySlotsSelected() const {
     for (auto slotIndex : selectionWidget->selection()) {
-        if (strategy->timeSlots()[slotIndex].activity
+        if (strategy.timeSlots()[slotIndex].activity
             != Strategy::NoActivity) {
             return false;
         }
@@ -204,16 +204,16 @@ void SlotsWidget::paintEvent(QPaintEvent *event) {
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(ActivitySessionWidget::borderColor());
+    painter.setBrush(SessionWidget::borderColor());
 
-    auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
+    auto thickness = strategy.beginTime() % 60 == 0 ? 2 : 1;
     auto borderRect = QRect(8, 0, width() - 8 * 2, thickness);
 
     painter.drawRect(borderRect);
 }
 
 void SlotsWidget::updateContentsMargins() {
-    auto thickness = strategy->beginTime() % 60 == 0 ? 2 : 1;
+    auto thickness = strategy.beginTime() % 60 == 0 ? 2 : 1;
     slotsLayout->setContentsMargins(8, thickness, 8, 0);
     selectionWidget->setContentsMargins(8, thickness, 8, 0);
 }

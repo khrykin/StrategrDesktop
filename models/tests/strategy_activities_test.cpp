@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
-#include "strategy.h"
+#include "Strategy.h"
 
 class ActivitiesListener {
 public:
@@ -97,7 +97,7 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
         auto activity = Activity("Some 1");
         bool callbackWasCalled = false;
 
-        strategy.activities().setOnChangeCallback([&callbackWasCalled]() {
+        strategy.activities().addOnChangeCallback([&callbackWasCalled]() {
             callbackWasCalled = true;
         });
 
@@ -135,7 +135,7 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
             auto activity2 = Activity("Some 2");
             ActivitiesListener listener{callbackWasCalled};
 
-            strategy.activities().setOnChangeCallback(&listener,
+            strategy.activities().addOnChangeCallback(&listener,
                                                       &ActivitiesListener::onChange);
             callbackWasCalled = false;
             strategy.addActivity(activity2);

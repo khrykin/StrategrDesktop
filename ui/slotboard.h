@@ -3,26 +3,26 @@
 
 #include <QWidget>
 #include <QScrollArea>
+#include <models/Timer.h>
 
-#include "strategy.h"
-#include "currenttimemarker.h"
+#include "Strategy.h"
+#include "currenttimemarkerwidget.h"
 #include "slotswidget.h"
-#include "parentwindowaccessible.h"
 #include "slotruler.h"
 #include "timelabel.h"
 #include "colorprovider.h"
+#include "Timer.h"
 
 class MainWindow;
 class SlotBoard :
         public QWidget,
-        public ParentWindowAccessible<SlotBoard>,
         public ColorProvider {
 Q_OBJECT
 public:
-    explicit SlotBoard(Strategy *strategy,
+    explicit SlotBoard(Strategy &strategy,
                        QWidget *parent = nullptr);
 
-    void setStrategy(Strategy *newStrategy);
+    void reloadStrategy();
 
     void clearSelection();
     void focusOnCurrentTime();
@@ -33,16 +33,14 @@ signals:
     void timerTick();
     void timeSlotsChange();
 private:
-    Strategy *strategy;
+    Strategy &strategy;
 
     SlotsWidget *slotsWidget = nullptr;
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *slotsLayout = nullptr;
 
-    CurrentTimeMarker *currentTimeMarker = nullptr;
-    QTimer *currentTimeTimer = nullptr;
-
-    int currentTimeMarkerTopOffset = 0;
+    CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
+    Strategr::Timer currentTimeTimer;
 
     void updateCurrentTimeMarker();
 
@@ -53,14 +51,13 @@ private:
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
 
-    double calculateTimeMarkerTopOffset() const;
-    QRect calculateCurrentTimeMarkerGeometry() const;
-
     QScrollArea *parentScrollArea();
     void setupCurrentTimeTimer();
+    void timerCallback();
 
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+
     void updateSlotsLayout() const;
 };
 

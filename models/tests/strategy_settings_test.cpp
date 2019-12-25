@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
-#include "strategy.h"
+#include "Strategy.h"
 
 TEST_CASE("Strategy settings", "[strategy]") {
     auto strategy = Strategy();
@@ -11,13 +11,13 @@ TEST_CASE("Strategy settings", "[strategy]") {
 
     SECTION("reduce number of slots") {
         strategy.setNumberOfTimeSlots(12);
-        REQUIRE(strategy.activitySessions().size() == 12);
+        REQUIRE(strategy.sessions().size() == 12);
     }
 
     SECTION("increase number of slots") {
         auto newNumberOfSlots = strategy.numberOfTimeSlots() + 12;
         strategy.setNumberOfTimeSlots(newNumberOfSlots);
-        REQUIRE(strategy.activitySessions().size() == newNumberOfSlots);
+        REQUIRE(strategy.sessions().size() == newNumberOfSlots);
     }
 
     SECTION("change beginTime") {
@@ -26,8 +26,8 @@ TEST_CASE("Strategy settings", "[strategy]") {
                              + strategy.numberOfTimeSlots()
                                * strategy.timeSlotDuration();
 
-        REQUIRE(strategy.activitySessions().first().beginTime() == 666);
-        REQUIRE(strategy.activitySessions().last().endTime() == endTime);
+        REQUIRE(strategy.sessions().first().beginTime() == 666);
+        REQUIRE(strategy.sessions().last().endTime() == endTime);
 
     }
 
@@ -37,8 +37,8 @@ TEST_CASE("Strategy settings", "[strategy]") {
         const auto expectedEndTime = strategy.beginTime()
                                      + strategy.numberOfTimeSlots();
 
-        REQUIRE(strategy.activitySessions().first().duration() == 1);
-        REQUIRE(strategy.activitySessions().last().endTime() == expectedEndTime);
+        REQUIRE(strategy.sessions().first().duration() == 1);
+        REQUIRE(strategy.sessions().last().endTime() == expectedEndTime);
 
     }
 

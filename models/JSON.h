@@ -8,7 +8,7 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-#include "strategy.h"
+#include "Strategy.h"
 
 class JSON {
 public:

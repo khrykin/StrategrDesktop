@@ -6,7 +6,7 @@
 #define STRATEGR_TIMELABEL_H
 
 #include <QString>
-#include "strategy.h"
+#include "Strategy.h"
 
 struct TimeLabel {
     QString label = "";

@@ -34,6 +34,7 @@ void FileSystemIOManager::saveAs(const Strategy &strategy) {
     auto saveAsFilepath = QFileDialog::getSaveFileName(
             window,
             QObject::tr("Save Strategy As"),
+            // TODO: Fix platform-specific separator
             destinationDir() + "/" + fileInfo().fileName(),
             searchPattern);
 
@@ -248,9 +249,13 @@ bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const Strategy &strat
 }
 
 int FileSystemIOManager::showAreYouSureDialog() {
-    return Alert::showAskToSave("Document "
-                                + fileInfo().fileName()
-                                + " has been modified.",
+    const auto title = fileInfo().fileName().isEmpty()
+                       ? "New document hasn't been saved"
+                       : "Document "
+                         + fileInfo().fileName()
+                         + " has been modified";
+    
+    return Alert::showAskToSave(title,
                                 "Do you want to save your changes?");
 }
 

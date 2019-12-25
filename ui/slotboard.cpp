@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cmath>
 
 #include <QDebug>
 #include <QHBoxLayout>
@@ -8,15 +7,14 @@
 #include <QPropertyAnimation>
 #include <QScrollBar>
 #include <QStyleOption>
-#include <QApplication>
 
 #include "slotboard.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "slotruler.h"
-#include "macoswindow.h"
+#include "CurrentTimeMarker.h"
 
-SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
+SlotBoard::SlotBoard(Strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QHBoxLayout();
     setLayout(mainLayout);
@@ -30,19 +28,14 @@ SlotBoard::SlotBoard(Strategy *strategy, QWidget *parent)
 }
 
 void SlotBoard::setupCurrentTimeTimer() {
-    currentTimeTimer = new QTimer(this);
-    connect(currentTimeTimer,
-            &QTimer::timeout,
-            this,
-            &SlotBoard::updateCurrentTimeMarker);
-
-    currentTimeTimer->start(ApplicationSettings::currentTimeTimerInterval);
+    currentTimeTimer.setCallback(this, &SlotBoard::timerCallback);
+    currentTimeTimer.start(ApplicationSettings::currentTimeTimerSecondsInterval);
 }
 
 void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     slotsWidget = new SlotsWidget(strategy);
     connect(slotsWidget,
-            &SlotsWidget::activitySessionsChanged,
+            &SlotsWidget::sessionsChanged,
             this,
             &SlotBoard::handleTimeSlotsChange);
 
@@ -59,16 +52,15 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     mainLayout->addWidget(slotRuler);
     mainLayout->addLayout(slotsLayout);
 
-    currentTimeMarker = new CurrentTimeMarker(this);
+    currentTimeMarkerWidget = new CurrentTimeMarkerWidget(this);
 }
 
 void SlotBoard::updateSlotsLayout() const {
     slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
 }
 
-void SlotBoard::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
-    slotsWidget->setStrategy(strategy);
+void SlotBoard::reloadStrategy() {
+    slotsWidget->reloadStrategy();
 
     updateUI();
 }
@@ -81,13 +73,13 @@ void SlotBoard::updateUI() {
 QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
-    for (auto &timeSlot : strategy->timeSlots()) {
+    for (auto &timeSlot : strategy.timeSlots()) {
         auto label = QStringForMinutes(timeSlot.beginTime);
         labels.append(TimeLabel{label, timeSlot.beginTime});
     }
 
-    auto endTimeLabel = QStringForMinutes(strategy->endTime());
-    labels.append(TimeLabel{endTimeLabel, strategy->endTime()});
+    auto endTimeLabel = QStringForMinutes(strategy.endTime());
+    labels.append(TimeLabel{endTimeLabel, strategy.endTime()});
 
     return labels;
 }
@@ -100,71 +92,35 @@ const SelectionWidget::RawSelectionState &SlotBoard::selection() {
     return slotsWidget->selection();
 }
 
-void SlotBoard::resizeEvent(QResizeEvent *event) {
-    QWidget::resizeEvent(event);
-    updateCurrentTimeMarker();
-}
-
 void SlotBoard::updateCurrentTimeMarker() {
-    emit timerTick();
+    auto currentTimeMarker = CurrentTimeMarker(strategy);
 
-    auto topOffset = calculateTimeMarkerTopOffset();
-    currentTimeMarkerTopOffset = static_cast<int>(topOffset);
+    auto rect = currentTimeMarker.rectInParent(
+            RectFromQRect(slotsWidget->geometry()),
+            CurrentTimeMarkerWidget::markerSize
+    );
 
-    auto timeMarkerLowerBoundary = slotsWidget->geometry().top()
-                                   + slotsWidget->height();
+    currentTimeMarkerWidget->setGeometry(QRectFromRect(rect));
 
-    if (topOffset < 0
-        || currentTimeMarkerTopOffset > timeMarkerLowerBoundary) {
-        if (currentTimeMarker->isVisible()) {
-            currentTimeMarker->hide();
-        }
-    } else {
-        if (currentTimeMarker->isHidden()) {
-            currentTimeMarker->show();
-        }
+    if (currentTimeMarker.isHidden()
+        && currentTimeMarkerWidget->isVisible()) {
+        currentTimeMarkerWidget->hide();
+    } else if (currentTimeMarker.isVisible()
+               && currentTimeMarkerWidget->isHidden()) {
+        currentTimeMarkerWidget->show();
     }
-
-    auto timeMarkerGeometry = calculateCurrentTimeMarkerGeometry();
-
-    currentTimeMarker->setGeometry(timeMarkerGeometry);
-}
-
-QRect SlotBoard::calculateCurrentTimeMarkerGeometry() const {
-    auto timeMarkerGeometry = QRect(
-            slotRuler->width() - CurrentTimeMarker::markerSize,
-            currentTimeMarkerTopOffset - CurrentTimeMarker::markerSize,
-            slotsWidget->geometry().width() + CurrentTimeMarker::markerSize,
-            2 * CurrentTimeMarker::markerSize);
-    return timeMarkerGeometry;
-}
-
-double SlotBoard::calculateTimeMarkerTopOffset() const {
-    auto currentTime = static_cast<double>(currentMinutes());
-
-    auto startTime = strategy->beginTime();
-    auto slotDuration = strategy->timeSlotDuration();
-    auto slotHeight = slotsWidget->slotHeight();
-
-    auto pxInMins = static_cast<double>(slotHeight) / slotDuration;
-
-    auto topOffset = round(pxInMins * (currentTime - startTime)) +
-                     slotsWidget->geometry().top();
-    return topOffset;
 }
 
 void SlotBoard::focusOnCurrentTime() {
-    auto topOffset = currentTimeMarkerTopOffset - parentWindow()->geometry().height() / 2;
-
-    if (topOffset < 0) {
-        topOffset = 0;
-    } else if (topOffset > slotsWidget->geometry().height()) {
-        topOffset = slotsWidget->geometry().height();
-    }
+    auto topOffset = CurrentTimeMarker(strategy)
+            .scrollOffsetInParent(
+                    RectFromQRect(slotsWidget->geometry()),
+                    window()->geometry().height()
+            );
 
     auto scrollBar = parentScrollArea()->verticalScrollBar();
 
-    QPropertyAnimation *animation = new QPropertyAnimation(scrollBar, "value");
+    auto animation = new QPropertyAnimation(scrollBar, "value");
     animation->setDuration(200);
     animation->setStartValue(scrollBar->value());
     animation->setEndValue(topOffset);
@@ -191,5 +147,16 @@ void SlotBoard::paintEvent(QPaintEvent *event) {
     painter.setBrush(baseColor());
 
     painter.drawRect(QRect(0, 0, width(), height()));
+}
+
+void SlotBoard::timerCallback() {
+    dispatchToMainThread([&]() {
+        emit timerTick();
+        updateCurrentTimeMarker();
+    });
+}
+
+void SlotBoard::resizeEvent(QResizeEvent *event) {
+    updateCurrentTimeMarker();
 }
 

@@ -10,7 +10,7 @@
 #include "mainscene.h"
 #include "mainwindow.h"
 
-MainScene::MainScene(Strategy *strategy, QWidget *parent)
+MainScene::MainScene(Strategy &strategy, QWidget *parent)
         : SlidingStackedWidget(parent), strategy(strategy) {
 
     sessionsMainWidget = new SessionsMainWidget(strategy, this);
@@ -29,7 +29,7 @@ void MainScene::showActivities() {
     slideToWidget(activitiesWidget);
 
 #ifdef Q_OS_MAC
-    MacOSWindow::pageChange(parentWindow(), 1);
+    MacOSWindow::pageChange(qobject_cast<MainWindow *>(window()), 1);
 #endif
 }
 
@@ -38,7 +38,7 @@ void MainScene::showSessions() {
     slideToWidget(sessionsMainWidget);
 
 #ifdef Q_OS_MAC
-    MacOSWindow::pageChange(parentWindow(), 0);
+    MacOSWindow::pageChange(qobject_cast<MainWindow *>(window()), 0);
 #endif
 }
 
@@ -54,11 +54,9 @@ void MainScene::showStrategySettings() {
     sessionsMainWidget->toggleStrategySettingsOpen();
 }
 
-void MainScene::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
-
-    sessionsMainWidget->setStrategy(newStrategy);
-    activitiesWidget->setStrategy(newStrategy);
+void MainScene::reloadStrategy() {
+    sessionsMainWidget->reloadStrategy();
+    activitiesWidget->reloadStrategy();
 }
 
 void MainScene::clearSelection() {

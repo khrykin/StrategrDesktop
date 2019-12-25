@@ -8,11 +8,12 @@
 #include "slidinganimator.h"
 #include "utils.h"
 #include "applicationsettings.h"
+#include "fontutils.h"
 
 #include "coloredlabel.h"
 
-CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
-        : QWidget(parent) {
+CurrentSessionWidget::CurrentSessionWidget(Strategy &strategy, QWidget *parent)
+        : strategy(strategy), QWidget(parent) {
     setMouseTracking(true);
 
     setFixedHeight(ApplicationSettings::currentSessionHeight);
@@ -35,48 +36,63 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent)
     mainLayout->addLayout(centerLayout);
     mainLayout->addLayout(rightLayout);
 
-    auto *currentLabel = new QLabel(tr("Current"));
-    currentLabel->setStyleSheet("font-weight: bold;"
-                                "text-transform: uppercase;"
-                                "background-color: rgba(0,0,0,0);"
-                                "font-size: 10px;"
-                                "color: #999");
+    auto *currentLabel = new ColoredLabel(tr("CURRENT"));
+    currentLabel->setFontHeight(10);
+    currentLabel->setBold(true);
+    currentLabel->setDynamicColor(&ColorProvider::tertiaryTextColor);
 
     currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
 
-    activityLabel = new QLabel();
-    activityLabel->setStyleSheet("font-weight: bold;"
-                                 "font-size: 14px;"
-                                 "color: #888");
+    activityLabel = new ColoredLabel();
+    activityLabel->setBold(true);
+    activityLabel->setFontHeight(14);
+    activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
+        auto activeSession = strategy.activeSession();
+        if (!activeSession) {
+            return;
+        }
+
+        auto textRect = QRect(0,
+                              0,
+                              activityLabel->width(),
+                              activityLabel->height());
+
+        FontUtils::drawSessionTitle(*activeSession,
+                                    *painter,
+                                    textRect);
+    };
 
     activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 
-    startTimeLabel = new QLabel();
-    startTimeLabel->setStyleSheet("font-weight: bold;"
-                                  "font-size: 12px;"
-                                  "color: #777");
-
+    startTimeLabel = new ColoredLabel();
+    startTimeLabel->setFontHeight(12);
+    startTimeLabel->setBold(true);
+    startTimeLabel->setDynamicColor(secondaryTextColor);
     startTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    startTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+//    startTimeLabel->setFixedWidth(100);
 
-    endTimeLabel = new QLabel();
-    endTimeLabel->setStyleSheet("font-weight: bold;"
-                                "font-size: 12px;"
-                                "color: #777");
-
+    endTimeLabel = new ColoredLabel();
+    endTimeLabel->setFontHeight(12);
+    endTimeLabel->setBold(true);
+    endTimeLabel->setDynamicColor(secondaryTextColor);
     endTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    endTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+//    endTimeLabel->setFixedWidth(100);
 
-    passedTimeLabel = new QLabel();
-    passedTimeLabel->setStyleSheet("font-weight: bold;"
-                                   "font-size: 12px;"
-                                   "color: #999");
+    passedTimeLabel = new ColoredLabel();
+    passedTimeLabel->setFontHeight(12);
+    passedTimeLabel->setBold(true);
+    passedTimeLabel->setDynamicColor(tertiaryTextColor);
     passedTimeLabel->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+    passedTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-    leftTimeLabel = new QLabel();
-    leftTimeLabel->setStyleSheet("font-weight: bold;"
-                                 "font-size: 12px;"
-                                 "color: #999");
-
+    leftTimeLabel = new ColoredLabel();
+    leftTimeLabel->setFontHeight(12);
+    leftTimeLabel->setBold(true);
+    leftTimeLabel->setDynamicColor(tertiaryTextColor);
     leftTimeLabel->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    leftTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
     leftLayout->addWidget(passedTimeLabel);
     leftLayout->addWidget(startTimeLabel);
@@ -178,10 +194,7 @@ void CurrentSessionWidget::mouseReleaseEvent(QMouseEvent *) {
     update();
 }
 
-Strategy *CurrentSessionWidget::strategy() const { return _strategy; }
-
-void CurrentSessionWidget::setStrategy(Strategy *strategy) {
-    _strategy = strategy;
+void CurrentSessionWidget::reloadStrategy() {
     updateUI();
 }
 
@@ -204,45 +217,35 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
 }
 
 void CurrentSessionWidget::updateUI() {
-    auto startTimeText = QStringForMinutes(activitySession.beginTime());
-    auto endTimeText = QStringForMinutes(activitySession.endTime());
+    auto activitySession = strategy.activeSession();
+
+    auto startTimeText = QStringForMinutes(activitySession->beginTime());
+    auto endTimeText = QStringForMinutes(activitySession->endTime());
 
     auto activityText = makeActivitySessionTitle();
 
-    auto currentTime = static_cast<double>(currentMinutes());
-    auto passedTime = qRound(currentTime - activitySession.beginTime());
-    auto leftTime = activitySession.duration() - passedTime;
+    auto passedTimeText = humanTimeForMinutes(activitySession->passedMinutes());
+    auto leftTimeText = humanTimeForMinutes(activitySession->leftMinutes());
 
-    auto passedTimeText = humanTimeForMinutes(passedTime);
-    auto leftTimeText = humanTimeForMinutes(leftTime);
-
-    auto progress = getProgress();
-
-    if (activitySession != previousSession) {
-        startTimeLabel->setText(startTimeText);
-        endTimeLabel->setText(endTimeText);
-    }
+    startTimeLabel->setText(startTimeText);
+    endTimeLabel->setText(endTimeText);
 
     passedTimeLabel->setText(passedTimeText);
     leftTimeLabel->setText(leftTimeText);
+
     activityLabel->setText(activityText);
 
-    setProgress(progress);
+    setProgress(activitySession->progress());
 }
 
-double CurrentSessionWidget::getProgress() const {
-    auto secondsPassed = static_cast<double>(currentSeconds() - activitySession.beginTime() * 60);
-    auto secondsDuration = 60 * activitySession.duration();
-    return secondsPassed / secondsDuration;
-}
-
-const QString CurrentSessionWidget::makeActivitySessionTitle() const {
-    return humanTimeForMinutes(activitySession.duration())
+QString CurrentSessionWidget::makeActivitySessionTitle() const {
+    auto activitySession = strategy.activeSession();
+    return humanTimeForMinutes(activitySession->duration())
            + " "
            + "<font color=\""
-           + QString::fromStdString(activitySession.activity->color())
+           + QString::fromStdString(activitySession->activity->color())
            + "\">"
-           + QString::fromStdString(activitySession.activity->name())
+           + QString::fromStdString(activitySession->activity->name())
            + "</font>";
 }
 
@@ -253,24 +256,27 @@ void CurrentSessionWidget::setProgress(double value) {
     update();
 }
 
-void CurrentSessionWidget::setActivitySession(
-        const ActivitySession &newActivitySession) {
-    if (!newActivitySession.activity) {
-        return;
+void CurrentSessionWidget::reloadSessionIfNeeded() {
+    auto *activeSession = strategy.activeSession();
+
+    if (activeSession) {
+        if (*activeSession != previousSession) {
+            previousSession = *activeSession;
+            updateUI();
+        }
+
+        if (!isVisible) {
+            isVisible = true;
+            slideAndShow();
+        }
+    } else {
+        if (isVisible) {
+            isVisible = false;
+            slideAndHide();
+        }
     }
-
-    auto activityPropertiesChanged = !activitySession.activity
-                                     || *activitySession.activity != *newActivitySession.activity;
-
-    if (activitySession != newActivitySession || activityPropertiesChanged) {
-        previousSession = activitySession;
-        activitySession = newActivitySession;
-    }
-
-    updateUI();
 }
 
 void CurrentSessionWidget::resizeEvent(QResizeEvent *event) {
     QWidget::resizeEvent(event);
-//    visualEffectWidget->setGeometry(geometry());
 }

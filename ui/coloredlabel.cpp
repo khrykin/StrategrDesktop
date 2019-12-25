@@ -7,6 +7,7 @@
 #include <utility>
 
 #include "coloredlabel.h"
+#include "fontutils.h"
 
 ColoredLabel::ColoredLabel(QString text, QWidget *parent)
         : _text(std::move(text)),
@@ -28,6 +29,7 @@ const QString &ColoredLabel::text() const {
 
 void ColoredLabel::setText(const QString &text) {
     _text = text;
+    updateGeometry();
     update();
 }
 
@@ -47,8 +49,12 @@ void ColoredLabel::paintEvent(QPaintEvent *event) {
     painter.setPen(dynamicColor());
     painter.setFont(font());
 
-    auto textRect = QRect(0, 0, width(), height());
-    painter.drawText(textRect, alignment() | Qt::TextWordWrap, _text);
+    if (customRenderer) {
+        customRenderer(&painter, _text);
+    } else {
+        auto textRect = QRect(0, 0, width(), height());
+        FontUtils::drawTruncatedText(_text, painter, textRect, alignment());
+    }
 }
 
 void ColoredLabel::setBold(bool isBold) {
@@ -56,6 +62,7 @@ void ColoredLabel::setBold(bool isBold) {
     newFont.setBold(isBold);
 
     setFont(newFont);
+    updateGeometry();
 }
 
 void ColoredLabel::setFontHeight(int fontHeight) {
@@ -63,6 +70,7 @@ void ColoredLabel::setFontHeight(int fontHeight) {
     newFont.setPixelSize(fontHeight);
 
     setFont(newFont);
+    updateGeometry();
 }
 
 
@@ -95,7 +103,8 @@ QSize ColoredLabel::sizeHint() const {
         totalHeight += metrics.boundingRect(line).height();
     }
 
-    return QSize(maxLineLength, lines.count() * metrics.lineSpacing());
+    return QSize(maxLineLength + 1,
+                 totalHeight + (lines.count() - 1) * metrics.lineSpacing());
 }
 
 

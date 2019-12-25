@@ -43,9 +43,9 @@ void MainWindow::setup() {
     MacOSWindow::setup(this);
 #endif
 
-    strategy.setOnChangeCallback(this, &MainWindow::strategyStateChanged);
+    strategy.addOnChangeCallback(this, &MainWindow::strategyStateChanged);
 
-    _scene = new MainScene(&strategy, this);
+    _scene = new MainScene(strategy, this);
     _menu = new ApplicationMenu(this);
 
     setCentralWidget(_scene);
@@ -160,13 +160,13 @@ void MainWindow::loadFile(const QString &path, bool inNewWindow) {
 
 void MainWindow::setStrategy(const Strategy &newStrategy) {
     strategy = newStrategy;
-    strategy.setOnChangeCallback(this, &MainWindow::strategyStateChanged);
+    strategy.addOnChangeCallback(this, &MainWindow::strategyStateChanged);
 
     Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
 
     setIsSaved(true);
 
-    updateUI();
+    reloadStrategy();
 }
 
 void MainWindow::strategyStateChanged() {
@@ -205,6 +205,6 @@ MainWindow *MainWindow::createLastOpened() {
     return window;
 }
 
-void MainWindow::updateUI() {
-    scene()->setStrategy(&strategy);
+void MainWindow::reloadStrategy() {
+    scene()->reloadStrategy();
 }

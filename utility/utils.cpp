@@ -1,5 +1,8 @@
 #include "utils.h"
 
+#include <QTimer>
+#include <QApplication>
+
 QString humanTimeForMinutes(int mins) {
     if (mins < 1) {
         return "Less than 1 min";
@@ -59,6 +62,31 @@ int currentSeconds() {
 double devicePixelRatio() {
     auto screenNumber = QApplication::desktop()->screenNumber();
     return QGuiApplication::screens()[screenNumber]->devicePixelRatio();
+}
+
+QRect QRectFromRect(const Strategr::Rect &rect) {
+    return QRect(rect.left, rect.top, rect.width, rect.height);
+}
+
+Strategr::Rect RectFromQRect(const QRect &rect) {
+    return Strategr::Rect{rect.left(), rect.top(), rect.width(), rect.height()};
+}
+
+void dispatchToMainThread(const std::function<void()> &callback) {
+    auto *timer = new QTimer();
+    timer->moveToThread(QApplication::instance()->thread());
+    timer->setSingleShot(true);
+
+    QObject::connect(timer, &QTimer::timeout, [=]() {
+        // main thread
+        callback();
+        timer->deleteLater();
+    });
+
+    QMetaObject::invokeMethod(timer,
+                              "start",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, 0));
 }
 
 QString StringUtils::toSentenceCase(QString string) {

@@ -8,8 +8,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "activitysessionwidget.h"
-#include "strategy.h"
+#include "sessionwidget.h"
+#include "Strategy.h"
 #include "slotruler.h"
 #include "applicationsettings.h"
 #include "slotsmousehandler.h"
@@ -18,23 +18,23 @@
 
 class MainScene;
 class SlotsWidget : public QWidget,
-                    public ReactiveList<ActivitySessionWidget> {
+                    public ReactiveList<SessionWidget> {
 Q_OBJECT
 public:
-    explicit SlotsWidget(Strategy *strategy,
+    explicit SlotsWidget(Strategy &strategy,
                          QWidget *parent = nullptr);
 
-    void setStrategy(Strategy *newStrategy);
+    void reloadStrategy();
     int slotHeight() const;
 
     void deselectAllSlots();
 
     const SelectionWidget::RawSelectionState &selection();
 signals:
-    void activitySessionsChanged();
+    void sessionsChanged();
 private:
     friend SlotsMouseHandler;
-    Strategy *strategy;
+    Strategy &strategy;
 
     QVBoxLayout *slotsLayout = nullptr;
     SelectionWidget *selectionWidget = nullptr;
@@ -72,8 +72,8 @@ private:
 
     int numberOfItems() override;
     QVBoxLayout *listLayout() override;;
-    void reuseItemAtIndex(int index, ActivitySessionWidget *itemWidget) override;
-    ActivitySessionWidget *makeNewItemAtIndex(int index) override;
+    void reuseItemAtIndex(int index, SessionWidget *itemWidget) override;
+    SessionWidget *makeNewItemAtIndex(int index) override;
 
     void paintEvent(QPaintEvent *event) override;
 };

@@ -74,7 +74,7 @@ void ApplicationMenu::setupViewMenu() {
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction(tr("Go to Current Time"),
+    viewMenu->addAction(tr("Go to Current TimeUtils"),
                         window->scene(),
                         &MainScene::focusOnCurrentTime,
                         QKeySequence(Qt::CTRL + Qt::Key_Slash));

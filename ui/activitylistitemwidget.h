@@ -8,7 +8,7 @@
 #include <QWidgetAction>
 
 #include "colorpicker.h"
-#include "activity.h"
+#include "Activity.h"
 #include "activityeditormenu.h"
 #include "colorprovider.h"
 #include "coloredlabel.h"

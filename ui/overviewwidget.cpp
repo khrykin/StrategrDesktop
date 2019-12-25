@@ -9,9 +9,9 @@
 #include "overviewwidget.h"
 #include "colorutils.h"
 #include "applicationsettings.h"
-#include "overview.h"
+#include "Overview.h"
 
-OverviewWidget::OverviewWidget(Strategy *strategy,
+OverviewWidget::OverviewWidget(Strategy &strategy,
                                QScrollArea *scrollArea,
                                QWidget *parent) :
         strategy(strategy), QWidget(parent), scrollArea(scrollArea) {
@@ -23,8 +23,7 @@ OverviewWidget::OverviewWidget(Strategy *strategy,
             });
 }
 
-void OverviewWidget::setStrategy(Strategy *newStrategy) {
-    strategy = newStrategy;
+void OverviewWidget::reloadStrategy() {
     update();
 }
 
@@ -33,7 +32,7 @@ void OverviewWidget::paintEvent(QPaintEvent *) {
 
     painter.fillRect(0, 0, width(), height(), windowColor());
 
-    auto overview = Overview(*strategy, width());
+    auto overview = Overview(strategy, width());
 
     drawElements(painter, overview);
     drawViewportMarker(painter, overview);
