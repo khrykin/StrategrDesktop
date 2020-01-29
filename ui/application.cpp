@@ -40,10 +40,10 @@ bool Application::event(QEvent *event) {
     if (event->type() == QEvent::FileOpen) {
         launchedByOpenEvent = true;
 
-        auto openEvent = static_cast<QFileOpenEvent *>(event);
+        auto openEvent = dynamic_cast<QFileOpenEvent *>(event);
 
         auto window = new MainWindow();
-        window->loadFile(openEvent->file(), MainWindow::LoadInCurrentWindow);
+        window->loadFile(openEvent->file(), MainWindow::loadInCurrentWindow);
         window->show();
     }
 

@@ -7,6 +7,7 @@
 #include <QPropertyAnimation>
 #include <QScrollBar>
 #include <QStyleOption>
+#include <QGraphicsBlurEffect>
 
 #include "slotboard.h"
 #include "utils.h"
@@ -96,11 +97,11 @@ void SlotBoard::updateCurrentTimeMarker() {
     auto currentTimeMarker = CurrentTimeMarker(strategy);
 
     auto rect = currentTimeMarker.rectInParent(
-            RectFromQRect(slotsWidget->geometry()),
+            slotsWidget->geometry(),
             CurrentTimeMarkerWidget::markerSize
     );
 
-    currentTimeMarkerWidget->setGeometry(QRectFromRect(rect));
+    currentTimeMarkerWidget->setGeometry(rect.to<QRect>());
 
     if (currentTimeMarker.isHidden()
         && currentTimeMarkerWidget->isVisible()) {
@@ -114,7 +115,7 @@ void SlotBoard::updateCurrentTimeMarker() {
 void SlotBoard::focusOnCurrentTime() {
     auto topOffset = CurrentTimeMarker(strategy)
             .scrollOffsetInParent(
-                    RectFromQRect(slotsWidget->geometry()),
+                    slotsWidget->geometry(),
                     window()->geometry().height()
             );
 

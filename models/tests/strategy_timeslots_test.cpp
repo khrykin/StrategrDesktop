@@ -79,7 +79,10 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         strategy.putActivityInTimeSlotsAtIndices(1, {1});
 
         SECTION("up") {
-            strategy.fillTimeSlots(0, 0);
+            strategy.beginResizing();
+            strategy.fillTimeSlots(1, 0);
+            strategy.endResizing();
+
             REQUIRE(strategy.sessions()[0].length() == 2);
             REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(1));
 
@@ -88,7 +91,10 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         }
 
         SECTION("down") {
-            strategy.fillTimeSlots(0, 0);
+            strategy.beginResizing();
+            strategy.fillTimeSlots(0, 1);
+            strategy.endResizing();
+
             REQUIRE(strategy.sessions()[0].length() == 2);
             REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
 
@@ -97,7 +103,9 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
         }
 
         SECTION("empty slot as a source") {
-            strategy.fillTimeSlots(0, 0);
+            strategy.beginResizing();
+            strategy.fillTimeSlots(2, 0);
+            strategy.endResizing();
 
             REQUIRE(strategy.sessions()[0].length() == 1);
             REQUIRE(strategy.sessions()[0].activity == Strategy::NoActivity);

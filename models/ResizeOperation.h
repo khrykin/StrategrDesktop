@@ -18,7 +18,7 @@ public:
     bool stateChanged();
 private:
     TimeSlotsState *timeSlots;
-    TimeSlotsState initialTimeSlotsState = *timeSlots;
+    TimeSlotsState::RawData initialTimeSlots = timeSlots->data();
 };
 
 

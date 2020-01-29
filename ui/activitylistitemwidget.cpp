@@ -47,7 +47,7 @@ void ActivityListItemWidget::paintEvent(QPaintEvent *) {
 
     painter.drawRect(QRect(0, 0, width(), height()));
 
-    if (isClicked) {
+    if (isClicked || _isSelected) {
         drawSelection(painter);
     } else if (_drawsBorder) {
         drawBorder(painter);
@@ -65,7 +65,7 @@ void ActivityListItemWidget::drawBorder(QPainter &painter) const {
 }
 
 void ActivityListItemWidget::drawSelection(QPainter &painter) const {
-    painter.setBrush(highlightColor());
+    painter.setBrush(_isSelected ? selectionColor() : highlightColor());
 
     auto selectionRect = QRect(0, 0, width(), height());
 
@@ -129,6 +129,7 @@ void ActivityListItemWidget::contextMenuEvent(QContextMenuEvent *event) {
                 emit activityDeleted();
             });
 
+    editorMenu->focus();
     editorMenu->exec(mapToGlobal(event->pos()));
 }
 
@@ -149,4 +150,17 @@ bool ActivityListItemWidget::drawsBorder() const {
 void ActivityListItemWidget::setDrawsBorder(bool drawsBorder) {
     _drawsBorder = drawsBorder;
     update();
+}
+
+bool ActivityListItemWidget::isSelected() const {
+    return _isSelected;
+}
+
+void ActivityListItemWidget::setIsSelected(bool isSelected) {
+    _isSelected = isSelected;
+    update();
+}
+
+void ActivityListItemWidget::choose() {
+    emit selected();
 }

@@ -13,7 +13,7 @@
 class JSON {
 public:
     static std::string serialize(const Strategy &strategy);
-    static std::optional<Strategy> parse(const std::string &jsonString);
+    static std::unique_ptr<Strategy> parse(const std::string &jsonString);
 
     struct Keys {
         static constexpr auto slotDuration = "slotDuration";
@@ -24,11 +24,12 @@ public:
 private:
     ActivityList activities;
 
-    static std::vector<Activity>
+    static ActivityList::RawData
     parseActivities(const nlohmann::json &json);
 
-    static std::vector<TimeSlot>
-    parseTimeSlots(const nlohmann::json &json, const ActivityList &activities);
+    static TimeSlotsState::RawData
+    parseTimeSlots(const nlohmann::json &json,
+                   const ActivityList::RawData &activities);
 };
 
 

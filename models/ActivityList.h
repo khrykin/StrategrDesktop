@@ -18,10 +18,10 @@
 class Strategy;
 
 using ActivityIndex = unsigned int;
-using BasePrivateList = PrivateList<std::shared_ptr<Activity>>;
+using ActivityListBase = PrivateList<std::shared_ptr<Activity>>;
 
 class ActivityList :
-        public BasePrivateList,
+        public ActivityListBase,
         public NotifiableOnChange,
         public StreamableList<ActivityList> {
 public:
@@ -32,11 +32,10 @@ public:
     explicit ActivityList(const std::vector<std::shared_ptr<Activity>> &fromVector);
 
     const Activity &operator[](ActivityIndex itemIndex) const;
+
     Activity *at(ActivityIndex itemIndex) const;
 
     std::optional<Index> indexOf(const Activity *activity) const;
-
-    ActivityList &operator=(const ActivityList &newList);
 
     std::string classPrintName() const override;
 

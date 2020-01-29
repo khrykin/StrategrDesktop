@@ -70,7 +70,6 @@ CurrentSessionWidget::CurrentSessionWidget(Strategy &strategy, QWidget *parent)
     startTimeLabel->setDynamicColor(secondaryTextColor);
     startTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     startTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-//    startTimeLabel->setFixedWidth(100);
 
     endTimeLabel = new ColoredLabel();
     endTimeLabel->setFontHeight(12);
@@ -78,7 +77,6 @@ CurrentSessionWidget::CurrentSessionWidget(Strategy &strategy, QWidget *parent)
     endTimeLabel->setDynamicColor(secondaryTextColor);
     endTimeLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
     endTimeLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-//    endTimeLabel->setFixedWidth(100);
 
     passedTimeLabel = new ColoredLabel();
     passedTimeLabel->setFontHeight(12);
@@ -217,18 +215,24 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
 }
 
 void CurrentSessionWidget::updateUI() {
-    auto activitySession = strategy.activeSession();
+    auto activeSession = strategy.activeSession();
 
-    if (!activitySession)
+    if (!activeSession) {
+        if (isVisible) {
+            isVisible = false;
+            slideAndHide();
+        }
+
         return;
+    }
 
-    auto startTimeText = QStringForMinutes(activitySession->beginTime());
-    auto endTimeText = QStringForMinutes(activitySession->endTime());
+    auto startTimeText = QStringForMinutes(activeSession->beginTime());
+    auto endTimeText = QStringForMinutes(activeSession->endTime());
 
     auto activityText = makeActivitySessionTitle();
 
-    auto passedTimeText = humanTimeForMinutes(activitySession->passedMinutes());
-    auto leftTimeText = humanTimeForMinutes(activitySession->leftMinutes());
+    auto passedTimeText = humanTimeForMinutes(activeSession->passedMinutes());
+    auto leftTimeText = humanTimeForMinutes(activeSession->leftMinutes());
 
     startTimeLabel->setText(startTimeText);
     endTimeLabel->setText(endTimeText);
@@ -238,7 +242,7 @@ void CurrentSessionWidget::updateUI() {
 
     activityLabel->setText(activityText);
 
-    setProgress(activitySession->progress());
+    setProgress(activeSession->progress());
 }
 
 QString CurrentSessionWidget::makeActivitySessionTitle() const {
@@ -266,6 +270,8 @@ void CurrentSessionWidget::reloadSessionIfNeeded() {
         if (*activeSession != previousSession) {
             previousSession = *activeSession;
             updateUI();
+        } else {
+            setProgress(activeSession->progress());
         }
 
         if (!isVisible) {

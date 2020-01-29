@@ -21,7 +21,7 @@ void TimeSlotsState::updateBeginTimes() {
     for (auto slotIndex = 0;
          slotIndex < numberOfSlots();
          slotIndex++) {
-        _vector[slotIndex].beginTime
+        _data[slotIndex].beginTime
                 = slotBeginTime(_beginTime, slotIndex);
     }
 }
@@ -34,7 +34,7 @@ void TimeSlotsState::setSlotDuration(Duration slotDuration) {
     _slotDuration = slotDuration;
 
     for (auto slotIndex = 0; slotIndex < numberOfSlots(); slotIndex++) {
-        auto &slot = _vector[slotIndex];
+        auto &slot = _data[slotIndex];
         slot.duration = slotDuration;
         slot.beginTime = slotBeginTime(beginTime(), slotIndex);
     }
@@ -43,7 +43,7 @@ void TimeSlotsState::setSlotDuration(Duration slotDuration) {
 }
 
 TimeSlotsState::StateSize TimeSlotsState::numberOfSlots() const {
-    return _vector.size();
+    return _data.size();
 }
 
 void TimeSlotsState::setNumberOfSlots(StateSize newNumberOfSlots) {
@@ -52,8 +52,8 @@ void TimeSlotsState::setNumberOfSlots(StateSize newNumberOfSlots) {
     }
 
     if (newNumberOfSlots < numberOfSlots()) {
-        _vector.erase(_vector.begin() + newNumberOfSlots,
-                      _vector.end());
+        _data.erase(_data.begin() + newNumberOfSlots,
+                    _data.end());
     } else {
         populateVector(last().endTime(),
                        newNumberOfSlots - numberOfSlots());
@@ -76,7 +76,7 @@ TimeSlotsState::TimeSlotsState(std::vector<TimeSlot> fromVector) {
     _beginTime = firstSlot.beginTime;
     _slotDuration = firstSlot.duration;
 
-    _vector = std::move(fromVector);
+    _data = std::move(fromVector);
 }
 
 void TimeSlotsState::fillSlots(Index fromIndex,
@@ -92,7 +92,7 @@ void TimeSlotsState::fillSlots(Index fromIndex,
     }
 
     for (auto copyIndex = fromIndex; copyIndex <= tillIndex; copyIndex++) {
-        _vector[copyIndex].activity = _vector[sourceIndex].activity;
+        _data[copyIndex].activity = _data[sourceIndex].activity;
     }
 
     onChangeEvent();
@@ -104,14 +104,14 @@ void TimeSlotsState::silentlySetActivityAtIndex(Activity *activity,
         return;
     }
 
-    _vector[slotIndex].activity = activity;
+    _data[slotIndex].activity = activity;
 }
 
 void TimeSlotsState::setActivityAtIndices(Activity *activity,
                                           const std::vector<Index> &indices) {
     auto activityChanged = false;
     for (auto slotIndex : indices) {
-        auto currentActivityChanged = _vector[slotIndex].activity != activity;
+        auto currentActivityChanged = _data[slotIndex].activity != activity;
         if (currentActivityChanged) {
             silentlySetActivityAtIndex(activity, slotIndex);
         }
@@ -145,7 +145,7 @@ void TimeSlotsState::populateVector(Time startTime,
         auto beginTime = slotBeginTime(startTime, slotIndex);
         auto timeSlot = TimeSlot(beginTime, _slotDuration);
 
-        _vector.emplace_back(timeSlot);
+        _data.emplace_back(timeSlot);
     }
 }
 
@@ -156,12 +156,12 @@ TimeSlotsState::slotBeginTime(Time globalBeginTime,
 }
 
 bool TimeSlotsState::hasActivity(const Activity *activity) {
-    return findSlotWithActivity(activity) != _vector.end();
+    return findSlotWithActivity(activity) != _data.end();
 }
 
 TimeSlotsState::iterator
 TimeSlotsState::findSlotWithActivity(const Activity *activity) {
-    return std::find_if(_vector.begin(), _vector.end(),
+    return std::find_if(_data.begin(), _data.end(),
                         [activity](const auto &timeSlot) {
                             return timeSlot.activity == activity;
                         });
@@ -174,7 +174,7 @@ void TimeSlotsState::removeActivity(Activity *activity) {
 void TimeSlotsState::editActivity(Activity *oldActivity,
                                   Activity *newActivity) {
     auto activityChanged = false;
-    for (auto &timeSlot : _vector) {
+    for (auto &timeSlot : _data) {
         if (timeSlot.activity == oldActivity) {
             activityChanged = oldActivity != newActivity;
             timeSlot.activity = newActivity;
@@ -187,7 +187,7 @@ void TimeSlotsState::editActivity(Activity *oldActivity,
 }
 
 TimeSlotsState &TimeSlotsState::operator=(const TimeSlotsState &newState) {
-    _vector = newState._vector;
+    _data = newState._data;
     _beginTime = newState._beginTime;
     _slotDuration = newState._slotDuration;
 
@@ -198,11 +198,11 @@ TimeSlotsState &TimeSlotsState::operator=(const TimeSlotsState &newState) {
 void TimeSlotsState::shiftBelow(PrivateList::Index fromIndex,
                                 TimeSlotsState::StateSize length) {
     auto actualNumberOfSlots = numberOfSlots();
-    _vector.insert(_vector.begin() + fromIndex,
-                   length,
-                   TimeSlot(0, slotDuration()));
+    _data.insert(_data.begin() + fromIndex,
+                 length,
+                 TimeSlot(0, slotDuration()));
 
-    _vector.resize(actualNumberOfSlots, TimeSlot(0, 0));
+    _data.resize(actualNumberOfSlots, TimeSlot(0, 0));
 
     updateBeginTimes();
 
@@ -222,11 +222,13 @@ void TimeSlotsState::swap(Index firstIndex,
 
 void TimeSlotsState::silentlySwap(Index firstIndex,
                                   Index secondIndex) {
-    auto activity = _vector[firstIndex].activity;
-    _vector[firstIndex].activity = _vector[secondIndex].activity;
-    _vector[secondIndex].activity = activity;
+    auto activity = _data[firstIndex].activity;
+    _data[firstIndex].activity = _data[secondIndex].activity;
+    _data[secondIndex].activity = activity;
 }
 
 const TimeSlot &TimeSlotsState::at(TimeSlotsState::Index index) {
-    return _vector.at(index);
+    return _data.at(index);
 }
+
+

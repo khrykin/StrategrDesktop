@@ -16,6 +16,8 @@ public:
     explicit ActivityEditorMenu(std::optional<Activity> activity = std::nullopt,
                                 QWidget *parent = nullptr);
 
+    void focus();
+
 signals:
     void submitActivity(const Activity &activity);
     void deleteActivity();
@@ -38,12 +40,12 @@ private:
     QColor currentColor;
 
     int platformPadding =
-        #ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN32
             20
-        #else
+#else
             0
-        #endif
-            ;
+#endif
+    ;
 
     void addLineEditWidgetAction();
     void addColorWidgetAction();

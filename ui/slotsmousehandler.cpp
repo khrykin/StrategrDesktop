@@ -118,7 +118,7 @@ void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
-    auto topOffsetInViewPort = mapTo(slotBoardScrollArea(), event->pos()).y();
+    auto topOffsetInViewPort = mapTo(slotBoardScrollArea()->viewport(), event->pos()).y();
 
     auto topAutoScrollBreakpoint = slotsWidget->slotHeight();
     auto bottomAutoScrollBreakpoint = slotBoardScrollArea()->height() - slotsWidget->slotHeight();

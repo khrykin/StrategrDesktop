@@ -103,7 +103,7 @@ QSize ColoredLabel::sizeHint() const {
         totalHeight += metrics.boundingRect(line).height();
     }
 
-    return QSize(maxLineLength + 1,
+    return QSize(maxLineLength + 20,
                  totalHeight + (lines.count() - 1) * metrics.lineSpacing());
 }
 

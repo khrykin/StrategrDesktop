@@ -2,8 +2,6 @@
 // Created by Dmitry Khrykin on 2019-11-23.
 //
 
-#include <fstream>
-#include <iostream>
 #include <algorithm>
 
 #include "JSON.h"
@@ -39,25 +37,25 @@ std::string JSON::serialize(const Strategy &strategy) {
     return json.dump();
 }
 
-std::optional<Strategy> JSON::parse(const std::string &jsonString) {
+std::unique_ptr<Strategy> JSON::parse(const std::string &jsonString) {
     using namespace nlohmann;
 
     try {
         auto json = json::parse(jsonString);
 
-        auto activities = ActivityList{parseActivities(json)};
-        auto timeSlots = TimeSlotsState{parseTimeSlots(json, activities)};
+        auto activities = parseActivities(json);
+        auto timeSlots = parseTimeSlots(json, activities);
 
-        return std::make_optional<Strategy>(timeSlots, activities);
+        return std::make_unique<Strategy>(timeSlots, activities);
     } catch (...) {
-        return std::nullopt;
+        return nullptr;
     }
 }
 
-std::vector<TimeSlot>
+TimeSlotsState::RawData
 JSON::parseTimeSlots(const nlohmann::json &json,
-                     const ActivityList &activities) {
-    std::vector<TimeSlot> timeSlotsVector;
+                     const ActivityList::RawData &activities) {
+    TimeSlotsState::RawData timeSlotsVector;
 
     auto timeSlotDuration = Strategy::Defaults::timeSlotDuration;
     if (!json[Keys::slotDuration].is_null())
@@ -82,7 +80,7 @@ JSON::parseTimeSlots(const nlohmann::json &json,
                 auto activityIndex = static_cast<ActivityList::Index>(*it);
 
                 try {
-                    auto *activity = activities.at(activityIndex);
+                    auto *activity = activities.at(activityIndex).get();
                     timeSlot.activity = activity;
                 } catch (const std::out_of_range &) {
                     // Activity is present in time slots, but not present in
@@ -97,12 +95,13 @@ JSON::parseTimeSlots(const nlohmann::json &json,
     return timeSlotsVector;
 }
 
-std::vector<Activity> JSON::parseActivities(const nlohmann::json &json) {
-    std::vector<Activity> activitiesVector;
+ActivityList::RawData JSON::parseActivities(const nlohmann::json &json) {
+    ActivityList::RawData activitiesVector;
 
     if (!json[Keys::activities].is_null()) {
         for (const auto &activityJson : json[Keys::activities]) {
-            activitiesVector.emplace_back(Activity::fromJson(activityJson));
+            auto activity = std::make_shared<Activity>(Activity::fromJson(activityJson));
+            activitiesVector.emplace_back(activity);
         }
     }
 

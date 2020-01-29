@@ -314,7 +314,7 @@ DragOperation::findAvaliableMovementIndex(IndicesRange sessionRange,
 }
 
 bool DragOperation::stateChanged() {
-    return *timeSlots != initialTimeSlotsState;
+    return timeSlots->data() != initialTimeSlots;
 }
 
 unsigned int DragOperation::IndicesRange::size() const {

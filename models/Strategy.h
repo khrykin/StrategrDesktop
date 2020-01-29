@@ -36,9 +36,14 @@ public:
                       Duration timeSlotDuration = Defaults::timeSlotDuration,
                       StateSize numberOfTimeSlots = Defaults::numberOfTimeSlots);
 
-    Strategy(const TimeSlotsState &timeSlots, const ActivityList &activities);
+    Strategy(const TimeSlotsState::RawData &timeSlots,
+             const ActivityList::RawData &activities);
 
-    static std::optional<Strategy> fromJsonString(const std::string &jsonString);
+    Strategy(const Strategy &other);
+
+    Strategy &operator=(const Strategy &other);
+
+    static std::unique_ptr<Strategy> fromJsonString(const std::string &jsonString);
     std::string toJsonString() const;
 
     const ActivityList &activities() const;
@@ -89,7 +94,7 @@ public:
 private:
     ActivityList _activities;
     TimeSlotsState _timeSlots;
-    SessionsList _activitySessions;
+    SessionsList _sessions;
     StrategyHistory history;
 
     std::shared_ptr<DragOperation> currentDragOperation = nullptr;
@@ -102,6 +107,7 @@ private:
     const Session *currentSession() const;
 
     StrategyHistory::Entry makeHistoryEntry();
+    void applyHistoryEntry(const std::optional<StrategyHistory::Entry> &historyEntry);
 
     std::vector<TimeSlotIndex>
     globalSlotIndicesFromSession(const Session &session) const;

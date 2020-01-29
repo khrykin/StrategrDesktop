@@ -20,7 +20,7 @@
 class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
-    static const bool LoadInCurrentWindow = false;
+    static const bool loadInCurrentWindow = false;
 
     explicit MainWindow(QWidget *parent = nullptr);
 
@@ -49,13 +49,13 @@ private:
     friend MacOSWindow;
 #endif
 
-    explicit MainWindow(FileSystemIOManager fsIOManager,
+    explicit MainWindow(FileSystemIOManager existingFsIOManager,
                         QWidget *parent = nullptr);
 
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
-    Strategy strategy = fsIOManager.openDefaultStrategy();
+    Strategy strategy;
 
     void setIsSaved(bool isSaved);
     void setStrategy(const Strategy &newStrategy);

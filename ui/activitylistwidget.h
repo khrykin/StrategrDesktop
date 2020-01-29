@@ -1,10 +1,7 @@
 #ifndef ACTIVITIESLISTWIDGET_H
 #define ACTIVITIESLISTWIDGET_H
 
-#include <QScrollArea>
 #include <QWidget>
-#include <QVBoxLayout>
-#include <QLineEdit>
 
 #include "Strategy.h"
 #include "navbar.h"
@@ -17,6 +14,9 @@
 
 class SearchBox;
 class MainScene;
+class QVBoxLayout;
+class QLineEdit;
+class QScrollArea;
 
 class ActivityListWidget : public QWidget,
                            public ReactiveList<ActivityListItemWidget>,
@@ -30,6 +30,9 @@ public:
     void showNewActivityMenu();
 signals:
     void wantToGetBack();
+protected:
+    void paintEvent(QPaintEvent *) override;
+    bool eventFilter(QObject *object, QEvent *event) override;
 private:
     Strategy &strategy;
     ActivityList searchResults;
@@ -41,7 +44,11 @@ private:
     ActivityEditorMenu *newActivityMenu = nullptr;
     ColoredLabel *emptyListNotice = nullptr;
 
+    QAction *getBackAction = nullptr;
+
     MainScene *mainScene();
+
+    int selectedActivityIndex = -1;
 
     void layoutChildWidgets();
     void setupNavbar();
@@ -49,12 +56,17 @@ private:
 
     void getBack();
 
-    void removeBorderBeforeIndex(int index);
-
     void performSearch();
-    bool isSearching() const;
+    bool isShowingSearchResults() const;
+
+    void setSelectedForItemAtIndex(int index, bool isSelected) const;
+    void deselectAllItems();
 
     void updateUI();
+    void removeBorderBeforeIndex(int index);
+
+    void selectUp();
+    void selectDown();
 
     // ReactiveList
     int numberOfItems() override;
@@ -63,8 +75,9 @@ private:
     ActivityListItemWidget *makeNewItemAtIndex(int index) override;
     void reconnectItemAtIndex(int itemIndex, ActivityListItemWidget *item);
 
-    void paintEvent(QPaintEvent *) override;
 
+    void scrollUpItemIntoViewAtIndex(int index);
+    void scrollDownItemIntoViewAtIndex(int index);
 };
 
 #endif // ACTIVITIESLISTWIDGET_H

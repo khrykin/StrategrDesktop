@@ -8,6 +8,7 @@
 #include <QFontMetrics>
 #include <QPalette>
 #include <QAction>
+#include <QFocusEvent>
 
 #include "searchbox.h"
 #include "applicationsettings.h"
@@ -27,6 +28,8 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
                             "}");
     lineEdit->setAlignment(Qt::AlignCenter);
     lineEdit->setPlaceholderText(placeholder);
+    lineEdit->installEventFilter(this);
+
     reloadPalette();
 
     connect(lineEdit,
@@ -41,6 +44,21 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
                                ApplicationSettings::defaultPadding,
                                iconRect().width() + 3 * ApplicationSettings::defaultPadding,
                                ApplicationSettings::defaultPadding);
+
+    cancelAction = new QAction("Cancel", this);
+    cancelAction->setShortcut(QKeySequence(Qt::Key_Escape));
+    connect(cancelAction,
+            &QAction::triggered,
+            [this]() {
+                if (!lineEdit->text().isEmpty()) {
+                    lineEdit->setText("");
+                    emit textEdited("");
+                }
+
+                lineEdit->clearFocus();
+            });
+
+    addAction(cancelAction);
 }
 
 void SearchBox::reloadPalette() const {
@@ -93,6 +111,25 @@ QFont SearchBox::iconFont() const {
 bool SearchBox::eventFilter(QObject *object, QEvent *event) {
     if (object == this && event->type() == QEvent::ApplicationPaletteChange) {
         reloadPalette();
+    } else if (object == lineEdit) {
+        if (event->type() == QEvent::FocusIn) {
+            emit gotFocus();
+            cancelAction->setEnabled(true);
+        } else if (event->type() == QEvent::FocusOut) {
+            emit lostFocus();
+            cancelAction->setEnabled(false);
+        } else if (event->type() == QEvent::KeyPress) {
+            // Eat arrow keys an enter events
+            auto keyEvent = dynamic_cast<QKeyEvent *>(event);
+            if (keyEvent->key() == Qt::Key_Up ||
+                keyEvent->key() == Qt::Key_Down ||
+                keyEvent->key() == Qt::Key_Return ||
+                keyEvent->key() == Qt::Key_Enter) {
+                return true;
+            }
+        }
+
+
     }
 
     return false;
@@ -100,5 +137,9 @@ bool SearchBox::eventFilter(QObject *object, QEvent *event) {
 
 void SearchBox::focus() {
     lineEdit->setFocus();
+}
+
+void SearchBox::removeFocus() {
+    lineEdit->clearFocus();
 }
 

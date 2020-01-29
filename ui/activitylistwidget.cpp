@@ -4,6 +4,10 @@
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
+#include <QVBoxLayout>
+#include <QLineEdit>
+#include <QScrollArea>
+#include <QScrollBar>
 
 #include "ActivityInvalidPropertyException.h"
 #include "activitylistwidget.h"
@@ -27,7 +31,7 @@ ActivityListWidget::ActivityListWidget(Strategy &strategy,
     setupActions();
 
     auto *action = new QAction("Search Activities...", this);
-    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    action->setShortcut(QKeySequence::Find);
     connect(action,
             &QAction::triggered,
             searchBox,
@@ -35,11 +39,23 @@ ActivityListWidget::ActivityListWidget(Strategy &strategy,
 
     addAction(action);
 
+    auto *createActivityAction = new QAction("Create Activity", this);
+    createActivityAction->setShortcut(QKeySequence(Qt::Key_N));
+    connect(createActivityAction,
+            &QAction::triggered,
+            this,
+            &ActivityListWidget::showNewActivityMenu);
+
+    addAction(createActivityAction);
+
+    scrollArea->installEventFilter(this);
+    installEventFilter(this);
+
     updateUI();
 }
 
 void ActivityListWidget::setupActions() {
-    auto *getBackAction = new QAction("Back", this);
+    getBackAction = new QAction("Back", this);
     getBackAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(getBackAction);
 
@@ -53,6 +69,9 @@ void ActivityListWidget::layoutChildWidgets() {
     listWidget->setLayout(new QVBoxLayout());
     listWidget->layout()->setSpacing(0);
     listWidget->layout()->setMargin(0);
+    listWidget->setStyleSheet("[listWidget] {"
+                              "background: rgba(255, 255, 255, 0);"
+                              "}");
 
     scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
@@ -61,14 +80,25 @@ void ActivityListWidget::layoutChildWidgets() {
                               "background: rgba(255, 255, 255, 0);"
                               " }");
     scrollArea->setWidget(listWidget);
-    listWidget->setStyleSheet("[listWidget] {"
-                              "background: rgba(255, 255, 255, 0);"
-                              "}");
 
     searchBox = new SearchBox("Search activities");
-    connect(searchBox, &SearchBox::textEdited, [=](const QString &text) {
-        performSearch();
-    });
+    connect(searchBox,
+            &SearchBox::textEdited,
+            [=](const QString &text) {
+                performSearch();
+            });
+
+    connect(searchBox,
+            &SearchBox::gotFocus,
+            [this]() {
+                getBackAction->setEnabled(false);
+            });
+
+    connect(searchBox,
+            &SearchBox::lostFocus,
+            [this]() {
+                getBackAction->setEnabled(true);
+            });
 
     auto buttonName = navbar->rightButton() ? "Add" : "+";
     emptyListNotice = new ColoredLabel(QString("Click \"%1\" to add activities").arg(buttonName));
@@ -86,11 +116,28 @@ void ActivityListWidget::layoutChildWidgets() {
             &ActivityEditorMenu::submitActivity,
             [&](const Activity &activity) {
                 strategy.addActivity(activity);
-                if (isSearching()) {
+                if (isShowingSearchResults()) {
                     performSearch();
                 }
             });
 }
+
+void ActivityListWidget::setSelectedForItemAtIndex(int index, bool isSelected) const {
+    auto listItem = qobject_cast<ActivityListItemWidget *>(
+            listWidget->layout()->itemAt(index)->widget());
+
+    if (listItem)
+        listItem->setIsSelected(isSelected);
+}
+
+void ActivityListWidget::deselectAllItems() {
+    for (size_t i = 0; i < strategy.activities().size(); i++) {
+        setSelectedForItemAtIndex(i, false);
+    }
+
+    selectedActivityIndex = -1;
+}
+
 
 void ActivityListWidget::setupNavbar() {
     navbar = new Navbar();
@@ -127,7 +174,7 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
     item->disconnect();
 
     auto activityIndex = itemIndex;
-    if (isSearching()) {
+    if (isShowingSearchResults()) {
         activityIndex = *strategy.activities().indexOf(searchResults.at(itemIndex));
     }
 
@@ -144,7 +191,7 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
     connect(item, &ActivityListItemWidget::activityDeleted,
             [=]() {
                 strategy.removeActivityAtIndex(activityIndex);
-                if (isSearching()) {
+                if (isShowingSearchResults()) {
                     performSearch();
                 }
             });
@@ -152,12 +199,13 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
     connect(item, &ActivityListItemWidget::activityEdited,
             [=](const Activity &newActivity) {
                 strategy.editActivityAtIndex(activityIndex, newActivity);
-                if (isSearching()) {
+                if (isShowingSearchResults()) {
                     performSearch();
                 }
             });
 
     connect(item, &ActivityListItemWidget::hovered, [=]() {
+        deselectAllItems();
         removeBorderBeforeIndex(itemIndex);
     });
 
@@ -166,13 +214,14 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
     });
 }
 
-bool ActivityListWidget::isSearching() const {
+bool ActivityListWidget::isShowingSearchResults() const {
     return !QRegExp("\\s*").exactMatch(searchBox->text());
 }
 
 void ActivityListWidget::performSearch() {
     searchResults = strategy.activities().search(searchBox->text().toStdString());
     updateList();
+    deselectAllItems();
 }
 
 void ActivityListWidget::showNewActivityMenu() {
@@ -187,6 +236,7 @@ void ActivityListWidget::showNewActivityMenu() {
                          newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);
 
+    newActivityMenu->focus();
     newActivityMenu->exec(center);
 }
 
@@ -198,7 +248,7 @@ void ActivityListWidget::reloadStrategy() {
 }
 
 int ActivityListWidget::numberOfItems() {
-    return isSearching()
+    return isShowingSearchResults()
            ? searchResults.size()
            : strategy.activities().size();
 }
@@ -208,7 +258,7 @@ QVBoxLayout *ActivityListWidget::listLayout() {
 }
 
 void ActivityListWidget::reuseItemAtIndex(int index, ActivityListItemWidget *itemWidget) {
-    auto activity = isSearching()
+    auto activity = isShowingSearchResults()
                     ? searchResults.at(index)
                     : strategy.activities().at(index);
     itemWidget->setActivity(activity);
@@ -216,7 +266,7 @@ void ActivityListWidget::reuseItemAtIndex(int index, ActivityListItemWidget *ite
 }
 
 ActivityListItemWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
-    auto activity = isSearching()
+    auto activity = isShowingSearchResults()
                     ? searchResults.at(index)
                     : strategy.activities().at(index);
 
@@ -252,3 +302,92 @@ void ActivityListWidget::updateUI() {
         emptyListNotice->hide();
     }
 }
+
+bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
+    auto keyEvent = dynamic_cast<QKeyEvent *> (event);
+    auto isKeyPressEvent = keyEvent &&
+                           (keyEvent->type() == QEvent::ShortcutOverride
+                            || keyEvent->type() == QEvent::KeyPress);
+
+    if (object == this && isKeyPressEvent) {
+        if (mainScene()->selection().empty())
+            return false;
+        if (keyEvent->key() == Qt::Key_Down) {
+            selectDown();
+            return true;
+        } else if (keyEvent->key() == Qt::Key_Up) {
+            selectUp();
+            return true;
+        } else if (keyEvent->key() == Qt::Key_Return ||
+                   keyEvent->key() == Qt::Key_Enter) {
+            if (selectedActivityIndex >= 0) {
+                auto itemWidget = listItemWidgetAtIndex(selectedActivityIndex);
+                itemWidget->choose();
+            }
+
+            return true;
+        }
+    } else if (object == scrollArea && isKeyPressEvent) {
+        return true;
+    }
+
+    return false;
+}
+
+void ActivityListWidget::selectUp() {
+    if (selectedActivityIndex < 0) {
+        selectedActivityIndex = -1;
+        return;
+    }
+
+    auto oldSelectedIndex = selectedActivityIndex;
+
+    deselectAllItems();
+
+    selectedActivityIndex = --oldSelectedIndex;
+
+    if (selectedActivityIndex >= 0 && selectedActivityIndex < numberOfItems()) {
+        setSelectedForItemAtIndex(selectedActivityIndex, true);
+        scrollUpItemIntoViewAtIndex(selectedActivityIndex);
+    }
+}
+
+void ActivityListWidget::scrollUpItemIntoViewAtIndex(int index) {
+    auto *selectedWidget = listItemWidgetAtIndex(index);
+    if (selectedWidget->geometry().top() < scrollArea->verticalScrollBar()->value()) {
+        auto newScrollTop = selectedWidget->geometry().top();
+
+        scrollArea->verticalScrollBar()->setValue(newScrollTop);
+    }
+}
+
+void ActivityListWidget::selectDown() {
+    if (selectedActivityIndex >= numberOfItems() - 1) {
+        selectedActivityIndex = numberOfItems() - 1;
+        return;
+    }
+
+    auto oldSelectedIndex = selectedActivityIndex;
+
+    deselectAllItems();
+
+    selectedActivityIndex = ++oldSelectedIndex;
+
+    if (selectedActivityIndex >= 0 && selectedActivityIndex < numberOfItems()) {
+        setSelectedForItemAtIndex(selectedActivityIndex, true);
+
+        scrollDownItemIntoViewAtIndex(selectedActivityIndex);
+    }
+}
+
+void ActivityListWidget::scrollDownItemIntoViewAtIndex(int index) {
+    auto *selectedWidget = listItemWidgetAtIndex(selectedActivityIndex);
+    if (selectedWidget->geometry().bottom() >
+        scrollArea->viewport()->height() + scrollArea->verticalScrollBar()->value()) {
+        auto newScrollTop = selectedWidget->geometry().bottom() -
+                            scrollArea->viewport()->height();
+
+        scrollArea->verticalScrollBar()->setValue(newScrollTop);
+    }
+}
+

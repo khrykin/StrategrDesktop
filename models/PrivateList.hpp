@@ -16,58 +16,67 @@ public:
     using Index = unsigned;
     using Item = ItemType;
     using value_type = Item;
+    using RawData = std::vector<Item>;
 
-    using const_iterator = typename std::vector<Item>::const_iterator;
+    using const_iterator = typename RawData::const_iterator;
 
-    explicit PrivateList(std::vector<Item> vectorImpl = {})
-            : _vector(std::move(vectorImpl)) {}
+    explicit PrivateList(RawData data = {})
+            : _data(std::move(data)) {}
+
+    void resetWith(RawData data = {}) {
+        _data = data;
+    }
+
+    const RawData &data() const {
+        return _data;
+    }
 
     const_iterator begin() const {
-        return _vector.cbegin();
+        return _data.cbegin();
     };
 
     const_iterator end() const {
-        return _vector.cend();
+        return _data.cend();
     };
 
     std::optional<Index> indexOf(const Item &item) const {
         auto it = findConst(item);
-        auto itemIsPresent = it != _vector.end();
+        auto itemIsPresent = it != _data.end();
 
         if (itemIsPresent) {
-            return std::distance(_vector.begin(), it);
+            return std::distance(_data.begin(), it);
         } else {
             return std::nullopt;
         }
     };
 
     size_t size() const {
-        return _vector.size();
+        return _data.size();
     }
 
     const Item &operator[](Index itemIndex) const {
-        return _vector[itemIndex];
+        return _data[itemIndex];
     }
 
     const Item first() const {
-        return _vector.front();
+        return _data.front();
     }
 
     const Item last() const {
-        return _vector.back();
+        return _data.back();
     }
 
     bool isEmpty() const {
-        return _vector.empty();
+        return _data.empty();
     }
 
     bool hasIndex(Index itemIndex) const {
-        if (_vector.empty()) {
+        if (_data.empty()) {
             return false;
         }
 
         return itemIndex >= 0
-               && itemIndex < _vector.size();
+               && itemIndex < _data.size();
     }
 
     bool hasIndices(Index itemIndex) const {
@@ -103,16 +112,16 @@ public:
     }
 
 protected:
-    using iterator = typename std::vector<Item>::iterator;
+    using iterator = typename RawData::iterator;
 
-    std::vector<Item> _vector = {};
+    RawData _data = {};
 
     iterator find(const Item &item) {
-        return std::find(_vector.begin(), _vector.end(), item);
+        return std::find(_data.begin(), _data.end(), item);
     };
 
     const_iterator findConst(const Item &item) const {
-        return std::find(_vector.begin(), _vector.end(), item);
+        return std::find(_data.begin(), _data.end(), item);
     };
 };
 

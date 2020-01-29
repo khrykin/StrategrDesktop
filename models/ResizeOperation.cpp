@@ -14,5 +14,5 @@ void ResizeOperation::fillSlots(TimeSlotsState::Index fromIndex,
 }
 
 bool ResizeOperation::stateChanged() {
-    return *timeSlots != initialTimeSlotsState;
+    return timeSlots->data() != initialTimeSlots;
 }

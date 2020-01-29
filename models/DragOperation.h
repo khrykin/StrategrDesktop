@@ -48,7 +48,7 @@ private:
     };
 
     TimeSlotsState *timeSlots;
-    TimeSlotsState initialTimeSlotsState = *timeSlots;
+    TimeSlotsState::RawData initialTimeSlots = timeSlots->data();
 
     IndicesVector initialDraggedIndices;
     IndicesVector draggedIndices = {};

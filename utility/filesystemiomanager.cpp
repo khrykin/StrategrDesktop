@@ -59,16 +59,16 @@ void FileSystemIOManager::saveAsDefault(const Strategy &strategy) {
     msgBox.exec();
 }
 
-std::optional<Strategy>
+std::unique_ptr<Strategy>
 FileSystemIOManager::read(const QString &readFilepath) {
     if (readFilepath.isEmpty()) {
-        return std::nullopt;
+        return nullptr;
     }
 
     QFile file(readFilepath);
     if (!file.open(QFile::ReadOnly | QFile::Text)) {
         showCantOpenDialog(file, readFilepath, file.errorString());
-        return std::nullopt;
+        return nullptr;
     }
 
     QTextStream in(&file);
@@ -76,16 +76,17 @@ FileSystemIOManager::read(const QString &readFilepath) {
 
     file.close();
 
-    if (!strategy) {
-        auto errorMessage = QObject::tr("The file is corrupt or has a wrong format");
-        showCantOpenDialog(file, readFilepath, errorMessage);
-    } else {
+    if (strategy) {
         filepath = readFilepath;
         updateLastOpened();
         setIsSaved(true);
+        return strategy;
+    } else {
+        auto errorMessage = QObject::tr("The file is corrupt or has a wrong format");
+        showCantOpenDialog(file, readFilepath, errorMessage);
     }
 
-    return strategy;
+    return nullptr;
 }
 
 std::optional<QString>
@@ -118,8 +119,8 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-Strategy
-FileSystemIOManager::openDefaultStrategy() {
+std::unique_ptr<Strategy>
+FileSystemIOManager::openDefault() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
                 .value(Settings::defaultStrategyKey)
@@ -130,12 +131,16 @@ FileSystemIOManager::openDefaultStrategy() {
 
         resetFilepath();
 
-        return defaultStrategy.value_or(Strategy());
+        if (!defaultStrategy) {
+            return std::make_unique<Strategy>();
+        }
+
+        return defaultStrategy;
     }
 
     resetFilepath();
 
-    return Strategy();
+    return std::make_unique<Strategy>();
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
@@ -261,5 +266,17 @@ int FileSystemIOManager::showAreYouSureDialog() {
 
 void FileSystemIOManager::setWindow(QWidget *newWindow) {
     window = newWindow;
+}
+
+std::unique_ptr<Strategy> FileSystemIOManager::openLastOrDefault() {
+    auto lastOpenedPath = FileSystemIOManager::lastOpenedFilePath();
+    if (lastOpenedPath) {
+        auto lastOpened = read(*lastOpenedPath);
+        if (lastOpened) {
+            return lastOpened;
+        }
+    }
+
+    return openDefault();
 }
 

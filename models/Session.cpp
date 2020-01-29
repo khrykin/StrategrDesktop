@@ -60,7 +60,7 @@ bool operator!=(const Session &lhs,
 }
 
 double Session::progress() const {
-    auto currentSeconds = TimeUtils::currentMinutes() * 60;
+    auto currentSeconds = TimeUtils::currentSeconds();
     auto beginTimeSeconds = beginTime() * 60;
 
     if (isFuture()) return 0;

@@ -29,9 +29,9 @@ bool CurrentTimeMarker::isHidden() const {
     return !isVisible();
 }
 
-Strategr::Rect CurrentTimeMarker::rectInParent(const Strategr::Rect &parentRect,
-                                               int markerRadius) const {
-    return Strategr::Rect{
+stg::Rect CurrentTimeMarker::rectInParent(const stg::Rect &parentRect,
+                                          int markerRadius) const {
+    return stg::Rect{
             parentRect.left - markerRadius,
             parentRect.top + topOffsetIn(parentRect.height) - markerRadius,
             parentRect.width + markerRadius,
@@ -39,7 +39,7 @@ Strategr::Rect CurrentTimeMarker::rectInParent(const Strategr::Rect &parentRect,
     };
 }
 
-int CurrentTimeMarker::scrollOffsetInParent(const Strategr::Rect &parentRect,
+int CurrentTimeMarker::scrollOffsetInParent(const stg::Rect &parentRect,
                                             int windowHeight) const {
     auto rect = rectInParent(parentRect);
     auto topOffset = rect.top - windowHeight / 2;

@@ -41,7 +41,7 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
                                                .arg(QApplication::organizationName()));
     copyLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     copyLabel->setAlignment(Qt::AlignCenter);
-    copyLabel->setSizePolicy(QSizePolicy::Expanding,
+    copyLabel->setSizePolicy(QSizePolicy::Minimum,
                              QSizePolicy::Fixed);
     copyLabel->setFontHeight(12);
 

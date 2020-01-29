@@ -24,21 +24,21 @@ std::string readTestFile(const std::string &filename) {
 void testStrategyFile(const std::string &filename) {
     auto strategy = Strategy::fromJsonString(readTestFile(filename));
 
-    REQUIRE(strategy.timeSlotDuration() == 10);
-    REQUIRE(strategy.beginTime() == 370);
-    REQUIRE(strategy.numberOfTimeSlots() == 10);
-    REQUIRE(strategy.timeSlots()[0].beginTime == 370);
-    REQUIRE(strategy.timeSlots()[0].duration == 10);
-    REQUIRE(strategy.timeSlots()[0].activity == Strategy::NoActivity);
-    REQUIRE(strategy.timeSlots()[2].activity == strategy.activities().at(0));
+    REQUIRE(strategy->timeSlotDuration() == 10);
+    REQUIRE(strategy->beginTime() == 370);
+    REQUIRE(strategy->numberOfTimeSlots() == 10);
+    REQUIRE(strategy->timeSlots()[0].beginTime == 370);
+    REQUIRE(strategy->timeSlots()[0].duration == 10);
+    REQUIRE(strategy->timeSlots()[0].activity == Strategy::NoActivity);
+    REQUIRE(strategy->timeSlots()[2].activity == strategy->activities().at(0));
 
-    REQUIRE(strategy.activities().size() == 3);
-    REQUIRE(strategy.activities()[0].name() == "Exercise");
-    REQUIRE(strategy.activities()[0].color() == "#ff4136");
-    REQUIRE(strategy.activities()[1].name() == "Meal");
-    REQUIRE(strategy.activities()[1].color() == "#ffd700");
-    REQUIRE(strategy.activities()[2].name() == "Commute");
-    REQUIRE(strategy.activities()[2].color() == "#000000");
+    REQUIRE(strategy->activities().size() == 3);
+    REQUIRE(strategy->activities()[0].name() == "Exercise");
+    REQUIRE(strategy->activities()[0].color() == "#ff4136");
+    REQUIRE(strategy->activities()[1].name() == "Meal");
+    REQUIRE(strategy->activities()[1].color() == "#ffd700");
+    REQUIRE(strategy->activities()[2].name() == "Commute");
+    REQUIRE(strategy->activities()[2].color() == "#000000");
 }
 
 TEST_CASE("JSON Parser") {

@@ -12,8 +12,11 @@ class NotifiableOnChange {
 public:
     using OnChangeCallback = std::function<void()>;
 
+    NotifiableOnChange() = default;
+    NotifiableOnChange(const NotifiableOnChange &) = delete;
+
     void addOnChangeCallback(const OnChangeCallback &callback) const {
-        callbacks.push_back(callback);
+        onChangeCallbacks.push_back(callback);
     }
 
     template<class Listener,
@@ -24,10 +27,10 @@ public:
     }
 
 protected:
-    mutable std::vector<OnChangeCallback> callbacks = {};
+    mutable std::vector<OnChangeCallback> onChangeCallbacks = {};
 
     void onChangeEvent() {
-        for (const auto &callback: callbacks) {
+        for (const auto &callback: onChangeCallbacks) {
             callback();
         }
     }

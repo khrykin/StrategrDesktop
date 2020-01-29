@@ -16,13 +16,36 @@ Strategy::Strategy(Time beginTime,
     setupTimeSlotsCallback();
 }
 
-Strategy::Strategy(const TimeSlotsState &timeSlots,
-                   const ActivityList &activities) :
+Strategy::Strategy(const TimeSlotsState::RawData &timeSlots,
+                   const ActivityList::RawData &activities) :
         _timeSlots(timeSlots),
         _activities(activities),
         history(makeHistoryEntry()) {
     timeSlotsChanged();
     setupTimeSlotsCallback();
+}
+
+Strategy::Strategy(const Strategy &other) :
+        _timeSlots(other._timeSlots.data()),
+        _activities(other._activities.data()),
+        _sessions(other.sessions().data()),
+        history(makeHistoryEntry()) {
+
+    setupTimeSlotsCallback();
+}
+
+Strategy &Strategy::operator=(const Strategy &other) {
+    _timeSlots.resetWith(other.timeSlots().data());
+
+    _activities.resetWith(other.activities().data());
+    _activities.onChangeEvent();
+
+    _sessions.resetWith(other.sessions().data());
+    _sessions.onChangeEvent();
+
+    history = StrategyHistory(makeHistoryEntry());
+
+    return *this;
 }
 
 const ActivityList &Strategy::activities() const {
@@ -83,7 +106,7 @@ void Strategy::setNumberOfTimeSlots(StateSize numberOfTimeSlots) {
 }
 
 void Strategy::timeSlotsChanged() {
-    _activitySessions.recalculateForTimeSlotsState(_timeSlots);
+    _sessions.recalculateForTimeSlotsState(_timeSlots);
 }
 
 void Strategy::putActivityInTimeSlotsAtIndices(ActivityIndex activityIndex,
@@ -118,7 +141,7 @@ void Strategy::fillTimeSlots(TimeSlotIndex fromIndex, TimeSlotIndex tillIndex) {
 }
 
 const SessionsList &Strategy::sessions() const {
-    return _activitySessions;
+    return _sessions;
 }
 
 Strategy::Time Strategy::endTime() const {
@@ -130,7 +153,8 @@ void Strategy::setupTimeSlotsCallback() {
 }
 
 StrategyHistory::Entry Strategy::makeHistoryEntry() {
-    return StrategyHistory::Entry{_activities, _timeSlots};
+    return StrategyHistory::Entry{_activities.data(),
+                                  _timeSlots.data()};
 }
 
 void Strategy::commitToHistory() {
@@ -141,21 +165,28 @@ void Strategy::commitToHistory() {
 void Strategy::undo() {
     auto historyEntry = history.undo();
     if (historyEntry) {
-        _activities = historyEntry->activities;
-        _timeSlots = historyEntry->timeSlots;
-    }
+        applyHistoryEntry(historyEntry);
 
-    onChangeEvent();
+        onChangeEvent();
+    }
 }
 
 void Strategy::redo() {
     auto historyEntry = history.redo();
     if (historyEntry) {
-        _activities = historyEntry->activities;
-        _timeSlots = historyEntry->timeSlots;
-    }
+        applyHistoryEntry(historyEntry);
 
-    onChangeEvent();
+        onChangeEvent();
+    }
+}
+
+
+void Strategy::applyHistoryEntry(const std::optional<StrategyHistory::Entry> &historyEntry) {
+    _activities.resetWith(historyEntry->activities);
+    _activities.onChangeEvent();
+
+    _timeSlots.resetWith(historyEntry->timeSlots);
+    _timeSlots.onChangeEvent();
 }
 
 const TimeSlotsState &Strategy::timeSlots() const {
@@ -251,7 +282,7 @@ std::string Strategy::toJsonString() const {
     return JSON::serialize(*this);
 }
 
-std::optional<Strategy> Strategy::fromJsonString(const std::string &jsonString) {
+std::unique_ptr<Strategy> Strategy::fromJsonString(const std::string &jsonString) {
     return JSON::parse(jsonString);
 }
 
@@ -318,7 +349,7 @@ void Strategy::reorderActivitiesByUsage() {
             continue;
 
         auto index = *activities().indexOf(elem.first);
-        auto activity = _activities._vector[index];
+        auto activity = _activities._data[index];
 
         reordered.push_back(activity);
     }
@@ -334,7 +365,7 @@ void Strategy::reorderActivitiesByUsage() {
         };
     }
 
-    _activities._vector = reordered;
+    _activities.resetWith(reordered);
     _activities.onChangeEvent();
 
     commitToHistory();

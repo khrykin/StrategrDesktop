@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
+find_library(uf8Proc_LIBRARY_PATH utf8Proc)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
@@ -68,7 +69,14 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/TimeUtils.cpp
         models/TimeUtils.h
         models/JSON.cpp
-        models/JSON.h models/Timer.cpp models/Timer.h models/CurrentTimeMarker.cpp models/CurrentTimeMarker.h models/Rect.hpp models/Notifier.cpp models/Notifier.h)
+        models/JSON.h
+        models/Timer.cpp
+        models/Timer.h
+        models/CurrentTimeMarker.cpp
+        models/CurrentTimeMarker.h
+        models/Rect.hpp
+        models/Notifier.cpp
+        models/Notifier.h models/utility.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -79,6 +87,7 @@ set(MODELS_TESTS
         models/tests/strategy_history_test.cpp models/tests/json_tests.cpp)
 
 set(MODELS_LIBRARIES
+        ${uf8Proc_LIBRARY_PATH}
         nlohmann_json::nlohmann_json)
 
 set(UI
@@ -157,7 +166,11 @@ set(UI
         ui/updatedialog.cpp
         ui/updatedialog.h
         ui/overviewwidget.cpp
-        ui/overviewwidget.h ui/searchbox.cpp ui/searchbox.h ui/dynamicpalette.cpp ui/dynamicpalette.h)
+        ui/overviewwidget.h
+        ui/searchbox.cpp
+        ui/searchbox.h
+        ui/dynamicpalette.cpp
+        ui/dynamicpalette.h)
 
 set(UTILITY
         ${version_file}
@@ -239,6 +252,7 @@ target_link_libraries(models_tests
         ${MODELS_PLATFORM_LIBRARIES})
 
 option(COVERAGE "Generate code coverage" OFF)
+message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
 if (COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)

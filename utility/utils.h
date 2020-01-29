@@ -42,8 +42,7 @@ T *findParentWidget(QWidget *childWidget) {
 
 double devicePixelRatio();
 
-QRect QRectFromRect(const Strategr::Rect &rect);
-Strategr::Rect RectFromQRect(const QRect &rect);
+stg::Rect RectFromQRect(const QRect &rect);
 
 /* Strings */
 namespace StringUtils {

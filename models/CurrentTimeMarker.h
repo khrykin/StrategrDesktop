@@ -17,10 +17,10 @@ public:
     bool isVisible() const;
     bool isHidden() const;
 
-    Strategr::Rect rectInParent(const Strategr::Rect &parentRect,
-                                int markerRadius = 0) const;
+    stg::Rect rectInParent(const stg::Rect &parentRect,
+                           int markerRadius = 0) const;
 
-    int scrollOffsetInParent(const Strategr::Rect &parentRect,
+    int scrollOffsetInParent(const stg::Rect &parentRect,
                              int windowHeight) const;
 private:
     const Strategy &strategy;

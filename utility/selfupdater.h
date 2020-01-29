@@ -67,16 +67,19 @@ private:
     QString copyDestination() const;
     QString updaterDestination() const;
     QString launchDestination() const;
+    QString extractedDirPath() const;
+    QString archiveDirPath() const;
+
+    QFileInfo archiveFileInfo() const;
+
     const char *unzipCommand() const;
     const char *copyCommand() const;
-    QFileInfo archiveFileInfo() const;
-    QString archiveDirPath() const;
-    void performUnzipProcess() const;
-    const char *extractedDirName() const;
-    QString extractedDirPath() const;
-    void performCopyProcess() const;
     const char *updaterCommand() const;
+    const char *extractedDirName() const;
+
+    void performCopyProcess() const;
     void performUpdaterProcess() const;
+    void performUnzipProcess() const;
 };
 
 

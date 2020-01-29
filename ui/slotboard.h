@@ -40,7 +40,7 @@ private:
     QVBoxLayout *slotsLayout = nullptr;
 
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
-    Strategr::Timer currentTimeTimer;
+    stg::Timer currentTimeTimer;
 
     void updateCurrentTimeMarker();
 

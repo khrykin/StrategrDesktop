@@ -23,6 +23,11 @@ public:
     void setActivity(Activity *activity);
     bool drawsBorder() const;
     void setDrawsBorder(bool drawsBorder);
+    bool isSelected() const;
+    void setIsSelected(bool isSelected);
+
+    void choose();
+
 signals:
     void hovered();
     void unhovered();
@@ -37,6 +42,7 @@ private:
     ColoredLabel *label = nullptr;
     ActivityEditorMenu *editorMenu = nullptr;
 
+    bool _isSelected = false;
     bool isClicked = false;
     bool _drawsBorder = true;
 

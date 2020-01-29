@@ -10,7 +10,7 @@
 #include <boost/asio.hpp>
 #include <thread>
 
-namespace Strategr {
+namespace stg {
     class Timer {
     public:
         ~Timer();

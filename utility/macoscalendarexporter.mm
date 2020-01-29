@@ -77,6 +77,8 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
 
     void (^progressBlock)(void);
     progressBlock = ^{
+        // TODO refactor this to make an ObjC method -->
+
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
         SGCalendarManager *calendarManager = [[[SGCalendarManager alloc] initWithStore:store] autorelease];
         auto nonEmptySessions = strategy.sessions().nonEmpty();
@@ -88,16 +90,22 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
             [calendarManager removeAllEventsForDate:date];
         }
 
-        for (auto &session : nonEmptySessions) {
-            if (!session.activity) {
-                continue;
+        if (nonEmptySessions.empty()) {
+            [progressWindow close];
+        } else {
+            for (auto &session : nonEmptySessions) {
+                if (!session.activity) {
+                    continue;
+                }
+
+                progressWindow.currentEventIndex
+                        = static_cast<unsigned >(&session - &nonEmptySessions[0]);
+
+                exportSession(session, calendarManager, options, dateSecsFromEpoch);
             }
-
-            progressWindow.currentEventIndex
-                    = static_cast<unsigned >(&session - &nonEmptySessions[0]);
-
-            exportSession(session, calendarManager, options, dateSecsFromEpoch);
         }
+
+        // --> TODO refactor this to make an ObjC method
 
         [SGCalendarManager launchCalendarApp];
     };
@@ -118,11 +126,9 @@ MacOSCalendarExporter::exportSession(const Session &strategy,
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
 
     NSColor *color = [NSColor colorWithHexColorString:
-            [NSString stringWithCString:strategy.activity->color().c_str()
-                               encoding:[NSString defaultCStringEncoding]]];
+            [NSString stringWithUTF8String:strategy.activity->color().c_str()]];
 
-    NSString *title = [NSString stringWithCString:strategy.activity->name().c_str()
-                                         encoding:[NSString defaultCStringEncoding]];
+    NSString *title = [NSString stringWithUTF8String:strategy.activity->name().c_str()];
 
     EKCalendar *calendar = [calendarManager findOrCreateCalendarWithTitle:title
                                                                  andColor:color];

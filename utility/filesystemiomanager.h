@@ -28,10 +28,11 @@ public:
     void saveAs(const Strategy &strategy);
     void saveAsDefault(const Strategy &strategy);
 
-    std::optional<Strategy> read(const QString &readFilepath);
+    std::unique_ptr<Strategy> read(const QString &readFilepath);
     static std::optional<QString> lastOpenedFilePath();
 
-    Strategy openDefaultStrategy();
+    std::unique_ptr<Strategy> openDefault();
+    std::unique_ptr<Strategy> openLastOrDefault();
 
     void resetFilepath();
     bool askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy);

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 #include <regex>
+#include "utility.h"
 
 void ActivityList::add(const Activity &activity) {
     if (has(activity)) {
@@ -13,13 +14,13 @@ void ActivityList::add(const Activity &activity) {
     }
 
 
-    _vector.push_back(std::make_shared<Activity>(activity));
+    _data.push_back(std::make_shared<Activity>(activity));
 
     onChangeEvent();
 }
 
 void ActivityList::removeAtIndex(ActivityIndex index) {
-    _vector.erase(_vector.begin() + index);
+    _data.erase(_data.begin() + index);
 
     onChangeEvent();
 }
@@ -29,13 +30,13 @@ void ActivityList::editAtIndex(ActivityIndex index, const Activity &newActivity)
         throw AlreadyPresentException();
     }
 
-    _vector[index] = std::make_shared<Activity>(newActivity);
+    _data[index] = std::make_shared<Activity>(newActivity);
 
     onChangeEvent();
 }
 
 bool ActivityList::has(const Activity &searchedActivity) const {
-    for (const auto &activity : _vector) {
+    for (const auto &activity : _data) {
         if (*activity == searchedActivity) {
             return true;
         }
@@ -59,19 +60,19 @@ void ActivityList::drag(ActivityIndex fromIndex, ActivityIndex toIndex) {
 }
 
 void ActivityList::rotateLeft(ActivityIndex fromIndex, ActivityIndex toIndex) {
-    rotate(_vector.begin() + toIndex,
-           _vector.begin() + fromIndex,
-           _vector.end());
+    rotate(_data.begin() + toIndex,
+           _data.begin() + fromIndex,
+           _data.end());
 }
 
 void ActivityList::rotateRight(ActivityIndex fromIndex, ActivityIndex toIndex) {
-    auto lastIndex = _vector.size() - 1;
+    auto lastIndex = _data.size() - 1;
     auto fromIndexRight = lastIndex - fromIndex;
     auto toIndexRight = lastIndex - toIndex;
 
-    rotate(_vector.rbegin() + toIndexRight,
-           _vector.rbegin() + fromIndexRight,
-           _vector.rend());
+    rotate(_data.rbegin() + toIndexRight,
+           _data.rbegin() + fromIndexRight,
+           _data.rend());
 }
 
 std::string ActivityList::classPrintName() const {
@@ -81,7 +82,7 @@ std::string ActivityList::classPrintName() const {
 ActivityList::ActivityList(const std::vector<Activity> &fromVector) {
     std::transform(fromVector.begin(),
                    fromVector.end(),
-                   std::back_inserter(_vector), [](auto &activity) {
+                   std::back_inserter(_data), [](auto &activity) {
                 return std::make_shared<Activity>(activity);
             });
 }
@@ -89,31 +90,22 @@ ActivityList::ActivityList(const std::vector<Activity> &fromVector) {
 ActivityList::ActivityList(const std::vector<std::shared_ptr<Activity>> &fromVector) {
     std::transform(fromVector.begin(),
                    fromVector.end(),
-                   std::back_inserter(_vector), [](auto &activity) {
+                   std::back_inserter(_data), [](auto &activity) {
                 return activity;
             });
 }
 
-
 const Activity &ActivityList::operator[](ActivityIndex itemIndex) const {
-    return *_vector[itemIndex];
+    return *_data[itemIndex];
 }
 
 Activity *ActivityList::at(ActivityIndex itemIndex) const {
-    return _vector.at(itemIndex).get();
-}
-
-ActivityList &ActivityList::operator=(const ActivityList &newList) {
-    _vector = newList._vector;
-
-    onChangeEvent();
-
-    return *this;
+    return _data.at(itemIndex).get();
 }
 
 std::optional<ActivityList::Index> ActivityList::indexOf(const Activity *activity) const {
     for (auto activityIndex = 0; activityIndex < size(); activityIndex++) {
-        if (_vector[activityIndex].get() == activity) {
+        if (_data[activityIndex].get() == activity) {
             return activityIndex;
         }
     }
@@ -129,12 +121,7 @@ ActivityList ActivityList::search(std::string query) const {
         return ActivityList{};
     }
 
-    std::transform(query.begin(),
-                   query.end(),
-                   query.begin(),
-                   [](auto &c) {
-                       return std::tolower(c);
-                   });
+    query = stg::utf8_fold_case(query);
 
     std::vector<std::shared_ptr<Activity>> results;
     std::copy_if(begin(),
@@ -142,17 +129,12 @@ ActivityList ActivityList::search(std::string query) const {
                  std::back_inserter(results), [&query](auto activity) {
                 auto name = activity->name();
 
-                std::transform(name.begin(),
-                               name.end(),
-                               name.begin(),
-                               [](auto &c) {
-                                   return std::tolower(c);
-                               });
+                name = stg::utf8_fold_case(name);
 
                 return name.find(query) != std::string::npos;
             });
 
-    return ActivityList({results});
+    return ActivityList(results);
 }
 
 const char *ActivityList::AlreadyPresentException::what() const noexcept {

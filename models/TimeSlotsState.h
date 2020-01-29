@@ -12,8 +12,9 @@
 #include "NotifiableOnChange.h"
 #include "StreamableList.h"
 
+using TimeSlotsStateBase = PrivateList<TimeSlot>;
 class TimeSlotsState :
-        public PrivateList<TimeSlot>,
+        public TimeSlotsStateBase,
         public NotifiableOnChange,
         public StreamableList<TimeSlotsState> {
 public:
@@ -64,20 +65,18 @@ public:
     void swap(Index firstIndex, Index secondIndex);
     void silentlySwap(Index firstIndex, Index secondIndex);
 
-
     bool hasActivity(const Activity *activity);
 
     TimeSlotsState &operator=(const TimeSlotsState &newState);
 
     std::string classPrintName() const override;
 
-//    Index indexOf(const TimeSlot *slot) const;
-
     const TimeSlot &at(TimeSlotsState::Index index);
 private:
+    friend Strategy;
+
     Time _beginTime = 0;
     Duration _slotDuration = 0;
-
 
     Time slotBeginTime(Time globalBeginTime, Index slotIndex);
     void updateBeginTimes();

@@ -9,13 +9,13 @@ std::optional<SessionsList::Index>
 SessionsList::sessionIndexForTimeSlotIndex(
         TimeSlotsState::Index timeSlotIndex) const {
     auto slotsCount = 0;
-    for (auto &session : _vector) {
+    for (auto &session : _data) {
         auto firstSlotIndex = slotsCount;
         auto nextSlotIndex = slotsCount + session.length();
 
         if (firstSlotIndex <= timeSlotIndex
             && timeSlotIndex < nextSlotIndex) {
-            auto index = static_cast<Index>(&session - &_vector[0]);
+            auto index = static_cast<Index>(&session - &_data[0]);
             return index;
         }
 
@@ -26,7 +26,7 @@ SessionsList::sessionIndexForTimeSlotIndex(
 }
 
 void SessionsList::recalculateForTimeSlotsState(const TimeSlotsState &timeSlotsState) {
-    _vector = SessionsCalculator::calculateForTimeSlotsState(timeSlotsState);
+    _data = SessionsCalculator::calculateForTimeSlotsState(timeSlotsState);
 
     onChangeEvent();
 }
@@ -34,14 +34,14 @@ void SessionsList::recalculateForTimeSlotsState(const TimeSlotsState &timeSlotsS
 const Session *
 SessionsList::sessionAfter(const Session &activitySession) const {
     auto it = findConst(activitySession);
-    return it < _vector.end() - 1 ? &*(it + 1) : nullptr;
+    return it < std::prev(_data.end()) ? &*std::next(it) : nullptr;
 }
 
 std::optional<Session>
 SessionsList::sessionBefore(const Session &activitySession) const {
     auto it = findConst(activitySession);
-    return it > _vector.begin()
-           ? std::make_optional(*(it - 1))
+    return it > _data.begin()
+           ? std::make_optional(*std::prev(it))
            : std::nullopt;
 }
 
@@ -51,16 +51,16 @@ std::string SessionsList::classPrintName() const {
 
 std::vector<SessionsList::OverviewItem>
 SessionsList::overview() const {
-    if (_vector.empty()) {
+    if (_data.empty()) {
         return {};
     }
 
-    auto overallBeginTime = _vector.front().beginTime();
-    auto totalDuraion = _vector.back().endTime() - overallBeginTime;
+    auto overallBeginTime = _data.front().beginTime();
+    auto totalDuraion = _data.back().endTime() - overallBeginTime;
 
     std::vector<OverviewItem> result;
-    std::transform(_vector.begin(),
-                   _vector.end(),
+    std::transform(_data.begin(),
+                   _data.end(),
                    std::back_inserter(result),
                    [totalDuraion, overallBeginTime](auto &session) {
                        auto durationPercentage = static_cast<float>(session.duration())
@@ -85,8 +85,8 @@ SessionsList::overview() const {
 
 std::vector<Session> SessionsList::nonEmpty() const {
     std::vector<Session> result;
-    std::copy_if(_vector.begin(),
-                 _vector.end(),
+    std::copy_if(_data.begin(),
+                 _data.end(),
                  std::back_inserter(result),
                  [](auto &session) {
                      return session.activity != TimeSlot::NoActivity;

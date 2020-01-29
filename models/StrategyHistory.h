@@ -14,8 +14,8 @@
 class StrategyHistory {
 public:
     struct Entry {
-        ActivityList activities;
-        TimeSlotsState timeSlots;
+        ActivityList::RawData activities;
+        TimeSlotsState::RawData timeSlots;
 
         friend bool operator==(const Entry &lhs, const Entry &rhs) {
             return lhs.activities == rhs.activities

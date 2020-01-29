@@ -4,31 +4,31 @@
 
 #include "Timer.h"
 
-Strategr::Timer::~Timer() {
+stg::Timer::~Timer() {
     stop();
     if (timerThread.joinable())
         timerThread.join();
 }
 
-void Strategr::Timer::setCallback(const std::function<void()> &newCallback) {
+void stg::Timer::setCallback(const std::function<void()> &newCallback) {
     callback = newCallback;
     isOn = true;
     timer.async_wait(std::bind(&Timer::timeoutHandler, this, std::placeholders::_1));
 }
 
-void Strategr::Timer::start(int secondsTimeInterval = 0) {
+void stg::Timer::start(int secondsTimeInterval = 0) {
     secondsInterval = secondsTimeInterval;
     timerThread = std::thread([this]() {
         io.run();
     });
 }
 
-void Strategr::Timer::stop() {
+void stg::Timer::stop() {
     isOn = false;
     timer.cancel();
 }
 
-void Strategr::Timer::timeoutHandler(const boost::system::error_code &) {
+void stg::Timer::timeoutHandler(const boost::system::error_code &) {
     if (isOn) {
         callback();
 

@@ -21,13 +21,21 @@ public:
     void setText(const QString &string);
 
     void focus();
+    void removeFocus();
+
 signals:
     void textEdited(const QString &);
+    void gotFocus();
+    void lostFocus();
 protected:
     void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
     QLineEdit *lineEdit;
+
+    QAction *cancelAction = nullptr;
+    QAction *selectUpAction = nullptr;
+    QAction *selectDownAction = nullptr;
 
     static constexpr auto iconText = "\uf002";
     QFont iconFont() const;

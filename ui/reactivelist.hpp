@@ -29,6 +29,11 @@ protected:
         removeExtraRows();
     }
 
+protected:
+    ItemWidget *listItemWidgetAtIndex(int index) {
+        return qobject_cast<ItemWidget *>(listLayout()->itemAt(index)->widget());
+    }
+
 private:
     void renderItemAtIndex(int index) {
         auto *currentItem = listLayout()->itemAt(index);

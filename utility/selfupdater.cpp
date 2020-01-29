@@ -253,8 +253,6 @@ const char *SelfUpdater::extractedDirName() const {
 void SelfUpdater::performUnzipProcess() const {
     const auto unzipArguments = QStringList{archiveFileInfo().fileName()};
 
-    qDebug() << "unzipArguments" << unzipArguments;
-
     QProcess unzipProcess;
     unzipProcess.setWorkingDirectory(archiveDirPath());
     connect(&unzipProcess,

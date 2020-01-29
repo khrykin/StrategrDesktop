@@ -266,3 +266,7 @@ void ActivityEditorMenu::colorPickerClicked() {
     if (activity)
         saveAndClose();
 }
+
+void ActivityEditorMenu::focus() {
+    lineEdit->setFocus();
+}

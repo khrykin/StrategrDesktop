@@ -8,29 +8,20 @@
 #include "alert.h"
 #include "macoswindow.h"
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget *parent)
+        : QMainWindow(parent),
+          strategy(*fsIOManager.openDefault()) {
     setup();
 }
 
-MainWindow::MainWindow(FileSystemIOManager fsIOManager, QWidget *parent)
-        : fsIOManager(std::move(fsIOManager)),
-          QMainWindow(parent) {
-    if (FileSystemIOManager::lastOpenedFilePath()) {
-        auto lastOpened = this->fsIOManager
-                .read(*FileSystemIOManager::lastOpenedFilePath());
-        if (lastOpened) {
-            strategy = *lastOpened;
-        } else {
-            strategy = this->fsIOManager.openDefaultStrategy();
-        }
-    } else {
-        strategy = this->fsIOManager.openDefaultStrategy();
-    }
+MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
+        : QMainWindow(parent),
+          fsIOManager(std::move(existingFsIOManager)),
+          strategy(*fsIOManager.openLastOrDefault()) {
 
-    this->fsIOManager.setWindow(this);
-
-    if (!this->fsIOManager.fileInfo().filePath().isEmpty()) {
-        Application::registerOpenedFile(this->fsIOManager.fileInfo().filePath());
+    fsIOManager.setWindow(this);
+    if (!fsIOManager.fileInfo().filePath().isEmpty()) {
+        Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
     }
 
     setup();
