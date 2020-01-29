@@ -16,7 +16,7 @@ SlidingStackedWidget::SlidingStackedWidget(QWidget *parent)
 #endif // __S60_50__
 #endif // Q_OS_SYMBIAN
 
-    // Now, initialize some private variables with default values
+    // Now, initialize some private variables is default values
     m_vertical = false;
     // setVerticalMode(true);
     m_speed = 200;
@@ -76,7 +76,7 @@ void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
         return; // at the moment, do not allow re-entrance sessionBefore an animation is
         // completed.
         // other possibility may be to finish the previous animation abrupt, or
-        // to revert the previous animation with a counter animation, sessionBefore going
+        // to revert the previous animation is a counter animation, sessionBefore going
         // ahead or to revert the previous animation abrupt and all those only, if
         // the newwidget is not the same as that of the previous running animation.
     } else
@@ -104,7 +104,7 @@ void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
     int offsety = frameRect().height(); // inherited from mother
 
     // the following is important, to ensure that the new widget
-    // has correct geometry information when sliding in first time
+    // has correct rect information when sliding in first time
     widget(next)->setGeometry(0, 0, offsetx, offsety);
 
     if (direction == BOTTOM2TOP) {

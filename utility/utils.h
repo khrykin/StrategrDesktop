@@ -10,7 +10,7 @@
 #include <QDesktopWidget>
 #include <QScreen>
 
-#include "rect.h"
+#include "geometry.h"
 
 /* time_utils */
 

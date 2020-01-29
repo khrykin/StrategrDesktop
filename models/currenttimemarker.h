@@ -6,7 +6,7 @@
 #define STRATEGR_CURRENTTIMEMARKER_H
 
 #include "time_utils.h"
-#include "rect.h"
+#include "geometry.h"
 
 namespace stg {
     class strategy;

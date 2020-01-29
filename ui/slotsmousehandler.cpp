@@ -12,7 +12,6 @@
 #include <QScrollBar>
 
 #include "slotsmousehandler.h"
-#include "slotswidget.h"
 #include "macoswindow.h"
 #include "sessionsmainwidget.h"
 
@@ -20,23 +19,29 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
         : QFrame(nullptr),
           slotsWidget(slotsWidget) {
     setMouseTracking(true);
+
+    using namespace std::placeholders;
+
+    handler.on_cursor_change = std::bind(&SlotsMouseHandler::updateCursor, this, _1);
+    handler.on_set_selected = std::bind(&SelectionWidget::setIsClicked, slotsWidget->selectionWidget, _1);
 }
 
 void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
-    mousePressHappened = true;
-
-    auto leftButtonPressed = event->buttons() == Qt::LeftButton;
-    auto rightButtonPressed = event->buttons() == Qt::RightButton;
+    handler.mouse_press(event);
+//    mousePressHappened = true;
+//
+//    auto leftButtonPressed = mouse_event->buttons() == Qt::LeftButton;
+//    auto rightButtonPressed = mouse_event->buttons() == Qt::RightButton;
     auto ctrlPressed = event->modifiers() == Qt::CTRL;
-
-    currentSlotIndex = slotIndexForEvent(event);
-    clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
-
-    if (leftButtonPressed && ctrlPressed) {
-        initDragSelectedOperation();
-    } else if (leftButtonPressed) {
-        handleLeftButtonPress(event);
-    }
+//
+//    currentSlotIndex = slotIndexForEvent(mouse_event);
+//    clickedSessionIndex = sessionIndexForSlotIndex(currentSlotIndex);
+//
+//    if (leftButtonPressed && ctrlPressed) {
+//        initDragSelectedOperation();
+//    } else if (leftButtonPressed) {
+//        handleLeftButtonPress(mouse_event);
+//    }
 }
 
 void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
@@ -71,7 +76,7 @@ void SlotsMouseHandler::handleLeftButtonPress(const QMouseEvent *event) {
         strategy().begin_resizing();
     }
 
-    updateCursor();
+//    updateCursor(pointer);
 }
 
 void SlotsMouseHandler::initDragSelectedOperation() {
@@ -81,55 +86,61 @@ void SlotsMouseHandler::initDragSelectedOperation() {
 }
 
 void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
-    currentSlotIndex = slotIndexForEvent(event);
-
-    if (!mousePressHappened) {
-        handleMouseHover(event);
-        return;
-    }
-
-    handleAutoScroll(event);
-
-    if (operation == Operation::DragSelect) {
-        if (!isSlotIndexSelected(currentSlotIndex))
-            fillSelection(handleSlotIndex, currentSlotIndex);
-        return;
-    }
-
-    checkForDirectionChange(event);
-
-    auto currentMouseTop = event->pos().y();
-    auto delta = getMouseTopDelta(currentMouseTop, previousMouseTop);
-
-    if (delta < slotHeight() / 2 && operation != Operation::Drag) {
-        return;
-    }
-
-    previousMouseTop = currentMouseTop;
-
-    if (operation == Operation::Drag) {
-        handleDragOperation(event);
-    }
-
-    if (operation == Operation::StretchTop ||
-        operation == Operation::StretchBottom) {
-        handleStretchOperation(event);
-    }
+    handler.mouse_move(event);
+//    currentSlotIndex = slotIndexForEvent(event);
+//
+//    if (!mousePressHappened) {
+//        handleMouseHover(event);
+//        return;
+//    }
+//
+//    checkForDirectionChange(event);
+//
+//    auto currentMouseTop = event->pos().y();
+//    auto delta = getMouseTopDelta(currentMouseTop, previousMouseTop);
+//
+//    if (delta < slotHeight() / 2 && operation_type != Operation::Drag) {
+//        return;
+//    }
+//
+//    previousMouseTop = currentMouseTop;
+//
+//    handleAutoScroll(event);
+//
+//    if (operation_type == Operation::DragSelect) {
+//        if (!isSlotIndexSelected(currentSlotIndex))
+//            fillSelection(handleSlotIndex, currentSlotIndex);
+//        return;
+//    }
+//
+//    if (operation_type == Operation::Drag) {
+//        handleDragOperation(event);
+//    }
+//
+//    if (operation_type == Operation::StretchTop ||
+//        operation_type == Operation::StretchBottom) {
+//        handleStretchOperation(event);
+//    }
 }
 
 void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
+    if (isPerformingAutoscroll) {
+        return;
+    }
+
     auto topOffsetInViewPort = mapTo(slotBoardScrollArea()->viewport(), event->pos()).y();
 
     auto topAutoScrollBreakpoint = slotsWidget->slotHeight();
     auto bottomAutoScrollBreakpoint = slotBoardScrollArea()->height() - slotsWidget->slotHeight();
 
-    auto needsAutoScrollBottom = topOffsetInViewPort > bottomAutoScrollBreakpoint
-                                 && topOffsetInViewPort <= slotBoardScrollArea()->height();
-    auto needsAutoScrollTop = topOffsetInViewPort < topAutoScrollBreakpoint
-                              && topOffsetInViewPort >= 0;
+    auto needsAutoScrollBottom = direction == Direction::Down &&
+                                 topOffsetInViewPort > bottomAutoScrollBreakpoint &&
+                                 topOffsetInViewPort <= slotBoardScrollArea()->height();
+    auto needsAutoScrollTop = direction == Direction::Up &&
+                              topOffsetInViewPort < topAutoScrollBreakpoint &&
+                              topOffsetInViewPort >= 0;
 
-    auto needsAutoScroll = !autoscrollAnimation
-                           && (needsAutoScrollTop || needsAutoScrollBottom);
+    auto needsAutoScroll = !isPerformingAutoscroll && (needsAutoScrollTop || needsAutoScrollBottom);
 
     const auto scrollSpeed = 5;
 
@@ -145,14 +156,16 @@ void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
     }
 
     if (needsAutoScroll) {
-        autoscrollAnimation = new QPropertyAnimation(verticalScrollBar(),
-                                                     "value",
-                                                     this);
+        if (!autoscrollAnimation)
+            autoscrollAnimation = new QPropertyAnimation(verticalScrollBar(),
+                                                         "value",
+                                                         this);
+        autoscrollAnimation->disconnect();
+
         connect(autoscrollAnimation,
                 &QAbstractAnimation::finished,
                 [this]() {
-                    autoscrollAnimation->deleteLater();
-                    autoscrollAnimation = nullptr;
+                    isPerformingAutoscroll = false;
                 });
 
         auto fakeEvent = *event;
@@ -160,9 +173,14 @@ void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
                 &QVariantAnimation::valueChanged,
                 [this,
                         &fakeEvent,
-                        needsAutoScrollBottom,
                         topOffsetInViewPort](const QVariant &value) {
-                    auto topInSlotBoard = value.toInt() + topOffsetInViewPort;
+
+                    auto directionMargin = 1;
+                    if (direction == Direction::Up) {
+                        directionMargin *= -1;
+                    }
+
+                    auto topInSlotBoard = value.toInt() + topOffsetInViewPort + directionMargin;
                     fakeEvent.setLocalPos(QPoint(fakeEvent.pos().x(), topInSlotBoard));
 
                     mouseMoveEvent(&fakeEvent);
@@ -173,7 +191,10 @@ void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
             autoscrollAnimation->setStartValue(verticalScrollBar()->value());
             autoscrollAnimation->setEndValue(endValue);
 
+            isPerformingAutoscroll = true;
             autoscrollAnimation->start();
+        } else {
+            resetAutoscrollAnimation();
         }
     }
 }
@@ -190,7 +211,7 @@ QScrollArea *SlotsMouseHandler::slotBoardScrollArea() const {
             ->slotBoardScrollArea();
 }
 
-void SlotsMouseHandler::checkForDirectionChange(const QMouseEvent *event) {
+bool SlotsMouseHandler::checkForDirectionChange(const QMouseEvent *event) {
     auto previousDirection = direction;
     auto newDirection = determineDirection(event);
 
@@ -203,14 +224,27 @@ void SlotsMouseHandler::checkForDirectionChange(const QMouseEvent *event) {
 
         if (operation != Operation::Drag)
             handleResizeDirectionChange(previousDirection);
+
+        if (isPerformingAutoscroll) {
+            auto currentMouseTop = event->pos().y();
+            auto delta = getMouseTopDelta(currentMouseTop, previousMouseTop);
+            if (delta > 10) {
+                resetAutoscrollAnimation();
+                handleAutoScroll(event);
+            }
+        }
+
+        return true;
     }
+
+    return false;
 }
 
 int SlotsMouseHandler::getMouseTopDelta(int currentMouseTop, int previousMouseTop) {
     auto totalHeight = static_cast<double>(previousMouseTop - firstSlotTopOffset());
     auto closestSlotBoundary = round(totalHeight / slotHeight()) * slotHeight();
 
-    return abs(static_cast<int>(currentMouseTop - closestSlotBoundary));;
+    return std::abs(static_cast<int>(currentMouseTop - closestSlotBoundary));;
 }
 
 
@@ -226,7 +260,6 @@ SlotsMouseHandler::determineDirection(const QMouseEvent *event) {
     } else {
         direction = std::nullopt;
     }
-
 
     return direction;
 }
@@ -278,7 +311,7 @@ void SlotsMouseHandler::handleStretchOperation(QMouseEvent *event) {
 
 void SlotsMouseHandler::selectStetchingSessions(int sourceIndex) {
     auto firstSelectionIndex = static_cast<int>(
-            *strategy().sessions()
+            strategy().sessions()
                     .session_index_for_time_slot_index(sourceIndex)
     );
 
@@ -336,7 +369,7 @@ void SlotsMouseHandler::handleMouseHover(const QMouseEvent *event) {
 
     if (mouseZone != currentMouseZone) {
         currentMouseZone = mouseZone;
-        updateCursor();
+//        updateCursor(pointer);
     }
 }
 
@@ -353,19 +386,20 @@ void SlotsMouseHandler::handleDragOperation(QMouseEvent *event) {
 
 
 void SlotsMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
-    if (operation == Operation::OpenActivities) {
-        slotsWidget->openActivitiesWindow();
-    }
-
-    if (mousePressHappened) {
-        reset();
-    }
+    handler.mouse_release(event);
+//    if (operation_type == Operation::OpenActivities) {
+//        slotsWidget->openActivitiesWindow();
+//    }
+//
+//    if (mousePressHappened) {
+//        teardown();
+//    }
 }
 
 
 int SlotsMouseHandler::sessionIndexForSlotIndex(int slotIndex) {
     return strategy().sessions()
-            .session_index_for_time_slot_index(slotIndex).value_or(-1);
+            .session_index_for_time_slot_index(slotIndex);
 }
 
 std::optional<SlotsMouseHandler::Operation>
@@ -409,27 +443,22 @@ SlotsMouseHandler::determineMouseZone(const QMouseEvent *event, int sessionIndex
     }
 }
 
-void SlotsMouseHandler::updateCursor() {
-    auto currentSession = strategy().sessions()[clickedSessionIndex];
-    if (currentSession.activity == stg::strategy::no_activity) {
-        unsetCursor();
-        return;
-    }
+void SlotsMouseHandler::updateCursor(stg::mousehandler::cursor new_cursor) {
+    using namespace stg;
 
-    if (currentMouseZone == MouseZone::DragZone) {
-        if (operation == Operation::Drag) {
-            setCursor(closedHandCursor());
-        } else {
+    switch (new_cursor) {
+        case mousehandler::cursor::pointer:
             unsetCursor();
-        }
-    } else if (currentSlotIndex == 0 &&
-               currentMouseZone == MouseZone::TopStretchZone) {
-        unsetCursor();
-    } else if (currentSlotIndex == strategy().time_slots().size() - 1 &&
-               currentMouseZone == MouseZone::BottomStretchZone) {
-        unsetCursor();
-    } else {
-        setCursor(resizeVerticalCursor());
+            break;
+        case mousehandler::cursor::resize:
+            setCursor(resizeVerticalCursor());
+            break;
+        case mousehandler::cursor::closed_hand:
+            setCursor(closedHandCursor());
+            break;
+        case mousehandler::cursor::open_hand:
+            setCursor(openHandCursor());
+            break;
     }
 }
 
@@ -477,7 +506,7 @@ void SlotsMouseHandler::selectSessionAtSlotIndex(int slotIndex) {
             .session_index_for_time_slot_index(slotIndex);
 
     if (sessionIndex) {
-        selectSessionsAtIndices({static_cast<int>(*sessionIndex)});
+        selectSessionsAtIndices({static_cast<int>(sessionIndex)});
     }
 }
 
@@ -564,10 +593,11 @@ void SlotsMouseHandler::reset() {
 }
 
 void SlotsMouseHandler::resetAutoscrollAnimation() {
-    if (autoscrollAnimation) {
-        autoscrollAnimation->stop();
-        autoscrollAnimation->deleteLater();
-        autoscrollAnimation = nullptr;
+    if (isPerformingAutoscroll) {
+        isPerformingAutoscroll = false;
+        if (autoscrollAnimation) {
+            autoscrollAnimation->stop();
+        }
     }
 }
 
@@ -580,7 +610,7 @@ SessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
     }
 
 
-    return sessionWidgetAtIndex(*sessionIndex);
+    return sessionWidgetAtIndex(sessionIndex);
 }
 
 void SlotsMouseHandler::paintEvent(QPaintEvent *event) {
@@ -614,5 +644,22 @@ bool SlotsMouseHandler::isSlotIndexSelected(int slotIndex) {
 
 void SlotsMouseHandler::fillSelection(int fromIndex, int toIndex) {
     slotsWidget->selectionWidget->fillSelected(fromIndex, toIndex);
+}
+
+void SlotsMouseHandler::leaveEvent(QEvent *) {
+
+}
+
+std::ostream &operator<<(std::ostream &os, SlotsMouseHandler::Direction direction) {
+    switch (direction) {
+        case SlotsMouseHandler::Direction::Up:
+            os << "\u2191";
+            break;
+        case SlotsMouseHandler::Direction::Down:
+            os << "\u2193";
+            break;
+    }
+
+    return os;
 }
 

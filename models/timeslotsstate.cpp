@@ -95,8 +95,7 @@ void stg::time_slots_state::fill_slots(index_t from_index, index_t till_index) {
     on_change_event();
 }
 
-void stg::time_slots_state::silently_set_activity_at_index(activity *activity,
-                                                           index_t slot_index) {
+void stg::time_slots_state::silently_set_activity_at_index(index_t slot_index, activity *activity) {
     if (!has_index(slot_index)) {
         return;
     }
@@ -110,7 +109,7 @@ void stg::time_slots_state::set_activity_at_indices(activity *activity,
     for (auto slot_index: indices) {
         auto current_activity_changed = _data[slot_index].activity != activity;
         if (current_activity_changed) {
-            silently_set_activity_at_index(activity, slot_index);
+            silently_set_activity_at_index(slot_index, activity);
         }
 
         if (!activity_changed && current_activity_changed) {
@@ -127,7 +126,7 @@ void stg::time_slots_state::set_activity_at_indices(activity *activity,
 void stg::time_slots_state::silently_set_activity_at_indices(activity *activity,
                                                              const std::vector<index_t> &indices) {
     for (auto slot_index: indices) {
-        silently_set_activity_at_index(activity, slot_index);
+        silently_set_activity_at_index(slot_index, activity);
     }
 }
 
@@ -220,6 +219,22 @@ void stg::time_slots_state::silently_swap(index_t first_index,
 
 const stg::time_slot &stg::time_slots_state::at(index_t index) {
     return _data.at(index);
+}
+
+bool stg::time_slots_state::next_slot_empty(index_t index) const {
+    if (index >= _data.size() - 1) {
+        return true;
+    } else {
+        return _data[index + 1].empty();
+    }
+}
+
+bool stg::time_slots_state::previous_slot_empty(index_t index) const {
+    if (index <= 0) {
+        return true;
+    } else {
+        return _data[index - 1].empty();
+    }
 }
 
 

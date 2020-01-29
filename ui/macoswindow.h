@@ -22,6 +22,7 @@ public:
 
     static QPixmap resizeCursor();
     static QPixmap closedHandCursor();
+    static QPixmap openHandCursor();
 private:
     static NSString *makeToolbarIdentifier(const MainWindow *window);
 };

@@ -51,6 +51,7 @@ namespace stg {
         const sessions_list &sessions() const;
         const time_slots_state &time_slots() const;
 
+
         time_t begin_time() const;
         void set_begin_time(time_t begin_time);
 

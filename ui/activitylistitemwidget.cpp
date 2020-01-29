@@ -35,6 +35,7 @@ void ActivityListItemWidget::layoutChildWidgets() {
     label = new ColoredLabel();
     label->setAlignment(Qt::AlignCenter);
     label->setBold(true);
+    label->setElideMode(Qt::ElideMiddle);
 
     layout()->addWidget(label);
 }

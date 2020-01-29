@@ -76,8 +76,6 @@ namespace FontUtils {
                                   const QRect &rect,
                                   Qt::Alignment alignment = Qt::AlignLeft | Qt::AlignVCenter) {
         auto fontMetrics = QFontMetrics(painter.font());
-        auto textWidth = fontMetrics.horizontalAdvance(text);
-
         auto maximumWidth = rect.width();
 
         auto printedText = fontMetrics.elidedText(text,

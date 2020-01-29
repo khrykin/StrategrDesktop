@@ -160,6 +160,7 @@ stg::strategy_history::entry stg::strategy::make_history_entry() {
 
 void stg::strategy::commit_to_history() {
     history.commit(make_history_entry());
+
     on_change_event();
 }
 
@@ -180,7 +181,6 @@ void stg::strategy::redo() {
         on_change_event();
     }
 }
-
 
 void stg::strategy::apply_history_entry(const std::optional<strategy_history::entry> &history_entry) {
     _activities.reset_with(history_entry->activities);

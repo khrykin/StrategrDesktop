@@ -5,9 +5,8 @@
 #include <algorithm>
 #include "sessionslist.h"
 
-std::optional<stg::sessions_list::index_t>
-stg::sessions_list::session_index_for_time_slot_index(
-        time_slots_state::index_t time_slot_index) const {
+stg::sessions_list::index_t
+stg::sessions_list::session_index_for_time_slot_index(index_t time_slot_index) const {
     auto slots_count = 0;
     for (auto &session : _data) {
         auto first_slot_index = slots_count;
@@ -15,13 +14,13 @@ stg::sessions_list::session_index_for_time_slot_index(
 
         if (first_slot_index <= time_slot_index &&
             time_slot_index < next_slot_index) {
-            return static_cast<index_t>(&session - &_data[0]);;
+            return static_cast<index_t>(&session - &_data[0]);
         }
 
         slots_count = next_slot_index;
     }
 
-    return std::nullopt;
+    return -1;
 }
 
 void stg::sessions_list::recalculate(const time_slots_state &time_slots_state) {

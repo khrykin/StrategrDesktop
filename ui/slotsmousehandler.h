@@ -11,8 +11,9 @@
 #include "cursorprovider.h"
 #include "colorprovider.h"
 #include "sessionsmainwidget.h"
+#include "mousehandler.h"
+#include "slotswidget.h"
 
-class SlotsWidget;
 class SessionWidget;
 class QPropertyAnimation;
 
@@ -50,6 +51,14 @@ private:
 
     SlotsWidget *slotsWidget;
 
+    stg::mousehandler handler{slotsWidget->strategy,
+                              [this]() {
+                                  return slotsWidget->_slotHeight;
+                              },
+                              [this]() {
+                                  return stg::rect(slotsWidget->slotsLayout->contentsRect());
+                              }};
+
     std::optional<Operation> operation = std::nullopt;
     std::optional<Direction> direction = std::nullopt;
 
@@ -64,6 +73,7 @@ private:
     std::optional<int> resizeBoundarySlotIndex = std::nullopt;
 
     bool mousePressHappened = false;
+    bool isPerformingAutoscroll = false;
 
     QPropertyAnimation *autoscrollAnimation = nullptr;
 
@@ -95,7 +105,7 @@ private:
     void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
     void deselectAllSessions();
 
-    void updateCursor();
+    void updateCursor(stg::mousehandler::cursor new_cursor);
     SlotsMouseHandler::MouseZone determineMouseZone(const QMouseEvent *event, int slotIndex);
 
     std::optional<Operation> determineOperationForMouseZone(MouseZone mouseZone);
@@ -109,7 +119,7 @@ private:
     void handleLeftButtonPress(const QMouseEvent *event);
     void handleResizeDirectionChange(const std::optional<Direction> &previousDirection);
 
-    void checkForDirectionChange(const QMouseEvent *event);
+    bool checkForDirectionChange(const QMouseEvent *event);
 
     int getMouseTopDelta(int currentMouseTop, int previousMouseTop);
 
@@ -118,6 +128,7 @@ private:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
     void initDragSelectedOperation();
@@ -126,6 +137,8 @@ private:
     QScrollBar *verticalScrollBar() const;
     void handleAutoScroll(const QMouseEvent *event);
     void resetAutoscrollAnimation();
+
+    friend std::ostream &operator<<(std::ostream &os, Direction direction);
 };
 
 

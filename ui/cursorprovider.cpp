@@ -33,3 +33,14 @@ QCursor CursorProvider::closedHandCursor() {
     return QCursor(Qt::ClosedHandCursor);
 #endif
 }
+
+QCursor CursorProvider::openHandCursor() {
+#ifdef Q_OS_MAC
+    auto pixmap = MacOSWindow::openHandCursor();
+    pixmap.setDevicePixelRatio(devicePixelRatio());
+
+    return QCursor(pixmap);
+#else
+    return QCursor(Qt::OpenHandCursor);
+#endif
+}

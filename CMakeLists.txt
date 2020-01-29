@@ -74,9 +74,14 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/timer.h
         models/currenttimemarker.cpp
         models/currenttimemarker.h
-        models/rect.h
+        models/geometry.h
         models/notifier.cpp
-        models/notifier.h models/utility.h)
+        models/notifier.h
+        models/utility.h
+        models/mousehandler.cpp
+        models/mousehandler.h
+        models/mousehandleroperations.cpp
+        models/mousehandleroperations.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -84,7 +89,8 @@ set(MODELS_TESTS
         models/tests/strategy_settings_test.cpp
         models/tests/strategy_timeslots_test.cpp
         models/tests/strategy_activities_slots_interaction_test.cpp
-        models/tests/strategy_history_test.cpp models/tests/json_tests.cpp)
+        models/tests/strategy_history_test.cpp
+        models/tests/json_tests.cpp)
 
 set(MODELS_LIBRARIES
         ${uf8Proc_LIBRARY_PATH}

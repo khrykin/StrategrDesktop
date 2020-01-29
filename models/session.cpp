@@ -93,3 +93,4 @@ bool stg::session::is_past() const {
 bool stg::session::is_future() const {
     return stg::time_utils::current_minutes() < begin_time();
 }
+

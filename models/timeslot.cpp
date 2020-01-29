@@ -31,3 +31,7 @@ bool stg::operator==(const stg::time_slot &lhs, const stg::time_slot &rhs) {
 bool stg::operator!=(const stg::time_slot &lhs, const stg::time_slot &rhs) {
     return !(lhs == rhs);
 }
+
+bool stg::time_slot::empty() const {
+    return activity == no_activity;
+}

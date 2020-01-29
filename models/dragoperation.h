@@ -42,17 +42,24 @@ namespace stg {
         static const unsigned int initial_index_key = 0;
 
         struct indices_range {
+            indices_range(index_t frst, index_t lst);
+
             index_t first = 0;
             index_t last = 0;
 
             index_t size() const;
+
+            friend std::ostream &operator<<(std::ostream &os,
+                                            const indices_range &r) {
+                os << "[" << r.first << ", " << r.last << "]";
+                return os;
+            }
         };
 
         time_slots_state *time_slots;
         time_slots_state::data_t initial_time_slots = time_slots->data();
 
         indices_vector initial_dragged_indices;
-        indices_vector dragged_indices = {};
 
         history_state history = history_state();
 
@@ -88,8 +95,8 @@ namespace stg {
 
         index_t get_initial(index_t index);
 
-        void print_indices(const std::string &name,
-                           const indices_vector &indices_state);
+        static void print_indices(const std::string &name,
+                                  const indices_vector &indices_state);
 
 
         void print_history(const std::string &name,

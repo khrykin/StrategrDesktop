@@ -47,8 +47,7 @@ namespace stg {
         void silently_set_activity_at_indices(activity *activity,
                                               const std::vector<index_t> &indices);
 
-        void silently_set_activity_at_index(activity *activity,
-                                            index_t slot_index);
+        void silently_set_activity_at_index(index_t slot_index, activity *activity);
 
         void fill_slots(index_t from_index, index_t till_index);
 
@@ -65,6 +64,9 @@ namespace stg {
 
         void swap(index_t first_index, index_t second_index);
         void silently_swap(index_t first_index, index_t second_index);
+
+        bool next_slot_empty(index_t index) const;
+        bool previous_slot_empty(index_t index) const;
 
         bool has_activity(const activity *activity);
 

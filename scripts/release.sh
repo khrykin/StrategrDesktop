@@ -37,7 +37,7 @@ EXAMPLES:
 
 NOTE:
 
-This uses your \`.netrc\` file to authenticate with GitHub. In order to run the
+This uses your \`.netrc\` file to authenticate is GitHub. In order to run the
 script, make sure you have **both** \`api.github.com\` and \`uploads.github.com\` in
 this file. For example:
 

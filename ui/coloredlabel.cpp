@@ -12,6 +12,7 @@
 ColoredLabel::ColoredLabel(QString text, QWidget *parent)
         : _text(std::move(text)),
           QWidget(parent) {
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
 const QColor &ColoredLabel::color() const {
@@ -30,7 +31,6 @@ const QString &ColoredLabel::text() const {
 void ColoredLabel::setText(const QString &text) {
     _text = text;
     updateGeometry();
-    update();
 }
 
 const Qt::Alignment &ColoredLabel::alignment() const {
@@ -52,8 +52,12 @@ void ColoredLabel::paintEvent(QPaintEvent *event) {
     if (customRenderer) {
         customRenderer(&painter, _text);
     } else {
-        auto textRect = QRect(0, 0, width(), height());
-        FontUtils::drawTruncatedText(_text, painter, textRect, alignment());
+        auto textRect = contentsRect();
+        auto printedText = _elideMode == Qt::ElideNone
+                           ? _text
+                           : fontMetrics().elidedText(_text, Qt::ElideMiddle, contentsRect().width());
+
+        painter.drawText(textRect, _alignment, printedText);
     }
 }
 
@@ -88,23 +92,32 @@ QColor ColoredLabel::dynamicColor() {
 }
 
 QSize ColoredLabel::sizeHint() const {
-    auto metrics = QFontMetrics(font());
-
     auto lines = _text.split("\n");
+
     auto maxLineLength = 0;
     auto totalHeight = 0;
 
     for (auto &line : lines) {
-        auto length = metrics.horizontalAdvance(line);
+        auto length = fontMetrics().horizontalAdvance(line);
         if (length > maxLineLength) {
             maxLineLength = length;
         }
 
-        totalHeight += metrics.boundingRect(line).height();
+        totalHeight += fontMetrics().boundingRect(line).height();
     }
 
-    return QSize(maxLineLength + 20,
-                 totalHeight + (lines.count() - 1) * metrics.lineSpacing());
+    return QSize(maxLineLength,
+                 totalHeight + (lines.count() - 1) * fontMetrics().lineSpacing());
+}
+
+Qt::TextElideMode ColoredLabel::elideMode() const {
+    return _elideMode;
+}
+
+void ColoredLabel::setElideMode(Qt::TextElideMode elideMode) {
+    _elideMode = elideMode;
+
+    update();
 }
 
 

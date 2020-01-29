@@ -1,9 +1,6 @@
 //
 // Created by Dmitry Khrykin on 2019-07-29.
 //
-//
-// created by dmitry khrykin on 2019-07-29.
-//
 
 #include "dragoperation.h"
 #include "strategy.h"
@@ -21,8 +18,10 @@ void stg::drag_operation::record_drag(const session::time_slots_state &time_slot
     auto range_to_drag = indices_range{*time_slots->index_of(time_slots_to_drag.front()),
                                        *time_slots->index_of(time_slots_to_drag.back())};
 
+    // Drag operation_type is divided into two phases:
+    // 1. Drag selected slots to their new positions, switching them is nearby slots;
     auto new_dragged_indices = silently_drag(range_to_drag, distance);
-
+    // 2. Try to restore nearby sessions' initial positions.
     invalidate_drag(new_dragged_indices);
 }
 
@@ -52,10 +51,9 @@ stg::drag_operation::silently_drag(const indices_range &range_to_drag, int dista
 
         new_dragged_indices.push_back(insert_at_index);
 
-        time_slots->silently_set_activity_at_index(
-                time_slots->at(old_index).activity,
-                insert_at_index
-        );
+        auto activity_at_old_index = time_slots->at(old_index).activity;
+        time_slots->silently_set_activity_at_index(insert_at_index,
+                                                   activity_at_old_index);
     }
 
     restore_cache(restore_cache_range, cache, movements);
@@ -68,13 +66,13 @@ stg::drag_operation::silently_drag(const indices_range &range_to_drag, int dista
 void stg::drag_operation::restore_cache(const indices_range &restore_cache_range,
                                         const indices_cache &cache,
                                         movements_state &movements) const {
-    for (auto i = 0; i < cache.size(); i++) {
+    for (size_t i = 0; i < cache.size(); i++) {
         auto insert_at_index = restore_cache_range.first + i;
         auto[history_index, activity] = cache[i];
 
         movements[history_index] = insert_at_index;
 
-        time_slots->silently_set_activity_at_index(activity, insert_at_index);
+        time_slots->silently_set_activity_at_index(insert_at_index, activity);
     }
 }
 
@@ -139,12 +137,10 @@ stg::drag_operation::make_cache(indices_range cache_indices) const {
     return cache;
 }
 
-void stg::drag_operation::invalidate_drag(const indices_vector &new_dragged_indices) {
-    if (new_dragged_indices.empty()) {
+void stg::drag_operation::invalidate_drag(const indices_vector &dragged_indices) {
+    if (dragged_indices.empty()) {
         return;
     }
-
-    dragged_indices = new_dragged_indices;
 
     auto nobody_can_move = false;
 
@@ -155,6 +151,7 @@ void stg::drag_operation::invalidate_drag(const indices_vector &new_dragged_indi
             auto slot_is_dragged = std::find(dragged_indices.begin(),
                                              dragged_indices.end(),
                                              current_index) != dragged_indices.end();
+
             auto slot_is_empty = time_slots->at(current_index).activity == strategy::no_activity;
 
             if (slot_is_dragged || slot_is_empty) {
@@ -163,6 +160,7 @@ void stg::drag_operation::invalidate_drag(const indices_vector &new_dragged_indi
             }
 
             auto session_range = find_session_range_for(current_index);
+
             auto initial_session_begin_index = get_initial(session_range.first);
 
             if (initial_session_begin_index != session_range.first) {
@@ -249,26 +247,28 @@ void stg::drag_operation::apply_movements_to_history(const movements_state &move
 
 stg::drag_operation::indices_range
 stg::drag_operation::find_session_range_for(index_t time_slot_index) {
+    if (time_slot_index < 0)
+        time_slot_index = 0;
+    if (time_slot_index > time_slots->size() - 1) {
+        time_slot_index = time_slots->size() - 1;
+    }
+
     auto begin_index = time_slot_index;
     auto end_index = time_slot_index;
 
-    if (time_slot_index > 0) {
-        for (auto i = time_slot_index - 1; i < time_slots->size(); i--) {
-            if (time_slots->at(i).activity == time_slots->at(time_slot_index).activity) {
-                begin_index = i;
-            } else {
-                break;
-            }
+    for (auto i = time_slot_index; i > 0; i--) {
+        if (time_slots->at(i).activity == time_slots->at(time_slot_index).activity) {
+            begin_index = i;
+        } else {
+            break;
         }
     }
 
-    if (time_slot_index < time_slots->size() - 1) {
-        for (auto i = time_slot_index + 1; i < time_slots->size(); i++) {
-            if (time_slots->at(i).activity == time_slots->at(time_slot_index).activity) {
-                end_index = i;
-            } else {
-                break;
-            }
+    for (auto i = time_slot_index; i < time_slots->size(); i++) {
+        if (time_slots->at(i).activity == time_slots->at(time_slot_index).activity) {
+            end_index = i;
+        } else {
+            break;
         }
     }
 
@@ -323,4 +323,9 @@ bool stg::drag_operation::state_changed() {
 
 stg::drag_operation::index_t stg::drag_operation::indices_range::size() const {
     return last - first + 1;
+}
+
+stg::drag_operation::indices_range::indices_range(index_t frst, index_t lst) {
+    first = frst < 0 ? 0 : frst;
+    last = lst < 0 ? 0 : lst;
 }

@@ -30,9 +30,13 @@ public:
     void setBold(bool isBold);
     void setFontHeight(int fontHeight);
 
+    Qt::TextElideMode elideMode() const;
+    void setElideMode(Qt::TextElideMode elideMode);
+
     QSize sizeHint() const override;
 private:
     std::function<QColor()> colorGetter = nullptr;
+    Qt::TextElideMode _elideMode = Qt::ElideNone;
 
     QColor _color;
     QString _text;

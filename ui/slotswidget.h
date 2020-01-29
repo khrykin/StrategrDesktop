@@ -12,10 +12,10 @@
 #include "strategy.h"
 #include "slotruler.h"
 #include "applicationsettings.h"
-#include "slotsmousehandler.h"
 #include "selectionwidget.h"
 #include "reactivelist.hpp"
 
+class SlotsMouseHandler;
 class MainScene;
 class SlotsWidget : public QWidget,
                     public ReactiveList<SessionWidget> {

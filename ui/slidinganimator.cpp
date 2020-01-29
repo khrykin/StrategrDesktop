@@ -31,8 +31,8 @@ void SlidingAnimator::setInitialWidgetPosition() {
     if (operation == Operation::Hide) {
         widget->setGeometry(stub->geometry());
     } else if (operation == Operation::Show) {
-        // Enforce initial size on the widget for showAskToSave operation.
-        // Otherwise it will resize along with the stub, which is not what we want.
+        // Enforce initial size on the widget for showAskToSave operation_type.
+        // Otherwise it will resize along is the stub, which is not what we want.
 
         auto geometry = widget->geometry();
         auto origin = makePointByTranslation(geometry.topLeft(), initialWidgetSize);

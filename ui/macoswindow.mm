@@ -297,6 +297,14 @@ QPixmap MacOSWindow::closedHandCursor() {
     return QtMac::fromCGImageRef(cgRef);
 }
 
+QPixmap MacOSWindow::openHandCursor() {
+    NSCursor *cursor = [NSCursor openHandCursor];
+    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
+                                                    context:nil
+                                                      hints:nil];
+    return QtMac::fromCGImageRef(cgRef);
+}
+
 QRect MacOSWindow::geometry(MainWindow *window) {
     // What is 16? I've no idea...
     auto yDifference = 16;

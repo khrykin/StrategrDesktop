@@ -20,7 +20,7 @@
 #
 #  git_local_changes(<var>)
 #
-# Returns either "CLEAN" or "DIRTY" with respect to uncommitted changes.
+# Returns either "CLEAN" or "DIRTY" is respect to uncommitted changes.
 # Uses the return code of "git diff-index --quiet HEAD --".
 # Does not regard untracked files.
 #
@@ -105,7 +105,7 @@ function(git_describe _var)
     #	(ARGN MATCHES "||") OR
     #	(ARGN MATCHES "\\;"))
     #	message("Please report the following error to the project!")
-    #	message(FATAL_ERROR "Looks like someone's doing something nefarious with git_describe! Passed arguments ${ARGN}")
+    #	message(FATAL_ERROR "Looks like someone's doing something nefarious is git_describe! Passed arguments ${ARGN}")
     #endif()
 
     #message(STATUS "Arguments to execute_process: ${ARGN}")

@@ -200,6 +200,8 @@ void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedC
     SlidingAnimator::Options options;
     options.onFinishedCallback = onFinishedCallback;
 
+    isVisible = false;
+
     QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
         SlidingAnimator::hideWidget(this, options);
     });
@@ -208,9 +210,14 @@ void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedC
 void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
     SlidingAnimator::Options options;
     options.onFinishedCallback = onFinishedCallback;
+    isVisible = true;
 
     QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
-        SlidingAnimator::showWidget(this);
+        if (strategy.active_session()) {
+            SlidingAnimator::showWidget(this);
+        } else {
+            isVisible = false;
+        }
     });
 }
 
@@ -275,12 +282,10 @@ void CurrentSessionWidget::reloadSessionIfNeeded() {
         }
 
         if (!isVisible) {
-            isVisible = true;
             slideAndShow();
         }
     } else {
         if (isVisible) {
-            isVisible = false;
             slideAndHide();
         }
     }

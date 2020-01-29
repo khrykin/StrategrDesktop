@@ -24,6 +24,10 @@ namespace stg {
             return os;
         }
 
+        friend std::ostream &operator<<(std::ostream &os, const Container *list) {
+            return operator<<(os, *list);
+        }
+
     protected:
         virtual std::string class_print_name() const = 0;
     };

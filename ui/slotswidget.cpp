@@ -11,6 +11,8 @@
 #include "third-party/stacklayout.h"
 #include "mainwindow.h"
 #include "utils.h"
+#include "slotsmousehandler.h"
+
 
 SlotsWidget::SlotsWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy),

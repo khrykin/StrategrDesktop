@@ -99,7 +99,7 @@ void SlotBoard::updateCurrentTimeMarker() {
     auto rect = currentTimeMarker.rect_in_parent(slotsWidget->geometry(),
                                                  CurrentTimeMarkerWidget::markerSize);
 
-    currentTimeMarkerWidget->setGeometry(stg::rect_cast<QRect>(rect));
+    currentTimeMarkerWidget->setGeometry(rect);
 
     if (currentTimeMarker.is_hidden()
         && currentTimeMarkerWidget->isVisible()) {

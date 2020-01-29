@@ -34,6 +34,8 @@ namespace stg {
 
         time_t end_time() const;
 
+        bool empty() const;
+
         friend std::ostream &operator<<(std::ostream &os,
                                         const time_slot &slot);
 

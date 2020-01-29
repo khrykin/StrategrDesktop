@@ -11,6 +11,7 @@ class CursorProvider {
 public:
     QCursor resizeVerticalCursor();
     QCursor closedHandCursor();
+    QCursor openHandCursor();
 };
 
 

@@ -22,7 +22,7 @@ std::ostream &operator<<(std::ostream &os, const QRect &r) {
 
 
 TEST_CASE("MainWindow") {
-    SECTION("initial geometry") {
+    SECTION("initial rect") {
 
         WindowGeometryManager::resetSavedGeometry();
 
@@ -31,7 +31,7 @@ TEST_CASE("MainWindow") {
             REQUIRE(w.width() == ApplicationSettings::windowInitialWidth);
         }
 
-        SECTION("should persist it's previous geometry") {
+        SECTION("should persist it's previous rect") {
             auto w = new MainWindow();
             auto testRect = QRect(
                     0,

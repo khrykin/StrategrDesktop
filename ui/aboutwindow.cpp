@@ -41,8 +41,6 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
                                                .arg(QApplication::organizationName()));
     copyLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     copyLabel->setAlignment(Qt::AlignCenter);
-    copyLabel->setSizePolicy(QSizePolicy::Minimum,
-                             QSizePolicy::Fixed);
     copyLabel->setFontHeight(12);
 
     auto iconLabel = new QLabel();
@@ -58,5 +56,6 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
 
     layout()->addWidget(new QWidget());
 
+    setMinimumHeight(sizeHint().height());
     setMaximumHeight(sizeHint().height());
 }

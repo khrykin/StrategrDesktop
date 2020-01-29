@@ -33,7 +33,7 @@ namespace stg {
 
         std::string class_print_name() const override;
 
-        std::optional<index_t> session_index_for_time_slot_index(index_t time_slot_index) const;
+        stg::sessions_list::index_t session_index_for_time_slot_index(index_t time_slot_index) const;
 
         const session *session_after(const session &activity_session) const;
 
@@ -41,6 +41,10 @@ namespace stg {
         session_before(const session &activity_session) const;
 
         std::vector<overview_item> overview() const;
+
+        time_slot::time_t relative_time(const session &session) const {
+            return session.begin_time() - _data.front().begin_time();
+        }
 
     private:
         using activity_sessions_list_base::activity_sessions_list_base;

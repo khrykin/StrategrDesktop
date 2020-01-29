@@ -25,13 +25,13 @@ stg::notifier::notifier(const stg::strategy *strategy) : strategy(strategy) {
 void stg::notifier::start_watching() {
     is_watching = true;
 
-    // reset() -> schedule();
+    // teardown() -> schedule();
 }
 
 void stg::notifier::stop_watching() {
     is_watching = false;
 
-    // reset();
+    // teardown();
 }
 
 void stg::notifier::on_schedule_notifications(const scheduler_t &callback) {
