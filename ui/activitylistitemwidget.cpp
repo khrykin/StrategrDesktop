@@ -12,7 +12,7 @@
 #include "colorutils.h"
 #include "applicationsettings.h"
 
-ActivityListItemWidget::ActivityListItemWidget(Activity *activity,
+ActivityListItemWidget::ActivityListItemWidget(stg::activity *activity,
                                                QWidget *parent)
         : QWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
@@ -80,11 +80,11 @@ void ActivityListItemWidget::updateUI() {
     });
 }
 
-Activity *ActivityListItemWidget::activity() const {
+stg::activity *ActivityListItemWidget::activity() const {
     return _activity;
 }
 
-void ActivityListItemWidget::setActivity(Activity *activity) {
+void ActivityListItemWidget::setActivity(stg::activity *activity) {
     if (activity != _activity) {
         _activity = activity;
         updateUI();
@@ -119,7 +119,7 @@ void ActivityListItemWidget::contextMenuEvent(QContextMenuEvent *event) {
 
     connect(editorMenu,
             &ActivityEditorMenu::submitActivity,
-            [=](const Activity &activity) {
+            [=](const stg::activity &activity) {
                 emit activityEdited(activity);
             });
 

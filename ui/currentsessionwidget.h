@@ -8,7 +8,7 @@
 #include <QWidget>
 #include <QTimeLine>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "colorprovider.h"
 
 class ColoredLabel;
@@ -17,7 +17,7 @@ class CurrentSessionWidget :
         public ColorProvider {
 Q_OBJECT
 public:
-    explicit CurrentSessionWidget(Strategy &strategy, QWidget *parent = nullptr);
+    explicit CurrentSessionWidget(stg::strategy &strategy, QWidget *parent = nullptr);
 
     double progress() const;
     void setProgress(double progress);
@@ -39,9 +39,8 @@ private:
 
     double _progress = 0.0;
 
-    Session previousSession;
-
-    Strategy &strategy;
+    stg::strategy &strategy;
+    stg::session previousSession;
 
     ColoredLabel *activityLabel = nullptr;
     ColoredLabel *startTimeLabel = nullptr;

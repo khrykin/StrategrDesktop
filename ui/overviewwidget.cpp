@@ -9,9 +9,9 @@
 #include "overviewwidget.h"
 #include "colorutils.h"
 #include "applicationsettings.h"
-#include "Overview.h"
+#include "overview.h"
 
-OverviewWidget::OverviewWidget(Strategy &strategy,
+OverviewWidget::OverviewWidget(stg::strategy &strategy,
                                QScrollArea *scrollArea,
                                QWidget *parent) :
         strategy(strategy), QWidget(parent), scrollArea(scrollArea) {
@@ -32,7 +32,7 @@ void OverviewWidget::paintEvent(QPaintEvent *) {
 
     painter.fillRect(0, 0, width(), height(), windowColor());
 
-    auto overview = Overview(strategy, width());
+    auto overview = stg::overview(strategy, width());
 
     drawElements(painter, overview);
     drawViewportMarker(painter, overview);
@@ -49,7 +49,7 @@ void OverviewWidget::drawBorders(QPainter &painter) const {
     painter.fillRect(0, height() - 1, width(), 1, borderColor);
 }
 
-void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, Overview &overview) const {
+void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) const {
     auto currentTimeMarkerPadding = 1;
     auto currentTimeMarkerRadius = height() - 2 * currentTimeMarkerPadding;
 
@@ -59,24 +59,24 @@ void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, Overview &overview
     auto borderColor = QColor(Qt::black);
     borderColor.setAlphaF(0.1);
 
-    painter.drawRect(overview.currentTimePosition(), 0, 2, height());
-    painter.fillRect(overview.currentTimePosition() - 1, 0, 1, height(), borderColor);
-    painter.fillRect(overview.currentTimePosition() + 2, 0, 1, height(), borderColor);
+    painter.drawRect(overview.current_time_position(), 0, 2, height());
+    painter.fillRect(overview.current_time_position() - 1, 0, 1, height(), borderColor);
+    painter.fillRect(overview.current_time_position() + 2, 0, 1, height(), borderColor);
 }
 
-void OverviewWidget::drawViewportMarker(QPainter &painter, Overview &overview) const {
-    auto viewportMarker = overview.viewportMarkerFor(scrollArea->viewport()->height(),
-                                                     scrollArea->widget()->height(),
-                                                     scrollArea->verticalScrollBar()->value());
+void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overview) const {
+    auto viewportMarker = overview.viewport_marker_for(scrollArea->viewport()->height(),
+                                                       scrollArea->widget()->height(),
+                                                       scrollArea->verticalScrollBar()->value());
 
     auto blackColor = QColor(Qt::black);
     blackColor.setAlphaF(0.5);
 
     auto viewportMarkerPadding = 2;
-    if (viewportMarker.originX < viewportMarkerPadding) {
-        viewportMarker.originX = viewportMarkerPadding;
-    } else if (viewportMarker.originX > width() - viewportMarkerPadding - viewportMarker.width) {
-        viewportMarker.originX = width() - viewportMarkerPadding - viewportMarker.width;
+    if (viewportMarker.origin_x < viewportMarkerPadding) {
+        viewportMarker.origin_x = viewportMarkerPadding;
+    } else if (viewportMarker.origin_x > width() - viewportMarkerPadding - viewportMarker.width) {
+        viewportMarker.origin_x = width() - viewportMarkerPadding - viewportMarker.width;
     }
 
     auto viewPortMarkerHeight = height() - 2 * viewportMarkerPadding;
@@ -84,7 +84,7 @@ void OverviewWidget::drawViewportMarker(QPainter &painter, Overview &overview) c
 
     QPainterPath viewportMarkerPath;
     viewportMarkerPath.addRect(0, 0, width(), height());
-    viewportMarkerPath.addRoundedRect(viewportMarker.originX,
+    viewportMarkerPath.addRoundedRect(viewportMarker.origin_x,
                                       viewportMarkerPadding,
                                       viewportMarker.width,
                                       viewPortMarkerHeight,
@@ -95,18 +95,18 @@ void OverviewWidget::drawViewportMarker(QPainter &painter, Overview &overview) c
     painter.fillPath(viewportMarkerPath, blackColor);
 }
 
-void OverviewWidget::drawElements(QPainter &painter, Overview &overview) const {
+void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) const {
     for (auto &item : overview.elements()) {
         auto color = ColorUtils::QColorFromStdString(item.color);
-        painter.fillRect(item.originX, 0, item.width, height(), color);
+        painter.fillRect(item.origin_x, 0, item.width, height(), color);
     }
 }
 
 void OverviewWidget::mouseReleaseEvent(QMouseEvent *event) {
-    auto position = static_cast<float>(event->pos().x()) / width();
-    scrollArea->verticalScrollBar()->setValue(
-            position * scrollArea->widget()->height()
-            - scrollArea->viewport()->height() / 2);
+    auto position = static_cast<float>(event->pos().x()) / static_cast<float>(width());
+    int newScrollOffset = static_cast<int>(position * static_cast<float>(scrollArea->widget()->height()))
+                          - scrollArea->viewport()->height() / 2;
+    scrollArea->verticalScrollBar()->setValue(newScrollOffset);
 }
 
 void OverviewWidget::mouseMoveEvent(QMouseEvent *event) {

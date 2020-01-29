@@ -7,23 +7,23 @@
 #include <QWidgetAction>
 
 #include "colorpicker.h"
-#include "Activity.h"
+#include "activity.h"
 #include "coloredlabel.h"
 
 class ActivityEditorMenu : public QMenu {
 Q_OBJECT
 public:
-    explicit ActivityEditorMenu(std::optional<Activity> activity = std::nullopt,
+    explicit ActivityEditorMenu(std::optional<stg::activity> activity = std::nullopt,
                                 QWidget *parent = nullptr);
 
     void focus();
 
 signals:
-    void submitActivity(const Activity &activity);
+    void submitActivity(const stg::activity &activity);
     void deleteActivity();
 
 private:
-    std::optional<Activity> activity;
+    std::optional<stg::activity> activity;
 
     QWidgetAction *lineEditWidgetAction = nullptr;
     QWidgetAction *colorWidgetAction = nullptr;

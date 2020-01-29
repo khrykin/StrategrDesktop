@@ -7,16 +7,16 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "notifierbackend.h"
 
 class NotifierImplementation : public QObject {
 Q_OBJECT
 public:
-    explicit NotifierImplementation(Strategy *strategy,
+    explicit NotifierImplementation(stg::strategy *strategy,
                                     QObject *parent = nullptr);
     ~NotifierImplementation() override;
-    void setStrategy(Strategy *newStrategy);
+    void setStrategy(stg::strategy *newStrategy);
     void timerTick();
 
 signals:
@@ -37,8 +37,8 @@ private:
     const static auto getReadyInterval = Settings::getReadyMinutes * 60;
     const static auto startSentInterval = Settings::startSeconds;
 
-    Strategy *strategy;
-    Session upcomingSession;
+    stg::strategy *strategy;
+    stg::session upcomingSession;
 
     QTimer *timer = nullptr;
     QSystemTrayIcon *trayIcon = nullptr;
@@ -49,7 +49,7 @@ private:
     bool startSent = false;
     bool nextIsTheEndOfStrategy = false;
 
-    QString titleForSession(const Session &activitySession);
+    QString titleForSession(const stg::session &activitySession);
     void setupTrayIcon();
 
     void sendPrepareMessage(const Message &message);
@@ -57,9 +57,8 @@ private:
 
     std::tuple<Message, Message> makeMessages();
 
-
     void resetSents();
-    Session::Time getCountdown() const;
+    stg::session::time_t getCountdown() const;
 };
 
 #endif // NOTIFIER_H

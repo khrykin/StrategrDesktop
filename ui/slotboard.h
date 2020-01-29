@@ -3,15 +3,15 @@
 
 #include <QWidget>
 #include <QScrollArea>
-#include <models/Timer.h>
+#include <models/timer.h>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "currenttimemarkerwidget.h"
 #include "slotswidget.h"
 #include "slotruler.h"
 #include "timelabel.h"
 #include "colorprovider.h"
-#include "Timer.h"
+#include "timer.h"
 
 class MainWindow;
 class SlotBoard :
@@ -19,7 +19,7 @@ class SlotBoard :
         public ColorProvider {
 Q_OBJECT
 public:
-    explicit SlotBoard(Strategy &strategy,
+    explicit SlotBoard(stg::strategy &strategy,
                        QWidget *parent = nullptr);
 
     void reloadStrategy();
@@ -33,14 +33,14 @@ signals:
     void timerTick();
     void timeSlotsChange();
 private:
-    Strategy &strategy;
+    stg::strategy &strategy;
 
     SlotsWidget *slotsWidget = nullptr;
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *slotsLayout = nullptr;
 
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
-    stg::Timer currentTimeTimer;
+    stg::timer currentTimeTimer;
 
     void updateCurrentTimeMarker();
 

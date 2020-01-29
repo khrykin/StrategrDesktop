@@ -6,8 +6,8 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 
-#include "Strategy.h"
-#include "JSON.h"
+#include "strategy.h"
+#include "json.h"
 
 std::string readTestFile(const std::string &filename) {
     using namespace boost::filesystem;
@@ -22,15 +22,15 @@ std::string readTestFile(const std::string &filename) {
 }
 
 void testStrategyFile(const std::string &filename) {
-    auto strategy = Strategy::fromJsonString(readTestFile(filename));
+    auto strategy = stg::strategy::from_json_string(readTestFile(filename));
 
-    REQUIRE(strategy->timeSlotDuration() == 10);
-    REQUIRE(strategy->beginTime() == 370);
-    REQUIRE(strategy->numberOfTimeSlots() == 10);
-    REQUIRE(strategy->timeSlots()[0].beginTime == 370);
-    REQUIRE(strategy->timeSlots()[0].duration == 10);
-    REQUIRE(strategy->timeSlots()[0].activity == Strategy::NoActivity);
-    REQUIRE(strategy->timeSlots()[2].activity == strategy->activities().at(0));
+    REQUIRE(strategy->time_slot_duration() == 10);
+    REQUIRE(strategy->begin_time() == 370);
+    REQUIRE(strategy->number_of_time_slots() == 10);
+    REQUIRE(strategy->time_slots()[0].begin_time == 370);
+    REQUIRE(strategy->time_slots()[0].duration == 10);
+    REQUIRE(strategy->time_slots()[0].activity == stg::strategy::no_activity);
+    REQUIRE(strategy->time_slots()[2].activity == strategy->activities().at(0));
 
     REQUIRE(strategy->activities().size() == 3);
     REQUIRE(strategy->activities()[0].name() == "Exercise");
@@ -51,42 +51,41 @@ TEST_CASE("JSON Parser") {
     }
 
     SECTION("serialize to JSON string") {
-        auto strategy = Strategy();
-        strategy.setBeginTime(100);
-        strategy.setTimeSlotDuration(10);
+        auto strategy = stg::strategy();
+        strategy.set_begin_time(100);
+        strategy.set_time_slot_duration(10);
 
-        strategy.addActivity(Activity("Some 1", "#ff0000"));
-        strategy.addActivity(Activity("Some 2", "#00ff00"));
+        strategy.add_activity(stg::activity("Some 1", "#ff0000"));
+        strategy.add_activity(stg::activity("Some 2", "#00ff00"));
 
-        strategy.setNumberOfTimeSlots(5);
+        strategy.set_number_of_time_slots(5);
 
-        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1});
-        strategy.putActivityInTimeSlotsAtIndices(1, {2, 3});
+        strategy.place_activity(0, {0, 1});
+        strategy.place_activity(1, {2, 3});
 
-        auto jsonString = strategy.toJsonString();
+        auto json_string = strategy.to_json_string();
+        auto json = nlohmann::json::parse(json_string);
 
-        auto json = nlohmann::json::parse(jsonString);
+        REQUIRE(json[stg::json::keys::start_time] == 100);
+        REQUIRE(json[stg::json::keys::slot_duration] == 10);
 
-        REQUIRE(json[JSON::Keys::startTime] == 100);
-        REQUIRE(json[JSON::Keys::slotDuration] == 10);
+        REQUIRE(json[stg::json::keys::activities].is_array());
+        REQUIRE(json[stg::json::keys::slots].is_array());
 
-        REQUIRE(json[JSON::Keys::activities].is_array());
-        REQUIRE(json[JSON::Keys::slots].is_array());
+        REQUIRE(json[stg::json::keys::slots].size() == 5);
 
-        REQUIRE(json[JSON::Keys::slots].size() == 5);
+        REQUIRE(json[stg::json::keys::activities][0]["name"] == "Some 1");
+        REQUIRE(json[stg::json::keys::activities][0]["color"] == "#ff0000");
 
-        REQUIRE(json[JSON::Keys::activities][0]["name"] == "Some 1");
-        REQUIRE(json[JSON::Keys::activities][0]["color"] == "#ff0000");
+        REQUIRE(json[stg::json::keys::activities][1]["name"] == "Some 2");
+        REQUIRE(json[stg::json::keys::activities][1]["color"] == "#00ff00");
 
-        REQUIRE(json[JSON::Keys::activities][1]["name"] == "Some 2");
-        REQUIRE(json[JSON::Keys::activities][1]["color"] == "#00ff00");
+        REQUIRE(json[stg::json::keys::slots][0] == 0);
+        REQUIRE(json[stg::json::keys::slots][1] == 0);
 
-        REQUIRE(json[JSON::Keys::slots][0] == 0);
-        REQUIRE(json[JSON::Keys::slots][1] == 0);
+        REQUIRE(json[stg::json::keys::slots][2] == 1);
+        REQUIRE(json[stg::json::keys::slots][3] == 1);
 
-        REQUIRE(json[JSON::Keys::slots][2] == 1);
-        REQUIRE(json[JSON::Keys::slots][3] == 1);
-
-        REQUIRE(json[JSON::Keys::slots][4].is_null());
+        REQUIRE(json[stg::json::keys::slots][4].is_null());
     }
 }

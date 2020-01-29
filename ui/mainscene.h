@@ -6,7 +6,7 @@
 #define STRATEGR_MAINSCENE_H
 
 #include "third-party/slidingstackedwidget.h"
-#include "Strategy.h"
+#include "strategy.h"
 
 #include "sessionsmainwidget.h"
 #include "activitylistwidget.h"
@@ -14,7 +14,7 @@
 class MainScene : public SlidingStackedWidget {
 Q_OBJECT
 public:
-    explicit MainScene(Strategy &strategy,
+    explicit MainScene(stg::strategy &strategy,
                        QWidget *parent = nullptr);
 
     void showActivities();
@@ -34,7 +34,7 @@ public:
     void reorderActivitiesByUsage();
 
 private:
-    Strategy &strategy;
+    stg::strategy &strategy;
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
 };

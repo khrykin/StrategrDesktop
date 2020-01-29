@@ -7,7 +7,7 @@
 
 #include <QMouseEvent>
 #include <QFrame>
-#include "Strategy.h"
+#include "strategy.h"
 #include "cursorprovider.h"
 #include "colorprovider.h"
 #include "sessionsmainwidget.h"
@@ -70,7 +70,7 @@ private:
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
     SessionWidget *sessionWidgetAtSlotIndex(int timeSlotIndex);
 
-    Strategy &strategy();
+    stg::strategy &strategy();
     int slotHeight();
 
     int firstSlotTopOffset();

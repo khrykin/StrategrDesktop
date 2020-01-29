@@ -11,7 +11,7 @@
 #include "colorutils.h"
 #include "rowwidget.h"
 
-StrategySettingsWidget::StrategySettingsWidget(Strategy &strategy,
+StrategySettingsWidget::StrategySettingsWidget(stg::strategy &strategy,
                                                QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     setSizePolicy(QSizePolicy::Expanding,
@@ -178,9 +178,9 @@ ColoredLabel *StrategySettingsWidget::makeFormLabel(const QString &text) {
 }
 
 void StrategySettingsWidget::updateUI() {
-    auto slotDuration = strategy.timeSlotDuration();
-    auto beginTime = QTimeFromMinutes(strategy.beginTime());
-    auto endTime = QTimeFromMinutes(strategy.endTime());
+    auto slotDuration = strategy.time_slot_duration();
+    auto beginTime = QTimeFromMinutes(strategy.begin_time());
+    auto endTime = QTimeFromMinutes(strategy.end_time());
 
     dontSave = true;
 
@@ -196,12 +196,12 @@ void StrategySettingsWidget::updateUI() {
         endTimeEdit->setTime(endTime);
     }
 
-    if (beginTimeEdit->minuteStepSize != strategy.timeSlotDuration()) {
-        beginTimeEdit->minuteStepSize = strategy.timeSlotDuration();
+    if (beginTimeEdit->minuteStepSize != strategy.time_slot_duration()) {
+        beginTimeEdit->minuteStepSize = strategy.time_slot_duration();
     }
 
-    if (endTimeEdit->minuteStepSize != strategy.timeSlotDuration()) {
-        endTimeEdit->minuteStepSize = strategy.timeSlotDuration();
+    if (endTimeEdit->minuteStepSize != strategy.time_slot_duration()) {
+        endTimeEdit->minuteStepSize = strategy.time_slot_duration();
     }
 
     dontSave = false;
@@ -217,16 +217,16 @@ void StrategySettingsWidget::save() {
     auto endTime = minutesFromQTime(endTimeEdit->time());
     auto numberOfSlots = (endTime - beginTime) / slotDuration;
 
-    if (slotDuration != strategy.timeSlotDuration()) {
-        strategy.setTimeSlotDuration(slotDuration);
+    if (slotDuration != strategy.time_slot_duration()) {
+        strategy.set_time_slot_duration(slotDuration);
     }
 
-    if (beginTime != strategy.beginTime()) {
-        strategy.setBeginTime(beginTime);
+    if (beginTime != strategy.time_slot_duration()) {
+        strategy.set_time_slot_duration(beginTime);
     }
 
-    if (numberOfSlots != strategy.numberOfTimeSlots()) {
-        strategy.setNumberOfTimeSlots(numberOfSlots);
+    if (numberOfSlots != strategy.number_of_time_slots()) {
+        strategy.set_number_of_time_slots(numberOfSlots);
     }
 }
 

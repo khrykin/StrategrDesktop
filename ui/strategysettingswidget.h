@@ -7,7 +7,7 @@
 #include <QSpinBox>
 #include <QWidget>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "navbar.h"
 #include "steppedtimeedit.h"
 #include "coloredlabel.h"
@@ -18,7 +18,7 @@ class StrategySettingsWidget : public QWidget {
 Q_OBJECT
 
 public:
-    explicit StrategySettingsWidget(Strategy &strategy,
+    explicit StrategySettingsWidget(stg::strategy &strategy,
                                     QWidget *parent = nullptr);
 
     void reloadStrategy();
@@ -30,7 +30,7 @@ signals:
     void strategySettingsUpdated();
 
 private:
-    Strategy &strategy;
+    stg::strategy &strategy;
     bool dontSave = false;
 
     QVBoxLayout *mainLayout = nullptr;

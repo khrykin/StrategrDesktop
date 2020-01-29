@@ -10,7 +10,7 @@
 #include <QLabel>
 #include <QScrollArea>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "colorprovider.h"
 #include "selectionwidget.h"
 
@@ -24,7 +24,7 @@ class OverviewWidget;
 class SessionsMainWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit SessionsMainWidget(Strategy &strategy,
+    explicit SessionsMainWidget(stg::strategy &strategy,
                                 QWidget *parent = nullptr);
 
     void toggleStrategySettingsOpen();
@@ -36,7 +36,7 @@ public:
 
     QScrollArea *slotBoardScrollArea() const;
 private:
-    Strategy &strategy;
+    stg::strategy &strategy;
 
     NotifierImplementation *notifier = nullptr;
     StrategySettingsWidget *strategySettingsWidget = nullptr;

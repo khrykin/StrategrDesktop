@@ -21,7 +21,7 @@ QString FileSystemIOManager::getOpenFileName() {
     return openFilepath;
 }
 
-void FileSystemIOManager::save(const Strategy &strategy) {
+void FileSystemIOManager::save(const stg::strategy &strategy) {
     if (filepath.isEmpty()) {
         saveAs(strategy);
         return;
@@ -30,7 +30,7 @@ void FileSystemIOManager::save(const Strategy &strategy) {
     write(strategy);
 }
 
-void FileSystemIOManager::saveAs(const Strategy &strategy) {
+void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
     auto saveAsFilepath = QFileDialog::getSaveFileName(
             window,
             QObject::tr("Save Strategy As"),
@@ -50,16 +50,16 @@ void FileSystemIOManager::saveAs(const Strategy &strategy) {
     write(strategy);
 }
 
-void FileSystemIOManager::saveAsDefault(const Strategy &strategy) {
+void FileSystemIOManager::saveAsDefault(const stg::strategy &strategy) {
     QSettings().setValue(Settings::defaultStrategyKey,
-                         QString::fromStdString(strategy.toJsonString()));
+                         QString::fromStdString(strategy.to_json_string()));
     QMessageBox msgBox(window);
     msgBox.setText("Current strategy has been saved as your default.");
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.exec();
 }
 
-std::unique_ptr<Strategy>
+std::unique_ptr<stg::strategy>
 FileSystemIOManager::read(const QString &readFilepath) {
     if (readFilepath.isEmpty()) {
         return nullptr;
@@ -72,7 +72,7 @@ FileSystemIOManager::read(const QString &readFilepath) {
     }
 
     QTextStream in(&file);
-    auto strategy = Strategy::fromJsonString(in.readAll().toStdString());
+    auto strategy = stg::strategy::from_json_string(in.readAll().toStdString());
 
     file.close();
 
@@ -119,7 +119,7 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-std::unique_ptr<Strategy>
+std::unique_ptr<stg::strategy>
 FileSystemIOManager::openDefault() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
@@ -127,12 +127,12 @@ FileSystemIOManager::openDefault() {
                 .toString()
                 .toStdString();
 
-        auto defaultStrategy = Strategy::fromJsonString(defaultStrategyString);
+        auto defaultStrategy = stg::strategy::from_json_string(defaultStrategyString);
 
         resetFilepath();
 
         if (!defaultStrategy) {
-            return std::make_unique<Strategy>();
+            return std::make_unique<stg::strategy>();
         }
 
         return defaultStrategy;
@@ -140,7 +140,7 @@ FileSystemIOManager::openDefault() {
 
     resetFilepath();
 
-    return std::make_unique<Strategy>();
+    return std::make_unique<stg::strategy>();
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
@@ -164,8 +164,8 @@ QStringList FileSystemIOManager::recentFileNames() {
     return result;
 }
 
-void FileSystemIOManager::write(const Strategy &strategy) {
-    auto json = strategy.toJsonString();
+void FileSystemIOManager::write(const stg::strategy &strategy) {
+    auto json = strategy.to_json_string();
     QSaveFile file(filepath);
 
     if (file.open(QIODevice::WriteOnly
@@ -241,7 +241,7 @@ void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
                                .arg(file.errorString()));
 }
 
-bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy) {
+bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const stg::strategy &strategy) {
     auto returnValue = showAreYouSureDialog();
 
     if (returnValue == QMessageBox::Save) {
@@ -268,7 +268,7 @@ void FileSystemIOManager::setWindow(QWidget *newWindow) {
     window = newWindow;
 }
 
-std::unique_ptr<Strategy> FileSystemIOManager::openLastOrDefault() {
+std::unique_ptr<stg::strategy> FileSystemIOManager::openLastOrDefault() {
     auto lastOpenedPath = FileSystemIOManager::lastOpenedFilePath();
     if (lastOpenedPath) {
         auto lastOpened = read(*lastOpenedPath);

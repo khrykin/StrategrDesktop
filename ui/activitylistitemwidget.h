@@ -8,7 +8,7 @@
 #include <QWidgetAction>
 
 #include "colorpicker.h"
-#include "Activity.h"
+#include "activity.h"
 #include "activityeditormenu.h"
 #include "colorprovider.h"
 #include "coloredlabel.h"
@@ -16,11 +16,11 @@
 class ActivityListItemWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit ActivityListItemWidget(Activity *activity,
+    explicit ActivityListItemWidget(stg::activity *activity,
                                     QWidget *parent = nullptr);
 
-    Activity *activity() const;
-    void setActivity(Activity *activity);
+    stg::activity *activity() const;
+    void setActivity(stg::activity *activity);
     bool drawsBorder() const;
     void setDrawsBorder(bool drawsBorder);
     bool isSelected() const;
@@ -34,10 +34,10 @@ signals:
 
     void selected();
 
-    void activityEdited(const Activity &activity);
+    void activityEdited(const stg::activity &activity);
     void activityDeleted();
 private:
-    Activity *_activity;
+    stg::activity *_activity;
 
     ColoredLabel *label = nullptr;
     ActivityEditorMenu *editorMenu = nullptr;

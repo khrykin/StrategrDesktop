@@ -13,9 +13,9 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "slotruler.h"
-#include "CurrentTimeMarker.h"
+#include "currenttimemarker.h"
 
-SlotBoard::SlotBoard(Strategy &strategy, QWidget *parent)
+SlotBoard::SlotBoard(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QHBoxLayout();
     setLayout(mainLayout);
@@ -29,7 +29,7 @@ SlotBoard::SlotBoard(Strategy &strategy, QWidget *parent)
 }
 
 void SlotBoard::setupCurrentTimeTimer() {
-    currentTimeTimer.setCallback(this, &SlotBoard::timerCallback);
+    currentTimeTimer.set_callback(this, &SlotBoard::timerCallback);
     currentTimeTimer.start(ApplicationSettings::currentTimeTimerSecondsInterval);
 }
 
@@ -74,13 +74,13 @@ void SlotBoard::updateUI() {
 QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
-    for (auto &timeSlot : strategy.timeSlots()) {
-        auto label = QStringForMinutes(timeSlot.beginTime);
-        labels.append(TimeLabel{label, timeSlot.beginTime});
+    for (auto &timeSlot : strategy.time_slots()) {
+        auto label = QStringForMinutes(timeSlot.begin_time);
+        labels.append(TimeLabel{label, timeSlot.begin_time});
     }
 
-    auto endTimeLabel = QStringForMinutes(strategy.endTime());
-    labels.append(TimeLabel{endTimeLabel, strategy.endTime()});
+    auto endTimeLabel = QStringForMinutes(strategy.end_time());
+    labels.append(TimeLabel{endTimeLabel, strategy.end_time()});
 
     return labels;
 }
@@ -94,30 +94,26 @@ const SelectionWidget::RawSelectionState &SlotBoard::selection() {
 }
 
 void SlotBoard::updateCurrentTimeMarker() {
-    auto currentTimeMarker = CurrentTimeMarker(strategy);
+    auto currentTimeMarker = stg::current_time_marker(strategy);
 
-    auto rect = currentTimeMarker.rectInParent(
-            slotsWidget->geometry(),
-            CurrentTimeMarkerWidget::markerSize
-    );
+    auto rect = currentTimeMarker.rect_in_parent(slotsWidget->geometry(),
+                                                 CurrentTimeMarkerWidget::markerSize);
 
-    currentTimeMarkerWidget->setGeometry(rect.to<QRect>());
+    currentTimeMarkerWidget->setGeometry(stg::rect_cast<QRect>(rect));
 
-    if (currentTimeMarker.isHidden()
+    if (currentTimeMarker.is_hidden()
         && currentTimeMarkerWidget->isVisible()) {
         currentTimeMarkerWidget->hide();
-    } else if (currentTimeMarker.isVisible()
+    } else if (currentTimeMarker.is_visible()
                && currentTimeMarkerWidget->isHidden()) {
         currentTimeMarkerWidget->show();
     }
 }
 
 void SlotBoard::focusOnCurrentTime() {
-    auto topOffset = CurrentTimeMarker(strategy)
-            .scrollOffsetInParent(
-                    slotsWidget->geometry(),
-                    window()->geometry().height()
-            );
+    auto topOffset = stg::current_time_marker(strategy)
+            .scroll_offset_in_parent(slotsWidget->geometry(),
+                                     window()->geometry().height());
 
     auto scrollBar = parentScrollArea()->verticalScrollBar();
 

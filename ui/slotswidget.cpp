@@ -12,11 +12,11 @@
 #include "mainwindow.h"
 #include "utils.h"
 
-SlotsWidget::SlotsWidget(Strategy &strategy, QWidget *parent)
+SlotsWidget::SlotsWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy),
           QWidget(parent) {
     strategy.sessions()
-            .addOnChangeCallback(this, &SlotsWidget::updateUI);
+            .add_on_change_callback(this, &SlotsWidget::updateUI);
 
     setLayout(new StackLayout());
     layout()->setSpacing(0);
@@ -109,7 +109,7 @@ void SlotsWidget::openActivitiesWindow() {
 }
 
 void SlotsWidget::deleteActivityInSelection() {
-    strategy.emptyTimeSlotsAtIndices(selectionWidget->selection());
+    strategy.make_empty_at(selectionWidget->selection());
     selectionWidget->deselectAll();
 }
 
@@ -118,12 +118,12 @@ void SlotsWidget::deselectAllSlots() {
 }
 
 void SlotsWidget::selectAllSlots() {
-    selectionWidget->selectAll(strategy.numberOfTimeSlots());
+    selectionWidget->selectAll(strategy.number_of_time_slots());
 }
 
 void SlotsWidget::reloadStrategy() {
     strategy.sessions()
-            .addOnChangeCallback(this, &SlotsWidget::updateUI);
+            .add_on_change_callback(this, &SlotsWidget::updateUI);
 
     selectionWidget->reloadStrategy();
 
@@ -180,16 +180,16 @@ void SlotsWidget::shiftAllSlotsBelow() {
     }
 
     auto bottomTimeSlotIndex = selectionWidget->selection().front();
-    strategy.shiftBelowTimeSlot(bottomTimeSlotIndex,
-                                selectionWidget->selection().size());
+    strategy.shift_below_time_slot(bottomTimeSlotIndex,
+                                   selectionWidget->selection().size());
 
     selectionWidget->deselectAll();
 }
 
 bool SlotsWidget::onlyEmptySlotsSelected() const {
     for (auto slotIndex : selectionWidget->selection()) {
-        if (strategy.timeSlots()[slotIndex].activity
-            != Strategy::NoActivity) {
+        if (strategy.time_slots()[slotIndex].activity
+            != stg::strategy::no_activity) {
             return false;
         }
     }
@@ -206,14 +206,14 @@ void SlotsWidget::paintEvent(QPaintEvent *event) {
     painter.setPen(Qt::NoPen);
     painter.setBrush(SessionWidget::borderColor());
 
-    auto thickness = strategy.beginTime() % 60 == 0 ? 2 : 1;
+    auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
     auto borderRect = QRect(8, 0, width() - 8 * 2, thickness);
 
     painter.drawRect(borderRect);
 }
 
 void SlotsWidget::updateContentsMargins() {
-    auto thickness = strategy.beginTime() % 60 == 0 ? 2 : 1;
+    auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
     slotsLayout->setContentsMargins(8, thickness, 8, 0);
     selectionWidget->setContentsMargins(8, thickness, 8, 0);
 }

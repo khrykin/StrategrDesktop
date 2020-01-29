@@ -9,7 +9,7 @@
 #include <QWidget>
 
 #include "sessionwidget.h"
-#include "Strategy.h"
+#include "strategy.h"
 #include "slotruler.h"
 #include "applicationsettings.h"
 #include "slotsmousehandler.h"
@@ -21,7 +21,7 @@ class SlotsWidget : public QWidget,
                     public ReactiveList<SessionWidget> {
 Q_OBJECT
 public:
-    explicit SlotsWidget(Strategy &strategy,
+    explicit SlotsWidget(stg::strategy &strategy,
                          QWidget *parent = nullptr);
 
     void reloadStrategy();
@@ -34,7 +34,7 @@ signals:
     void sessionsChanged();
 private:
     friend SlotsMouseHandler;
-    Strategy &strategy;
+    stg::strategy &strategy;
 
     QVBoxLayout *slotsLayout = nullptr;
     SelectionWidget *selectionWidget = nullptr;

@@ -12,7 +12,7 @@
 #include "currentsessionwidget.h"
 #include "slotboard.h"
 
-SessionsMainWidget::SessionsMainWidget(Strategy &strategy,
+SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
                                        QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QVBoxLayout();

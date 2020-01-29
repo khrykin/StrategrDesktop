@@ -6,11 +6,11 @@
 #define STRATEGR_TIMELABEL_H
 
 #include <QString>
-#include "Strategy.h"
+#include "strategy.h"
 
 struct TimeLabel {
     QString label = "";
-    Strategy::Time time = 0;
+    stg::strategy::time_t time = 0;
 
     friend bool operator==(const TimeLabel &lhs, const TimeLabel &rhs) {
         return lhs.time == rhs.time;

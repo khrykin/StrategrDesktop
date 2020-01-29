@@ -16,7 +16,7 @@
 
 #include <QDebug>
 
-void MacOSCalendarExporter::exportStrategy(const Strategy &strategy,
+void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                                            Options options,
                                            time_t dateSecsFromEpoch) {
     @autoreleasepool {
@@ -68,7 +68,7 @@ void MacOSCalendarExporter::showAccessDeniedAlert() {
 }
 
 void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
-                                                       const Strategy &strategy,
+                                                       const stg::strategy &strategy,
                                                        Options options,
                                                        time_t dateSecsFromEpoch) {
     SGCalendarExportProgressWindow *progressWindow = [[SGCalendarExportProgressWindow alloc] init];
@@ -81,7 +81,7 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
 
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
         SGCalendarManager *calendarManager = [[[SGCalendarManager alloc] initWithStore:store] autorelease];
-        auto nonEmptySessions = strategy.sessions().nonEmpty();
+        auto nonEmptySessions = strategy.sessions().get_non_empty();
 
         progressWindow.numberOfEvents = static_cast<unsigned>(nonEmptySessions.size());
         calendarManager.delegate = progressWindow;
@@ -115,7 +115,7 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
 }
 
 void
-MacOSCalendarExporter::exportSession(const Session &strategy,
+MacOSCalendarExporter::exportSession(const stg::session &strategy,
                                      SGCalendarManager *calendarManager,
                                      Options options,
                                      time_t dateSecsFromEpoch) {
@@ -135,7 +135,7 @@ MacOSCalendarExporter::exportSession(const Session &strategy,
 
     [calendarManager createEventForCalendar:calendar
                                        date:date
-                               beginMinutes:strategy.beginTime()
+                               beginMinutes:strategy.begin_time()
                              duraionMinutes:strategy.duration()
                        includeNotifications:optionEnabled(options, IncludeNotifications)];
 }

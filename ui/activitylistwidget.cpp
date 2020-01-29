@@ -9,18 +9,18 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-#include "ActivityInvalidPropertyException.h"
+#include "activityinvalidpropertyexception.h"
 #include "activitylistwidget.h"
 #include "activitylistitemwidget.h"
 #include "mainscene.h"
 #include "slotboard.h"
 #include "searchbox.h"
 
-ActivityListWidget::ActivityListWidget(Strategy &strategy,
+ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
                                        QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     strategy.activities()
-            .addOnChangeCallback(this, &ActivityListWidget::updateUI);
+            .add_on_change_callback(this, &ActivityListWidget::updateUI);
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
@@ -114,8 +114,8 @@ void ActivityListWidget::layoutChildWidgets() {
 
     connect(newActivityMenu,
             &ActivityEditorMenu::submitActivity,
-            [&](const Activity &activity) {
-                strategy.addActivity(activity);
+            [&](const stg::activity &activity) {
+                strategy.add_activity(activity);
                 if (isShowingSearchResults()) {
                     performSearch();
                 }
@@ -175,7 +175,7 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
 
     auto activityIndex = itemIndex;
     if (isShowingSearchResults()) {
-        activityIndex = *strategy.activities().indexOf(searchResults.at(itemIndex));
+        activityIndex = *strategy.activities().index_of(searchResults.at(itemIndex));
     }
 
     connect(item, &ActivityListItemWidget::selected,
@@ -183,22 +183,22 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
                 if (mainScene()->selection().empty())
                     return;
 
-                strategy.putActivityInTimeSlotsAtIndices(activityIndex,
-                                                         mainScene()->selection());
+                strategy.place_activity(activityIndex,
+                                        mainScene()->selection());
                 getBack();
             });
 
     connect(item, &ActivityListItemWidget::activityDeleted,
             [=]() {
-                strategy.removeActivityAtIndex(activityIndex);
+                strategy.delete_activity(activityIndex);
                 if (isShowingSearchResults()) {
                     performSearch();
                 }
             });
 
     connect(item, &ActivityListItemWidget::activityEdited,
-            [=](const Activity &newActivity) {
-                strategy.editActivityAtIndex(activityIndex, newActivity);
+            [=](const stg::activity &newActivity) {
+                strategy.edit_activity(activityIndex, newActivity);
                 if (isShowingSearchResults()) {
                     performSearch();
                 }
@@ -242,7 +242,7 @@ void ActivityListWidget::showNewActivityMenu() {
 
 void ActivityListWidget::reloadStrategy() {
     strategy.activities()
-            .addOnChangeCallback(this, &ActivityListWidget::updateUI);
+            .add_on_change_callback(this, &ActivityListWidget::updateUI);
 
     updateUI();
 }
@@ -292,7 +292,7 @@ void ActivityListWidget::removeBorderBeforeIndex(int index) {
 void ActivityListWidget::updateUI() {
     updateList();
 
-    if (strategy.activities().isEmpty()) {
+    if (strategy.activities().empty()) {
         scrollArea->hide();
         searchBox->hide();
         emptyListNotice->show();

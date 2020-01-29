@@ -12,7 +12,7 @@
 
 #include "coloredlabel.h"
 
-CurrentSessionWidget::CurrentSessionWidget(Strategy &strategy, QWidget *parent)
+CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     setMouseTracking(true);
 
@@ -47,7 +47,7 @@ CurrentSessionWidget::CurrentSessionWidget(Strategy &strategy, QWidget *parent)
     activityLabel->setBold(true);
     activityLabel->setFontHeight(14);
     activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
-        auto activeSession = strategy.activeSession();
+        auto activeSession = strategy.active_session();
         if (!activeSession) {
             return;
         }
@@ -215,7 +215,7 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
 }
 
 void CurrentSessionWidget::updateUI() {
-    auto activeSession = strategy.activeSession();
+    auto activeSession = strategy.active_session();
 
     if (!activeSession) {
         if (isVisible) {
@@ -226,13 +226,13 @@ void CurrentSessionWidget::updateUI() {
         return;
     }
 
-    auto startTimeText = QStringForMinutes(activeSession->beginTime());
-    auto endTimeText = QStringForMinutes(activeSession->endTime());
+    auto startTimeText = QStringForMinutes(activeSession->begin_time());
+    auto endTimeText = QStringForMinutes(activeSession->end_time());
 
     auto activityText = makeActivitySessionTitle();
 
-    auto passedTimeText = humanTimeForMinutes(activeSession->passedMinutes());
-    auto leftTimeText = humanTimeForMinutes(activeSession->leftMinutes());
+    auto passedTimeText = humanTimeForMinutes(activeSession->passed_minutes());
+    auto leftTimeText = humanTimeForMinutes(activeSession->left_minutes());
 
     startTimeLabel->setText(startTimeText);
     endTimeLabel->setText(endTimeText);
@@ -246,7 +246,7 @@ void CurrentSessionWidget::updateUI() {
 }
 
 QString CurrentSessionWidget::makeActivitySessionTitle() const {
-    auto activitySession = strategy.activeSession();
+    auto activitySession = strategy.active_session();
     return humanTimeForMinutes(activitySession->duration())
            + " "
            + "<font color=\""
@@ -264,7 +264,7 @@ void CurrentSessionWidget::setProgress(double value) {
 }
 
 void CurrentSessionWidget::reloadSessionIfNeeded() {
-    auto *activeSession = strategy.activeSession();
+    auto *activeSession = strategy.active_session();
 
     if (activeSession) {
         if (*activeSession != previousSession) {

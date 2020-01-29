@@ -5,7 +5,7 @@
 #include <QSaveFile>
 #include <QObject>
 
-#include "models/Strategy.h"
+#include "models/strategy.h"
 
 class FileSystemIOManager {
 public:
@@ -24,18 +24,18 @@ public:
 
     QString getOpenFileName();
 
-    void save(const Strategy &strategy);
-    void saveAs(const Strategy &strategy);
-    void saveAsDefault(const Strategy &strategy);
+    void save(const stg::strategy &strategy);
+    void saveAs(const stg::strategy &strategy);
+    void saveAsDefault(const stg::strategy &strategy);
 
-    std::unique_ptr<Strategy> read(const QString &readFilepath);
+    std::unique_ptr<stg::strategy> read(const QString &readFilepath);
     static std::optional<QString> lastOpenedFilePath();
 
-    std::unique_ptr<Strategy> openDefault();
-    std::unique_ptr<Strategy> openLastOrDefault();
+    std::unique_ptr<stg::strategy> openDefault();
+    std::unique_ptr<stg::strategy> openLastOrDefault();
 
     void resetFilepath();
-    bool askIfWantToDiscardOrLeaveCurrent(const Strategy &strategy);
+    bool askIfWantToDiscardOrLeaveCurrent(const stg::strategy &strategy);
 
     QFileInfo fileInfo();
 
@@ -56,10 +56,10 @@ private:
 
     QWidget *window;
 
-    static constexpr auto searchPattern = "Strategy files (*.stg)";
+    static constexpr auto searchPattern = "stg::strategy files (*.stg)";
 
     static QString destinationDir();
-    void write(const Strategy &strategy);
+    void write(const stg::strategy &strategy);
     void updateLastOpened();
     int showAreYouSureDialog();
     void showCantOpenDialog(const QFile &file,

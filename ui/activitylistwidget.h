@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "navbar.h"
 #include "activityeditormenu.h"
 #include "third-party/slidingstackedwidget.h"
@@ -23,7 +23,7 @@ class ActivityListWidget : public QWidget,
                            public ColorProvider {
 Q_OBJECT
 public:
-    explicit ActivityListWidget(Strategy &strategy,
+    explicit ActivityListWidget(stg::strategy &strategy,
                                 QWidget *parent = nullptr);
 
     void reloadStrategy();
@@ -34,8 +34,8 @@ protected:
     void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
-    Strategy &strategy;
-    ActivityList searchResults;
+    stg::strategy &strategy;
+    stg::activity_list searchResults;
 
     SearchBox *searchBox = nullptr;
     QScrollArea *scrollArea = nullptr;

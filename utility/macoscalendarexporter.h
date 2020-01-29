@@ -10,7 +10,7 @@
 #include <tuple>
 #include <ctime>
 
-#include "Strategy.h"
+#include "strategy.h"
 
 #ifdef __OBJC__
 #define OBJC_CLASS(name) @class name
@@ -41,20 +41,20 @@ public:
     static OptionsWindowResult
     showOptionsAlert(Options initialOptions = defaultOptions);
 
-    static void exportStrategy(const Strategy &strategy,
+    static void exportStrategy(const stg::strategy &strategy,
                                Options options,
                                time_t dateSecsFromEpoch);
 private:
     static bool optionEnabled(Options optionsMask,
                               Options setting);
 
-    static void exportSession(const Session &strategy,
+    static void exportSession(const stg::session &strategy,
                               SGCalendarManager *calendarManager,
                               Options options,
                               time_t dateSecsFromEpoch);
 
     static void exportStrategyUnauthorized(EKEventStore *store,
-                                           const Strategy &strategy, Options options,
+                                           const stg::strategy &strategy, Options options,
                                            time_t dateSecsFromEpoch);
     static void showAccessDeniedAlert();
 };

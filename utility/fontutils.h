@@ -8,13 +8,13 @@
 #include <QPainter>
 #include <QStringList>
 #include <QFontMetrics>
-#include "Session.h"
+#include "session.h"
 #include "applicationsettings.h"
 #include "utils.h"
 #include "colorutils.h"
 
 namespace FontUtils {
-    inline void drawSessionTitle(const Session &session,
+    inline void drawSessionTitle(const stg::session &session,
                                  QPainter &painter,
                                  const QRect &rect) {
 

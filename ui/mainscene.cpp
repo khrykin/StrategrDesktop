@@ -10,7 +10,7 @@
 #include "mainscene.h"
 #include "mainwindow.h"
 
-MainScene::MainScene(Strategy &strategy, QWidget *parent)
+MainScene::MainScene(stg::strategy &strategy, QWidget *parent)
         : SlidingStackedWidget(parent), strategy(strategy) {
 
     sessionsMainWidget = new SessionsMainWidget(strategy, this);
@@ -72,5 +72,5 @@ void MainScene::showNewActivityMenu() {
 }
 
 void MainScene::reorderActivitiesByUsage() {
-    strategy.reorderActivitiesByUsage();
+    strategy.reorder_activities_by_usage();
 }

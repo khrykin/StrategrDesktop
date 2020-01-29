@@ -10,7 +10,7 @@
 #include <QMenu>
 #include <QCloseEvent>
 
-#include "Strategy.h"
+#include "strategy.h"
 #include "filesystemiomanager.h"
 #include "windowgeometrymanager.h"
 #include "mainscene.h"
@@ -55,10 +55,10 @@ private:
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
-    Strategy strategy;
+    stg::strategy strategy;
 
     void setIsSaved(bool isSaved);
-    void setStrategy(const Strategy &newStrategy);
+    void setStrategy(const stg::strategy &newStrategy);
     void strategyStateChanged();
     void updateWindowTitle();
 

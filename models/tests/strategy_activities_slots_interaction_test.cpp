@@ -3,25 +3,25 @@
 //
 
 #include <catch2/catch.hpp>
-#include "Strategy.h"
+#include "strategy.h"
 #include <iostream>
 
 TEST_CASE("Strategy activities and slots interaction") {
-    auto strategy = Strategy();
+    auto strategy = stg::strategy();
 
-    strategy.addActivity(Activity("Some 1"));
+    strategy.add_activity(stg::activity("Some 1"));
     const auto &activity = strategy.activities()[0];
 
-    strategy.putActivityInTimeSlotsAtIndices(0, {0, 2});
+    strategy.place_activity(0, {0, 2});
 
     SECTION("deleting activity should also remove it from slots") {
-        strategy.removeActivityAtIndex(0);
+        strategy.delete_activity(0);
         REQUIRE(strategy.sessions()[0].activity
-                == Strategy::NoActivity);
+                == stg::strategy::no_activity);
     }
 
     SECTION("editing (replacing) activity should also edit (replace) it in slots") {
-        strategy.editActivityAtIndex(0, Activity("Some Edited"));
+        strategy.edit_activity(0, stg::activity("Some Edited"));
         const auto &updatedActivity = strategy.activities()[0];
 
         REQUIRE(strategy.sessions()[0].activity

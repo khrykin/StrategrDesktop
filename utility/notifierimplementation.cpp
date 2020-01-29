@@ -6,7 +6,7 @@
 #include "applicationsettings.h"
 
 
-NotifierImplementation::NotifierImplementation(Strategy *strategy, QObject *parent)
+NotifierImplementation::NotifierImplementation(stg::strategy *strategy, QObject *parent)
         : strategy(strategy), QObject(parent) {
     setupTrayIcon();
 
@@ -38,9 +38,9 @@ NotifierImplementation::~NotifierImplementation() {
 }
 
 void NotifierImplementation::timerTick() {
-    const auto newUpcomingSession = strategy->upcomingSession();
+    const auto newUpcomingSession = strategy->upcoming_session();
     auto strategyEndCountdown =
-            strategy->endTime() * 60 - currentSeconds();
+            strategy->end_time() * 60 - currentSeconds();
 
     if (!newUpcomingSession) {
         if (strategyEndCountdown <= getReadyInterval) {
@@ -74,11 +74,10 @@ void NotifierImplementation::timerTick() {
     }
 }
 
-Session::Time NotifierImplementation::getCountdown() const {
-    const auto countdown = nextIsTheEndOfStrategy
-                           ? strategy->endTime() * 60 - currentSeconds()
-                           : upcomingSession.beginTime() * 60 - currentSeconds();
-    return countdown;
+stg::session::time_t NotifierImplementation::getCountdown() const {
+    return nextIsTheEndOfStrategy
+           ? strategy->end_time() * 60 - currentSeconds()
+           : upcomingSession.begin_time() * 60 - currentSeconds();;
 }
 
 void NotifierImplementation::sendStartMessage(const Message &message) {
@@ -98,11 +97,11 @@ void NotifierImplementation::resetSents() {
     startSent = false;
 }
 
-void NotifierImplementation::setStrategy(Strategy *newStrategy) {
+void NotifierImplementation::setStrategy(stg::strategy *newStrategy) {
     strategy = newStrategy;
 }
 
-QString NotifierImplementation::titleForSession(const Session &activitySession) {
+QString NotifierImplementation::titleForSession(const stg::session &activitySession) {
     return QString::fromStdString(activitySession.activity->name())
            + " ("
            + humanTimeForMinutes(activitySession.duration())

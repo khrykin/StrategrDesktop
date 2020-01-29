@@ -38,45 +38,45 @@ if (APPLE)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
-        models/Activity.cpp
-        models/Activity.h
-        models/Strategy.cpp
-        models/Strategy.h
-        models/ActivityInvalidPropertyException.cpp
-        models/ActivityInvalidPropertyException.h
-        models/ActivityList.cpp
-        models/ActivityList.h
-        models/PrivateList.hpp
-        models/NotifiableOnChange.h
-        models/TimeSlot.cpp
-        models/TimeSlot.h
-        models/TimeSlotsState.cpp
-        models/TimeSlotsState.h
-        models/SessionsList.cpp
-        models/SessionsList.h
-        models/StreamableList.h
-        models/SessionsCalculator.cpp
-        models/SessionsCalculator.h
-        models/StrategyHistory.cpp
-        models/StrategyHistory.h
-        models/Session.cpp
-        models/DragOperation.cpp
-        models/DragOperation.h
-        models/ResizeOperation.cpp
-        models/ResizeOperation.h
-        models/Overview.cpp
-        models/Overview.h
-        models/TimeUtils.cpp
-        models/TimeUtils.h
-        models/JSON.cpp
-        models/JSON.h
-        models/Timer.cpp
-        models/Timer.h
-        models/CurrentTimeMarker.cpp
-        models/CurrentTimeMarker.h
-        models/Rect.hpp
-        models/Notifier.cpp
-        models/Notifier.h models/utility.h)
+        models/activity.cpp
+        models/activity.h
+        models/strategy.cpp
+        models/strategy.h
+        models/activityinvalidpropertyexception.cpp
+        models/activityinvalidpropertyexception.h
+        models/activitylist.cpp
+        models/activitylist.h
+        models/privatelist.h
+        models/notifiableonchange.h
+        models/timeslot.cpp
+        models/timeslot.h
+        models/timeslotsstate.cpp
+        models/timeslotsstate.h
+        models/sessionslist.cpp
+        models/sessionslist.h
+        models/streamablelist.h
+        models/sessionscalculator.cpp
+        models/sessionscalculator.h
+        models/strategyhistory.cpp
+        models/strategyhistory.h
+        models/session.cpp
+        models/dragoperation.cpp
+        models/dragoperation.h
+        models/resizeoperation.cpp
+        models/resizeoperation.h
+        models/overview.cpp
+        models/overview.h
+        models/time_utils.cpp
+        models/time_utils.h
+        models/json.cpp
+        models/json.h
+        models/timer.cpp
+        models/timer.h
+        models/currenttimemarker.cpp
+        models/currenttimemarker.h
+        models/rect.h
+        models/notifier.cpp
+        models/notifier.h models/utility.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -279,7 +279,7 @@ target_link_libraries(StrategrCore
 
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE
-        PUBLIC_HEADER models/Strategy.h
+        PUBLIC_HEADER models/strategy.h
         VERSION ${VERSION_SHORT}
         MACOSX_FRAMEWORK_LONG_VERSION_STRING ${VERSION}
         MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION_SHORT}

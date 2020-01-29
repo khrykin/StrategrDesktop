@@ -9,7 +9,7 @@
 #include "colorutils.h"
 #include "applicationsettings.h"
 
-ActivityEditorMenu::ActivityEditorMenu(std::optional<Activity> activity,
+ActivityEditorMenu::ActivityEditorMenu(std::optional<stg::activity> activity,
                                        QWidget *parent)
         : activity(std::move(activity)),
           QMenu(parent) {
@@ -231,8 +231,8 @@ void ActivityEditorMenu::saveAndClose() {
     }
 
     try {
-        emit submitActivity(Activity(lineEdit->text().toStdString(),
-                                     currentColor.name().toStdString()));
+        emit submitActivity(stg::activity(lineEdit->text().toStdString(),
+                                          currentColor.name().toStdString()));
         close();
         reset();
     } catch (const std::exception &e) {

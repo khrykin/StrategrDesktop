@@ -4,69 +4,69 @@
 #include <sstream>
 
 #include <catch2/catch.hpp>
-#include "Activity.h"
-#include "ActivityInvalidPropertyException.h"
+#include "activity.h"
+#include "activityinvalidpropertyexception.h"
 
 const auto BLACK_COLOR = "#000000";
 const auto RED_COLOR = "#ff0000";
 
-TEST_CASE("Activity default constructor", "[activity]") {
+TEST_CASE("stg::activity default constructor", "[activity]") {
     SECTION("should set name and default color") {
-        auto activity = Activity("Some");
+        auto activity = stg::activity("Some");
 
         REQUIRE(activity.name() == "Some");
         REQUIRE(activity.color() == BLACK_COLOR);
     }
 
     SECTION("should set _name and custom color") {
-        auto activityWithColor = Activity("Some 2", RED_COLOR);
+        auto activityWithColor = stg::activity("Some 2", RED_COLOR);
 
         REQUIRE(activityWithColor.name() == "Some 2");
         REQUIRE(activityWithColor.color() == RED_COLOR);
     }
 
     SECTION("shouldn't allow empty name") {
-        REQUIRE_THROWS_AS(Activity(""), Activity::InvalidPropertyException);
+        REQUIRE_THROWS_AS(stg::activity(""), stg::activity::invalid_property_exception);
     }
 
     SECTION("shouldn't allow only-whitespaces name") {
-        REQUIRE_THROWS_AS(Activity("  \t  "),
-                          Activity::InvalidPropertyException);
+        REQUIRE_THROWS_AS(stg::activity("  \t  "),
+                          stg::activity::invalid_property_exception);
     }
 }
 
-TEST_CASE("Activity immutability", "[activity]") {
-    const auto intialName = "Some";
-    const auto activity = Activity(intialName);
+TEST_CASE("stg::activity immutability", "[activity]") {
+    const auto intial_name = "Some";
+    const auto activity = stg::activity(intial_name);
 
     SECTION("copy changing name") {
-        REQUIRE(activity.copyChangingName("Some 2")
-                == Activity("Some 2"));
-        REQUIRE(activity == Activity(intialName));
+        REQUIRE(activity.copy_changing_name("Some 2")
+                == stg::activity("Some 2"));
+        REQUIRE(activity == stg::activity(intial_name));
     }
 
     SECTION("copy changing color") {
-        REQUIRE(activity.copyChangingColor(RED_COLOR)
-                == Activity(intialName, RED_COLOR));
-        REQUIRE(activity == Activity(intialName));
+        REQUIRE(activity.copy_changing_color(RED_COLOR)
+                == stg::activity(intial_name, RED_COLOR));
+        REQUIRE(activity == stg::activity(intial_name));
     }
 }
 
-TEST_CASE("Activity equality", "[activity]") {
-    auto activity1 = Activity("Some");
-    auto activity2 = Activity("Some");
-    auto activity3 = Activity("Some", RED_COLOR);
-    auto activity4 = Activity("Some 2", RED_COLOR);
+TEST_CASE("stg::activity equality", "[activity]") {
+    auto activity1 = stg::activity("Some");
+    auto activity2 = stg::activity("Some");
+    auto activity3 = stg::activity("Some", RED_COLOR);
+    auto activity4 = stg::activity("Some 2", RED_COLOR);
 
     REQUIRE(activity1 == activity2);
     REQUIRE(activity1 != activity3);
     REQUIRE(activity4 != activity1);
 }
 
-TEST_CASE("Activity ostream operator", "[activity]") {
-    auto activity = Activity("Some", RED_COLOR);
+TEST_CASE("stg::activity ostream operator", "[activity]") {
+    auto activity = stg::activity("Some", RED_COLOR);
     std::stringstream sstream;
     sstream << activity;
 
-    REQUIRE(sstream.str() == "Activity(Some, #ff0000)");
+    REQUIRE(sstream.str() == "activity(Some, #ff0000)");
 }

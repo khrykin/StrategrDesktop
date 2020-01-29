@@ -8,7 +8,7 @@
 #include "selectionwidget.h"
 #include "colorutils.h"
 
-SelectionWidget::SelectionWidget(Strategy &strategy,
+SelectionWidget::SelectionWidget(stg::strategy &strategy,
                                  int slotHeight,
                                  QWidget *parent)
         : strategy(strategy), QWidget(parent) {
@@ -79,8 +79,8 @@ void SelectionWidget::drawSelectionForItem(RawSelectionState &selectionItem,
 
     auto widgetHeight = selectionItem.size() * slotHeight;
 
-    const auto &lastTimeSlot = strategy.timeSlots()[selectionItem.back()];
-    auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 ? 1 : 0;
+    const auto &lastTimeSlot = strategy.time_slots()[selectionItem.back()];
+    auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 ? 1 : 0;
 
     auto rect = QRect(contentsMargins().left(),
                       contentsMargins().top() + topPosition + 2,
@@ -144,7 +144,7 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
     }
 }
 
-bool SelectionWidget::isSlotIndexSelected(Strategy::TimeSlotIndex slotIndex) {
+bool SelectionWidget::isSlotIndexSelected(stg::strategy::time_slot_index_t slotIndex) {
     return std::find(rawSelectionState.begin(),
                      rawSelectionState.end(),
                      slotIndex) != rawSelectionState.end();
@@ -170,8 +170,8 @@ void SelectionWidget::fillSelected(int fromIndex, int toIndex) {
         fromIndex = 0;
     }
 
-    if (toIndex >= strategy.numberOfTimeSlots()) {
-        fromIndex = strategy.numberOfTimeSlots() - 1;
+    if (toIndex >= strategy.number_of_time_slots()) {
+        fromIndex = strategy.number_of_time_slots() - 1;
     }
 
     for (auto i = fromIndex; i <= toIndex; i++) {

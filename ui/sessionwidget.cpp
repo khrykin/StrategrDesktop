@@ -11,11 +11,11 @@
 
 #include "sessionwidget.h"
 #include "utils.h"
-#include "Strategy.h"
+#include "strategy.h"
 #include "colorutils.h"
 #include "fontutils.h"
 
-SessionWidget::SessionWidget(Session activitySession,
+SessionWidget::SessionWidget(stg::session activitySession,
                              QWidget *parent)
         : activitySession(std::move(activitySession)),
           QWidget(parent) {
@@ -52,14 +52,14 @@ void SessionWidget::drawRulers(QPainter &painter) const {
 
     painter.setBrush(rulerColor);
 
-    for (auto &timeSlot : activitySession.timeSlots) {
-        auto timeSlotIndex = static_cast<int>(&timeSlot - &activitySession.timeSlots[0]);
+    for (auto &timeSlot : activitySession.time_slots) {
+        auto timeSlotIndex = static_cast<int>(&timeSlot - &activitySession.time_slots[0]);
 
         if (timeSlotIndex == activitySession.length() - 1) {
             break;
         }
 
-        auto thickness = timeSlot.endTime() % 60 == 0 ? 2 : 1;
+        auto thickness = timeSlot.end_time() % 60 == 0 ? 2 : 1;
         auto rulerRect = QRect(0,
                                slotHeight * (timeSlotIndex + 1) - 1,
                                width(),
@@ -77,8 +77,8 @@ void SessionWidget::drawSelection(QPainter &painter) const {
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(selectedBackgroundColor());
 
-    auto lastTimeSlot = activitySession.timeSlots.back();
-    auto bottomMargin = lastTimeSlot.endTime() % 60 == 0 || isBorderSelected ? 1 : 0;
+    auto lastTimeSlot = activitySession.time_slots.back();
+    auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 || isBorderSelected ? 1 : 0;
     auto selectionRect = QRect(1,
                                2,
                                width() - 2,
@@ -113,7 +113,7 @@ QColor SessionWidget::sessionColor() const {
 
 
 void SessionWidget::drawBorder(QPainter &painter) {
-    auto thickBorder = activitySession.timeSlots.back().endTime() % 60 == 0 ||
+    auto thickBorder = activitySession.time_slots.back().end_time() % 60 == 0 ||
                        isBorderSelected;
 
     auto borderThickness = thickBorder ? 2 : 1;
@@ -156,7 +156,7 @@ void SessionWidget::updateUI() {
             = previousDuration != activitySession.duration();
     auto activityChanged
             = previousActivitySession.activity != activitySession.activity;
-    auto endTimeChanged = previousEndTime != activitySession.endTime();
+    auto endTimeChanged = previousEndTime != activitySession.end_time();
 
     if (!activityChanged
         && !durationChanged
@@ -173,11 +173,11 @@ void SessionWidget::updateUI() {
 
     previousActivitySession = activitySession;
     previousDuration = activitySession.duration();
-    previousEndTime = activitySession.endTime();
+    previousEndTime = activitySession.end_time();
 }
 
 void SessionWidget::setActivitySession(
-        const Session &newActivitySession) {
+        const stg::session &newActivitySession) {
     activitySession = newActivitySession;
     updateUI();
 }

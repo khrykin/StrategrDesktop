@@ -3,49 +3,49 @@
 //
 
 #include <catch2/catch.hpp>
-#include "Strategy.h"
+#include "strategy.h"
 
 TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
-    auto strategy = Strategy();
+    auto strategy = stg::strategy();
 
-    strategy.addActivity(Activity("Some 0"));
-    strategy.addActivity(Activity("Some 1"));
-    strategy.addActivity(Activity("Some 2"));
+    strategy.add_activity(stg::activity("Some 0"));
+    strategy.add_activity(stg::activity("Some 1"));
+    strategy.add_activity(stg::activity("Some 2"));
 
-    const auto &firstActivity = strategy.activities()[0];
-    const auto &secondActivity = strategy.activities()[1];
-    const auto &thirdActivity = strategy.activities()[2];
+    const auto &first_activity = strategy.activities()[0];
+    const auto &second_activity = strategy.activities()[1];
+    const auto &third_activity = strategy.activities()[2];
 
     SECTION("default constructor") {
-        REQUIRE(strategy.numberOfTimeSlots() == Strategy::Defaults::numberOfTimeSlots);
-        REQUIRE(strategy.timeSlotDuration() == Strategy::Defaults::timeSlotDuration);
-        REQUIRE(strategy.beginTime() == Strategy::Defaults::beginTime);
+        REQUIRE(strategy.number_of_time_slots() == stg::strategy::defaults::number_of_time_slots);
+        REQUIRE(strategy.time_slot_duration() == stg::strategy::defaults::time_slot_duration);
+        REQUIRE(strategy.begin_time() == stg::strategy::defaults::begin_time);
 
-        REQUIRE(strategy.sessions().size() == strategy.numberOfTimeSlots());
-        REQUIRE(strategy.sessions().first().beginTime() == strategy.beginTime());
-        REQUIRE(strategy.sessions().last().endTime() == strategy.endTime());
+        REQUIRE(strategy.sessions().size() == strategy.number_of_time_slots());
+        REQUIRE(strategy.sessions().first().begin_time() == strategy.begin_time());
+        REQUIRE(strategy.sessions().last().end_time() == strategy.end_time());
     }
 
     SECTION("put activity in single slot") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0});
+        strategy.place_activity(0, {0});
 
         REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
     }
 
     SECTION("put activity in adjacent slots") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1});
+        strategy.place_activity(0, {0, 1});
 
         REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
         REQUIRE(strategy.sessions()[0].length() == 2);
     }
 
     SECTION("put activity in two groups of adjacent slots") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1, 3, 4});
+        strategy.place_activity(0, {0, 1, 3, 4});
 
         REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
         REQUIRE(strategy.sessions()[0].length() == 2);
 
-        REQUIRE(strategy.sessions()[1].activity == Strategy::NoActivity);
+        REQUIRE(strategy.sessions()[1].activity == stg::strategy::no_activity);
         REQUIRE(strategy.sessions()[1].length() == 1);
 
         REQUIRE(strategy.sessions()[2].activity == strategy.activities().at(0));
@@ -53,19 +53,19 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
     }
 
     SECTION("put activity in two last adjacent slots") {
-        const auto penultimateIndex = strategy.numberOfTimeSlots() - 2;
-        const auto lastIndex = strategy.numberOfTimeSlots() - 1;
+        const auto penultimate_index = strategy.number_of_time_slots() - 2;
+        const auto last_index = strategy.number_of_time_slots() - 1;
 
-        strategy.putActivityInTimeSlotsAtIndices(0,
-                                                 {penultimateIndex, lastIndex});
+        strategy.place_activity(0,
+                                {penultimate_index, last_index});
 
-        REQUIRE(strategy.sessions()[penultimateIndex].activity == &strategy.activities()[0]);
-        REQUIRE(strategy.sessions()[penultimateIndex].length() == 2);
+        REQUIRE(strategy.sessions()[penultimate_index].activity == &strategy.activities()[0]);
+        REQUIRE(strategy.sessions()[penultimate_index].length() == 2);
     }
 
     SECTION("put two activities in two adjacent groups of adjacent slots") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1});
-        strategy.putActivityInTimeSlotsAtIndices(1, {2, 3, 4});
+        strategy.place_activity(0, {0, 1});
+        strategy.place_activity(1, {2, 3, 4});
 
         REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
         REQUIRE(strategy.sessions()[0].length() == 2);
@@ -75,72 +75,72 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
     }
 
     SECTION("fill timeslots") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0});
-        strategy.putActivityInTimeSlotsAtIndices(1, {1});
+        strategy.place_activity(0, {0});
+        strategy.place_activity(1, {1});
 
         SECTION("up") {
-            strategy.beginResizing();
-            strategy.fillTimeSlots(1, 0);
-            strategy.endResizing();
+            strategy.begin_resizing();
+            strategy.fill_time_slots(1, 0);
+            strategy.end_resizing();
 
             REQUIRE(strategy.sessions()[0].length() == 2);
             REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(1));
 
             REQUIRE(strategy.sessions()[1].length() == 1);
-            REQUIRE(strategy.sessions()[1].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[1].activity == stg::strategy::no_activity);
         }
 
         SECTION("down") {
-            strategy.beginResizing();
-            strategy.fillTimeSlots(0, 1);
-            strategy.endResizing();
+            strategy.begin_resizing();
+            strategy.fill_time_slots(0, 1);
+            strategy.end_resizing();
 
             REQUIRE(strategy.sessions()[0].length() == 2);
             REQUIRE(strategy.sessions()[0].activity == strategy.activities().at(0));
 
             REQUIRE(strategy.sessions()[1].length() == 1);
-            REQUIRE(strategy.sessions()[1].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[1].activity == stg::strategy::no_activity);
         }
 
         SECTION("empty slot as a source") {
-            strategy.beginResizing();
-            strategy.fillTimeSlots(2, 0);
-            strategy.endResizing();
+            strategy.begin_resizing();
+            strategy.fill_time_slots(2, 0);
+            strategy.end_resizing();
 
             REQUIRE(strategy.sessions()[0].length() == 1);
-            REQUIRE(strategy.sessions()[0].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);
 
             REQUIRE(strategy.sessions()[1].length() == 1);
-            REQUIRE(strategy.sessions()[1].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[1].activity == stg::strategy::no_activity);
         }
 
     }
 
     SECTION("drag activity session") {
-        strategy.putActivityInTimeSlotsAtIndices(1, {1, 2});
-        strategy.putActivityInTimeSlotsAtIndices(2, {3, 4, 5});
+        strategy.place_activity(1, {1, 2});
+        strategy.place_activity(2, {3, 4, 5});
 
         SECTION("up") {
-            strategy.beginDragging(2);
-            strategy.dragActivitySession(2, -2);
-            strategy.endDragging();
+            strategy.begin_dragging(2);
+            strategy.drag_activity_session(2, -2);
+            strategy.end_dragging();
 
-            REQUIRE(strategy.sessions()[0].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);
             REQUIRE(strategy.sessions()[0].length() == 1);
             REQUIRE(strategy.sessions()[1].activity == strategy.activities().at(2));
             REQUIRE(strategy.sessions()[1].length() == 3);
             REQUIRE(strategy.sessions()[2].activity == strategy.activities().at(1));
             REQUIRE(strategy.sessions()[2].length() == 2);
-            REQUIRE(strategy.sessions()[3].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[3].activity == stg::strategy::no_activity);
             REQUIRE(strategy.sessions()[3].length() == 1);
         }
 
         SECTION("down") {
-            strategy.beginDragging(1);
-            strategy.dragActivitySession(1, 2);
-            strategy.endDragging();
+            strategy.begin_dragging(1);
+            strategy.drag_activity_session(1, 2);
+            strategy.end_dragging();
 
-            REQUIRE(strategy.sessions()[0].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);
             REQUIRE(strategy.sessions()[0].length() == 1);
             REQUIRE(strategy.sessions()[1].activity == strategy.activities().at(2));
             REQUIRE(strategy.sessions()[1].length() == 2);
@@ -148,39 +148,39 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
             REQUIRE(strategy.sessions()[2].length() == 2);
             REQUIRE(strategy.sessions()[3].activity == strategy.activities().at(2));
             REQUIRE(strategy.sessions()[3].length() == 1);
-            REQUIRE(strategy.sessions()[4].activity == Strategy::NoActivity);
+            REQUIRE(strategy.sessions()[4].activity == stg::strategy::no_activity);
             REQUIRE(strategy.sessions()[4].length() == 1);
         }
 
     }
 
     SECTION("activity session index for time slot index") {
-        strategy.putActivityInTimeSlotsAtIndices(1, {1, 2});
+        strategy.place_activity(1, {1, 2});
 
-        REQUIRE(strategy.sessions().sessionIndexForTimeSlotIndex(0) == 0);
-        REQUIRE(strategy.sessions().sessionIndexForTimeSlotIndex(2) == 1);
+        REQUIRE(strategy.sessions().session_index_for_time_slot_index(0) == 0);
+        REQUIRE(strategy.sessions().session_index_for_time_slot_index(2) == 1);
     }
 }
 
 TEST_CASE("Strategy sessions on change notifications", "[strategy][sessions]") {
-    auto strategy = Strategy();
+    auto strategy = stg::strategy();
     auto callbackWasCalled = false;
 
     strategy.sessions()
-            .addOnChangeCallback([&callbackWasCalled]() {
+            .add_on_change_callback([&callbackWasCalled]() {
                 callbackWasCalled = true;
             });
 
-    strategy.addActivity(Activity("Some"));
+    strategy.add_activity(stg::activity("Some"));
 
     SECTION("should notify on change") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0});
+        strategy.place_activity(0, {0});
 
         REQUIRE(callbackWasCalled);
     }
 
     SECTION("shouldn't notify when there's no change") {
-        strategy.emptyTimeSlotsAtIndices({0});
+        strategy.make_empty_at({0});
 
         REQUIRE(!callbackWasCalled);
     }

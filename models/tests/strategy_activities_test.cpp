@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
-#include "Strategy.h"
+#include "strategy.h"
 
 class ActivitiesListener {
 public:
@@ -15,66 +15,66 @@ public:
 };
 
 TEST_CASE("Strategy activities", "[strategy][activities]") {
-    auto strategy = Strategy();
+    auto strategy = stg::strategy();
 
     SECTION("should add activity") {
-        auto activity = Activity("Some");
+        auto activity = stg::activity("Some");
 
-        strategy.addActivity(activity);
+        strategy.add_activity(activity);
 
         REQUIRE(strategy.activities()[0] == activity);
 
         SECTION("should throw if activity already present") {
-            REQUIRE_THROWS_AS(strategy.addActivity(Activity("Some")),
-                              ActivityList::AlreadyPresentException);
+            REQUIRE_THROWS_AS(strategy.add_activity(stg::activity("Some")),
+                              stg::activity_list::already_present_exception);
         }
     }
 
     SECTION("should remove activity") {
-        auto activity1 = Activity("Some 1");
-        auto activity2 = Activity("Some 2");
+        auto activity1 = stg::activity("Some 1");
+        auto activity2 = stg::activity("Some 2");
 
-        strategy.addActivity(activity1);
-        strategy.addActivity(activity2);
+        strategy.add_activity(activity1);
+        strategy.add_activity(activity2);
 
         SECTION("at index") {
-            strategy.removeActivityAtIndex(0);
+            strategy.delete_activity(0);
             REQUIRE(strategy.activities()[0] == activity2);
             REQUIRE(strategy.activities().size() == 1);
         }
     }
 
     SECTION("should edit activity") {
-        auto activity = Activity("Some 1");
-        auto activityEdited = Activity("Some 1 Edited");
+        auto activity = stg::activity("Some 1");
+        auto activityEdited = stg::activity("Some 1 Edited");
 
-        strategy.addActivity(activity);
+        strategy.add_activity(activity);
 
         SECTION("at index") {
-            strategy.editActivityAtIndex(0, activityEdited);
+            strategy.edit_activity(0, activityEdited);
             REQUIRE(strategy.activities()[0] == activityEdited);
         }
 
         SECTION("should throw if activity already present") {
-            REQUIRE_THROWS_AS(strategy.editActivityAtIndex(0, Activity("Some 1")),
-                              ActivityList::AlreadyPresentException);
+            REQUIRE_THROWS_AS(strategy.edit_activity(0, stg::activity("Some 1")),
+                              stg::activity_list::already_present_exception);
         }
     }
 
     SECTION("should drag activity") {
-        auto activity1 = Activity("Some 1");
-        auto activity2 = Activity("Some 2");
-        auto activity3 = Activity("Some 3");
+        auto activity1 = stg::activity("Some 1");
+        auto activity2 = stg::activity("Some 2");
+        auto activity3 = stg::activity("Some 3");
 
-        strategy.addActivity(activity1);
-        strategy.addActivity(activity2);
-        strategy.addActivity(activity3);
+        strategy.add_activity(activity1);
+        strategy.add_activity(activity2);
+        strategy.add_activity(activity3);
 
         SECTION("up") {
             auto fromIndex = 2;
             auto toIndex = 0;
 
-            strategy.dragActivity(fromIndex, toIndex);
+            strategy.drag_activity(fromIndex, toIndex);
 
             REQUIRE(strategy.activities()[0] == activity3);
             REQUIRE(strategy.activities()[1] == activity1);
@@ -85,7 +85,7 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
             auto fromIndex = 0;
             auto toIndex = 2;
 
-            strategy.dragActivity(fromIndex, toIndex);
+            strategy.drag_activity(fromIndex, toIndex);
 
             REQUIRE(strategy.activities()[0] == activity2);
             REQUIRE(strategy.activities()[1] == activity3);
@@ -94,14 +94,14 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
     }
 
     SECTION("should notify on change") {
-        auto activity = Activity("Some 1");
+        auto activity = stg::activity("Some 1");
         bool callbackWasCalled = false;
 
-        strategy.activities().addOnChangeCallback([&callbackWasCalled]() {
+        strategy.activities().add_on_change_callback([&callbackWasCalled]() {
             callbackWasCalled = true;
         });
 
-        strategy.addActivity(activity);
+        strategy.add_activity(activity);
 
         SECTION("when added") {
             REQUIRE(callbackWasCalled);
@@ -109,36 +109,36 @@ TEST_CASE("Strategy activities", "[strategy][activities]") {
 
         SECTION("when removed") {
             callbackWasCalled = false;
-            strategy.removeActivityAtIndex(0);
+            strategy.delete_activity(0);
 
             REQUIRE(callbackWasCalled);
         }
 
         SECTION("when edited") {
             callbackWasCalled = false;
-            strategy.editActivityAtIndex(0, Activity("Edited"));
+            strategy.edit_activity(0, stg::activity("Edited"));
 
             REQUIRE(callbackWasCalled);
         }
 
         SECTION("when dragged") {
-            auto activity2 = Activity("Some 2");
-            strategy.addActivity(activity2);
+            auto activity2 = stg::activity("Some 2");
+            strategy.add_activity(activity2);
 
             callbackWasCalled = false;
-            strategy.dragActivity(0, 1);
+            strategy.drag_activity(0, 1);
 
             REQUIRE(callbackWasCalled);
         }
 
         SECTION("class method as callback") {
-            auto activity2 = Activity("Some 2");
+            auto activity2 = stg::activity("Some 2");
             ActivitiesListener listener{callbackWasCalled};
 
-            strategy.activities().addOnChangeCallback(&listener,
-                                                      &ActivitiesListener::onChange);
+            strategy.activities().add_on_change_callback(&listener,
+                                                         &ActivitiesListener::onChange);
             callbackWasCalled = false;
-            strategy.addActivity(activity2);
+            strategy.add_activity(activity2);
 
             REQUIRE(callbackWasCalled);
         }

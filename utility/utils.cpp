@@ -64,10 +64,6 @@ double devicePixelRatio() {
     return QGuiApplication::screens()[screenNumber]->devicePixelRatio();
 }
 
-stg::Rect RectFromQRect(const QRect &rect) {
-    return stg::Rect{rect.left(), rect.top(), rect.width(), rect.height()};
-}
-
 void dispatchToMainThread(const std::function<void()> &callback) {
     auto *timer = new QTimer();
     timer->moveToThread(QApplication::instance()->thread());

@@ -3,16 +3,16 @@
 //
 
 #include <catch2/catch.hpp>
-#include "Strategy.h"
+#include "strategy.h"
 
 TEST_CASE("Strategy history", "[strategy][history]") {
-    auto strategy = Strategy();
-    auto initialActivity = Activity("Some 1");
+    auto strategy = stg::strategy();
+    auto initialActivity = stg::activity("Some 1");
 
-    strategy.addActivity(initialActivity);
+    strategy.add_activity(initialActivity);
 
     SECTION("activity addition") {
-        strategy.addActivity(Activity("Some 2"));
+        strategy.add_activity(stg::activity("Some 2"));
 
         SECTION("undo") {
             strategy.undo();
@@ -20,7 +20,7 @@ TEST_CASE("Strategy history", "[strategy][history]") {
         }
 
         SECTION("redo") {
-            strategy.addActivity(Activity("Some 3"));
+            strategy.add_activity(stg::activity("Some 3"));
             strategy.undo();
             strategy.undo();
             strategy.redo();
@@ -30,8 +30,8 @@ TEST_CASE("Strategy history", "[strategy][history]") {
     }
 
     SECTION("activity editing") {
-        const auto editedActivity = Activity("Some 1 Edited");
-        strategy.editActivityAtIndex(0, editedActivity);
+        const auto editedActivity = stg::activity("Some 1 Edited");
+        strategy.edit_activity(0, editedActivity);
 
         SECTION("undo") {
             strategy.undo();
@@ -47,9 +47,9 @@ TEST_CASE("Strategy history", "[strategy][history]") {
     }
 
     SECTION("activity removal") {
-        const auto editedActivity = Activity("Some 1 Edited");
-        strategy.addActivity(Activity("Some 2"));
-        strategy.removeActivityAtIndex(0);
+        const auto editedActivity = stg::activity("Some 1 Edited");
+        strategy.add_activity(stg::activity("Some 2"));
+        strategy.delete_activity(0);
 
         SECTION("undo") {
             strategy.undo();
@@ -67,10 +67,10 @@ TEST_CASE("Strategy history", "[strategy][history]") {
     }
 
     SECTION("activity removal while present in slots") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0});
-        strategy.putActivityInTimeSlotsAtIndices(0, {1});
+        strategy.place_activity(0, {0});
+        strategy.place_activity(0, {1});
 
-        strategy.removeActivityAtIndex(0);
+        strategy.delete_activity(0);
 
         strategy.undo();
         REQUIRE(strategy.activities()[0] == initialActivity);
@@ -79,8 +79,8 @@ TEST_CASE("Strategy history", "[strategy][history]") {
     }
 
     SECTION("time slots change") {
-        strategy.putActivityInTimeSlotsAtIndices(0, {0, 1});
-        strategy.putActivityInTimeSlotsAtIndices(0, {2});
+        strategy.place_activity(0, {0, 1});
+        strategy.place_activity(0, {2});
 
         strategy.undo();
 
