@@ -55,6 +55,8 @@ namespace stg {
         int x = 0;
         int y = 0;
 
+        explicit point(int x = 0, int y = 0) : x(x), y(y) {}
+
         /**
         * Implicit constructor for Qt-like point
         */

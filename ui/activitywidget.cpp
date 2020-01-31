@@ -7,13 +7,14 @@
 #include <QStyleOption>
 #include <QPushButton>
 
-#include "activitylistitemwidget.h"
+#include "activitywidget.h"
 #include "utils.h"
 #include "colorutils.h"
 #include "applicationsettings.h"
+#include "mainwindow.h"
 
-ActivityListItemWidget::ActivityListItemWidget(stg::activity *activity,
-                                               QWidget *parent)
+ActivityWidget::ActivityWidget(stg::activity *activity,
+                               QWidget *parent)
         : QWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
 
@@ -28,19 +29,20 @@ ActivityListItemWidget::ActivityListItemWidget(stg::activity *activity,
     updateUI();
 }
 
-void ActivityListItemWidget::setupActions() {
+void ActivityWidget::setupActions() {
 }
 
-void ActivityListItemWidget::layoutChildWidgets() {
+void ActivityWidget::layoutChildWidgets() {
     label = new ColoredLabel();
     label->setAlignment(Qt::AlignCenter);
     label->setBold(true);
+    label->setFontHeight(ApplicationSettings::sessionFontSize);
     label->setElideMode(Qt::ElideMiddle);
 
     layout()->addWidget(label);
 }
 
-void ActivityListItemWidget::paintEvent(QPaintEvent *) {
+void ActivityWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
 
     painter.setPen(Qt::NoPen);
@@ -55,7 +57,7 @@ void ActivityListItemWidget::paintEvent(QPaintEvent *) {
     }
 }
 
-void ActivityListItemWidget::drawBorder(QPainter &painter) const {
+void ActivityWidget::drawBorder(QPainter &painter) const {
     painter.setBrush(borderColor());
     auto borderRect = QRect(8,
                             height() - 1,
@@ -65,7 +67,7 @@ void ActivityListItemWidget::drawBorder(QPainter &painter) const {
     painter.drawRect(borderRect);
 }
 
-void ActivityListItemWidget::drawSelection(QPainter &painter) const {
+void ActivityWidget::drawSelection(QPainter &painter) const {
     painter.setBrush(_isSelected ? selectionColor() : highlightColor());
 
     auto selectionRect = QRect(0, 0, width(), height());
@@ -73,7 +75,7 @@ void ActivityListItemWidget::drawSelection(QPainter &painter) const {
     painter.drawRect(selectionRect);
 }
 
-void ActivityListItemWidget::updateUI() {
+void ActivityWidget::updateUI() {
     using namespace ColorUtils;
     label->setText(QString::fromStdString(activity()->name()));
     label->setDynamicColor([this]() {
@@ -81,18 +83,18 @@ void ActivityListItemWidget::updateUI() {
     });
 }
 
-stg::activity *ActivityListItemWidget::activity() const {
+stg::activity *ActivityWidget::activity() const {
     return _activity;
 }
 
-void ActivityListItemWidget::setActivity(stg::activity *activity) {
+void ActivityWidget::setActivity(stg::activity *activity) {
     if (activity != _activity) {
         _activity = activity;
         updateUI();
     }
 }
 
-void ActivityListItemWidget::mousePressEvent(QMouseEvent *event) {
+void ActivityWidget::mousePressEvent(QMouseEvent *event) {
     if (event->buttons() == Qt::LeftButton) {
         isClicked = true;
         update();
@@ -100,18 +102,20 @@ void ActivityListItemWidget::mousePressEvent(QMouseEvent *event) {
     }
 }
 
-void ActivityListItemWidget::mouseReleaseEvent(QMouseEvent *event) {
+void ActivityWidget::mouseReleaseEvent(QMouseEvent *event) {
     auto wasClicked = isClicked;
-    isClicked = false;
-    update();
-
     emit unhovered();
 
     if (wasClicked)
-            emit selected();
+        choose(event);
 }
 
-void ActivityListItemWidget::contextMenuEvent(QContextMenuEvent *event) {
+void ActivityWidget::contextMenuEvent(QContextMenuEvent *event) {
+    showContextMenu(event->pos());
+}
+
+void ActivityWidget::showContextMenu(const QPoint &position) {
+    isClicked = true;
     update();
 
     auto newEditorMenu = new ActivityEditorMenu(*activity(), this);
@@ -130,38 +134,55 @@ void ActivityListItemWidget::contextMenuEvent(QContextMenuEvent *event) {
                 emit activityDeleted();
             });
 
+    connect(editorMenu,
+            &ActivityEditorMenu::aboutToHide,
+            [=]() {
+                isClicked = false;
+                update();
+            });
+
+
     editorMenu->focus();
-    editorMenu->exec(mapToGlobal(event->pos()));
+    editorMenu->exec(mapToGlobal(position));
 }
 
-void ActivityListItemWidget::enterEvent(QEvent *event) {
+void ActivityWidget::enterEvent(QEvent *event) {
     QWidget::enterEvent(event);
     update();
 }
 
-void ActivityListItemWidget::leaveEvent(QEvent *event) {
+void ActivityWidget::leaveEvent(QEvent *event) {
     QWidget::leaveEvent(event);
     update();
 }
 
-bool ActivityListItemWidget::drawsBorder() const {
+bool ActivityWidget::drawsBorder() const {
     return _drawsBorder;
 }
 
-void ActivityListItemWidget::setDrawsBorder(bool drawsBorder) {
+void ActivityWidget::setDrawsBorder(bool drawsBorder) {
     _drawsBorder = drawsBorder;
     update();
 }
 
-bool ActivityListItemWidget::isSelected() const {
+bool ActivityWidget::isSelected() const {
     return _isSelected;
 }
 
-void ActivityListItemWidget::setIsSelected(bool isSelected) {
+void ActivityWidget::setIsSelected(bool isSelected) {
     _isSelected = isSelected;
     update();
 }
 
-void ActivityListItemWidget::choose() {
-    emit selected();
+void ActivityWidget::choose(QMouseEvent *event) {
+    auto mainScene = qobject_cast<MainWindow *>(window())->scene();
+
+    if (mainScene->selection().empty()) {
+        auto pos = event ? event->pos() : contentsRect().center();
+        showContextMenu(pos);
+    } else {
+        emit selected();
+        isClicked = false;
+        update();
+    }
 }

@@ -7,7 +7,7 @@
 #include "navbar.h"
 #include "activityeditormenu.h"
 #include "third-party/slidingstackedwidget.h"
-#include "activitylistitemwidget.h"
+#include "activitywidget.h"
 #include "reactivelist.hpp"
 #include "colorprovider.h"
 #include "coloredlabel.h"
@@ -19,7 +19,7 @@ class QLineEdit;
 class QScrollArea;
 
 class ActivityListWidget : public QWidget,
-                           public ReactiveList<ActivityListItemWidget>,
+                           public ReactiveList<ActivityWidget>,
                            public ColorProvider {
 Q_OBJECT
 public:
@@ -71,9 +71,9 @@ private:
     // ReactiveList
     int numberOfItems() override;
     QVBoxLayout *listLayout() override;
-    void reuseItemAtIndex(int index, ActivityListItemWidget *itemWidget) override;
-    ActivityListItemWidget *makeNewItemAtIndex(int index) override;
-    void reconnectItemAtIndex(int itemIndex, ActivityListItemWidget *item);
+    void reuseItemAtIndex(int index, ActivityWidget *itemWidget) override;
+    ActivityWidget *makeNewItemAtIndex(int index) override;
+    void reconnectItemAtIndex(int itemIndex, ActivityWidget *item);
 
 
     void scrollUpItemIntoViewAtIndex(int index);

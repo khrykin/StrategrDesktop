@@ -14,6 +14,7 @@
 #include "strategy.h"
 #include "colorutils.h"
 #include "fontutils.h"
+#include "applicationsettings.h"
 
 SessionWidget::SessionWidget(stg::session activitySession,
                              QWidget *parent)
@@ -193,7 +194,7 @@ int SessionWidget::expectedHeight() {
 void SessionWidget::drawLabel(QPainter &painter) const {
     auto font = QFont();
     font.setBold(true);
-    font.setPixelSize(15);
+    font.setPixelSize(ApplicationSettings::sessionFontSize);
 
     painter.setFont(font);
 

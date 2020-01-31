@@ -55,7 +55,7 @@ void ColoredLabel::paintEvent(QPaintEvent *event) {
         auto textRect = contentsRect();
         auto printedText = _elideMode == Qt::ElideNone
                            ? _text
-                           : fontMetrics().elidedText(_text, Qt::ElideMiddle, contentsRect().width());
+                           : fontMetrics().elidedText(_text, Qt::ElideMiddle, textRect.width());
 
         painter.drawText(textRect, _alignment, printedText);
     }

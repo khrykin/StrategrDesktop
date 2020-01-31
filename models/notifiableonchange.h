@@ -30,7 +30,7 @@ namespace stg {
     protected:
         mutable std::vector<callback_t> on_change_callbacks = {};
 
-        void on_change_event() {
+        virtual void on_change_event() {
             for (const auto &callback: on_change_callbacks) {
                 callback();
             }

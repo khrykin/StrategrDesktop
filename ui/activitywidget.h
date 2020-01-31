@@ -13,11 +13,11 @@
 #include "colorprovider.h"
 #include "coloredlabel.h"
 
-class ActivityListItemWidget : public QWidget, public ColorProvider {
+class ActivityWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit ActivityListItemWidget(stg::activity *activity,
-                                    QWidget *parent = nullptr);
+    explicit ActivityWidget(stg::activity *activity,
+                            QWidget *parent = nullptr);
 
     stg::activity *activity() const;
     void setActivity(stg::activity *activity);
@@ -26,8 +26,7 @@ public:
     bool isSelected() const;
     void setIsSelected(bool isSelected);
 
-    void choose();
-
+    void choose(QMouseEvent *event = nullptr);
 signals:
     void hovered();
     void unhovered();
@@ -60,6 +59,7 @@ private:
     void setupActions();
     void drawSelection(QPainter &painter) const;
     void drawBorder(QPainter &painter) const;
+    void showContextMenu(const QPoint &position);
 };
 
 #endif // ACTIVITYLISTITEMWIDGET_H

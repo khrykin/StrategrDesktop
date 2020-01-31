@@ -14,6 +14,8 @@ namespace ApplicationSettings {
     const auto defaultActivityItemHeight = 40;
     const auto defaultPadding = 8;
 
+    const auto sessionFontSize = 14;
+
     const auto currentTimeTimerSecondsInterval = 1;
     const auto notifierTimerTimeInterval = 15 * 1000;
     const auto currentSessionShowDelay = 500;

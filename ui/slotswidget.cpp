@@ -45,6 +45,10 @@ void SlotsWidget::layoutChildWidgets() {
             &SlotsWidget::onSelectionChange);
 
     mouseHandler = new SlotsMouseHandler(this);
+    connect(mouseHandler,
+            &SlotsMouseHandler::resizeBoundaryChanged,
+            this,
+            &SlotsWidget::updateResizeBoundary);
 
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
@@ -52,7 +56,6 @@ void SlotsWidget::layoutChildWidgets() {
 
     updateContentsMargins();
 }
-
 
 void SlotsWidget::setupActions() {
     setActivityAction = new QAction(tr("Set Activity"), this);
@@ -105,40 +108,35 @@ void SlotsWidget::setupActions() {
 int SlotsWidget::slotHeight() const { return _slotHeight; }
 
 void SlotsWidget::openActivitiesWindow() {
-    if (!selectionWidget->selection().empty()) {
-        mainScene()->showActivities();
-    }
+    mainScene()->showActivities();
 }
 
 void SlotsWidget::deleteActivityInSelection() {
-    strategy.make_empty_at(selectionWidget->selection());
-    selectionWidget->deselectAll();
+    strategy.make_empty_at(selectionWidget->selection);
+    selectionWidget->selection.deselect_all();
 }
 
 void SlotsWidget::deselectAllSlots() {
-    selectionWidget->deselectAll();
+    selectionWidget->selection.deselect_all();
 }
 
 void SlotsWidget::selectAllSlots() {
-    selectionWidget->selectAll(strategy.number_of_time_slots());
+    selectionWidget->selection.select_all();
 }
 
 void SlotsWidget::reloadStrategy() {
     strategy.sessions()
             .add_on_change_callback(this, &SlotsWidget::updateUI);
 
-    selectionWidget->reloadStrategy();
-
     updateList();
-    mouseHandler->reset();
 }
 
 MainScene *SlotsWidget::mainScene() {
     return findParentWidget<MainScene>(this);
 }
 
-const SelectionWidget::RawSelectionState &SlotsWidget::selection() {
-    return selectionWidget->selection();
+const stg::selection &SlotsWidget::selection() {
+    return selectionWidget->selection;
 }
 
 int SlotsWidget::numberOfItems() {
@@ -170,43 +168,50 @@ void SlotsWidget::updateUI() {
 }
 
 void SlotsWidget::onSelectionChange() {
-    auto isEnabled = selectionWidget->selectionIsContinuous()
+    auto isEnabled = selectionWidget->selection.is_continuous()
                      && !onlyEmptySlotsSelected();
 
     shiftSlotsBelowAction->setEnabled(isEnabled);
 }
 
 void SlotsWidget::shiftAllSlotsBelow() {
-    if (!selectionWidget->selectionIsContinuous()) {
+    if (!selectionWidget->selection.is_continuous()) {
         return;
     }
 
-    auto bottomTimeSlotIndex = selectionWidget->selection().front();
+    auto bottomTimeSlotIndex = selectionWidget->selection.front();
     strategy.shift_below_time_slot(bottomTimeSlotIndex,
-                                   selectionWidget->selection().size());
+                                   selectionWidget->selection.size());
 
-    selectionWidget->deselectAll();
+    selectionWidget->selection.deselect_all();
 }
 
 bool SlotsWidget::onlyEmptySlotsSelected() const {
-    for (auto slotIndex : selectionWidget->selection()) {
-        if (strategy.time_slots()[slotIndex].activity
-            != stg::strategy::no_activity) {
-            return false;
-        }
-    }
+//    for (auto slotIndex : selectionWidget->selection()) {
+//        if (strategy.time_slots()[slotIndex].activity
+//            != stg::strategy::no_activity) {
+//            return false;
+//        }
+//    }
 
     return true;
 }
 
 void SlotsWidget::paintEvent(QPaintEvent *event) {
+    using namespace ApplicationSettings;
+
     QStyleOption opt;
     opt.init(this);
     QPainter painter(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(SessionWidget::borderColor());
+
+    auto borderColor = slotBeforeBoundaryIndex == -1
+                       ? highlightColor()
+                       : ColorProvider::borderColor();
+
+    painter.setBrush(borderColor);
 
     auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
     auto borderRect = QRect(8, 0, width() - 8 * 2, thickness);
@@ -218,6 +223,14 @@ void SlotsWidget::updateContentsMargins() {
     auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
     slotsLayout->setContentsMargins(8, thickness, 8, 0);
     selectionWidget->setContentsMargins(8, thickness, 8, 0);
+}
+
+void SlotsWidget::updateResizeBoundary(int sessionBeforeBoundaryIndex,
+                                       int slotBeforeBoundaryIndex) {
+    this->slotBeforeBoundaryIndex = slotBeforeBoundaryIndex;
+    update();
+
+    emit resizeBoundaryChanged(sessionBeforeBoundaryIndex, slotBeforeBoundaryIndex);
 }
 
 

@@ -29,9 +29,9 @@ template<class T>
 T *findParentWidget(QWidget *childWidget) {
     auto *widget = childWidget->parentWidget();
     while (widget) {
-        auto *mainScene = qobject_cast<T *>(widget);
-        if (mainScene) {
-            return mainScene;
+        auto *searchedWideget = qobject_cast<T *>(widget);
+        if (searchedWideget) {
+            return searchedWideget;
         } else {
             widget = widget->parentWidget();
         }

@@ -40,26 +40,21 @@ CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *par
     currentLabel->setFontHeight(10);
     currentLabel->setBold(true);
     currentLabel->setDynamicColor(&ColorProvider::tertiaryTextColor);
-
-    currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignCenter);
+    currentLabel->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
 
     activityLabel = new ColoredLabel();
     activityLabel->setBold(true);
-    activityLabel->setFontHeight(14);
+    activityLabel->setFontHeight(ApplicationSettings::sessionFontSize - 1);
+    activityLabel->setContentsMargins(0, 0, 0, 3);
     activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
         auto activeSession = strategy.active_session();
         if (!activeSession) {
             return;
         }
 
-        auto textRect = QRect(0,
-                              0,
-                              activityLabel->width(),
-                              activityLabel->height());
-
         FontUtils::drawSessionTitle(*activeSession,
                                     *painter,
-                                    textRect);
+                                    activityLabel->contentsRect());
     };
 
     activityLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);

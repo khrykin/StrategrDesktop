@@ -10,7 +10,7 @@
 #include "overviewwidget.h"
 #include "strategysettingswidget.h"
 #include "currentsessionwidget.h"
-#include "slotboard.h"
+#include "slotboardwidget.h"
 
 SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
                                        QWidget *parent)
@@ -53,15 +53,15 @@ void SessionsMainWidget::layoutChildWidgets() {
     _slotBoardScrollArea->setWidgetResizable(true);
     _slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
-    slotBoard = new SlotBoard(strategy);
+    slotBoard = new SlotBoardWidget(strategy);
 
     connect(slotBoard,
-            &SlotBoard::timerTick,
+            &SlotBoardWidget::timerTick,
             this,
             &SessionsMainWidget::updateTimerDependants);
 
     connect(slotBoard,
-            &SlotBoard::timeSlotsChange,
+            &SlotBoardWidget::timeSlotsChange,
             this,
             &SessionsMainWidget::updateOverviewWidget);
 
@@ -91,9 +91,6 @@ void SessionsMainWidget::clearSelection() {
     slotBoard->clearSelection();
 }
 
-const SelectionWidget::RawSelectionState &SessionsMainWidget::selection() {
-    return slotBoard->selection();
-}
 
 void SessionsMainWidget::updateTimerDependants() {
     overviewWidget->update();

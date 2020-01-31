@@ -122,7 +122,7 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
 
         SECTION("up") {
             strategy.begin_dragging(2);
-            strategy.drag_activity_session(2, -2);
+            strategy.drag_session(2, -2);
             strategy.end_dragging();
 
             REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);
@@ -137,7 +137,7 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
 
         SECTION("down") {
             strategy.begin_dragging(1);
-            strategy.drag_activity_session(1, 2);
+            strategy.drag_session(1, 2);
             strategy.end_dragging();
 
             REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);

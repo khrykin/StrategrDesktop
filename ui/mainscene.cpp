@@ -63,9 +63,6 @@ void MainScene::clearSelection() {
     sessionsMainWidget->clearSelection();
 }
 
-const SelectionWidget::RawSelectionState &MainScene::selection() {
-    return sessionsMainWidget->selection();
-}
 
 void MainScene::showNewActivityMenu() {
     activitiesWidget->showNewActivityMenu();

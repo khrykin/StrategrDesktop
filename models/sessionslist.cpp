@@ -92,3 +92,7 @@ std::vector<stg::session> stg::sessions_list::get_non_empty() const {
 
     return result;
 }
+
+stg::time_slot::time_t stg::sessions_list::relative_time(const stg::session &session) const {
+    return session.begin_time() - _data.front().begin_time();
+}

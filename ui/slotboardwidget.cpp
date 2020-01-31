@@ -1,6 +1,6 @@
 #include <algorithm>
+#include <functional>
 
-#include <QDebug>
 #include <QHBoxLayout>
 #include <QLocale>
 #include <QTime>
@@ -9,13 +9,14 @@
 #include <QStyleOption>
 #include <QGraphicsBlurEffect>
 
-#include "slotboard.h"
+#include "slotboardwidget.h"
 #include "utils.h"
 #include "mainwindow.h"
 #include "slotruler.h"
 #include "currenttimemarker.h"
+#include "slotboardcircleswidget.h"
 
-SlotBoard::SlotBoard(stg::strategy &strategy, QWidget *parent)
+SlotBoardWidget::SlotBoardWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QHBoxLayout();
     setLayout(mainLayout);
@@ -28,20 +29,22 @@ SlotBoard::SlotBoard(stg::strategy &strategy, QWidget *parent)
     setupCurrentTimeTimer();
 }
 
-void SlotBoard::setupCurrentTimeTimer() {
-    currentTimeTimer.set_callback(this, &SlotBoard::timerCallback);
+void SlotBoardWidget::setupCurrentTimeTimer() {
+    currentTimeTimer.set_callback(this, &SlotBoardWidget::timerCallback);
     currentTimeTimer.start(ApplicationSettings::currentTimeTimerSecondsInterval);
 }
 
-void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
+void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
     slotsWidget = new SlotsWidget(strategy);
     connect(slotsWidget,
             &SlotsWidget::sessionsChanged,
             this,
-            &SlotBoard::handleTimeSlotsChange);
+            &SlotBoardWidget::handleTimeSlotsChange);
+
 
     slotRuler = new SlotRuler(makeLabelsForStrategy(),
                               slotsWidget->slotHeight());
+
 
     slotsLayout = new QVBoxLayout();
     slotsLayout->setSpacing(0);
@@ -53,25 +56,38 @@ void SlotBoard::layoutChildWidgets(QHBoxLayout *mainLayout) {
     mainLayout->addWidget(slotRuler);
     mainLayout->addLayout(slotsLayout);
 
+    circlesWidget = new SlotBoardCirclesWidget(
+            std::bind(&SlotsWidget::slotHeight, slotsWidget),
+            std::bind(&SlotsWidget::geometry, slotsWidget),
+            this
+    );
+
+    connect(slotsWidget,
+            &SlotsWidget::resizeBoundaryChanged,
+            circlesWidget,
+            &SlotBoardCirclesWidget::updateResizeBoundary);
+
+    circlesWidget->setGeometry(geometry());
+
     currentTimeMarkerWidget = new CurrentTimeMarkerWidget(this);
 }
 
-void SlotBoard::updateSlotsLayout() const {
+void SlotBoardWidget::updateSlotsLayout() const {
     slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
 }
 
-void SlotBoard::reloadStrategy() {
+void SlotBoardWidget::reloadStrategy() {
     slotsWidget->reloadStrategy();
 
     updateUI();
 }
 
-void SlotBoard::updateUI() {
+void SlotBoardWidget::updateUI() {
     slotRuler->setLabels(makeLabelsForStrategy());
     updateCurrentTimeMarker();
 }
 
-QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
+QVector<TimeLabel> SlotBoardWidget::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
     for (auto &timeSlot : strategy.time_slots()) {
@@ -85,15 +101,15 @@ QVector<TimeLabel> SlotBoard::makeLabelsForStrategy() {
     return labels;
 }
 
-void SlotBoard::clearSelection() {
+void SlotBoardWidget::clearSelection() {
     slotsWidget->deselectAllSlots();
 }
 
-const SelectionWidget::RawSelectionState &SlotBoard::selection() {
-    return slotsWidget->selection();
-}
+//const SelectionWidget::RawSelectionState &SlotBoardWidget::selection() {
+//    return slotsWidget->selection();
+//}
 
-void SlotBoard::updateCurrentTimeMarker() {
+void SlotBoardWidget::updateCurrentTimeMarker() {
     auto currentTimeMarker = stg::current_time_marker(strategy);
 
     auto rect = currentTimeMarker.rect_in_parent(slotsWidget->geometry(),
@@ -110,7 +126,7 @@ void SlotBoard::updateCurrentTimeMarker() {
     }
 }
 
-void SlotBoard::focusOnCurrentTime() {
+void SlotBoardWidget::focusOnCurrentTime() {
     auto topOffset = stg::current_time_marker(strategy)
             .scroll_offset_in_parent(slotsWidget->geometry(),
                                      window()->geometry().height());
@@ -126,18 +142,18 @@ void SlotBoard::focusOnCurrentTime() {
     animation->start();
 }
 
-QScrollArea *SlotBoard::parentScrollArea() {
+QScrollArea *SlotBoardWidget::parentScrollArea() {
     return qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
 }
 
-void SlotBoard::handleTimeSlotsChange() {
+void SlotBoardWidget::handleTimeSlotsChange() {
     updateCurrentTimeMarker();
     slotRuler->setLabels(makeLabelsForStrategy());
 
     emit timeSlotsChange();
 }
 
-void SlotBoard::paintEvent(QPaintEvent *event) {
+void SlotBoardWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
 
     painter.setPen(Qt::NoPen);
@@ -146,14 +162,16 @@ void SlotBoard::paintEvent(QPaintEvent *event) {
     painter.drawRect(QRect(0, 0, width(), height()));
 }
 
-void SlotBoard::timerCallback() {
-    dispatchToMainThread([&]() {
+void SlotBoardWidget::timerCallback() {
+    dispatchToMainThread([this]() {
         emit timerTick();
         updateCurrentTimeMarker();
     });
 }
 
-void SlotBoard::resizeEvent(QResizeEvent *event) {
+void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
     updateCurrentTimeMarker();
+
+    circlesWidget->setGeometry(geometry());
 }
 

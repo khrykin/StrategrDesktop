@@ -6,6 +6,7 @@
 
 stg::timer::~timer() {
     stop();
+
     if (timer_thread.joinable())
         timer_thread.join();
 }

@@ -6,13 +6,15 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
-find_library(uf8Proc_LIBRARY_PATH utf8Proc)
+find_package(nlohmann_json REQUIRED)
+
+find_library(uf8Proc_LIBRARY_PATH libutf8proc.a libutf8proc.lib utf8proc)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
 endif ()
 
-find_package(nlohmann_json REQUIRED)
+message(${uf8Proc_LIBRARY_PATH})
 
 include_directories(.)
 include_directories(models)
@@ -78,10 +80,10 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/notifier.cpp
         models/notifier.h
         models/utility.h
-        models/mousehandler.cpp
-        models/mousehandler.h
+        models/mouse_handler.cpp
+        models/mouse_handler.h
         models/mousehandleroperations.cpp
-        models/mousehandleroperations.h)
+        models/mousehandleroperations.h models/selection.cpp models/selection.h models/event.cpp models/event.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -114,16 +116,16 @@ set(UI
         ui/sessionsmainwidget.h
         ui/activitylistwidget.cpp
         ui/activitylistwidget.h
-        ui/activitylistitemwidget.cpp
-        ui/activitylistitemwidget.h
+        ui/activitywidget.cpp
+        ui/activitywidget.h
         ui/strategysettingswidget.cpp
         ui/strategysettingswidget.h
-        ui/slotboard.cpp
-        ui/slotboard.h
+        ui/slotboardwidget.cpp
+        ui/slotboardwidget.h
         ui/slidinganimator.cpp
         ui/slidinganimator.h
         ui/slotswidget.cpp
-        ui/slotboard.h
+        ui/slotboardwidget.h
         ui/slotruler.cpp
         ui/slotruler.h
         ui/sessionwidget.cpp
@@ -176,7 +178,7 @@ set(UI
         ui/searchbox.cpp
         ui/searchbox.h
         ui/dynamicpalette.cpp
-        ui/dynamicpalette.h)
+        ui/dynamicpalette.h ui/slotboardcircleswidget.cpp ui/slotboardcircleswidget.h)
 
 set(UTILITY
         ${version_file}

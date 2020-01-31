@@ -134,9 +134,8 @@ void stg::strategy::drag_activity(activity_index from_index, activity_index to_i
 }
 
 void stg::strategy::fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index) {
-    if (!current_resize_operation) {
-        return;
-    }
+    assert(current_resize_operation && "fill_time_slots must be called between "
+                                       "begin_resizing() and end_resizing() calls");
 
     current_resize_operation->fill_slots(from_index, till_index);
 }
@@ -200,11 +199,11 @@ void stg::strategy::shift_below_time_slot(stg::strategy::time_slot_index_t from_
     commit_to_history();
 }
 
-void stg::strategy::drag_activity_session(stg::strategy::session_index_t session_index,
-                                          int distance) {
-    if (!current_drag_operation) {
-        return;
-    }
+void stg::strategy::drag_session(stg::strategy::session_index_t session_index,
+                                 int distance) {
+    assert(current_drag_operation && "drag_session must be called between "
+                                     "begin_dragging() and end_dragging() calls");
+
 
     if (session_index < 0 ||
         session_index > sessions().size() - 1 ||

@@ -14,20 +14,20 @@
 #include "timer.h"
 
 class MainWindow;
-class SlotBoard :
+class SlotBoardCirclesWidget;
+
+class SlotBoardWidget :
         public QWidget,
         public ColorProvider {
 Q_OBJECT
 public:
-    explicit SlotBoard(stg::strategy &strategy,
-                       QWidget *parent = nullptr);
+    explicit SlotBoardWidget(stg::strategy &strategy,
+                             QWidget *parent = nullptr);
 
     void reloadStrategy();
 
     void clearSelection();
     void focusOnCurrentTime();
-
-    const SelectionWidget::RawSelectionState &selection();
 
 signals:
     void timerTick();
@@ -36,11 +36,15 @@ private:
     stg::strategy &strategy;
 
     SlotsWidget *slotsWidget = nullptr;
+    SlotBoardCirclesWidget *circlesWidget = nullptr;
+
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *slotsLayout = nullptr;
 
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
     stg::timer currentTimeTimer;
+
+    int slotBeforeResizeBoundaryIndex = -2;
 
     void updateCurrentTimeMarker();
 

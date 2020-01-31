@@ -18,7 +18,7 @@ class NotifierImplementation;
 class StrategySettingsWidget;
 class CurrentSessionWidget;
 class QScrollArea;
-class SlotBoard;
+class SlotBoardWidget;
 class OverviewWidget;
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
@@ -30,7 +30,6 @@ public:
     void toggleStrategySettingsOpen();
     void focusOnCurrentTime();
 
-    const SelectionWidget::RawSelectionState &selection();
     void clearSelection();
     void reloadStrategy();
 
@@ -42,7 +41,7 @@ private:
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
     QScrollArea *_slotBoardScrollArea = nullptr;
-    SlotBoard *slotBoard = nullptr;
+    SlotBoardWidget *slotBoard = nullptr;
     OverviewWidget *overviewWidget = nullptr;
 
     void layoutChildWidgets();

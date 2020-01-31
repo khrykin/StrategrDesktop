@@ -11,9 +11,9 @@
 
 #include "activityinvalidpropertyexception.h"
 #include "activitylistwidget.h"
-#include "activitylistitemwidget.h"
+#include "activitywidget.h"
 #include "mainscene.h"
-#include "slotboard.h"
+#include "slotboardwidget.h"
 #include "searchbox.h"
 
 ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
@@ -123,7 +123,7 @@ void ActivityListWidget::layoutChildWidgets() {
 }
 
 void ActivityListWidget::setSelectedForItemAtIndex(int index, bool isSelected) const {
-    auto listItem = qobject_cast<ActivityListItemWidget *>(
+    auto listItem = qobject_cast<ActivityWidget *>(
             listWidget->layout()->itemAt(index)->widget());
 
     if (listItem)
@@ -137,7 +137,6 @@ void ActivityListWidget::deselectAllItems() {
 
     selectedActivityIndex = -1;
 }
-
 
 void ActivityListWidget::setupNavbar() {
     navbar = new Navbar();
@@ -170,7 +169,7 @@ void ActivityListWidget::getBack() {
 }
 
 void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
-                                              ActivityListItemWidget *item) {
+                                              ActivityWidget *item) {
     item->disconnect();
 
     auto activityIndex = itemIndex;
@@ -178,38 +177,35 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
         activityIndex = *strategy.activities().index_of(searchResults.at(itemIndex));
     }
 
-    connect(item, &ActivityListItemWidget::selected,
-            [=]() {
-                if (mainScene()->selection().empty())
-                    return;
+    connect(item, &ActivityWidget::selected, [=] {
+        strategy.place_activity(activityIndex, mainScene()->selection());
+        mainScene()->selection().deselect_all();
 
-                strategy.place_activity(activityIndex,
-                                        mainScene()->selection());
-                getBack();
-            });
+        getBack();
+    });
 
-    connect(item, &ActivityListItemWidget::activityDeleted,
-            [=]() {
-                strategy.delete_activity(activityIndex);
-                if (isShowingSearchResults()) {
-                    performSearch();
-                }
-            });
+    connect(item, &ActivityWidget::activityDeleted, [=] {
+        strategy.delete_activity(activityIndex);
 
-    connect(item, &ActivityListItemWidget::activityEdited,
-            [=](const stg::activity &newActivity) {
-                strategy.edit_activity(activityIndex, newActivity);
-                if (isShowingSearchResults()) {
-                    performSearch();
-                }
-            });
+        if (isShowingSearchResults()) {
+            performSearch();
+        }
+    });
 
-    connect(item, &ActivityListItemWidget::hovered, [=]() {
+    connect(item, &ActivityWidget::activityEdited, [=](const stg::activity &newActivity) {
+        strategy.edit_activity(activityIndex, newActivity);
+
+        if (isShowingSearchResults()) {
+            performSearch();
+        }
+    });
+
+    connect(item, &ActivityWidget::hovered, [=] {
         deselectAllItems();
         removeBorderBeforeIndex(itemIndex);
     });
 
-    connect(item, &ActivityListItemWidget::unhovered, [=]() {
+    connect(item, &ActivityWidget::unhovered, [=] {
         removeBorderBeforeIndex(0);
     });
 }
@@ -257,7 +253,7 @@ QVBoxLayout *ActivityListWidget::listLayout() {
     return qobject_cast<QVBoxLayout *>(listWidget->layout());
 }
 
-void ActivityListWidget::reuseItemAtIndex(int index, ActivityListItemWidget *itemWidget) {
+void ActivityListWidget::reuseItemAtIndex(int index, ActivityWidget *itemWidget) {
     auto activity = isShowingSearchResults()
                     ? searchResults.at(index)
                     : strategy.activities().at(index);
@@ -265,12 +261,12 @@ void ActivityListWidget::reuseItemAtIndex(int index, ActivityListItemWidget *ite
     reconnectItemAtIndex(index, itemWidget);
 }
 
-ActivityListItemWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
+ActivityWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
     auto activity = isShowingSearchResults()
                     ? searchResults.at(index)
                     : strategy.activities().at(index);
 
-    auto itemWidget = new ActivityListItemWidget(activity);
+    auto itemWidget = new ActivityWidget(activity);
     reconnectItemAtIndex(index, itemWidget);
     return itemWidget;
 }
@@ -280,7 +276,7 @@ void ActivityListWidget::removeBorderBeforeIndex(int index) {
         if (!listLayout()->itemAt(i)->widget())
             continue;
 
-        auto itemWidget = qobject_cast<ActivityListItemWidget *>(listLayout()->itemAt(i)->widget());
+        auto itemWidget = qobject_cast<ActivityWidget *>(listLayout()->itemAt(i)->widget());
 
         if (!itemWidget)
             continue;
@@ -310,8 +306,8 @@ bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
                             || keyEvent->type() == QEvent::KeyPress);
 
     if (object == this && isKeyPressEvent) {
-        if (mainScene()->selection().empty())
-            return false;
+//        if (mainScene()->selection().empty())
+//            return false;
         if (keyEvent->key() == Qt::Key_Down) {
             selectDown();
             return true;
@@ -322,7 +318,7 @@ bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
                    keyEvent->key() == Qt::Key_Enter) {
             if (selectedActivityIndex >= 0) {
                 auto itemWidget = listItemWidgetAtIndex(selectedActivityIndex);
-                itemWidget->choose();
+                itemWidget->choose(nullptr);
             }
 
             return true;

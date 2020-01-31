@@ -25,10 +25,11 @@ public:
 
     void showNewActivityMenu();
 
+    stg::selection &selection() {
+        return findChildren<SelectionWidget *>().first()->selection;
+    }
+
     void clearSelection();
-
-    const SelectionWidget::RawSelectionState &selection();
-
     void reloadStrategy();
 
     void reorderActivitiesByUsage();

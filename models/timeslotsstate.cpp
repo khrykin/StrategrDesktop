@@ -78,18 +78,26 @@ stg::time_slots_state::time_slots_state(std::vector<time_slot> from_vector) {
 }
 
 void stg::time_slots_state::fill_slots(index_t from_index, index_t till_index) {
-    if (from_index == till_index || !has_indices(from_index, till_index)) {
-        return;
-    }
-
     auto source_index = from_index;
 
     if (till_index < from_index) {
         std::swap(till_index, from_index);
     }
 
+    if (till_index >= size() - 1) {
+        till_index = size() - 1;
+    } else if (from_index < 0) {
+        from_index = 0;
+    } else if (till_index < 0 || from_index >= size() - 1) {
+        return;
+    }
+
+    auto new_activity = has_index(source_index)
+                        ? _data[source_index].activity
+                        : time_slot::no_activity;
+
     for (auto copy_index = from_index; copy_index <= till_index; copy_index++) {
-        _data[copy_index].activity = _data[source_index].activity;
+        _data[copy_index].activity = new_activity;
     }
 
     on_change_event();

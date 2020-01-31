@@ -14,11 +14,14 @@
 #include "applicationsettings.h"
 #include "selectionwidget.h"
 #include "reactivelist.hpp"
+#include "selection.h"
+#include "colorprovider.h"
 
 class SlotsMouseHandler;
 class MainScene;
 class SlotsWidget : public QWidget,
-                    public ReactiveList<SessionWidget> {
+                    public ReactiveList<SessionWidget>,
+                    public ColorProvider {
 Q_OBJECT
 public:
     explicit SlotsWidget(stg::strategy &strategy,
@@ -29,9 +32,10 @@ public:
 
     void deselectAllSlots();
 
-    const SelectionWidget::RawSelectionState &selection();
+    const stg::selection &selection();
 signals:
     void sessionsChanged();
+    void resizeBoundaryChanged(int, int);
 private:
     friend SlotsMouseHandler;
     stg::strategy &strategy;
@@ -42,12 +46,12 @@ private:
     SlotsMouseHandler *mouseHandler = nullptr;
 
     int _slotHeight = ApplicationSettings::defaultSlotHeight;
+    int slotBeforeBoundaryIndex = -2;
 
     QAction *setActivityAction = nullptr;
     QAction *deleteActivityAction = nullptr;
     QAction *clearSelectionAction = nullptr;
     QAction *shiftSlotsBelowAction = nullptr;
-
     QAction *selectAllAction = nullptr;
 
     void openActivitiesWindow();
@@ -61,6 +65,7 @@ private:
 
     void updateUI();
     void updateContentsMargins();
+    void updateResizeBoundary(int sessionBeforeBoundaryIndex, int slotBeforeBoundaryIndex);
 
     void onSelectionChange();
 
