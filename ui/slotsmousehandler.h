@@ -33,7 +33,7 @@ private:
     stg::mouse_handler handler{strategy(),
                                selection(),
                                [this] { return slotHeight(); },
-                               [this] { return slotsWidget->slotsLayout->contentsRect(); },
+                               [this] { return slotsWidget->geometry(); },
                                [this] { return viewportRect(); }};
 
     stg::strategy &strategy();

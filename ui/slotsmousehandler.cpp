@@ -86,8 +86,8 @@ void SlotsMouseHandler::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void SlotsMouseHandler::startAutoScroll(stg::mouse_handler::scroll_direction direction) {
-    int constexpr frameDuration = 1000 / 24;
-    auto constexpr pixelsInSecond = 300;
+    int constexpr frameDuration = 1000 / 30;
+    auto constexpr pixelsInSecond = 200;
 
     if (!autoscrollAnimation)
         autoscrollAnimation = new QTimer(this);

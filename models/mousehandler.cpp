@@ -72,13 +72,13 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
             .top = viewport.height - autoscroll_zone_size,
             .bottom = viewport.height
     };
-
+    
     auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
-                                viewport.top > 0 &&
+                                viewport.top > -bounds.top &&
                                 event.position.y > 0;
 
     auto needs_autoscroll_bottom = bottom_autoscroll_zone.contains(pos_in_viewport.y) &&
-                                   viewport.top + viewport.height < bounds.height &&
+                                   viewport.top + viewport.height < bounds.top + bounds.height &&
                                    event.position.y < bounds.height;
 
     auto needs_autoscroll = needs_autoscroll_top || needs_autoscroll_bottom;
