@@ -221,8 +221,8 @@ void StrategySettingsWidget::save() {
         strategy.set_time_slot_duration(slotDuration);
     }
 
-    if (beginTime != strategy.time_slot_duration()) {
-        strategy.set_time_slot_duration(beginTime);
+    if (beginTime != strategy.begin_time()) {
+        strategy.set_begin_time(beginTime);
     }
 
     if (numberOfSlots != strategy.number_of_time_slots()) {
