@@ -11,7 +11,7 @@
 #include "cursorprovider.h"
 #include "colorprovider.h"
 #include "sessionsmainwidget.h"
-#include "mouse_handler.h"
+#include "mousehandler.h"
 #include "slotswidget.h"
 
 class SessionWidget;
@@ -32,27 +32,31 @@ private:
 
     stg::mouse_handler handler{strategy(),
                                selection(),
-                               [this] {
-                                   return slotHeight();
-                               },
-                               [this] {
-                                   return stg::rect(slotsWidget->slotsLayout->contentsRect());
-                               }};
+                               [this] { return slotHeight(); },
+                               [this] { return slotsWidget->slotsLayout->contentsRect(); },
+                               [this] { return viewportRect(); }};
 
     stg::strategy &strategy();
     stg::selection &selection();
     int slotHeight();
 
-    bool isPerformingAutoscroll = false;
-    QPropertyAnimation *autoscrollAnimation = nullptr;
+    QTimer *autoscrollAnimation = nullptr;
 
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
+    SlotBoardWidget *slotBoard();
+    QScrollArea *slotBoardScrollArea();
+    QScrollBar *verticalScrollBar();
+    stg::rect viewportRect();
 
     void selectSessionsAtIndices(const std::vector<int> &sessionIndices);
+    void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
+
+    void updateCursor(stg::mouse_handler::cursor new_cursor);
     void updateResizeBoundary(int sessionBeforeBoundaryIndex,
                               int slotBeforeBoundaryIndex);
-    void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
-    void updateCursor(stg::mouse_handler::cursor new_cursor);
+
+    void startAutoScroll(stg::mouse_handler::scroll_direction direction);
+    void stopAutoScroll();
 
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
@@ -63,10 +67,5 @@ private:
     void leaveEvent(QEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
-
-    QScrollArea *slotBoardScrollArea() const;
-    QScrollBar *verticalScrollBar() const;
-    void handleAutoScroll(const QMouseEvent *event);
-    void resetAutoscrollAnimation();
 };
 #endif //STRATEGR_SLOTSMOUSEHANDLER_H

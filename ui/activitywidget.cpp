@@ -24,12 +24,7 @@ ActivityWidget::ActivityWidget(stg::activity *activity,
 
     layoutChildWidgets();
 
-    setupActions();
-
     updateUI();
-}
-
-void ActivityWidget::setupActions() {
 }
 
 void ActivityWidget::layoutChildWidgets() {
@@ -68,7 +63,16 @@ void ActivityWidget::drawBorder(QPainter &painter) const {
 }
 
 void ActivityWidget::drawSelection(QPainter &painter) const {
-    painter.setBrush(_isSelected ? selectionColor() : highlightColor());
+    using namespace ColorUtils;
+
+    auto selectionColor = overlayWithAlpha(QColorFromStdString(activity()->color()),
+                                           0.05 * shadesAlphaFactor(0));
+
+
+    auto highlightColor = overlayWithAlpha(QColorFromStdString(activity()->color()),
+                                           0.1 * shadesAlphaFactor(0));
+
+    painter.setBrush(_isSelected ? selectionColor : highlightColor);
 
     auto selectionRect = QRect(0, 0, width(), height());
 
@@ -104,10 +108,12 @@ void ActivityWidget::mousePressEvent(QMouseEvent *event) {
 
 void ActivityWidget::mouseReleaseEvent(QMouseEvent *event) {
     auto wasClicked = isClicked;
-    emit unhovered();
 
-    if (wasClicked)
+    if (wasClicked) {
         choose(event);
+    } else {
+        emit unhovered();
+    }
 }
 
 void ActivityWidget::contextMenuEvent(QContextMenuEvent *event) {
@@ -115,8 +121,8 @@ void ActivityWidget::contextMenuEvent(QContextMenuEvent *event) {
 }
 
 void ActivityWidget::showContextMenu(const QPoint &position) {
-    isClicked = true;
-    update();
+//    isClicked = true;
+//    update();
 
     auto newEditorMenu = new ActivityEditorMenu(*activity(), this);
     delete editorMenu;
@@ -137,6 +143,7 @@ void ActivityWidget::showContextMenu(const QPoint &position) {
     connect(editorMenu,
             &ActivityEditorMenu::aboutToHide,
             [=]() {
+                emit unhovered();
                 isClicked = false;
                 update();
             });
@@ -177,11 +184,17 @@ void ActivityWidget::setIsSelected(bool isSelected) {
 void ActivityWidget::choose(QMouseEvent *event) {
     auto mainScene = qobject_cast<MainWindow *>(window())->scene();
 
+    if (!isClicked) {
+        isClicked = true;
+        update();
+    }
+
     if (mainScene->selection().empty()) {
         auto pos = event ? event->pos() : contentsRect().center();
         showContextMenu(pos);
     } else {
         emit selected();
+        emit unhovered();
         isClicked = false;
         update();
     }

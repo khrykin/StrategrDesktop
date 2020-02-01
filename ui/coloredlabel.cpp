@@ -19,11 +19,6 @@ const QColor &ColoredLabel::color() const {
     return _color;
 }
 
-void ColoredLabel::setColor(const QColor &color) {
-    _color = color;
-    update();
-}
-
 const QString &ColoredLabel::text() const {
     return _text;
 }

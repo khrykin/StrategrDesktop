@@ -7,6 +7,22 @@
 stg::selection::selection(const stg::strategy &strategy)
         : strategy(strategy) {}
 
+void stg::selection::set_selected_at(index_t slot_index, bool is_selected) {
+    auto found_it = std::find(begin(), end(), slot_index);
+    auto already_selected = found_it != end();
+
+    if (already_selected && is_selected) {
+        return;
+    } else if (already_selected && !is_selected) {
+        erase(found_it);
+    } else if (is_selected) {
+        push_back(slot_index);
+        std::sort(begin(), end());
+    }
+
+    on_change_event();
+}
+
 void stg::selection::toggle_at(index_t slot_index) {
     auto found_it = std::find(begin(), end(), slot_index);
     auto already_selected = found_it != end();

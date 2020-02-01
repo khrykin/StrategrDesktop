@@ -34,7 +34,7 @@ void SlotBoardWidget::setupCurrentTimeTimer() {
     currentTimeTimer.start(ApplicationSettings::currentTimeTimerSecondsInterval);
 }
 
-void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
+void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
     slotsWidget = new SlotsWidget(strategy);
     connect(slotsWidget,
             &SlotsWidget::sessionsChanged,
@@ -46,15 +46,15 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
                               slotsWidget->slotHeight());
 
 
-    slotsLayout = new QVBoxLayout();
-    slotsLayout->setSpacing(0);
-    slotsLayout->addWidget(slotsWidget);
-    slotsLayout->addStretch();
+    _slotsLayout = new QVBoxLayout();
+    _slotsLayout->setSpacing(0);
+    _slotsLayout->addWidget(slotsWidget);
+    _slotsLayout->addStretch();
 
     updateSlotsLayout();
 
     mainLayout->addWidget(slotRuler);
-    mainLayout->addLayout(slotsLayout);
+    mainLayout->addLayout(_slotsLayout);
 
     circlesWidget = new SlotBoardCirclesWidget(
             std::bind(&SlotsWidget::slotHeight, slotsWidget),
@@ -73,7 +73,7 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
 }
 
 void SlotBoardWidget::updateSlotsLayout() const {
-    slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
+    _slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
 }
 
 void SlotBoardWidget::reloadStrategy() {
@@ -173,5 +173,9 @@ void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
     updateCurrentTimeMarker();
 
     circlesWidget->setGeometry(geometry());
+}
+
+QVBoxLayout *SlotBoardWidget::slotsLayout() const {
+    return _slotsLayout;
 }
 

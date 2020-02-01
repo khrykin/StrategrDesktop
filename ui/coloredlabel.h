@@ -16,7 +16,6 @@ public:
     explicit ColoredLabel(QString text = "", QWidget *parent = nullptr);
 
     const QColor &color() const;
-    void setColor(const QColor &color);
 
     QColor dynamicColor();
     void setDynamicColor(const std::function<QColor()> &newColorGetter);
@@ -35,8 +34,8 @@ public:
 
     QSize sizeHint() const override;
 private:
-    std::function<QColor()> colorGetter = nullptr;
     Qt::TextElideMode _elideMode = Qt::ElideNone;
+    std::function<QColor()> colorGetter = [] { return Qt::black; };
 
     QColor _color;
     QString _text;

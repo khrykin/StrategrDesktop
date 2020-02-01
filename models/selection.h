@@ -21,6 +21,7 @@ namespace stg {
                        public notifiable_on_change {
         explicit selection(const stg::strategy &strategy);
 
+        void set_selected_at(index_t slot_index, bool is_selected);
         void toggle_at(index_t slot_index);
         void deselect_all();
         void select_all();

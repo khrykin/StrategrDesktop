@@ -28,7 +28,7 @@ public:
 
     void clearSelection();
     void focusOnCurrentTime();
-
+    QVBoxLayout *slotsLayout() const;
 signals:
     void timerTick();
     void timeSlotsChange();
@@ -39,7 +39,7 @@ private:
     SlotBoardCirclesWidget *circlesWidget = nullptr;
 
     SlotRuler *slotRuler = nullptr;
-    QVBoxLayout *slotsLayout = nullptr;
+    QVBoxLayout *_slotsLayout = nullptr;
 
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
     stg::timer currentTimeTimer;

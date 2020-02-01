@@ -5,7 +5,7 @@
 #ifndef STRATEGR_MOUSEHANDLEROPERATIONS_H
 #define STRATEGR_MOUSEHANDLEROPERATIONS_H
 
-#include "mouse_handler.h"
+#include "mousehandler.h"
 
 struct stg::mouse_handler::operation {
     explicit operation(mouse_handler *handler) : handler(*handler) {}
@@ -15,10 +15,10 @@ struct stg::mouse_handler::operation {
     virtual operation_type type() = 0;
 
     virtual void init(const mouse_event &event) = 0;
-
     virtual void perform(const mouse_event &event) = 0;
-
     virtual void teardown(const mouse_event &event) = 0;
+
+    virtual void handle_direction_change() {};
 protected:
     mouse_handler &handler;
     stg::strategy &strategy = handler.strategy;
@@ -108,12 +108,6 @@ struct stg::mouse_handler::resize_operation : public operation {
     using operation::operation;
     static constexpr auto nothing_selected_index = -2;
 
-    enum direction {
-        none,
-        up,
-        down,
-    };
-
     operation_type type() override {
         return resize;
     }
@@ -125,7 +119,7 @@ struct stg::mouse_handler::resize_operation : public operation {
         initial_mouse_zone = handler.current_mouse_zone;
         initial_position = event.position;
 
-        select_sessions(handle_index, initial_mouse_zone, none);
+        select_sessions(handle_index, initial_mouse_zone);
 
         strategy.begin_resizing();
     }
@@ -139,34 +133,14 @@ struct stg::mouse_handler::resize_operation : public operation {
             return;
         }
 
-        auto direction = get_direction(event.position.y - get_boundary_position());
-
-        if (previous_direction != none &&
-            direction != none &&
-            direction != previous_direction) {
-            handle_direction_change();
-        }
-
-        if (direction == none)
-            return;
-
-        previous_direction = direction;
-
-        index_t source_slot_index = get_source_slot_index(direction, initial_mouse_zone);
+        index_t source_slot_index = get_source_slot_index(handler.current_direction, initial_mouse_zone);
         if (source_slot_index == handler.current_slot_index) {
-            return;
-        }
-
-        if (!strategy.time_slots()[source_slot_index].activity &&
-            !strategy.time_slots()[handler.current_slot_index].activity) {
-
-            teardown(mouse_event(point(), 0));
             return;
         }
 
         strategy.fill_time_slots(source_slot_index, handler.current_slot_index);
 
-        auto new_mouse_zone = direction == down
+        auto new_mouse_zone = handler.current_direction == direction::down
                               ? mouse_zone::stretch_bottom
                               : mouse_zone::stretch_top;
 
@@ -174,11 +148,10 @@ struct stg::mouse_handler::resize_operation : public operation {
         initial_position = event.position;
         initial_mouse_zone = new_mouse_zone;
 
-        select_sessions(handle_index, initial_mouse_zone, direction);
+        select_sessions(handle_index, initial_mouse_zone);
     }
 
-    void teardown(const mouse_event &event)
-    override {
+    void teardown(const mouse_event &event) override {
         if (handler.on_select_sessions)
             handler.on_select_sessions({});
 
@@ -190,6 +163,20 @@ struct stg::mouse_handler::resize_operation : public operation {
         finished = true;
     };
 
+    void handle_direction_change() override {
+        if (initial_mouse_zone == mouse_zone::stretch_top &&
+            handler.current_direction == direction::down) {
+            if (handle_index != boundary_slot_index + 1)
+                handle_index = boundary_slot_index + 1;
+        }
+
+        if (initial_mouse_zone == mouse_zone::stretch_bottom &&
+            handler.current_direction == direction::down) {
+            if (handle_index != boundary_slot_index)
+                handle_index = boundary_slot_index;
+        }
+    }
+
 private:
     bool finished = false;
 
@@ -199,53 +186,29 @@ private:
     point initial_position;
     mouse_zone initial_mouse_zone = mouse_zone::out_of_bounds;
 
-    direction previous_direction = none;
-
-    static direction get_direction(int delta) {
-        if (delta == 0)
-            return none;
-        return delta > 0 ? down : up;
-    }
-
     int get_boundary_delta(int prev_pos, int current_pos) {
         auto boundary_pos = get_boundary_position();
-        auto true_delta = static_cast<int>(current_pos - boundary_pos);
+        auto delta = static_cast<int>(current_pos - boundary_pos);
 
-        // "-"  is a defence against cursor trembling
-        return std::abs(true_delta) - static_cast<int>(handler.settings.resolution);
+        return std::abs(delta);
     }
 
     int get_boundary_position() const {
         return handler.get_slot_height() * (boundary_slot_index + 1);
     }
 
-    void handle_direction_change() {
-        if (initial_mouse_zone == mouse_zone::stretch_top &&
-            previous_direction == up) {
-            if (handle_index != boundary_slot_index + 1)
-                handle_index = boundary_slot_index + 1;
-        }
-
-        if (initial_mouse_zone == mouse_zone::stretch_bottom &&
-            previous_direction == up) {
-            if (handle_index != boundary_slot_index)
-                handle_index = boundary_slot_index;
-        }
-    }
-
     void select_sessions(index_t source_index,
-                         enum mouse_zone mouse_zone,
-                         direction direction) {
+                         enum mouse_zone mouse_zone) {
         auto first_selection_index = strategy.sessions()
                 .session_index_for_time_slot_index(source_index);
 
         if (mouse_zone == mouse_zone::stretch_top &&
-            direction == direction::down) {
+            handler.current_direction == direction::down) {
             first_selection_index++;
         }
 
         if (mouse_zone == mouse_zone::stretch_bottom &&
-            direction == direction::up) {
+            handler.current_direction == direction::up) {
             first_selection_index--;
         }
 
@@ -260,6 +223,13 @@ private:
         } else {
             auto border_slot = strategy.sessions()[first_session_index].time_slots.back();
             boundary_slot_index = strategy.time_slots().index_of(border_slot).value_or(-1);
+        }
+
+        if (!strategy.sessions()[first_selection_index].activity &&
+            !strategy.sessions()[second_selection_index].activity) {
+
+            teardown(mouse_event(point(), 0));
+            return;
         }
 
         if (handler.on_select_sessions) {
@@ -284,10 +254,10 @@ private:
     index_t get_source_slot_index(const direction &direction, mouse_zone mouse_zone) const {
         auto source_slot_index = handle_index;
         if (mouse_zone == mouse_zone::stretch_top &&
-            direction == down) {
+            direction == direction::down) {
             source_slot_index--;
         } else if (mouse_zone == mouse_zone::stretch_bottom &&
-                   direction == up) {
+                   direction == direction::up) {
             source_slot_index++;
         }
 

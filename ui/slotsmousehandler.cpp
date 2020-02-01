@@ -8,12 +8,13 @@
 #include <QMenu>
 #include <QScreen>
 #include <QPainter>
-#include <QPropertyAnimation>
+#include <QTimer>
 #include <QScrollBar>
 
 #include "slotsmousehandler.h"
 #include "macoswindow.h"
 #include "sessionsmainwidget.h"
+#include "slotboardwidget.h"
 
 SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
         : QFrame(nullptr),
@@ -26,8 +27,9 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
     handler.on_cursor_change = std::bind(&SlotsMouseHandler::updateCursor, this, _1);
     handler.on_select_sessions = std::bind(&SlotsMouseHandler::selectSessionsAtIndices, this, _1);
     handler.on_resize_boundary_change = std::bind(&SlotsMouseHandler::updateResizeBoundary, this, _1, _2);
+    handler.on_start_auto_scroll = std::bind(&SlotsMouseHandler::startAutoScroll, this, _1);
+    handler.on_stop_auto_scroll = std::bind(&SlotsMouseHandler::stopAutoScroll, this);
     handler.on_open_activities = std::bind(&SlotsWidget::openActivitiesWindow, slotsWidget);
-
 }
 
 int SlotsMouseHandler::slotHeight() {
@@ -38,16 +40,23 @@ stg::selection &SlotsMouseHandler::selection() {
     return slotsWidget->selectionWidget->selection;
 }
 
-
-QScrollBar *SlotsMouseHandler::verticalScrollBar() const {
-    return slotBoardScrollArea()->verticalScrollBar();
+SlotBoardWidget *SlotsMouseHandler::slotBoard() {
+    return qobject_cast<SlotBoardWidget *>
+            (slotsWidget->parent());
 }
 
-QScrollArea *SlotsMouseHandler::slotBoardScrollArea() const {
+QScrollArea *SlotsMouseHandler::slotBoardScrollArea() {
     return qobject_cast<SessionsMainWidget *>
-            (slotsWidget->parent()->parent()
-                     ->parent()->parent())
+            (slotsWidget
+                     ->parent() // layout
+                     ->parent() // slotboard
+                     ->parent() // scroll area
+                     ->parent()) // layout
             ->slotBoardScrollArea();
+}
+
+QScrollBar *SlotsMouseHandler::verticalScrollBar() {
+    return slotBoardScrollArea()->verticalScrollBar();
 }
 
 void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
@@ -76,80 +85,39 @@ void SlotsMouseHandler::keyReleaseEvent(QKeyEvent *event) {
     handler.key_up(event);
 }
 
-void SlotsMouseHandler::handleAutoScroll(const QMouseEvent *event) {
-//    if (isPerformingAutoscroll) {
-//        return;
-//    }
-//
-//    auto topOffsetInViewPort = mapTo(slotBoardScrollArea()->viewport(), event->pos()).y();
-//
-//    auto topAutoScrollBreakpoint = slotsWidget->slotHeight();
-//    auto bottomAutoScrollBreakpoint = slotBoardScrollArea()->height() - slotsWidget->slotHeight();
-//
-//    auto needsAutoScrollBottom = direction == Direction::Down &&
-//                                 topOffsetInViewPort > bottomAutoScrollBreakpoint &&
-//                                 topOffsetInViewPort <= slotBoardScrollArea()->height();
-//    auto needsAutoScrollTop = direction == Direction::Up &&
-//                              topOffsetInViewPort < topAutoScrollBreakpoint &&
-//                              topOffsetInViewPort >= 0;
-//
-//    auto needsAutoScroll = !isPerformingAutoscroll && (needsAutoScrollTop || needsAutoScrollBottom);
-//
-//    const auto scrollSpeed = 5;
-//
-//    int scrollLength = 0;
-//    int endValue = verticalScrollBar()->value();
-//
-//    if (needsAutoScrollBottom) {
-//        scrollLength = slotsWidget->height() - relativeTop(event);
-//        endValue = verticalScrollBar()->maximum();
-//    } else if (needsAutoScrollTop) {
-//        scrollLength = relativeTop(event);
-//        endValue = verticalScrollBar()->minimum();
-//    }
-//
-//    if (needsAutoScroll) {
-//        if (!autoscrollAnimation)
-//            autoscrollAnimation = new QPropertyAnimation(verticalScrollBar(),
-//                                                         "value",
-//                                                         this);
-//        autoscrollAnimation->disconnect();
-//
-//        connect(autoscrollAnimation,
-//                &QAbstractAnimation::finished,
-//                [this]() {
-//                    isPerformingAutoscroll = false;
-//                });
-//
-//        auto fakeEvent = *event;
-//        connect(autoscrollAnimation,
-//                &QVariantAnimation::valueChanged,
-//                [this,
-//                        &fakeEvent,
-//                        topOffsetInViewPort](const QVariant &value) {
-//
-//                    auto directionMargin = 1;
-//                    if (direction == Direction::Up) {
-//                        directionMargin *= -1;
-//                    }
-//
-//                    auto topInSlotBoard = value.toInt() + topOffsetInViewPort + directionMargin;
-//                    fakeEvent.setLocalPos(QPoint(fakeEvent.pos().x(), topInSlotBoard));
-//
-//                    mouseMoveEvent(&fakeEvent);
-//                });
-//
-//        if (scrollLength > 0) {
-//            autoscrollAnimation->setDuration(scrollSpeed * scrollLength);
-//            autoscrollAnimation->setStartValue(verticalScrollBar()->value());
-//            autoscrollAnimation->setEndValue(endValue);
-//
-//            isPerformingAutoscroll = true;
-//            autoscrollAnimation->start();
-//        } else {
-//            resetAutoscrollAnimation();
-//        }
-//    }
+void SlotsMouseHandler::startAutoScroll(stg::mouse_handler::scroll_direction direction) {
+    int constexpr frameDuration = 1000 / 24;
+    auto constexpr pixelsInSecond = 300;
+
+    if (!autoscrollAnimation)
+        autoscrollAnimation = new QTimer(this);
+
+    autoscrollAnimation->disconnect();
+
+    connect(autoscrollAnimation, &QTimer::timeout, [this, direction] {
+        auto newValue = direction == stg::mouse_handler::scroll_direction::down
+                        ? verticalScrollBar()->value() + pixelsInSecond * frameDuration / 1000
+                        : verticalScrollBar()->value() - pixelsInSecond * frameDuration / 1000;
+
+        verticalScrollBar()->setValue(newValue);
+        handler.auto_scroll_frame(mapFromGlobal(QCursor::pos()));
+    });
+
+    autoscrollAnimation->start(frameDuration);
+}
+
+void SlotsMouseHandler::stopAutoScroll() {
+    if (autoscrollAnimation) {
+        autoscrollAnimation->stop();
+    }
+}
+
+stg::rect SlotsMouseHandler::viewportRect() {
+    return stg::rect{0,
+                     slotBoardScrollArea()->verticalScrollBar()->value()
+                     - slotBoard()->slotsLayout()->contentsMargins().top(),
+                     slotBoardScrollArea()->viewport()->width(),
+                     slotBoardScrollArea()->viewport()->height()};
 }
 
 void SlotsMouseHandler::updateResizeBoundary(int sessionBeforeBoundaryIndex, int slotBeforeBoundaryIndex) {
@@ -237,14 +205,6 @@ stg::strategy &SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
 }
 
-void SlotsMouseHandler::resetAutoscrollAnimation() {
-    if (isPerformingAutoscroll) {
-        isPerformingAutoscroll = false;
-        if (autoscrollAnimation) {
-            autoscrollAnimation->stop();
-        }
-    }
-}
 
 //SessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
 //    auto sessionIndex = strategy().sessions()

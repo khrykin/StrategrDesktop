@@ -8,6 +8,45 @@
 #include <ostream>
 
 namespace stg {
+    struct point {
+        static const point zero;
+
+        int x = 0;
+        int y = 0;
+
+        constexpr explicit point(int x = 0, int y = 0) : x(x), y(y) {}
+
+        /**
+        * Implicit constructor for Qt-like point
+        */
+
+        template<typename T>
+        point(const T &point) {
+            x = point.x();
+            y = point.y();
+        }
+
+        template<typename T>
+        operator T() const {
+            return T(x, y);
+        }
+
+        point operator+(const point &other) const {
+            return point{x + other.x, y + other.y};
+        }
+
+        point operator-(const point &other) const {
+            return point{x - other.x, y - other.y};
+        }
+
+        friend std::ostream &operator<<(std::ostream &os, const point &point) {
+            os << "point [ " << point.x << " " << point.y << " ]";
+            return os;
+        }
+    };
+
+    constexpr auto point::zero = point();
+
     struct rect {
         int left = 0;
         int top = 0;
@@ -41,39 +80,16 @@ namespace stg {
             return T(left, top, width, height);
         }
 
+        point origin() {
+            return point{left, top};
+        }
+
         friend std::ostream &operator<<(std::ostream &os, const rect &r) {
             os << "rect [ "
                << r.left << " "
                << r.top << " "
                << r.width << " "
                << r.height << " ]";
-            return os;
-        }
-    };
-
-    struct point {
-        int x = 0;
-        int y = 0;
-
-        explicit point(int x = 0, int y = 0) : x(x), y(y) {}
-
-        /**
-        * Implicit constructor for Qt-like point
-        */
-
-        template<typename T>
-        point(const T &point) {
-            x = point.x();
-            y = point.y();
-        }
-
-        template<typename T>
-        operator T() const {
-            return T(x, y);
-        }
-
-        friend std::ostream &operator<<(std::ostream &os, const point &point) {
-            os << "point [ " << point.x << " " << point.y << " ]";
             return os;
         }
     };

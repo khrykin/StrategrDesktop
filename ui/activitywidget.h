@@ -56,7 +56,6 @@ private:
     void updateUI();
 
     void layoutChildWidgets();
-    void setupActions();
     void drawSelection(QPainter &painter) const;
     void drawBorder(QPainter &painter) const;
     void showContextMenu(const QPoint &position);

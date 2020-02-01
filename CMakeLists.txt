@@ -80,8 +80,8 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/notifier.cpp
         models/notifier.h
         models/utility.h
-        models/mouse_handler.cpp
-        models/mouse_handler.h
+        models/mousehandler.cpp
+        models/mousehandler.h
         models/mousehandleroperations.cpp
         models/mousehandleroperations.h models/selection.cpp models/selection.h models/event.cpp models/event.h)
 

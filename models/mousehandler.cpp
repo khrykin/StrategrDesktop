@@ -2,22 +2,24 @@
 // Created by Dmitry Khrykin on 2020-01-29.
 //
 
-#include "mouse_handler.h"
+#include "mousehandler.h"
 #include "mousehandleroperations.h"
 
-#define stg_make_operation(operation) (std::make_unique<operation>(this))
+//#define make_operation(operation) (std::make_unique<operation>(this))
 
 stg::mouse_handler::mouse_handler(stg::strategy &strategy,
                                   stg::selection &selection,
                                   std::function<int()> slot_height_getter,
                                   std::function<rect()> bounds_getter,
+                                  std::function<rect()> viewport_getter,
                                   const mouse_parameters &settings)
         : strategy(strategy),
           selection(selection),
           get_slot_height(std::move(slot_height_getter)),
           get_bounds(std::move(bounds_getter)),
+          get_viewport(std::move(viewport_getter)),
           settings(settings),
-          current_operaion(stg_make_operation(none_operation)) {
+          current_operaion(make_operation<none_operation>()) {
     assert(slot_height_getter != nullptr && "slot_height_getter must be provided");
     assert(bounds_getter != nullptr && "bounds_getter must be provided");
 }
@@ -25,18 +27,15 @@ stg::mouse_handler::mouse_handler(stg::strategy &strategy,
 stg::mouse_handler::~mouse_handler() = default;
 
 void stg::mouse_handler::mouse_press(const stg::mouse_event &event) {
-//    std::cout << "mouse_press: " << event << "\n";
-//    std::cout << "bounds: " << get_bounds() << "\n";
-//    std::cout << "slot_index: " << get_slot_index(event) << "\n";
-
     current_slot_index = get_slot_index(event);
     current_session_index = get_session_index(current_slot_index);
     current_mouse_zone = get_mouse_zone(current_session_index, event.position);
+    current_key_modifiers = event.modifiers;
 
-    current_operaion = get_operation(event.modifiers);
+    current_operaion = get_operation(current_key_modifiers);
     current_operaion->init(event);
 
-    std::cout << "current_operaion: " << current_operaion->type() << "\n";
+    previous_position = event.position;
 
     update_cursor(event.modifiers);
 }
@@ -45,22 +44,85 @@ void stg::mouse_handler::mouse_move(const stg::mouse_event &event) {
     current_slot_index = get_slot_index(event);
     current_session_index = get_session_index(current_slot_index);
     current_mouse_zone = get_mouse_zone(current_session_index, event.position);
+    current_key_modifiers = event.modifiers;
+
+    if (current_operaion->type() != none) {
+        update_direction(event);
+        handle_autoscroll(event);
+    }
 
     current_operaion->perform(event);
 
     update_cursor(event.modifiers);
 }
 
-void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
-    std::cout << "mouse_release" << "\n";
+void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
+    auto viewport = get_viewport();
+    auto bounds = get_bounds();
 
+    auto autoscroll_zone_size = settings.autoscroll_zone_size;
+    auto pos_in_viewport = event.position - viewport.origin();
+
+    auto top_autoscroll_zone = stg::mouse_handler::range{
+            .top = 0,
+            .bottom = autoscroll_zone_size
+    };
+
+    auto bottom_autoscroll_zone = stg::mouse_handler::range{
+            .top = viewport.height - autoscroll_zone_size,
+            .bottom = viewport.height
+    };
+
+    auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
+                                viewport.top > 0 &&
+                                event.position.y > 0;
+
+    auto needs_autoscroll_bottom = bottom_autoscroll_zone.contains(pos_in_viewport.y) &&
+                                   viewport.top + viewport.height < bounds.height &&
+                                   event.position.y < bounds.height;
+
+    auto needs_autoscroll = needs_autoscroll_top || needs_autoscroll_bottom;
+
+    if (!autoscroll_is_on && needs_autoscroll) {
+        autoscroll_is_on = true;
+
+        stg::mouse_handler::scroll_direction direction;
+        if (needs_autoscroll_top) {
+            direction = stg::mouse_handler::scroll_direction::up;
+        } else if (needs_autoscroll_bottom) {
+            direction = stg::mouse_handler::scroll_direction::down;
+        }
+
+        if (on_start_auto_scroll)
+            on_start_auto_scroll(direction);
+
+    } else if (autoscroll_is_on && !needs_autoscroll) {
+        autoscroll_is_on = false;
+
+        if (on_stop_auto_scroll)
+            on_stop_auto_scroll();
+    }
+}
+
+void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
     current_operaion->teardown(event);
-    current_operaion = stg_make_operation(none_operation);
+    current_operaion = make_operation<none_operation>();
 
     update_cursor(event.modifiers);
 
+    if (autoscroll_is_on) {
+        autoscroll_is_on = false;
+
+        if (on_stop_auto_scroll)
+            on_stop_auto_scroll();
+    }
+
     // Reset these after we update cursor
     current_mouse_zone = mouse_zone::out_of_bounds;
+    current_direction = direction::none;
+    previous_position = point::zero;
+    current_key_modifiers = 0;
+
     current_slot_index = -1;
     current_session_index = -1;
 }
@@ -73,6 +135,11 @@ void stg::mouse_handler::key_down(const event &event) {
 void stg::mouse_handler::key_up(const event &event) {
 //    std::cout << "key_up" << "\n";
     update_cursor(event.modifiers);
+}
+
+void stg::mouse_handler::auto_scroll_frame(const stg::point &new_mouse_position) {
+    auto new_event = mouse_event(new_mouse_position, current_key_modifiers);
+    mouse_move(new_event);
 }
 
 std::unique_ptr<stg::mouse_handler::operation>
@@ -88,36 +155,36 @@ stg::mouse_handler::get_operation(event::key_modifiers modifiers) {
 
     if (modifiers == mouse_event::left_key) {
         if (!selection.empty() && current_selected) {
-            return stg_make_operation(select_operation);
+            return make_operation<select_operation>();
         }
 
         if (zone == mouse_zone::drag) {
             if (current_slot.empty())
-                return stg_make_operation(select_operation);
+                return make_operation<select_operation>();
             else
-                return stg_make_operation(drag_operation);
+                return make_operation<drag_operation>();
         } else if (zone == mouse_zone::stretch_bottom) {
             if (current_slot.empty() && !next_empty)
-                return stg_make_operation(resize_operation);
+                return make_operation<resize_operation>();
             else if (current_slot.empty())
-                return stg_make_operation(select_operation);
+                return make_operation<select_operation>();
             else
-                return stg_make_operation(resize_operation);
+                return make_operation<resize_operation>();
         } else if (zone == mouse_zone::stretch_top) {
             if (current_slot.empty() && !prev_empty)
-                return stg_make_operation(resize_operation);
+                return make_operation<resize_operation>();
             else if (current_slot.empty())
-                return stg_make_operation(select_operation);
+                return make_operation<select_operation>();
             else
-                return stg_make_operation(resize_operation);
+                return make_operation<resize_operation>();
         }
     } else if (modifiers == mouse_event::right_key) {
 
     } else if (modifiers == (mouse_event::left_key | mouse_event::ctrl_key)) {
-        return stg_make_operation(select_operation);
+        return make_operation<select_operation>();
     }
 
-    return stg_make_operation(none_operation);
+    return make_operation<none_operation>();
 }
 
 stg::mouse_handler::index_t
@@ -142,11 +209,11 @@ stg::mouse_handler::mouse_zone stg::mouse_handler::get_mouse_zone(int session_in
 
     auto top_stretch_zone = range{
             .top = session_range.top,
-            .bottom = session_range.top + settings.stretch_zone_height
+            .bottom = session_range.top + settings.stretch_zone_size
     };
 
     auto bottom_stretch_zone = range{
-            .top = session_range.bottom - settings.stretch_zone_height,
+            .top = session_range.bottom - settings.stretch_zone_size,
             .bottom = session_range.bottom
     };
 
@@ -166,6 +233,13 @@ stg::mouse_handler::mouse_zone stg::mouse_handler::get_mouse_zone(int session_in
     } else {
         return mouse_zone::drag;
     }
+}
+
+stg::mouse_handler::direction stg::mouse_handler::get_direction(int delta) {
+    if (std::abs(delta) < settings.direction_change_resolution)
+        return direction::none;
+
+    return delta > 0 ? direction::down : direction::up;
 }
 
 float stg::mouse_handler::px_in_time() {
@@ -192,6 +266,21 @@ void stg::mouse_handler::update_cursor(event::key_modifiers modifiers) {
 
     if (on_cursor_change)
         on_cursor_change(new_cursor);
+}
+
+void stg::mouse_handler::update_direction(const stg::mouse_event &event) {
+    auto delta = event.position.y - this->previous_position.y;
+    auto new_direction = this->get_direction(delta);
+    auto prev_direction = this->current_direction;
+
+    if (abs(delta) > this->settings.direction_change_resolution)
+        this->previous_position = event.position;
+
+    if (new_direction != stg::mouse_handler::direction::none &&
+        new_direction != prev_direction) {
+        this->current_direction = new_direction;
+        this->current_operaion->handle_direction_change();
+    }
 }
 
 stg::mouse_handler::cursor
@@ -287,3 +376,31 @@ std::ostream &stg::operator<<(std::ostream &os, mouse_handler::operation_type op
     return os;
 }
 
+std::ostream &stg::operator<<(std::ostream &os, stg::mouse_handler::direction dir) {
+    switch (dir) {
+        case mouse_handler::direction::none:
+            os << "none";
+            break;
+        case mouse_handler::direction::up:
+            os << "up";
+            break;
+        case mouse_handler::direction::down:
+            os << "down";
+            break;
+    }
+
+    return os;
+}
+
+std::ostream &stg::operator<<(std::ostream &os, stg::mouse_handler::scroll_direction dir) {
+    switch (dir) {
+        case mouse_handler::scroll_direction::down:
+            os << "down";
+            break;
+        case mouse_handler::scroll_direction::up:
+            os << "up";
+            break;
+    }
+
+    return os;
+}
