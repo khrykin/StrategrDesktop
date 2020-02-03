@@ -39,10 +39,7 @@ void SlotsWidget::layoutChildWidgets() {
     slotsWidget->setLayout(slotsLayout);
 
     selectionWidget = new SelectionWidget(strategy, _slotHeight, nullptr);
-    connect(selectionWidget,
-            &SelectionWidget::selectionChanged,
-            this,
-            &SlotsWidget::onSelectionChange);
+    selectionWidget->selection.add_on_change_callback(this, &SlotsWidget::onSelectionChange);
 
     mouseHandler = new SlotsMouseHandler(this);
     connect(mouseHandler,
@@ -67,7 +64,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::openActivitiesWindow);
     addAction(setActivityAction);
 
-    deleteActivityAction = new QAction(tr("Make Empty"), this);
+    deleteActivityAction = new QAction(tr("Delete"), this);
     QList<QKeySequence> deleteShortcuts;
     deleteShortcuts << QKeySequence(Qt::Key_Delete)
                     << QKeySequence(Qt::Key_Backspace);
@@ -78,7 +75,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::deleteActivityInSelection);
     addAction(deleteActivityAction);
 
-    clearSelectionAction = new QAction(tr("Deselect All Slots"), this);
+    clearSelectionAction = new QAction(tr("Deselect All"), this);
     clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
     connect(clearSelectionAction,
             &QAction::triggered,
@@ -86,7 +83,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::deselectAllSlots);
     addAction(clearSelectionAction);
 
-    selectAllAction = new QAction(tr("Select All Slots"), this);
+    selectAllAction = new QAction(tr("Select All"), this);
     selectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
     connect(selectAllAction,
             &QAction::triggered,
@@ -94,7 +91,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::selectAllSlots);
     addAction(selectAllAction);
 
-    shiftSlotsBelowAction = new QAction(tr("Make Room Shifting Below"), this);
+    shiftSlotsBelowAction = new QAction(tr("Make Room"), this);
     shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
     connect(shiftSlotsBelowAction,
             &QAction::triggered,
@@ -169,8 +166,8 @@ void SlotsWidget::updateUI() {
 
 void SlotsWidget::onSelectionChange() {
     auto isEnabled = selectionWidget->selection.is_continuous()
-                     && !onlyEmptySlotsSelected();
-
+                     && !selectionWidget->selection.only_empty_selected();
+    
     shiftSlotsBelowAction->setEnabled(isEnabled);
 }
 
@@ -184,17 +181,6 @@ void SlotsWidget::shiftAllSlotsBelow() {
                                    selectionWidget->selection.size());
 
     selectionWidget->selection.deselect_all();
-}
-
-bool SlotsWidget::onlyEmptySlotsSelected() const {
-//    for (auto slotIndex : selectionWidget->selection()) {
-//        if (strategy.time_slots()[slotIndex].activity
-//            != stg::strategy::no_activity) {
-//            return false;
-//        }
-//    }
-
-    return true;
 }
 
 void SlotsWidget::paintEvent(QPaintEvent *event) {

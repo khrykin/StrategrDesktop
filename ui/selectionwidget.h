@@ -21,8 +21,6 @@ public:
                              int slotHeight,
                              QWidget *parent = nullptr);
 
-signals:
-    void selectionChanged();
 private:
     stg::strategy &strategy;
 

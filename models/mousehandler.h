@@ -55,6 +55,7 @@ namespace stg {
         std::function<void(index_t, index_t)> on_resize_boundary_change = nullptr;
         std::function<void(scroll_direction)> on_start_auto_scroll = nullptr;
         std::function<void()> on_stop_auto_scroll = nullptr;
+        std::function<void(const point &, index_t, index_t)> on_context_menu_event = nullptr;
 
         explicit mouse_handler(stg::strategy &strategy,
                                stg::selection &selection,

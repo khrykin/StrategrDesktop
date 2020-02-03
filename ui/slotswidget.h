@@ -69,8 +69,6 @@ private:
 
     void onSelectionChange();
 
-    bool onlyEmptySlotsSelected() const;
-
     MainScene *mainScene();
 
     // ReactiveList

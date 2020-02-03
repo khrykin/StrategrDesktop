@@ -2,6 +2,8 @@
 // Created by Dmitry Khrykin on 2020-01-30.
 //
 
+#include <algorithm>
+
 #include "selection.h"
 
 stg::selection::selection(const stg::strategy &strategy)
@@ -74,7 +76,13 @@ void stg::selection::fill(index_t from_index, index_t to_index) {
 }
 
 bool stg::selection::is_continuous() const {
-    return size() == 1;
+    return _grouped.size() == 1;
+}
+
+bool stg::selection::only_empty_selected() const {
+    return std::find_if(begin(), end(), [this](auto index) {
+        return strategy.time_slots()[index].activity != stg::strategy::no_activity;
+    }) == end();
 }
 
 bool stg::selection::has_selected(index_t slot_index) {

@@ -29,6 +29,7 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
     handler.on_resize_boundary_change = std::bind(&SlotsMouseHandler::updateResizeBoundary, this, _1, _2);
     handler.on_start_auto_scroll = std::bind(&SlotsMouseHandler::startAutoScroll, this, _1);
     handler.on_stop_auto_scroll = std::bind(&SlotsMouseHandler::stopAutoScroll, this);
+    handler.on_context_menu_event = std::bind(&SlotsMouseHandler::showContextMenu, this, _1, _2, _3);
     handler.on_open_activities = std::bind(&SlotsWidget::openActivitiesWindow, slotsWidget);
 }
 
@@ -148,28 +149,29 @@ void SlotsMouseHandler::updateCursor(stg::mouse_handler::cursor new_cursor) {
 }
 
 
-void SlotsMouseHandler::contextMenuEvent(QContextMenuEvent *event) {
-//    auto currentSlotIndex = slotIndexForEvent(event);
-//    auto &currentSlot = strategy().time_slots()[currentSlotIndex];
-//
-//    QMenu menu(slotsWidget);
-//    menu.addAction(slotsWidget->setActivityAction);
-//    slotsWidget->setActivityAction->setEnabled(handler.selection.empty());
-//
-//    menu.addSeparator();
-//
-//    if (currentSlot.activity && hasSelection()) {
-//        menu.addAction(slotsWidget->deleteActivityAction);
-//    }
-//
-//    menu.addAction(slotsWidget->shiftSlotsBelowAction);
-//    menu.addSeparator();
-//
-//    menu.addAction(slotsWidget->clearSelectionAction);
-//    slotsWidget->clearSelectionAction->setEnabled(hasSelection());
-//
-//
-//    menu.exec(event->globalPos());
+void SlotsMouseHandler::showContextMenu(const stg::point &position,
+                                        int slotIndex,
+                                        int /*sessionIndex*/) {
+    auto &currentSlot = strategy().time_slots()[slotIndex];
+
+    QMenu menu(slotsWidget);
+    menu.addAction(slotsWidget->setActivityAction);
+    slotsWidget->setActivityAction->setEnabled(!selection().empty());
+
+    menu.addSeparator();
+
+    if (currentSlot.activity && !selection().empty()) {
+        menu.addAction(slotsWidget->deleteActivityAction);
+    }
+
+    menu.addAction(slotsWidget->shiftSlotsBelowAction);
+    menu.addSeparator();
+
+    menu.addAction(slotsWidget->clearSelectionAction);
+    slotsWidget->clearSelectionAction->setEnabled(!selection().empty());
+
+
+    menu.exec(slotsWidget->mapToGlobal(position));
 }
 
 void SlotsMouseHandler::selectSessionsAtIndices(const std::vector<int> &sessionIndices) {

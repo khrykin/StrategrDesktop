@@ -58,6 +58,8 @@ private:
     void startAutoScroll(stg::mouse_handler::scroll_direction direction);
     void stopAutoScroll();
 
+    void showContextMenu(const stg::point &position, int slotIndex, int sessionIndex);
+
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
@@ -66,6 +68,5 @@ private:
 
     void leaveEvent(QEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void contextMenuEvent(QContextMenuEvent *event) override;
 };
 #endif //STRATEGR_SLOTSMOUSEHANDLER_H

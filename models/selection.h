@@ -29,6 +29,8 @@ namespace stg {
 
         bool is_continuous() const;
 
+        bool only_empty_selected() const;
+
         bool has_selected(index_t slot_index);
 
         void reload();

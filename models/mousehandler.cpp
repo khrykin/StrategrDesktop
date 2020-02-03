@@ -33,6 +33,12 @@ void stg::mouse_handler::mouse_press(const stg::mouse_event &event) {
     current_operaion = get_operation(current_key_modifiers);
     current_operaion->init(event);
 
+    if (event.modifiers == event::right_key && on_context_menu_event) {
+        on_context_menu_event(event.position,
+                              current_slot_index,
+                              current_session_index);
+    }
+
     previous_position = event.position;
 
     update_cursor(event.modifiers);
@@ -52,51 +58,6 @@ void stg::mouse_handler::mouse_move(const stg::mouse_event &event) {
     current_operaion->perform(event);
 
     update_cursor(event.modifiers);
-}
-
-void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
-    auto viewport = get_viewport();
-    auto bounds = get_bounds();
-
-    auto autoscroll_zone_size = settings.autoscroll_zone_size;
-    auto pos_in_viewport = event.position - viewport.origin();
-
-    auto top_autoscroll_zone = stg::mouse_handler::range{0, autoscroll_zone_size};
-
-    auto bottom_autoscroll_zone = stg::mouse_handler::range{
-            viewport.height - autoscroll_zone_size,
-            viewport.height
-    };
-
-    auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
-                                viewport.top > -bounds.top &&
-                                event.position.y > 0;
-
-    auto needs_autoscroll_bottom = bottom_autoscroll_zone.contains(pos_in_viewport.y) &&
-                                   viewport.top + viewport.height < bounds.top + bounds.height &&
-                                   event.position.y < bounds.height;
-
-    auto needs_autoscroll = needs_autoscroll_top || needs_autoscroll_bottom;
-
-    if (!autoscroll_is_on && needs_autoscroll) {
-        autoscroll_is_on = true;
-
-        stg::mouse_handler::scroll_direction direction;
-        if (needs_autoscroll_top) {
-            direction = stg::mouse_handler::scroll_direction::up;
-        } else if (needs_autoscroll_bottom) {
-            direction = stg::mouse_handler::scroll_direction::down;
-        }
-
-        if (on_start_auto_scroll)
-            on_start_auto_scroll(direction);
-
-    } else if (autoscroll_is_on && !needs_autoscroll) {
-        autoscroll_is_on = false;
-
-        if (on_stop_auto_scroll)
-            on_stop_auto_scroll();
-    }
 }
 
 void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
@@ -130,6 +91,52 @@ void stg::mouse_handler::key_down(const event &event) {
 void stg::mouse_handler::key_up(const event &event) {
 //    std::cout << "key_up" << "\n";
     update_cursor(event.modifiers);
+}
+
+
+void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
+    auto viewport = get_viewport();
+    auto bounds = get_bounds();
+
+    auto autoscroll_zone_size = settings.autoscroll_zone_size;
+    auto pos_in_viewport = event.position - viewport.origin();
+
+    auto top_autoscroll_zone = range{0, autoscroll_zone_size};
+
+    auto bottom_autoscroll_zone = range{
+            viewport.height - autoscroll_zone_size,
+            viewport.height
+    };
+
+    auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
+                                viewport.top > -bounds.top &&
+                                event.position.y > 0;
+
+    auto needs_autoscroll_bottom = bottom_autoscroll_zone.contains(pos_in_viewport.y) &&
+                                   viewport.top + viewport.height < bounds.top + bounds.height &&
+                                   event.position.y < bounds.height;
+
+    auto needs_autoscroll = needs_autoscroll_top || needs_autoscroll_bottom;
+
+    if (!autoscroll_is_on && needs_autoscroll) {
+        autoscroll_is_on = true;
+
+        scroll_direction direction = scroll_direction::down;
+        if (needs_autoscroll_top) {
+            direction = scroll_direction::up;
+        } else if (needs_autoscroll_bottom) {
+            direction = scroll_direction::down;
+        }
+
+        if (on_start_auto_scroll)
+            on_start_auto_scroll(direction);
+
+    } else if (autoscroll_is_on && !needs_autoscroll) {
+        autoscroll_is_on = false;
+
+        if (on_stop_auto_scroll)
+            on_stop_auto_scroll();
+    }
 }
 
 void stg::mouse_handler::auto_scroll_frame(const stg::point &new_mouse_position) {
@@ -282,8 +289,8 @@ stg::mouse_handler::cursor
 stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
     auto mouse_zone = current_mouse_zone;
     auto &time_slots = strategy.time_slots();
-    
-    if (!time_slots.has_index(current_slot_index)) 
+
+    if (!time_slots.has_index(current_slot_index))
         return cursor::pointer;
 
     auto &current_slot = time_slots[current_slot_index];
