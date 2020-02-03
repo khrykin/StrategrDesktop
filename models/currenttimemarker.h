@@ -26,7 +26,7 @@ namespace stg {
         const strategy &strategy;
 
         int top_offset_in(int total_height) const;
-        double relative_position() const;
+        float relative_position() const;
     };
 }
 

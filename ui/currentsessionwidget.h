@@ -6,7 +6,6 @@
 
 #include <QLabel>
 #include <QWidget>
-#include <QTimeLine>
 
 #include "strategy.h"
 #include "colorprovider.h"
@@ -48,19 +47,16 @@ private:
     ColoredLabel *passedTimeLabel = nullptr;
     ColoredLabel *leftTimeLabel = nullptr;
 
-    QTimeLine *paddingAnimator = nullptr;
-
     bool isHovered = false;
     bool isClicked = false;
 
-    void updateUI();
+    void updateUIWithSession(const stg::session *session);
 
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void resizeEvent(QResizeEvent *event) override;
 
     QString makeActivitySessionTitle() const;
 };

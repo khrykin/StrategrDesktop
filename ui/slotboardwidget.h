@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QScrollArea>
-#include <models/timer.h>
 
 #include "strategy.h"
 #include "currenttimemarkerwidget.h"
@@ -11,10 +10,10 @@
 #include "slotruler.h"
 #include "timelabel.h"
 #include "colorprovider.h"
-#include "timer.h"
 
 class MainWindow;
 class SlotBoardCirclesWidget;
+class QTimer;
 
 class SlotBoardWidget :
         public QWidget,
@@ -41,8 +40,9 @@ private:
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *_slotsLayout = nullptr;
 
+
+    QTimer *currentTimeTimer = nullptr;
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
-    stg::timer currentTimeTimer;
 
     int slotBeforeResizeBoundaryIndex = -2;
 

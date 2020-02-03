@@ -5,23 +5,21 @@
 #include "mousehandler.h"
 #include "mousehandleroperations.h"
 
-//#define make_operation(operation) (std::make_unique<operation>(this))
-
 stg::mouse_handler::mouse_handler(stg::strategy &strategy,
                                   stg::selection &selection,
                                   std::function<int()> slot_height_getter,
                                   std::function<rect()> bounds_getter,
                                   std::function<rect()> viewport_getter,
                                   const mouse_parameters &settings)
-        : strategy(strategy),
-          selection(selection),
-          get_slot_height(std::move(slot_height_getter)),
+        : get_slot_height(std::move(slot_height_getter)),
+          strategy(strategy),
           get_bounds(std::move(bounds_getter)),
+          selection(selection),
           get_viewport(std::move(viewport_getter)),
           settings(settings),
           current_operaion(make_operation<none_operation>()) {
-    assert(slot_height_getter != nullptr && "slot_height_getter must be provided");
-    assert(bounds_getter != nullptr && "bounds_getter must be provided");
+//    assert(slot_height_getter != nullptr && "slot_height_getter must be provided");
+//    assert(bounds_getter != nullptr && "bounds_getter must be provided");
 }
 
 stg::mouse_handler::~mouse_handler() = default;
@@ -63,16 +61,13 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
     auto autoscroll_zone_size = settings.autoscroll_zone_size;
     auto pos_in_viewport = event.position - viewport.origin();
 
-    auto top_autoscroll_zone = stg::mouse_handler::range{
-            .top = 0,
-            .bottom = autoscroll_zone_size
-    };
+    auto top_autoscroll_zone = stg::mouse_handler::range{0, autoscroll_zone_size};
 
     auto bottom_autoscroll_zone = stg::mouse_handler::range{
-            .top = viewport.height - autoscroll_zone_size,
-            .bottom = viewport.height
+            viewport.height - autoscroll_zone_size,
+            viewport.height
     };
-    
+
     auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
                                 viewport.top > -bounds.top &&
                                 event.position.y > 0;
@@ -200,7 +195,7 @@ stg::mouse_handler::range stg::mouse_handler::get_session_range(index_t session_
 //    std::cout << "slot_index:  " << slot_index << "\n";
 //    std::cout << "session_index:  " << session_index << "\n";
 
-    return range{.top = top, .bottom = top + height};
+    return range{top, top + height};
 }
 
 stg::mouse_handler::mouse_zone stg::mouse_handler::get_mouse_zone(int session_index,
@@ -208,13 +203,13 @@ stg::mouse_handler::mouse_zone stg::mouse_handler::get_mouse_zone(int session_in
     auto session_range = get_session_range(session_index);
 
     auto top_stretch_zone = range{
-            .top = session_range.top,
-            .bottom = session_range.top + settings.stretch_zone_size
+            session_range.top,
+            session_range.top + settings.stretch_zone_size
     };
 
     auto bottom_stretch_zone = range{
-            .top = session_range.bottom - settings.stretch_zone_size,
-            .bottom = session_range.bottom
+            session_range.bottom - settings.stretch_zone_size,
+            session_range.bottom
     };
 
 //    std::cout << "pos:  " << event.position << "\n";
@@ -287,6 +282,10 @@ stg::mouse_handler::cursor
 stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
     auto mouse_zone = current_mouse_zone;
     auto &time_slots = strategy.time_slots();
+    
+    if (!time_slots.has_index(current_slot_index)) 
+        return cursor::pointer;
+
     auto &current_slot = time_slots[current_slot_index];
     auto next_empty = time_slots.next_slot_empty(current_slot_index);
     auto prev_empty = time_slots.previous_slot_empty(current_slot_index);
@@ -329,78 +328,81 @@ stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
     }
 }
 
-std::ostream &stg::operator<<(std::ostream &os, stg::mouse_handler::mouse_zone zone) {
-    switch (zone) {
-        case mouse_handler::mouse_zone::stretch_top:
-            os << "stretch_top";
-            break;
-        case mouse_handler::mouse_zone::stretch_bottom:
-            os << "stretch_bottom";
-            break;
-        case mouse_handler::mouse_zone::drag :
-            os << "drag";
-            break;
-        case mouse_handler::mouse_zone::out_of_bounds :
-            os << "out_of_bounds";
-            break;
+namespace stg {
+    std::ostream &operator<<(std::ostream &os, stg::mouse_handler::mouse_zone zone) {
+        switch (zone) {
+            case mouse_handler::mouse_zone::stretch_top:
+                os << "stretch_top";
+                break;
+            case mouse_handler::mouse_zone::stretch_bottom:
+                os << "stretch_bottom";
+                break;
+            case mouse_handler::mouse_zone::drag :
+                os << "drag";
+                break;
+            case mouse_handler::mouse_zone::out_of_bounds :
+                os << "out_of_bounds";
+                break;
+        }
+
+        return os;
     }
 
-    return os;
-}
 
-std::ostream &stg::operator<<(std::ostream &os, const stg::mouse_handler::range &range) {
-    os << "range [ " << range.top << " " << range.bottom << " ]";
-    return os;
-}
-
-bool stg::mouse_handler::range::contains(int coord) {
-    return coord >= top && coord <= bottom;
-}
-
-std::ostream &stg::operator<<(std::ostream &os, mouse_handler::operation_type op) {
-    switch (op) {
-        case mouse_handler::none:
-            os << "none";
-            break;
-        case mouse_handler::drag:
-            os << "drag";
-            break;
-        case mouse_handler::resize:
-            os << "resize";
-            break;
-        case mouse_handler::select:
-            os << "select";
-            break;
+    std::ostream &operator<<(std::ostream &os, const stg::mouse_handler::range &range) {
+        os << "range [ " << range.top << " " << range.bottom << " ]";
+        return os;
     }
 
-    return os;
-}
-
-std::ostream &stg::operator<<(std::ostream &os, stg::mouse_handler::direction dir) {
-    switch (dir) {
-        case mouse_handler::direction::none:
-            os << "none";
-            break;
-        case mouse_handler::direction::up:
-            os << "up";
-            break;
-        case mouse_handler::direction::down:
-            os << "down";
-            break;
+    bool stg::mouse_handler::range::contains(int coord) {
+        return coord >= top && coord <= bottom;
     }
 
-    return os;
-}
+    std::ostream &operator<<(std::ostream &os, mouse_handler::operation_type op) {
+        switch (op) {
+            case mouse_handler::none:
+                os << "none";
+                break;
+            case mouse_handler::drag:
+                os << "drag";
+                break;
+            case mouse_handler::resize:
+                os << "resize";
+                break;
+            case mouse_handler::select:
+                os << "select";
+                break;
+        }
 
-std::ostream &stg::operator<<(std::ostream &os, stg::mouse_handler::scroll_direction dir) {
-    switch (dir) {
-        case mouse_handler::scroll_direction::down:
-            os << "down";
-            break;
-        case mouse_handler::scroll_direction::up:
-            os << "up";
-            break;
+        return os;
     }
 
-    return os;
+    std::ostream &operator<<(std::ostream &os, stg::mouse_handler::direction dir) {
+        switch (dir) {
+            case mouse_handler::direction::none:
+                os << "none";
+                break;
+            case mouse_handler::direction::up:
+                os << "up";
+                break;
+            case mouse_handler::direction::down:
+                os << "down";
+                break;
+        }
+
+        return os;
+    }
+
+    std::ostream &operator<<(std::ostream &os, stg::mouse_handler::scroll_direction dir) {
+        switch (dir) {
+            case mouse_handler::scroll_direction::down:
+                os << "down";
+                break;
+            case mouse_handler::scroll_direction::up:
+                os << "up";
+                break;
+        }
+
+        return os;
+    }
 }

@@ -18,9 +18,7 @@ void stg::time_slots_state::set_begin_time(time_t begin_time) {
 
 
 void stg::time_slots_state::update_begin_times() {
-    for (auto slot_index = 0;
-         slot_index < number_of_slots();
-         slot_index++) {
+    for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
         _data[slot_index].begin_time
                 = slot_begin_time(_begin_time, slot_index);
     }
@@ -230,7 +228,7 @@ const stg::time_slot &stg::time_slots_state::at(index_t index) {
 }
 
 bool stg::time_slots_state::next_slot_empty(index_t index) const {
-    if (index >= _data.size() - 1) {
+    if (index >= static_cast<index_t>(_data.size() - 1)) {
         return true;
     } else {
         return _data[index + 1].empty();

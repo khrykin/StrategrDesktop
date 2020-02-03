@@ -7,8 +7,9 @@
 
 #include <iostream>
 #include <functional>
-#include <boost/asio.hpp>
 #include <thread>
+
+#include <boost/asio.hpp>
 
 namespace stg {
     class timer {

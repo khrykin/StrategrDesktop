@@ -132,6 +132,46 @@ endfunction()
 
 function(git_get_exact_tag _var)
     git_describe(out --exact-match ${ARGN})
+    execute_process(COMMAND
+            "${GIT_EXECUTABLE}"
+            describe
+            #            ${hash}
+            ${ARGN}
+            WORKING_DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+            RESULT_VARIABLE
+            res
+            OUTPUT_VARIABLE
+            out
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (NOT res EQUAL 0)
+        set(out "${out}-${res}-NOTFOUND")
+    endif ()
+
+    set(${_var} "${out}" PARENT_SCOPE)
+endfunction()
+
+function(git_get_repo_name _var)
+    git_describe(out)
+    execute_process(COMMAND
+            "${GIT_EXECUTABLE}"
+            config --get remote.origin.url
+            WORKING_DIRECTORY
+            "${CMAKE_CURRENT_SOURCE_DIR}"
+            RESULT_VARIABLE
+            res
+            OUTPUT_VARIABLE
+            out
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if (NOT res EQUAL 0)
+        set(out "${out}-${res}-NOTFOUND")
+    endif ()
+
+    string(REGEX REPLACE "^.+\\.com/" "" out "${out}")
+    string(REGEX REPLACE ".git$" "" out "${out}")
+
     set(${_var} "${out}" PARENT_SCOPE)
 endfunction()
 

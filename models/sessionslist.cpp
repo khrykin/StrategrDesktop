@@ -7,10 +7,10 @@
 
 stg::sessions_list::index_t
 stg::sessions_list::session_index_for_time_slot_index(index_t time_slot_index) const {
-    auto slots_count = 0;
+    index_t slots_count = 0;
     for (auto &session : _data) {
         auto first_slot_index = slots_count;
-        auto next_slot_index = slots_count + session.length();
+        auto next_slot_index = slots_count + static_cast<index_t>(session.length());
 
         if (first_slot_index <= time_slot_index &&
             time_slot_index < next_slot_index) {

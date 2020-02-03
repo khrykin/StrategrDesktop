@@ -5,6 +5,8 @@
 #ifndef STRATEGR_MOUSEHANDLEROPERATIONS_H
 #define STRATEGR_MOUSEHANDLEROPERATIONS_H
 
+#include <vector>
+
 #include "mousehandler.h"
 
 struct stg::mouse_handler::operation {
@@ -225,9 +227,13 @@ private:
             boundary_slot_index = strategy.time_slots().index_of(border_slot).value_or(-1);
         }
 
-        if (!strategy.sessions()[first_selection_index].activity &&
-            !strategy.sessions()[second_selection_index].activity) {
+        auto first_session_empty = !strategy.sessions().has_index(first_selection_index) ||
+                                   !strategy.sessions()[first_selection_index].activity;
 
+        auto second_session_empty = !strategy.sessions().has_index(second_selection_index) ||
+                                    !strategy.sessions()[second_selection_index].activity;
+
+        if (first_session_empty && second_session_empty) {
             teardown(mouse_event(point(), 0));
             return;
         }
@@ -242,7 +248,7 @@ private:
     }
 
     std::vector<index_t> get_selected(index_t first_selection_index, index_t second_selection_index) const {
-        std::__1::vector<index_t> selected;
+        std::vector<index_t> selected;
         if (strategy.sessions().has_index(first_selection_index))
             selected.push_back(first_selection_index);
 

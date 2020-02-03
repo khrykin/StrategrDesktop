@@ -94,7 +94,7 @@ void SlotsMouseHandler::startAutoScroll(stg::mouse_handler::scroll_direction dir
 
     autoscrollAnimation->disconnect();
 
-    connect(autoscrollAnimation, &QTimer::timeout, [this, direction] {
+    connect(autoscrollAnimation, &QTimer::timeout, [=] {
         auto newValue = direction == stg::mouse_handler::scroll_direction::down
                         ? verticalScrollBar()->value() + pixelsInSecond * frameDuration / 1000
                         : verticalScrollBar()->value() - pixelsInSecond * frameDuration / 1000;

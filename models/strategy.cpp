@@ -4,6 +4,7 @@
 
 #include "strategy.h"
 #include "json.h"
+#include "time_utils.h"
 
 stg::strategy::strategy(time_t begin_time, duration_t time_slot_duration,
                         size_t number_of_time_slots)
@@ -286,21 +287,22 @@ std::unique_ptr<stg::strategy> stg::strategy::from_json_string(const std::string
     return json::parse(json_string);
 }
 
-const stg::session *stg::strategy::current_session() const {
+const stg::session *stg::strategy::get_current_session() const {
     auto it = std::find_if(sessions().begin(),
                            sessions().end(),
-                           [](const auto &activity_session) {
-                               return activity_session.is_current();
+                           [](const session &session) {
+                               return session.is_current();
                            });
 
-    if (it != sessions().end())
+    if (it != sessions().end()) {
         return &*it;
+    }
 
     return nullptr;
 }
 
-const stg::session *stg::strategy::active_session() const {
-    auto current_session = this->current_session();
+const stg::session *stg::strategy::get_active_session() const {
+    auto current_session = this->get_current_session();
     if (!current_session || !current_session->activity) {
         return nullptr;
     }
@@ -309,7 +311,7 @@ const stg::session *stg::strategy::active_session() const {
 }
 
 const stg::session *stg::strategy::upcoming_session() const {
-    auto current_session = this->current_session();
+    auto current_session = this->get_current_session();
 
     if (!current_session) {
         // we're out of strategy's time bounds.

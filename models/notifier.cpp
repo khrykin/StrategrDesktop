@@ -154,6 +154,8 @@ stg::notifier::seconds stg::notifier::notification::make_delivery_time(const ses
         case type::end:
         case type::strategy_end:
             return immediate_delivery_seconds(session.end_time());
+        default:
+            return 0;
     }
 }
 
@@ -174,6 +176,8 @@ std::string stg::notifier::notification::make_sub_title(const session &session, 
                    + stg::time_utils::human_time_for_minutes(prepare_seconds_interval / 60);
         case type::strategy_end:
             return "strategy ends right now";
+        default:
+            return 0;
     }
 }
 

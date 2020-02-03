@@ -72,7 +72,6 @@ namespace stg {
         void key_up(const event &event);
 
         void auto_scroll_frame(const point &new_mouse_position);
-
     private:
         enum class mouse_zone {
             out_of_bounds,
@@ -151,10 +150,10 @@ namespace stg {
         void update_cursor(event::key_modifiers modifiers);
         void update_direction(const mouse_event &event);
 
-        friend std::ostream &operator<<(std::ostream &os, mouse_zone zone);
         friend std::ostream &operator<<(std::ostream &os, operation_type op);
         friend std::ostream &operator<<(std::ostream &os, direction direction);
         friend std::ostream &operator<<(std::ostream &os, scroll_direction direction);
+        friend std::ostream &operator<<(std::ostream &os, mouse_zone zone);
     };
 }
 

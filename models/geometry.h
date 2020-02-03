@@ -45,7 +45,7 @@ namespace stg {
         }
     };
 
-    constexpr auto point::zero = point();
+    constexpr inline point point::zero = point();
 
     struct rect {
         int left = 0;

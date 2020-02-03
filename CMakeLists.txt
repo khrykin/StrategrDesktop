@@ -1,20 +1,27 @@
 cmake_minimum_required(VERSION 3.14)
 project(Strategr)
 
+
 set(CMAKE_CXX_STANDARD 17)
+set(Boost_USE_STATIC_LIBS ON)
+
+message("platform ${CMAKE_GENERATOR_PLATFORM}")
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
-find_package(nlohmann_json REQUIRED)
 
-find_library(uf8Proc_LIBRARY_PATH libutf8proc.a libutf8proc.lib utf8proc)
+find_library(utf8Proc_LIBRARY_PATH
+        libutf8proc.a
+        utf8proc_static.lib
+        utf8proc
+        HINTS $ENV{LIBPATH})
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
 endif ()
 
-message(${uf8Proc_LIBRARY_PATH})
+message(${utf8Proc_LIBRARY_PATH})
 
 include_directories(.)
 include_directories(models)
@@ -24,6 +31,7 @@ include_directories(ui)
 include_directories(utility)
 
 include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
 
 set(CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules
@@ -72,8 +80,6 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/time_utils.h
         models/json.cpp
         models/json.h
-        models/timer.cpp
-        models/timer.h
         models/currenttimemarker.cpp
         models/currenttimemarker.h
         models/geometry.h
@@ -82,7 +88,6 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/utility.h
         models/mousehandler.cpp
         models/mousehandler.h
-        models/mousehandleroperations.cpp
         models/mousehandleroperations.h models/selection.cpp models/selection.h models/event.cpp models/event.h)
 
 set(MODELS_TESTS
@@ -95,8 +100,7 @@ set(MODELS_TESTS
         models/tests/json_tests.cpp)
 
 set(MODELS_LIBRARIES
-        ${uf8Proc_LIBRARY_PATH}
-        nlohmann_json::nlohmann_json)
+        ${utf8Proc_LIBRARY_PATH})
 
 set(UI
         ui/mainwindow.cpp
@@ -280,6 +284,9 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(StrategrCore SHARED ${MODELS})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
+
+#add_definitions(-DUTF8PROC_STATIC -DWIN32_LEAN_AND_MEAN)
+target_compile_definitions(StrategrCore PUBLIC UTF8PROC_STATIC WIN32_LEAN_AND_MEAN)
 
 target_link_libraries(StrategrCore
         ${MODELS_LIBRARIES}

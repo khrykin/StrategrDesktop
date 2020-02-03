@@ -21,7 +21,6 @@ int minutesFromQTime(const QTime &time);
 QTime QTimeFromMinutes(int minutes);
 QString QStringForMinutes(int minutes);
 
-int currentMinutes();
 int currentSeconds();
 
 /* Widgets */

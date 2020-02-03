@@ -3,7 +3,7 @@
 
 #include <QHBoxLayout>
 #include <QLocale>
-#include <QTime>
+#include <QTimer>
 #include <QPropertyAnimation>
 #include <QScrollBar>
 #include <QStyleOption>
@@ -30,8 +30,14 @@ SlotBoardWidget::SlotBoardWidget(stg::strategy &strategy, QWidget *parent)
 }
 
 void SlotBoardWidget::setupCurrentTimeTimer() {
-    currentTimeTimer.set_callback(this, &SlotBoardWidget::timerCallback);
-    currentTimeTimer.start(ApplicationSettings::currentTimeTimerSecondsInterval);
+    currentTimeTimer = new QTimer(this);
+    currentTimeTimer->setInterval(1000 * ApplicationSettings::currentTimeTimerSecondsInterval);
+    connect(currentTimeTimer,
+            &QTimer::timeout,
+            this,
+            &SlotBoardWidget::timerCallback);
+
+    currentTimeTimer->start();
 }
 
 void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
@@ -105,10 +111,6 @@ void SlotBoardWidget::clearSelection() {
     slotsWidget->deselectAllSlots();
 }
 
-//const SelectionWidget::RawSelectionState &SlotBoardWidget::selection() {
-//    return slotsWidget->selection();
-//}
-
 void SlotBoardWidget::updateCurrentTimeMarker() {
     auto currentTimeMarker = stg::current_time_marker(strategy);
 
@@ -117,11 +119,12 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
 
     currentTimeMarkerWidget->setGeometry(rect);
 
-    if (currentTimeMarker.is_hidden()
-        && currentTimeMarkerWidget->isVisible()) {
+    if (currentTimeMarker.is_hidden() &&
+        currentTimeMarkerWidget->isVisible()) {
         currentTimeMarkerWidget->hide();
-    } else if (currentTimeMarker.is_visible()
-               && currentTimeMarkerWidget->isHidden()) {
+
+    } else if (currentTimeMarker.is_visible() &&
+               currentTimeMarkerWidget->isHidden()) {
         currentTimeMarkerWidget->show();
     }
 }
@@ -163,16 +166,14 @@ void SlotBoardWidget::paintEvent(QPaintEvent *event) {
 }
 
 void SlotBoardWidget::timerCallback() {
-    dispatchToMainThread([this]() {
-        emit timerTick();
-        updateCurrentTimeMarker();
-    });
+    emit timerTick();
+    updateCurrentTimeMarker();
 }
 
 void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
     updateCurrentTimeMarker();
 
-    circlesWidget->setGeometry(geometry());
+    circlesWidget->setGeometry(QRect(0, 0, width(), height()));
 }
 
 QVBoxLayout *SlotBoardWidget::slotsLayout() const {

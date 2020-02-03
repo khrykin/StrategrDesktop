@@ -3,6 +3,9 @@
 #
 include(GetGitRevisionDescription)
 git_describe(VERSION --tags)
+git_get_repo_name(REPO_NAME)
+
+message("REPO: ${REPO_NAME}")
 
 #parse the version information into pieces.
 string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
@@ -12,9 +15,6 @@ string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.[0-9]+(.*)" "\\1" VERSION_SHA1 "${VERS
 string(REGEX REPLACE "^v" "" VERSION "${VERSION}")
 
 set(VERSION_SHORT "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
-
-execute_process(COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/repo_name.sh
-        OUTPUT_VARIABLE REPO_NAME)
 
 set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
 

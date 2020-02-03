@@ -139,16 +139,14 @@ bool SessionWidget::isSelected() const {
     return _isSelected;
 }
 
-void SessionWidget::setIsSelected(bool isSelected, bool doUpdate) {
+void SessionWidget::setIsSelected(bool isSelected) {
     _isSelected = isSelected;
 
     if (!isSelected) {
         isBorderSelected = false;
     }
 
-    if (doUpdate) {
-        update();
-    }
+    update();
 }
 
 void SessionWidget::updateUI() {

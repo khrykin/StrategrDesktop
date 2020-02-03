@@ -53,9 +53,9 @@ int stg::current_time_marker::scroll_offset_in_parent(const rect &parent_rect,
     return top_offset;
 }
 
-double stg::current_time_marker::relative_position() const {
+float stg::current_time_marker::relative_position() const {
     auto strategy_duration_seconds = strategy.duration() * 60;
     auto start_of_strategy_seconds = strategy.begin_time() * 60;
-    return static_cast<double>(stg::time_utils::current_seconds() - start_of_strategy_seconds)
+    return static_cast<float>(stg::time_utils::current_seconds() - start_of_strategy_seconds)
            / strategy_duration_seconds;
 }

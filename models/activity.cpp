@@ -13,7 +13,7 @@ stg::activity::activity(name_t name, color_t color) : _color(std::move(color)) {
 }
 
 bool stg::activity::is_valid(const activity::name_t &name) {
-    bool white_spaces_only = std::all_of(name.begin(), name.end(), isspace);
+    bool white_spaces_only = name.find_first_not_of(" \t\n\v\f\r") == std::string::npos;
     return !white_spaces_only;
 }
 

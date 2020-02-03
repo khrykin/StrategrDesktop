@@ -50,8 +50,8 @@ namespace stg {
             }
         };
 
-        int size() const {
-            return _data.size();
+        index_t size() const {
+            return static_cast<index_t>(_data.size());
         }
 
         const item_t &operator[](index_t item_index) const {
@@ -76,7 +76,7 @@ namespace stg {
             }
 
             return item_index >= 0
-                   && item_index < _data.size();
+                   && item_index < static_cast<index_t>(_data.size());
         }
 
         bool has_indices(index_t item_index) const {

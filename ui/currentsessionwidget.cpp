@@ -47,7 +47,7 @@ CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *par
     activityLabel->setFontHeight(ApplicationSettings::sessionFontSize - 1);
     activityLabel->setContentsMargins(0, 0, 0, 3);
     activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
-        auto activeSession = strategy.active_session();
+        auto activeSession = strategy.get_active_session();
         if (!activeSession) {
             return;
         }
@@ -188,7 +188,7 @@ void CurrentSessionWidget::mouseReleaseEvent(QMouseEvent *) {
 }
 
 void CurrentSessionWidget::reloadStrategy() {
-    updateUI();
+    updateUIWithSession(strategy.get_active_session());
 }
 
 void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
@@ -208,7 +208,7 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
     isVisible = true;
 
     QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
-        if (strategy.active_session()) {
+        if (strategy.get_active_session()) {
             SlidingAnimator::showWidget(this);
         } else {
             isVisible = false;
@@ -216,9 +216,7 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
     });
 }
 
-void CurrentSessionWidget::updateUI() {
-    auto activeSession = strategy.active_session();
-
+void CurrentSessionWidget::updateUIWithSession(const stg::session *activeSession) {
     if (!activeSession) {
         if (isVisible) {
             isVisible = false;
@@ -248,7 +246,7 @@ void CurrentSessionWidget::updateUI() {
 }
 
 QString CurrentSessionWidget::makeActivitySessionTitle() const {
-    auto activitySession = strategy.active_session();
+    auto activitySession = strategy.get_active_session();
     return humanTimeForMinutes(activitySession->duration())
            + " "
            + "<font color=\""
@@ -266,26 +264,14 @@ void CurrentSessionWidget::setProgress(double value) {
 }
 
 void CurrentSessionWidget::reloadSessionIfNeeded() {
-    auto *activeSession = strategy.active_session();
-
+    auto *activeSession = strategy.get_active_session();
     if (activeSession) {
-        if (*activeSession != previousSession) {
-            previousSession = *activeSession;
-            updateUI();
-        } else {
-            setProgress(activeSession->progress());
-        }
-
-        if (!isVisible) {
+        updateUIWithSession(activeSession);
+        if (!isVisible)
             slideAndShow();
-        }
     } else {
-        if (isVisible) {
+        if (isVisible)
             slideAndHide();
-        }
     }
 }
 
-void CurrentSessionWidget::resizeEvent(QResizeEvent *event) {
-    QWidget::resizeEvent(event);
-}

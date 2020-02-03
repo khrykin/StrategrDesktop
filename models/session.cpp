@@ -7,7 +7,7 @@
 #include "activity.h"
 
 stg::session::length_t stg::session::length() const {
-    return time_slots.size();
+    return static_cast<length_t>(time_slots.size());
 }
 
 stg::session::time_t stg::session::begin_time() const {
@@ -74,7 +74,7 @@ double stg::session::progress() const {
 }
 
 stg::session::duration_t stg::session::passed_minutes() const {
-    return stg::time_utils::current_minutes() - begin_time();
+    return std::round(static_cast<float>(stg::time_utils::current_seconds() - 60 * begin_time()) / 60.0f);
 }
 
 stg::session::duration_t stg::session::left_minutes() const {
@@ -82,8 +82,8 @@ stg::session::duration_t stg::session::left_minutes() const {
 }
 
 bool stg::session::is_current() const {
-    auto current_seconds = stg::time_utils::current_minutes();
-    return current_seconds >= begin_time() && current_seconds <= end_time();
+    auto current_minutes = stg::time_utils::current_minutes();
+    return current_minutes >= begin_time() && current_minutes <= end_time() - 1;
 }
 
 bool stg::session::is_past() const {

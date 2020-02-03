@@ -63,7 +63,7 @@ namespace stg {
         time_t end_time() const;
         duration_t duration() const;
 
-        const session *active_session() const;
+        const session *get_active_session() const;
         const session *upcoming_session() const;
 
         void add_activity(const activity &activity);
@@ -105,7 +105,7 @@ namespace stg {
         void setup_time_slots_callback();
 
         // current session, may be empty
-        const session *current_session() const;
+        const session *get_current_session() const;
 
         strategy_history::entry make_history_entry();
         void apply_history_entry(const std::optional<strategy_history::entry> &history_entry);

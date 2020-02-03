@@ -1,4 +1,7 @@
 .idea
+.vs
+.stfolder
+CMakeSettings.json
 cmake-build-debug
 cmake-build-release
 CMakeLists.txt.user

@@ -9,6 +9,8 @@
 #include <QMap>
 #include <QWidget>
 
+class QTimeLine;
+
 class SessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 
@@ -18,7 +20,7 @@ public:
 
 
     bool isSelected() const;
-    void setIsSelected(bool isSelected, bool doUpdate = true);
+    void setIsSelected(bool isSelected);
 
     void setActivitySession(const stg::session &newActivitySession);
     void setSlotHeight(int slotHeight);

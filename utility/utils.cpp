@@ -5,7 +5,7 @@
 
 QString humanTimeForMinutes(int mins) {
     if (mins < 1) {
-        return "Less than 1 min";
+        return "0 min";
     }
 
     int hours = mins / 60;
@@ -49,10 +49,6 @@ QTime QTimeFromMinutes(int minutes) {
 QString QStringForMinutes(int minutes) {
     auto timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
     return QTimeFromMinutes(minutes).toString(timeFormat);
-}
-
-int currentMinutes() {
-    return currentSeconds() / 60;
 }
 
 int currentSeconds() {

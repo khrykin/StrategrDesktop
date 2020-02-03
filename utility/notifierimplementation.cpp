@@ -77,7 +77,7 @@ void NotifierImplementation::timerTick() {
 stg::session::time_t NotifierImplementation::getCountdown() const {
     return nextIsTheEndOfStrategy
            ? strategy->end_time() * 60 - currentSeconds()
-           : upcomingSession.begin_time() * 60 - currentSeconds();;
+           : upcomingSession.begin_time() * 60 - currentSeconds();
 }
 
 void NotifierImplementation::sendStartMessage(const Message &message) {
