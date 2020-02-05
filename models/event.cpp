@@ -14,7 +14,7 @@ stg::mouse_event::mouse_event(const stg::point &position,
           position(position) {
 }
 
-bool stg::event::is(stg::event::key_modifiers mod) const {
+bool stg::event::has_only(stg::event::key_modifiers mod) const {
     return modifiers == mod;
 }
 

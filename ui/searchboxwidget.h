@@ -2,8 +2,8 @@
 // Created by Dmitry Khrykin on 2019-12-25.
 //
 
-#ifndef STRATEGR_SEARCHBOX_H
-#define STRATEGR_SEARCHBOX_H
+#ifndef STRATEGR_SEARCHBOXWIDGET_H
+#define STRATEGR_SEARCHBOXWIDGET_H
 
 #include <QWidget>
 
@@ -11,11 +11,11 @@
 
 class QLineEdit;
 
-class SearchBox : public QWidget, public ColorProvider {
+class SearchBoxWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit SearchBox(const QString &placeholder,
-                       QWidget *parent = nullptr);
+    explicit SearchBoxWidget(const QString &placeholder,
+                             QWidget *parent = nullptr);
 
     QString text();
     void setText(const QString &string);
@@ -32,12 +32,12 @@ protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
     QLineEdit *lineEdit;
+    QString iconText = u8"\uf002";
 
     QAction *cancelAction = nullptr;
     QAction *selectUpAction = nullptr;
     QAction *selectDownAction = nullptr;
 
-    static constexpr auto iconText = "\uf002";
     QFont iconFont() const;
     QRect iconRect() const;
 
@@ -45,4 +45,4 @@ private:
 };
 
 
-#endif //STRATEGR_SEARCHBOX_H
+#endif //STRATEGR_SEARCHBOXWIDGET_H

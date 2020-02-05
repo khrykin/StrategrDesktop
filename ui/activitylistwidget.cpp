@@ -14,7 +14,7 @@
 #include "activitywidget.h"
 #include "mainscene.h"
 #include "slotboardwidget.h"
-#include "searchbox.h"
+#include "searchboxwidget.h"
 
 ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
                                        QWidget *parent)
@@ -35,7 +35,7 @@ ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
     connect(action,
             &QAction::triggered,
             searchBox,
-            &SearchBox::focus);
+            &SearchBoxWidget::focus);
 
     addAction(action);
 
@@ -81,21 +81,21 @@ void ActivityListWidget::layoutChildWidgets() {
                               " }");
     scrollArea->setWidget(listWidget);
 
-    searchBox = new SearchBox("Search activities");
+    searchBox = new SearchBoxWidget("Search activities");
     connect(searchBox,
-            &SearchBox::textEdited,
+            &SearchBoxWidget::textEdited,
             [=](const QString &text) {
                 performSearch();
             });
 
     connect(searchBox,
-            &SearchBox::gotFocus,
+            &SearchBoxWidget::gotFocus,
             [this]() {
                 getBackAction->setEnabled(false);
             });
 
     connect(searchBox,
-            &SearchBox::lostFocus,
+            &SearchBoxWidget::lostFocus,
             [this]() {
                 getBackAction->setEnabled(true);
             });

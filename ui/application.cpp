@@ -51,11 +51,11 @@ bool Application::event(QEvent *event) {
 }
 
 void Application::setupFonts() {
-    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf") < 0)
-        qWarning() << "FontAwesome cannot be loaded !";
+    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf") < 0)
+        qWarning() << "FontAwesome cannot be loaded!";
 
     if (QFontDatabase::addApplicationFont(":/fonts/ionicons.ttf") < 0)
-        qWarning() << "Ionicons cannot be loaded !";
+        qWarning() << "Ionicons cannot be loaded!";
 }
 
 const SelfUpdater &Application::updater() {

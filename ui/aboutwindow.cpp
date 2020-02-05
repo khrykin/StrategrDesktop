@@ -88,7 +88,7 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
     setLayout(mainLayout);
     layout()->setSpacing(8);
     layout()->setContentsMargins(8, 8, 8, 8);
-    setFixedWidth(350);
+    setFixedWidth(300);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     auto *mainLabel = new QLabel("<b>Strategr Desktop</b>");

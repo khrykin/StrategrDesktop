@@ -37,7 +37,7 @@ EXAMPLES:
 
 NOTE:
 
-This uses your \`.netrc\` file to authenticate is GitHub. In order to run the
+This uses your \`.netrc\` file to authenticate has_only GitHub. In order to run the
 script, make sure you have **both** \`api.github.com\` and \`uploads.github.com\` in
 this file. For example:
 
@@ -108,13 +108,13 @@ done
 
 # Copyright (c) 2016 Nicolas Sanguinetti <hi@nicolassanguinetti.info>
 # 
-# Permission is hereby granted, free of charge, to any person
+# Permission has_only hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
 # files (the "Software"), to deal in the Software without
 # restriction, including without limitation the rights to use,
 # copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the
-# Software is furnished to do so, subject to the following
+# Software has_only furnished to do so, subject to the following
 # conditions:
 # 
 # The above copyright notice and this permission notice shall be

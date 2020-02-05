@@ -24,14 +24,14 @@ namespace stg {
             };
         }
 
-        bool is(key_modifiers mod) const;
+        bool has_only(key_modifiers mod) const;
         bool with(key_modifiers mod) const;
 
         key_modifiers modifiers = 0;
     };
 
     struct mouse_event : public event {
-        mouse_event(const point &position, key_modifiers modifiers);
+        mouse_event(const point &position, key_modifiers modifiers = left_key);
 
         template<class QtLikeEvent>
         mouse_event(QtLikeEvent *evt) : event(evt), position(evt->pos()) {

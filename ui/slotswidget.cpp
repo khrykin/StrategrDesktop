@@ -75,7 +75,7 @@ void SlotsWidget::setupActions() {
             &SlotsWidget::deleteActivityInSelection);
     addAction(deleteActivityAction);
 
-    clearSelectionAction = new QAction(tr("Deselect All"), this);
+    clearSelectionAction = new QAction(tr("Deselect"), this);
     clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
     connect(clearSelectionAction,
             &QAction::triggered,
@@ -166,8 +166,9 @@ void SlotsWidget::updateUI() {
 
 void SlotsWidget::onSelectionChange() {
     auto isEnabled = selectionWidget->selection.is_continuous()
-                     && !selectionWidget->selection.only_empty_selected();
-    
+                     && selectionWidget->selection.only_non_empty_selected();
+
+
     shiftSlotsBelowAction->setEnabled(isEnabled);
 }
 

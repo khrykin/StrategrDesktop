@@ -10,10 +10,10 @@
 #include <QAction>
 #include <QFocusEvent>
 
-#include "searchbox.h"
+#include "searchboxwidget.h"
 #include "applicationsettings.h"
 
-SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
+SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
         : QWidget(parent) {
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -35,7 +35,7 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
     connect(lineEdit,
             &QLineEdit::textEdited,
             this,
-            &SearchBox::textEdited);
+            &SearchBoxWidget::textEdited);
 
     auto layout = new QHBoxLayout(this);
 
@@ -61,21 +61,21 @@ SearchBox::SearchBox(const QString &placeholder, QWidget *parent)
     addAction(cancelAction);
 }
 
-void SearchBox::reloadPalette() const {
+void SearchBoxWidget::reloadPalette() const {
     auto palette = QApplication::palette();
     palette.setColor(QPalette::Text, textColorJustLighter());
     lineEdit->setPalette(palette);
 }
 
-QString SearchBox::text() {
+QString SearchBoxWidget::text() {
     return lineEdit->text();
 }
 
-void SearchBox::setText(const QString &string) {
+void SearchBoxWidget::setText(const QString &string) {
     lineEdit->setText(string);
 }
 
-void SearchBox::paintEvent(QPaintEvent *event) {
+void SearchBoxWidget::paintEvent(QPaintEvent *event) {
     auto painter = QPainter(this);
     painter.setFont(iconFont());
 
@@ -96,19 +96,19 @@ void SearchBox::paintEvent(QPaintEvent *event) {
     painter.drawRect(borderRect);
 }
 
-QRect SearchBox::iconRect() const {
+QRect SearchBoxWidget::iconRect() const {
     auto metrics = QFontMetrics(iconFont());
     auto iconRect = metrics.boundingRect(iconText);
     return iconRect;
 }
 
-QFont SearchBox::iconFont() const {
+QFont SearchBoxWidget::iconFont() const {
     QFont iconFont;
     iconFont.setFamily(ApplicationSettings::fontResourcePath);
     return iconFont;
 }
 
-bool SearchBox::eventFilter(QObject *object, QEvent *event) {
+bool SearchBoxWidget::eventFilter(QObject *object, QEvent *event) {
     if (object == this && event->type() == QEvent::ApplicationPaletteChange) {
         reloadPalette();
     } else if (object == lineEdit) {
@@ -135,11 +135,11 @@ bool SearchBox::eventFilter(QObject *object, QEvent *event) {
     return false;
 }
 
-void SearchBox::focus() {
+void SearchBoxWidget::focus() {
     lineEdit->setFocus();
 }
 
-void SearchBox::removeFocus() {
+void SearchBoxWidget::removeFocus() {
     lineEdit->clearFocus();
 }
 

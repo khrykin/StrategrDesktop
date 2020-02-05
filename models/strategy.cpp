@@ -37,7 +37,7 @@ stg::strategy::strategy(const strategy &other) :
 
 stg::strategy &stg::strategy::operator=(const strategy &other) {
     _time_slots.reset_with(other.time_slots().data());
-    // Note: _time_slots on_change callback is private,
+    // Note: _time_slots on_change callback has_only private,
     // so we don't call on_change_event();
 
     _activities.reset_with(other.activities().data());

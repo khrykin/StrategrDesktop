@@ -170,7 +170,6 @@ void SlotsMouseHandler::showContextMenu(const stg::point &position,
     menu.addAction(slotsWidget->clearSelectionAction);
     slotsWidget->clearSelectionAction->setEnabled(!selection().empty());
 
-
     menu.exec(slotsWidget->mapToGlobal(position));
 }
 
@@ -192,7 +191,6 @@ void SlotsMouseHandler::setSelectedForSessionIndex(int sessionIndex,
     }
 }
 
-
 SessionWidget
 *SlotsMouseHandler::sessionWidgetAtIndex(int sessionIndex) {
     auto sessionWidget = slotsWidget
@@ -206,43 +204,3 @@ SessionWidget
 stg::strategy &SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
 }
-
-
-//SessionWidget *SlotsMouseHandler::sessionWidgetAtSlotIndex(int slotIndex) {
-//    auto sessionIndex = strategy().sessions()
-//            .session_index_for_time_slot_index(slotIndex);
-//
-//    if (!sessionIndex) {
-//        return nullptr;
-//    }
-//
-//
-//    return sessionWidgetAtIndex(sessionIndex);
-//}
-
-void SlotsMouseHandler::paintEvent(QPaintEvent *event) {
-//    using namespace ApplicationSettings;
-//    auto painter = QPainter(this);
-//
-//    if (slotBeforeResizeBoundaryIndex >= -1) {
-//        painter.setRenderHint(QPainter::Antialiasing);
-//
-//        painter.setPen(QPen(highlightColor(), 2));
-//        painter.setBrush(baseColor());
-//
-//        auto radius = 6;
-//        auto topOffset = firstSlotTopOffset()
-//                         + (slotBeforeResizeBoundaryIndex + 1) * slotHeight()
-//                         - 1 - radius / 2;
-//        auto circleLeftRect = QRect(defaultPadding / 2, topOffset, radius, radius);
-//        auto circleRightRect = QRect(width() - radius - defaultPadding + defaultPadding / 2,
-//                                     topOffset,
-//                                     radius,
-//                                     radius);
-//
-//        painter.drawEllipse(circleLeftRect);
-//        painter.drawEllipse(circleRightRect);
-//    }
-}
-
-

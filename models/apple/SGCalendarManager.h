@@ -18,6 +18,7 @@
 
 @interface SGCalendarManager : NSObject
 @property(retain) EKEventStore *store;
+@property(retain) NSString *calendarName;
 @property(nonatomic, assign) id <SGCalendarManagerDelegate> delegate;
 
 - (instancetype)initWithStore:(EKEventStore *)store;
@@ -27,6 +28,7 @@
 
 - (void)createEventForCalendar:(EKCalendar *)calendar
                           date:(NSDate *)date
+                         title:(NSString *)title
                   beginMinutes:(NSTimeInterval)beginMinutes
                 duraionMinutes:(NSTimeInterval)durationMinutes
           includeNotifications:(BOOL)includeNotifications;

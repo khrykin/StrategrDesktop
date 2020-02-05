@@ -71,11 +71,11 @@ void AbstractSpinBoxDecorator::createButtonsWidget() {
 }
 
 void AbstractSpinBoxDecorator::createButtons() {
-    upButton = makeButton("\uf077");
+    upButton = makeButton(u8"\uf077");
     connect(upButton, &QPushButton::clicked, this,
             &AbstractSpinBoxDecorator::stepUp);
 
-    downButton = makeButton("\uf078");
+    downButton = makeButton(u8"\uf078");
     connect(downButton, &QPushButton::clicked, this,
             &AbstractSpinBoxDecorator::stepDown);
 }

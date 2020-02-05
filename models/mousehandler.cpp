@@ -11,15 +11,15 @@ stg::mouse_handler::mouse_handler(stg::strategy &strategy,
                                   std::function<rect()> bounds_getter,
                                   std::function<rect()> viewport_getter,
                                   const mouse_parameters &settings)
-        : get_slot_height(std::move(slot_height_getter)),
-          strategy(strategy),
-          get_bounds(std::move(bounds_getter)),
+        : strategy(strategy),
           selection(selection),
+          get_slot_height(std::move(slot_height_getter)),
+          get_bounds(std::move(bounds_getter)),
           get_viewport(std::move(viewport_getter)),
           settings(settings),
           current_operaion(make_operation<none_operation>()) {
-//    assert(slot_height_getter != nullptr && "slot_height_getter must be provided");
-//    assert(bounds_getter != nullptr && "bounds_getter must be provided");
+    assert(get_slot_height != nullptr && "slot_height_getter must be provided");
+    assert(get_bounds != nullptr && "bounds_getter must be provided");
 }
 
 stg::mouse_handler::~mouse_handler() = default;
@@ -149,6 +149,7 @@ stg::mouse_handler::get_operation(event::key_modifiers modifiers) {
     auto zone = current_mouse_zone;
     auto &time_slots = strategy.time_slots();
     auto &current_slot = time_slots[current_slot_index];
+    auto &current_session = strategy.sessions()[current_session_index];
 
     auto next_empty = time_slots.next_slot_empty(current_slot_index);
     auto prev_empty = time_slots.previous_slot_empty(current_slot_index);
@@ -181,7 +182,17 @@ stg::mouse_handler::get_operation(event::key_modifiers modifiers) {
                 return make_operation<resize_operation>();
         }
     } else if (modifiers == mouse_event::right_key) {
+        if (zone == mouse_zone::drag) {
+            if (selection.empty() && !current_session.empty()) {
+                auto &sessions = strategy.sessions();
+                auto first_slot_index = sessions.get_bounds_for(current_session_index).start_index;
+                auto slot_indexes = std::vector<index_t>(current_session.length());
 
+                std::iota(slot_indexes.begin(), slot_indexes.end(), first_slot_index);
+
+                selection.reset_with(slot_indexes);
+            }
+        }
     } else if (modifiers == (mouse_event::left_key | mouse_event::ctrl_key)) {
         return make_operation<select_operation>();
     }
@@ -196,7 +207,7 @@ stg::mouse_handler::get_session_index(index_t slot_index) {
 
 stg::mouse_handler::range stg::mouse_handler::get_session_range(index_t session_index) {
     const auto &session = strategy.sessions()[session_index];
-    auto top = static_cast<int>(strategy.sessions().relative_time(session) * px_in_time());
+    auto top = static_cast<int>(strategy.sessions().relative_begin_time(session) * px_in_time());
     auto height = static_cast<int>(session.duration() * px_in_time());
 
 //    std::cout << "slot_index:  " << slot_index << "\n";

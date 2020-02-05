@@ -22,6 +22,8 @@ namespace stg {
         explicit selection(const stg::strategy &strategy);
 
         void set_selected_at(index_t slot_index, bool is_selected);
+        void reset_with(std::vector<index_t> slot_indices);
+
         void toggle_at(index_t slot_index);
         void deselect_all();
         void select_all();
@@ -30,6 +32,7 @@ namespace stg {
         bool is_continuous() const;
 
         bool only_empty_selected() const;
+        bool only_non_empty_selected() const;
 
         bool has_selected(index_t slot_index);
 

@@ -2,7 +2,8 @@
 build_path=$1
 app_name="Strategr"
 dmg_path="$build_path/$app_name.dmg"
-dmg_template_path="$build_path/../deployment/package.dmg"
+dmg_template_path="$build_path/../../../deployment/package.dmg"
+entitlements_path="$build_path/../../../deployment/Strategr.entitlements"
 dmg_source_path="./DMGContainer"
 
 rm -rf "$dmg_path" || true
@@ -11,7 +12,6 @@ echo "Deploying macOS application"
 
 ~/Qt/5.13.0/clang_64/bin/macdeployqt "$build_path/$app_name.app" \
 				-codesign="$DEVELOPER_CERTIFACATE_ID"
-
 echo "App bundle created"
 
 echo "Creating .dmg"
@@ -26,8 +26,8 @@ hdiutil create "$dmg_template_path" -ov \
 
 hdiutil convert "$dmg_template_path" -format UDZO -o "$dmg_path"
 
-codesign -s "$codesign_id" \
-				--keychain "~/Library/Keychains/login.keychain" "$dmg_path"
+codesign -s "$DEVELOPER_CERTIFACATE_ID" \
+				--keychain "$HOME/Library/Keychains/login.keychain" "$dmg_path"
 
 rm -rf "$dmg_source_path"
 

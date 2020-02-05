@@ -18,7 +18,12 @@
 
 void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                                            Options options,
-                                           time_t dateSecsFromEpoch) {
+                                           time_t dateSecsFromEpoch,
+                                           const std::string &calTitle) {
+
+    // Obj-C block seem to can't capture wrapping C++ function's object parameters,
+    // so we copy it here
+    std::string calendarTitle = calTitle;
     @autoreleasepool {
         EKAuthorizationStatus authorizationStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
         EKEventStore *store = [[[EKEventStore alloc] init] autorelease];
@@ -32,13 +37,15 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                 exportStrategyUnauthorized(store,
                                            strategy,
                                            options,
-                                           dateSecsFromEpoch);
+                                           dateSecsFromEpoch,
+                                           calendarTitle);
             }];
         } else {
             exportStrategyUnauthorized(store,
                                        strategy,
                                        options,
-                                       dateSecsFromEpoch);
+                                       dateSecsFromEpoch,
+                                       calendarTitle);
         }
     }
 }
@@ -67,17 +74,19 @@ void MacOSCalendarExporter::showAccessDeniedAlert() {
     });
 }
 
-void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
-                                                       const stg::strategy &strategy,
-                                                       Options options,
-                                                       time_t dateSecsFromEpoch) {
+void
+MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store, const stg::strategy &strategy, Options options,
+                                                  time_t dateSecsFromEpoch, const std::string &calTitle) {
     SGCalendarExportProgressWindow *progressWindow = [[SGCalendarExportProgressWindow alloc] init];
     progressWindow.title = @"Exporting Strategy...";
     [progressWindow makeKeyAndOrderFront:nil];
 
+    // Obj-C block seem to can't capture wrapping C++ function's object parameters,
+    // so we copy it here
+    std::string calendarTitle = calTitle;
     void (^progressBlock)(void);
     progressBlock = ^{
-        // TODO refactor this to make an ObjC method -->
+        // TODO refactor this to make it an ObjC method -->
 
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
         SGCalendarManager *calendarManager = [[[SGCalendarManager alloc] initWithStore:store] autorelease];
@@ -88,6 +97,10 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
 
         if (optionEnabled(options, OverridePreviousEvents)) {
             [calendarManager removeAllEventsForDate:date];
+        }
+
+        if (optionEnabled(options, ExportToSpecificCalendar)) {
+            calendarManager.calendarName = [NSString stringWithUTF8String:calendarTitle.c_str()];
         }
 
         if (nonEmptySessions.empty()) {
@@ -105,7 +118,7 @@ void MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store,
             }
         }
 
-        // --> TODO refactor this to make an ObjC method
+        // --> TODO refactor this to it make an ObjC method
 
         [SGCalendarManager launchCalendarApp];
     };
@@ -125,19 +138,29 @@ MacOSCalendarExporter::exportSession(const stg::session &strategy,
 
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
 
-    NSColor *color = [NSColor colorWithHexColorString:
-            [NSString stringWithUTF8String:strategy.activity->color().c_str()]];
+    NSColor *color = nil;
+    NSString *calendarTitle = calendarManager.calendarName;
 
-    NSString *title = [NSString stringWithUTF8String:strategy.activity->name().c_str()];
+    if (!calendarTitle) {
+        calendarTitle = [NSString stringWithUTF8String:strategy.activity->name().c_str()];
+        color = [NSColor colorWithHexColorString:
+                [NSString stringWithUTF8String:strategy.activity->color().c_str()]];
+    }
 
-    EKCalendar *calendar = [calendarManager findOrCreateCalendarWithTitle:title
+    EKCalendar *calendar = [calendarManager findOrCreateCalendarWithTitle:calendarTitle
                                                                  andColor:color];
+
+    NSString *eventTitle = calendarManager.calendarName != nil
+                           ? [NSString stringWithUTF8String:strategy.activity->name().c_str()]
+                           : calendarTitle;
 
     [calendarManager createEventForCalendar:calendar
                                        date:date
+                                      title:eventTitle
                                beginMinutes:strategy.begin_time()
                              duraionMinutes:strategy.duration()
-                       includeNotifications:optionEnabled(options, IncludeNotifications)];
+                       includeNotifications:optionEnabled(
+                               options, IncludeNotifications)];
 }
 
 bool MacOSCalendarExporter::optionEnabled(Options optionsMask,
@@ -146,12 +169,15 @@ bool MacOSCalendarExporter::optionEnabled(Options optionsMask,
 }
 
 MacOSCalendarExporter::OptionsWindowResult
-MacOSCalendarExporter::showOptionsAlert(Options initialOptions) {
+MacOSCalendarExporter::showOptionsAlert(Options initialOptions, const std::string &initialCalendarName) {
     @autoreleasepool {
         SGOptionsWindowViewController *optionsWindowViewController
                 = [[[SGOptionsWindowViewController alloc] init] autorelease];
         SGCalendarExportOptionsView *optionsView = (SGCalendarExportOptionsView *) optionsWindowViewController.view;
         optionsView.optionsMask = initialOptions;
+        if (!initialCalendarName.empty())
+            optionsView.calendarName = [NSString stringWithCString:initialCalendarName.c_str()
+                                                          encoding:NSUTF8StringEncoding];
 
         NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
 
@@ -167,6 +193,7 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions) {
 
         Options optionsMask = 0;
         NSDate *date = [NSDate date];
+        std::string calendarName = "";
         NSModalResponse response;
         for (;;) {
             response = [app runModalSession:session];
@@ -174,6 +201,8 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions) {
                 if (response == NSModalResponseOK) {
                     optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
                     date = optionsView.date;
+                    if (optionsView.calendarName)
+                        calendarName = [optionsView.calendarName cStringUsingEncoding:NSUTF8StringEncoding];
                 }
 
                 break;
@@ -184,6 +213,7 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions) {
 
         return OptionsWindowResult(reinterpret_cast<Response &&>(response),
                                    reinterpret_cast<Options &&>(optionsMask),
-                                   static_cast<time_t &&>(date.timeIntervalSince1970));
+                                   static_cast<time_t &&>(date.timeIntervalSince1970),
+                                   calendarName);
     }
 }

@@ -29,7 +29,7 @@ public:
         QTimeLine::CurveShape curveShape = defaultCurveShape;
         std::function<void()> onFinishedCallback = nullptr;
 
-        // Explicit constructor definition is needed here because of clang bug.
+        // Explicit constructor definition has_only needed here because of clang bug.
         // See: https://stackoverflow.com/questions/53408962
         Options() {};
     };

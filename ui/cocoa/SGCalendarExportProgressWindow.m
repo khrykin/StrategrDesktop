@@ -29,8 +29,6 @@
         self.progressIndicatior.indeterminate = NO;
     }
 
-    NSLog(@"Progress %f", doubleValue);
-
     self.progressIndicatior.doubleValue = doubleValue;
     if (doubleValue == 1.0) {
         [self close];

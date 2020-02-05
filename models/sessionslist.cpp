@@ -35,12 +35,10 @@ stg::sessions_list::session_after(const session &activity_session) const {
     return it < std::prev(_data.end()) ? &*std::next(it) : nullptr;
 }
 
-std::optional<stg::session>
+const stg::session *
 stg::sessions_list::session_before(const session &activity_session) const {
     auto it = find_const(activity_session);
-    return it > _data.begin()
-           ? std::make_optional(*std::prev(it))
-           : std::nullopt;
+    return it > _data.begin() ? &*std::prev(it) : nullptr;
 }
 
 std::string stg::sessions_list::class_print_name() const {
@@ -93,6 +91,18 @@ std::vector<stg::session> stg::sessions_list::get_non_empty() const {
     return result;
 }
 
-stg::time_slot::time_t stg::sessions_list::relative_time(const stg::session &session) const {
+stg::time_slot::time_t stg::sessions_list::relative_begin_time(const stg::session &session) const {
     return session.begin_time() - _data.front().begin_time();
+}
+
+stg::sessions_list::bounds stg::sessions_list::get_bounds_for(index_t session_index) const {
+    auto &session = _data[session_index];
+
+    auto global_begin_time = _data.front().begin_time();
+    auto slot_duration = static_cast<index_t>(session.time_slots.front().duration);
+
+    auto start_index = static_cast<index_t>(session.begin_time() - global_begin_time) / slot_duration;
+    auto end_index = start_index + static_cast<index_t>(session.length());
+
+    return {start_index, end_index};
 }

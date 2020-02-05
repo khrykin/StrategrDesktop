@@ -27,12 +27,12 @@
     if ([matchedCalendars count] != 0) {
         calendar = matchedCalendars[0];
 
-        if (![calendar.color isEqual:color]) {
+        if (color && ![calendar.color isEqual:color]) {
             calendar.color = color;
             [self.store saveCalendar:calendar
                               commit:YES
                                error:&saveCalError];
-        };
+        }
 
     } else {
         calendar = [self makeCalendarWithTitle:title andColor:color];
@@ -49,11 +49,13 @@
 
 - (void)createEventForCalendar:(EKCalendar *)calendar
                           date:(NSDate *)date
+                         title:(NSString *)title
                   beginMinutes:(NSTimeInterval)beginMinutes
                 duraionMinutes:(NSTimeInterval)durationMinutes
           includeNotifications:(BOOL)includeNotifications {
     EKEvent *event = [self makeEventForCalendar:calendar
                                            date:date
+                                          title:title
                                    beginMinutes:beginMinutes
                                 durationMinutes:durationMinutes
                            includeNotifications:includeNotifications];
@@ -79,11 +81,12 @@
 
 - (EKEvent *)makeEventForCalendar:(EKCalendar *)calendar
                              date:(NSDate *)date
+                            title:(NSString *)title
                      beginMinutes:(NSTimeInterval)beginMinutes
                   durationMinutes:(NSTimeInterval)durationMinutes
              includeNotifications:(BOOL)includeNotifications {
     EKEvent *event = [EKEvent eventWithEventStore:self.store];
-    event.title = calendar.title;
+    event.title = title != nil ? title : calendar.title;
 
     NSDate *beginningOfToday = [self beginningOfDayForDate:date];
 
@@ -106,9 +109,6 @@
                      currentIndex:(unsigned)currentIndex
                     numberOfEvent:(unsigned)numberOfEvents {
     double progress = (float) currentIndex / (float) numberOfEvents;
-    NSLog(@"currentIndex %d", currentIndex);
-    NSLog(@"numberOfEvents %d", numberOfEvents);
-
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate calendarManagerProgressChanged:progress];
     });

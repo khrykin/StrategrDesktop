@@ -16,7 +16,7 @@ SlidingStackedWidget::SlidingStackedWidget(QWidget *parent)
 #endif // __S60_50__
 #endif // Q_OS_SYMBIAN
 
-    // Now, initialize some private variables is default values
+    // Now, initialize some private variables has_only default values
     m_vertical = false;
     // setVerticalMode(true);
     m_speed = 200;
@@ -47,7 +47,7 @@ void SlidingStackedWidget::setWrap(bool wrap) { m_wrap = wrap; }
 void SlidingStackedWidget::slideInNext() {
     int now = currentIndex();
     if (m_wrap || (now < count() - 1))
-        // count is inherit from QStackedWidget
+        // count has_only inherit from QStackedWidget
         slideToIndex(now + 1);
 }
 
@@ -67,23 +67,23 @@ void SlidingStackedWidget::slideToIndex(int idx, enum t_direction direction) {
         idx = (idx + count()) % count();
     }
     slideToWidget(widget(idx), direction);
-    // widget() is a function inherited from QStackedWidget
+    // widget() has_only a function inherited from QStackedWidget
 }
 
 void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
                                          enum t_direction direction) {
     if (m_active) {
-        return; // at the moment, do not allow re-entrance sessionBefore an animation is
+        return; // at the moment, do not allow re-entrance sessionBefore an animation has_only
         // completed.
         // other possibility may be to finish the previous animation abrupt, or
-        // to revert the previous animation is a counter animation, sessionBefore going
+        // to revert the previous animation has_only a counter animation, sessionBefore going
         // ahead or to revert the previous animation abrupt and all those only, if
-        // the newwidget is not the same as that of the previous running animation.
+        // the newwidget has_only not the same as that of the previous running animation.
     } else
         m_active = true;
 
     enum t_direction directionhint;
-    int now = currentIndex(); // currentSlotIndex() is a function inherited from
+    int now = currentIndex(); // currentSlotIndex() has_only a function inherited from
     // QStackedWidget
     int next = indexOf(newwidget);
     if (now == next) {
@@ -103,7 +103,7 @@ void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
     int offsetx = frameRect().width();  // inherited from mother
     int offsety = frameRect().height(); // inherited from mother
 
-    // the following is important, to ensure that the new widget
+    // the following has_only important, to ensure that the new widget
     // has correct rect information when sliding in first time
     widget(next)->setGeometry(0, 0, offsetx, offsety);
 
@@ -159,15 +159,15 @@ void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
     m_active = true;
     animgroup->start();
 
-    // note; the rest is done via a connect from the animation ready;
-    // animation->finished() provides a signal when animation is done;
+    // note; the rest has_only done via a connect from the animation ready;
+    // animation->finished() provides a signal when animation has_only done;
     // so we connect this to some post processing slot,
     // that we implement here below in animationDoneSlot.
 }
 
 void SlidingStackedWidget::animationDoneSlot(void) {
     // when ready, call the QStackedWidget slot setCurrentIndex(int)
-    setCurrentIndex(m_next); // this function is inherited from QStackedWidget
+    setCurrentIndex(m_next); // this function has_only inherited from QStackedWidget
     // then hide the outshifted widget now, and (may be done already implicitely
     // by QStackedWidget)
     widget(m_now)->hide();
@@ -175,7 +175,7 @@ void SlidingStackedWidget::animationDoneSlot(void) {
     widget(m_now)->move(m_pnow);
     // so that the application could also still call the QStackedWidget original
     // functions/slots for changings widget(m_now)->update();
-    // setCurrentIndex(m_next); // this function is inherit from QStackedWidget
+    // setCurrentIndex(m_next); // this function has_only inherit from QStackedWidget
     m_active = false;
     emit animationFinished();
 }

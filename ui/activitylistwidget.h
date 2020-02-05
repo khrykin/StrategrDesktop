@@ -12,7 +12,7 @@
 #include "colorprovider.h"
 #include "coloredlabel.h"
 
-class SearchBox;
+class SearchBoxWidget;
 class MainScene;
 class QVBoxLayout;
 class QLineEdit;
@@ -37,7 +37,7 @@ private:
     stg::strategy &strategy;
     stg::activity_list searchResults;
 
-    SearchBox *searchBox = nullptr;
+    SearchBoxWidget *searchBox = nullptr;
     QScrollArea *scrollArea = nullptr;
     QWidget *listWidget = nullptr;
     Navbar *navbar = nullptr;

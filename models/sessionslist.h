@@ -6,6 +6,7 @@
 #define STRATEGR_SESSIONSLIST_H
 
 #include <iostream>
+#include <optional>
 
 #include "session.h"
 #include "privatelist.h"
@@ -40,29 +41,16 @@ namespace stg {
 
         std::vector<session> get_non_empty() const;
 
-        bounds get_bounds_for(index_t session_index) const {
-            auto &session = _data[session_index];
-
-            auto global_begin_time = _data.front().begin_time();
-            auto total_duration = _data.back().end_time() - _data.front().begin_time();
-            auto slot_duration = _data.front().duration();
-
-            index_t start_index = static_cast<index_t>(session.begin_time() - global_begin_time) / slot_duration;
-            index_t end_index = start_index + session.length();
-
-            return {start_index, end_index};
-        }
+        bounds get_bounds_for(index_t session_index) const;
 
         stg::sessions_list::index_t session_index_for_time_slot_index(index_t time_slot_index) const;
 
         const session *session_after(const session &activity_session) const;
+        const session *session_before(const session &activity_session) const;
 
-        std::optional<session>
-        session_before(const session &activity_session) const;
+        time_slot::time_t relative_begin_time(const session &session) const;
 
         std::vector<overview_item> overview() const;
-
-        time_slot::time_t relative_time(const session &session) const;
 
         std::string class_print_name() const override;
     private:

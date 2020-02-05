@@ -76,6 +76,7 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
     circlesWidget->setGeometry(geometry());
 
     currentTimeMarkerWidget = new CurrentTimeMarkerWidget(this);
+    updateCurrentTimeMarker();
 }
 
 void SlotBoardWidget::updateSlotsLayout() const {

@@ -30,20 +30,23 @@ public:
 
     using Options = unsigned;
     using Option = const unsigned;
-    using OptionsWindowResult = std::tuple<Response, Options, time_t>;
+    using OptionsWindowResult = std::tuple<Response, Options, time_t, std::string>;
 
-    static Option OverridePreviousEvents = 0x1;
-    static Option IncludeNotifications = 0x2;
+    static Option OverridePreviousEvents = 1u << 0u;
+    static Option IncludeNotifications = 1u << 1u;
+    static Option ExportToSpecificCalendar = 1u << 2u;
 
     static const Options defaultOptions = OverridePreviousEvents |
                                           IncludeNotifications;
 
-    static OptionsWindowResult
-    showOptionsAlert(Options initialOptions = defaultOptions);
+    static MacOSCalendarExporter::OptionsWindowResult showOptionsAlert(Options initialOptions = defaultOptions,
+                                                                       const std::string &initialCalendarName = "");
 
-    static void exportStrategy(const stg::strategy &strategy,
-                               Options options,
-                               time_t dateSecsFromEpoch);
+    static void
+    exportStrategy(const stg::strategy &strategy,
+                   Options options,
+                   time_t dateSecsFromEpoch,
+                   const std::string &calendarTitle = nullptr);
 private:
     static bool optionEnabled(Options optionsMask,
                               Options setting);
@@ -53,9 +56,8 @@ private:
                               Options options,
                               time_t dateSecsFromEpoch);
 
-    static void exportStrategyUnauthorized(EKEventStore *store,
-                                           const stg::strategy &strategy, Options options,
-                                           time_t dateSecsFromEpoch);
+    static void exportStrategyUnauthorized(EKEventStore *store, const stg::strategy &strategy, Options options,
+                                           time_t dateSecsFromEpoch, const std::string &calendarTitle);
     static void showAccessDeniedAlert();
 };
 

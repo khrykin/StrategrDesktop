@@ -59,9 +59,9 @@ namespace stg {
 
         explicit mouse_handler(stg::strategy &strategy,
                                stg::selection &selection,
-                               std::function<int()> slot_height_getter,
-                               std::function<rect()> bounds_getter,
-                               std::function<rect()> viewport_getter,
+                               std::function<int()> slot_height_getter = nullptr,
+                               std::function<rect()> bounds_getter = nullptr,
+                               std::function<rect()> viewport_getter = nullptr,
                                const mouse_parameters &settings = mouse_parameters());
 
         ~mouse_handler();

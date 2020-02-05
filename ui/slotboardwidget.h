@@ -24,6 +24,7 @@ public:
                              QWidget *parent = nullptr);
 
     void reloadStrategy();
+    void updateCurrentTimeMarker();
 
     void clearSelection();
     void focusOnCurrentTime();
@@ -45,8 +46,6 @@ private:
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
 
     int slotBeforeResizeBoundaryIndex = -2;
-
-    void updateCurrentTimeMarker();
 
     QVector<TimeLabel> makeLabelsForStrategy();
 

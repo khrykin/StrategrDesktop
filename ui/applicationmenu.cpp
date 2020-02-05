@@ -146,11 +146,16 @@ void ApplicationMenu::addExportToCalendarAction() const {
                               ? QSettings().value("calendarExportOptions").toUInt()
                               : MacOSCalendarExporter::defaultOptions;
 
-        auto[result, options, date] = MacOSCalendarExporter::showOptionsAlert(initialOptions);
+        auto initialCalendarTitle = QSettings().value("exportCalendarTitle").toString().toStdString();
+
+        auto[result, options, date, calendarTitle] = MacOSCalendarExporter::showOptionsAlert(initialOptions,
+                                                                                             initialCalendarTitle);
 
         if (result == MacOSCalendarExporter::Response::Export) {
             QSettings().setValue("calendarExportOptions", options);
-            MacOSCalendarExporter::exportStrategy(window->strategy, options, date);
+            QSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
+
+            MacOSCalendarExporter::exportStrategy(window->strategy, options, date, calendarTitle);
         }
     });
 #endif

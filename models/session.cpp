@@ -94,3 +94,7 @@ bool stg::session::is_future() const {
     return stg::time_utils::current_minutes() < begin_time();
 }
 
+bool stg::session::empty() const {
+    return activity == time_slot::no_activity;
+}
+

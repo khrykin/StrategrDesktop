@@ -72,6 +72,8 @@ void SessionsMainWidget::layoutChildWidgets() {
     layout()->addWidget(overviewWidget);
     layout()->addWidget(currentSessionWidget);
     layout()->addWidget(_slotBoardScrollArea);
+
+    slotBoard->updateCurrentTimeMarker();
 }
 
 void SessionsMainWidget::updateOverviewWidget() const {

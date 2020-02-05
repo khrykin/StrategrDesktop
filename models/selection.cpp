@@ -25,6 +25,14 @@ void stg::selection::set_selected_at(index_t slot_index, bool is_selected) {
     on_change_event();
 }
 
+void stg::selection::reset_with(std::vector<index_t> slot_indices) {
+    assign(slot_indices.begin(), slot_indices.end());
+    std::sort(begin(), end());
+
+    on_change_event();
+}
+
+
 void stg::selection::toggle_at(index_t slot_index) {
     auto found_it = std::find(begin(), end(), slot_index);
     auto already_selected = found_it != end();
@@ -85,6 +93,13 @@ bool stg::selection::only_empty_selected() const {
     }) == end();
 }
 
+
+bool stg::selection::only_non_empty_selected() const {
+    return std::find_if(begin(), end(), [this](auto index) {
+        return strategy.time_slots()[index].activity == stg::strategy::no_activity;
+    }) == end();
+}
+
 bool stg::selection::has_selected(index_t slot_index) {
     return std::find(begin(), end(), slot_index) != end();
 }
@@ -133,3 +148,5 @@ void stg::selection::on_change_event() {
 const stg::grouped_selection &stg::selection::grouped() {
     return _grouped;
 }
+
+

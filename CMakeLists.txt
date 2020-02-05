@@ -179,8 +179,8 @@ set(UI
         ui/updatedialog.h
         ui/overviewwidget.cpp
         ui/overviewwidget.h
-        ui/searchbox.cpp
-        ui/searchbox.h
+        ui/searchboxwidget.cpp
+        ui/searchboxwidget.h
         ui/dynamicpalette.cpp
         ui/dynamicpalette.h ui/slotboardcircleswidget.cpp ui/slotboardcircleswidget.h)
 
@@ -205,7 +205,6 @@ set(UI_TESTS
         utility/testutils.h)
 
 qt5_add_resources(RESOURCES
-        resources/icons.qrc
         resources/fonts.qrc)
 
 if (APPLE)

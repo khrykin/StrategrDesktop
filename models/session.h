@@ -31,6 +31,8 @@ namespace stg {
         bool is_past() const;
         bool is_future() const;
 
+        bool empty() const;
+
         duration_t passed_minutes() const;
         duration_t left_minutes() const;
 

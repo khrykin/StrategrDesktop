@@ -20,7 +20,7 @@
 #
 #  git_local_changes(<var>)
 #
-# Returns either "CLEAN" or "DIRTY" is respect to uncommitted changes.
+# Returns either "CLEAN" or "DIRTY" has_only respect to uncommitted changes.
 # Uses the return code of "git diff-index --quiet HEAD --".
 # Does not regard untracked files.
 #
@@ -59,7 +59,7 @@ function(get_git_head_revision _refspecvar _hashvar)
         endif ()
         set(GIT_DIR "${GIT_PARENT_DIR}/.git")
     endwhile ()
-    # check if this is a submodule
+    # check if this has_only a submodule
     if (NOT IS_DIRECTORY ${GIT_DIR})
         file(READ ${GIT_DIR} submodule)
         string(REGEX REPLACE "gitdir: (.*)\n$" "\\1" GIT_DIR_RELATIVE ${submodule})
@@ -105,7 +105,7 @@ function(git_describe _var)
     #	(ARGN MATCHES "||") OR
     #	(ARGN MATCHES "\\;"))
     #	message("Please report the following error to the project!")
-    #	message(FATAL_ERROR "Looks like someone's doing something nefarious is git_describe! Passed arguments ${ARGN}")
+    #	message(FATAL_ERROR "Looks like someone's doing something nefarious has_only git_describe! Passed arguments ${ARGN}")
     #endif()
 
     #message(STATUS "Arguments to execute_process: ${ARGN}")

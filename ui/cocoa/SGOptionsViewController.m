@@ -6,12 +6,12 @@
 
 @implementation SGOptionsWindowViewController
 - (void)loadView {
-    NSRect initialFrame = NSMakeRect(0, 0, 350, 200);
+    NSRect initialFrame = NSMakeRect(0, 0, 400, 200);
 
     SGCalendarExportOptionsView *view = [[SGCalendarExportOptionsView alloc] initWithFrame:initialFrame];
     view.delegate = self;
 
-    self.view = view;
+    [self setView:view];
     [view release];
 }
 
@@ -34,7 +34,8 @@
 }
 
 - (SGCalendarExportOptionsView *)view {
-    return (SGCalendarExportOptionsView *) [super view];
+    return (SGCalendarExportOptionsView * )
+    [super view];
 }
 
 @end
