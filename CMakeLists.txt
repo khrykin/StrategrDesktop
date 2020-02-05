@@ -341,7 +341,7 @@ if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Release)
         add_custom_command(TARGET Strategr
                 POST_BUILD
-                COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR})
+                COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR} ${VERSION})
     endif (CMAKE_BUILD_TYPE MATCHES Release)
 
     set_target_properties(updater PROPERTIES

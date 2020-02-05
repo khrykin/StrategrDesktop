@@ -76,6 +76,7 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
     circlesWidget->setGeometry(geometry());
 
     currentTimeMarkerWidget = new CurrentTimeMarkerWidget(this);
+
     updateCurrentTimeMarker();
 }
 
@@ -121,7 +122,7 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
     currentTimeMarkerWidget->setGeometry(rect);
 
     if (currentTimeMarker.is_hidden() &&
-        currentTimeMarkerWidget->isVisible()) {
+        !currentTimeMarkerWidget->isHidden()) {
         currentTimeMarkerWidget->hide();
 
     } else if (currentTimeMarker.is_visible() &&
