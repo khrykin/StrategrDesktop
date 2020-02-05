@@ -34,11 +34,13 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                     return;
                 }
 
-                exportStrategyUnauthorized(store,
-                                           strategy,
-                                           options,
-                                           dateSecsFromEpoch,
-                                           calendarTitle);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    exportStrategyUnauthorized(store,
+                                               strategy,
+                                               options,
+                                               dateSecsFromEpoch,
+                                               calendarTitle);
+                });
             }];
         } else {
             exportStrategyUnauthorized(store,
