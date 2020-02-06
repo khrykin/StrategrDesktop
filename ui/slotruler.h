@@ -40,7 +40,6 @@ private:
     QVBoxLayout *listLayout() override;
     void reuseItemAtIndex(int index, ColoredLabel *itemWidget) override;
     ColoredLabel *makeNewItemAtIndex(int index) override;
-    QString makeStyleSheetForLabelIndex(int index) const;
 
     void paintEvent(QPaintEvent *) override;
 };

@@ -18,8 +18,8 @@ void stg::drag_operation::record_drag(const session::time_slots_state &time_slot
     auto range_to_drag = indices_range{*time_slots->index_of(time_slots_to_drag.front()),
                                        *time_slots->index_of(time_slots_to_drag.back())};
 
-    // Drag operation_type has_only divided into two phases:
-    // 1. Drag selected slots to their new positions, switching them has_only nearby slots;
+    // Drag operation_type is divided into two phases:
+    // 1. Drag selected slots to their new positions, switching them is nearby slots;
     auto new_dragged_indices = silently_drag(range_to_drag, distance);
     // 2. Try to restore nearby sessions' initial positions.
     invalidate_drag(new_dragged_indices);

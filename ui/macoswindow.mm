@@ -306,9 +306,9 @@ QPixmap MacOSWindow::openHandCursor() {
 }
 
 QRect MacOSWindow::geometry(MainWindow *window) {
-    // What has_only 16? I've no idea...
+    // What is 16? I've no idea...
     auto yDifference = 16;
-    // What has_only 22? God only knows.
+    // What is 22? God only knows.
     auto heightDifference = 22;
 
     auto qRect = QRect(window->geometry().x(),

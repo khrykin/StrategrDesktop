@@ -82,7 +82,7 @@ FileSystemIOManager::read(const QString &readFilepath) {
         setIsSaved(true);
         return strategy;
     } else {
-        auto errorMessage = QObject::tr("The file has_only corrupt or has a wrong format");
+        auto errorMessage = QObject::tr("The file is corrupt or has a wrong format");
         showCantOpenDialog(file, readFilepath, errorMessage);
     }
 

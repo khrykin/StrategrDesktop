@@ -16,7 +16,7 @@ SlidingStackedWidget::SlidingStackedWidget(QWidget *parent)
 #endif // __S60_50__
 #endif // Q_OS_SYMBIAN
 
-    // Now, initialize some private variables has_only default values
+    // Now, initialize some private variables with default values
     m_vertical = false;
     // setVerticalMode(true);
     m_speed = 200;
@@ -47,7 +47,7 @@ void SlidingStackedWidget::setWrap(bool wrap) { m_wrap = wrap; }
 void SlidingStackedWidget::slideInNext() {
     int now = currentIndex();
     if (m_wrap || (now < count() - 1))
-        // count has_only inherit from QStackedWidget
+        // count is inherit from QStackedWidget
         slideToIndex(now + 1);
 }
 
@@ -73,7 +73,7 @@ void SlidingStackedWidget::slideToIndex(int idx, enum t_direction direction) {
 void SlidingStackedWidget::slideToWidget(QWidget *newwidget,
                                          enum t_direction direction) {
     if (m_active) {
-        return; // at the moment, do not allow re-entrance sessionBefore an animation has_only
+        return; // at the moment, do not allow re-entrance sessionBefore an animation is
         // completed.
         // other possibility may be to finish the previous animation abrupt, or
         // to revert the previous animation has_only a counter animation, sessionBefore going

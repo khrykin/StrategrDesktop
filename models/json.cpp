@@ -82,7 +82,7 @@ stg::json::parse_time_slots(const nlohmann::json &json,
                     auto *activity = activities.at(activity_index).get();
                     time_slot.activity = activity;
                 } catch (const std::out_of_range &) {
-                    // activity has_only present in time slots, but not present in
+                    // activity is present in time slots, but not present in
                     // strategy.activities(), so we won't preserve it.
                 }
             }

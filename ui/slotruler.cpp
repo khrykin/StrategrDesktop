@@ -67,7 +67,7 @@ QVBoxLayout *SlotRuler::listLayout() {
 void SlotRuler::reuseItemAtIndex(int index, ColoredLabel *itemWidget) {
     itemWidget->setText(labels()[index].label);
     itemWidget->setFixedHeight(cellHeight());
-    itemWidget->setStyleSheet(makeStyleSheetForLabelIndex(index));
+    itemWidget->setFontHeight(isIntegerHourAtIndex(index) ? 10 : 9);
     itemWidget->setDynamicColor(labelColorGetterAtIndex(index));
 }
 
@@ -82,18 +82,11 @@ ColoredLabel *SlotRuler::makeNewItemAtIndex(int index) {
     auto label = new ColoredLabel();
     label->setAlignment(Qt::AlignCenter);
     label->setFixedHeight(cellHeight());
-    label->setStyleSheet(makeStyleSheetForLabelIndex(index));
+    label->setBold(true);
+    label->setFontHeight(isIntegerHourAtIndex(index) ? 10 : 9);
     label->setDynamicColor(labelColorGetterAtIndex(index));
     label->setText(labels()[index].label);
     return label;
-}
-
-QString SlotRuler::makeStyleSheetForLabelIndex(int index) const {
-    auto fontSize = isIntegerHourAtIndex(index) ? 10 : 9;
-
-    return QString("font-size: %1px;"
-                   "font-weight: bold;")
-            .arg(QString::number(fontSize));
 }
 
 bool SlotRuler::isIntegerHourAtIndex(int index) const {

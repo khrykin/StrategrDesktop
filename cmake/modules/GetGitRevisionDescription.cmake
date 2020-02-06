@@ -20,7 +20,7 @@
 #
 #  git_local_changes(<var>)
 #
-# Returns either "CLEAN" or "DIRTY" has_only respect to uncommitted changes.
+# Returns either "CLEAN" or "DIRTY" with respect to uncommitted changes.
 # Uses the return code of "git diff-index --quiet HEAD --".
 # Does not regard untracked files.
 #

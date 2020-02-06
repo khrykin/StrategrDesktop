@@ -123,7 +123,7 @@ void UpdateDialog::performUpdate() {
 }
 
 void UpdateDialog::handleNoUpdate(const QString &version) const {
-    infoLabel->setText(QString(tr("Strategr has_only up to date."))
+    infoLabel->setText(QString(tr("Strategr is up to date."))
                                .arg(version));
 
     downloadButton->hide();
