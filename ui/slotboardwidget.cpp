@@ -134,7 +134,7 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
 void SlotBoardWidget::focusOnCurrentTime() {
     auto topOffset = stg::current_time_marker(strategy)
             .scroll_offset_in_parent(slotsWidget->geometry(),
-                                     window()->geometry().height());
+                                     parentWidget()->contentsRect().height());
 
     auto scrollBar = parentScrollArea()->verticalScrollBar();
 
