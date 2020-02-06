@@ -1,11 +1,11 @@
 #include <QApplication>
-#include <QDebug>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextStream>
+#include <QDir>
 
 #include "filesystemiomanager.h"
 #include "ui/mainwindow.h"
@@ -31,11 +31,11 @@ void FileSystemIOManager::save(const stg::strategy &strategy) {
 }
 
 void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
+    auto filePath = QDir(destinationDir()).absoluteFilePath(fileInfo().fileName());
     auto saveAsFilepath = QFileDialog::getSaveFileName(
             window,
             QObject::tr("Save Strategy As"),
-            // TODO: Fix platform-specific separator
-            destinationDir() + "/" + fileInfo().fileName(),
+            filePath,
             searchPattern);
 
     QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
@@ -72,6 +72,8 @@ FileSystemIOManager::read(const QString &readFilepath) {
     }
 
     QTextStream in(&file);
+    in.setCodec("UTF-8");
+
     auto strategy = stg::strategy::from_json_string(in.readAll().toStdString());
 
     file.close();
@@ -171,7 +173,9 @@ void FileSystemIOManager::write(const stg::strategy &strategy) {
     if (file.open(QIODevice::WriteOnly
                   | QIODevice::Truncate
                   | QIODevice::Text)) {
+
         QTextStream stream(&file);
+        stream.setCodec("UTF-8");
         stream << QString::fromStdString(json) << endl;
 
         if (!file.commit()) {
