@@ -140,8 +140,7 @@
 }
 
 - (EKCalendar *)makeCalendarWithTitle:(NSString *)title
-                             andColor:
-                                     (NSColor *)color {
+                             andColor:(NSColor *)color {
     EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent
                                                   eventStore:self.store];
 
@@ -179,32 +178,38 @@
             activateWithOptions:NSApplicationActivateAllWindows];
 };
 
-- (void)removeAllEventsForDate:(NSDate *)date {
-    NSDateComponents *offsetComponents = [[[NSDateComponents alloc] init] autorelease];
-    [offsetComponents setDay:1];
+- (void)removeAllEventsForDate:(NSDate *)date
+               andCalendarName:(NSString *)calendarName {
+    @autoreleasepool {
+        NSArray<EKCalendar *> *calendars = nil;
+        if (calendarName)
+            calendars = [self calendarsWithTitle:calendarName];
 
-    NSDate *nextDayDate
-            = [[NSCalendar currentCalendar] dateByAddingComponents:offsetComponents
-                                                            toDate:date
-                                                           options:0];
+        NSDateComponents *offsetComponents = [[[NSDateComponents alloc] init] autorelease];
+        [offsetComponents setDay:1];
 
-    NSPredicate *predicate
-            = [self.store predicateForEventsWithStartDate:[self beginningOfDayForDate:date]
-                                                  endDate:[self beginningOfDayForDate:nextDayDate]
-                                                calendars:nil];
+        NSDate *nextDayDate
+                = [[NSCalendar currentCalendar] dateByAddingComponents:offsetComponents
+                                                                toDate:date
+                                                               options:0];
+        NSPredicate *predicate
+                = [self.store predicateForEventsWithStartDate:[self beginningOfDayForDate:date]
+                                                      endDate:[self beginningOfDayForDate:nextDayDate]
+                                                    calendars:calendars];
 
-    NSArray <EKEvent *> *events = [self.store eventsMatchingPredicate:predicate];
+        NSArray <EKEvent *> *events = [self.store eventsMatchingPredicate:predicate];
 
-    for (EKEvent *event in events) {
-        NSError *removeEventError;
+        for (EKEvent *event in events) {
+            NSError *removeEventError;
 
-        [self.store removeEvent:event
-                           span:EKSpanThisEvent
-                         commit:YES
-                          error:&removeEventError];
+            [self.store removeEvent:event
+                               span:EKSpanThisEvent
+                             commit:YES
+                              error:&removeEventError];
 
-        if (removeEventError) {
-            NSLog(@"removeEventError: %@", removeEventError);
+            if (removeEventError) {
+                NSLog(@"removeEventError: %@", removeEventError);
+            }
         }
     }
 }
@@ -215,7 +220,6 @@
 
 - (void)dealloc {
     [self.store release];
-
     [super dealloc];
 }
 

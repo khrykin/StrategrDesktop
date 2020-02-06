@@ -98,7 +98,12 @@ MacOSCalendarExporter::exportStrategyUnauthorized(EKEventStore *store, const stg
         calendarManager.delegate = progressWindow;
 
         if (optionEnabled(options, OverridePreviousEvents)) {
-            [calendarManager removeAllEventsForDate:date];
+            NSString *calendarName = !calendarTitle.empty()
+                                     ? [NSString stringWithCString:calendarTitle.c_str()
+                                                          encoding:NSUTF8StringEncoding]
+                                     : nil;
+
+            [calendarManager removeAllEventsForDate:date andCalendarName:calendarName];
         }
 
         if (optionEnabled(options, ExportToSpecificCalendar)) {

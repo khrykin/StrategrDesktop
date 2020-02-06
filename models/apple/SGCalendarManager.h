@@ -33,7 +33,8 @@
                 duraionMinutes:(NSTimeInterval)durationMinutes
           includeNotifications:(BOOL)includeNotifications;
 
-- (void)removeAllEventsForDate:(NSDate *)date;
+- (void)removeAllEventsForDate:(NSDate *)date
+               andCalendarName:(NSString *)calendarName;
 
 + (void)launchCalendarApp;
 @end
