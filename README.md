@@ -3,7 +3,7 @@
 
 Stategr helps you maximize your productivity, giving you the quickest and most effective way to time-box your day with *strategies*.
 
-### More on [website](https://khrykin.github.io/strategr/)
+### More on the [website](https://khrykin.github.io/strategr/)
 
 <img src="https://khrykin.github.io/strategr/resources/mac_main_original.png" alt="Screenshot" width="300">  <img src="https://khrykin.github.io/strategr/resources/mac_black_main.png" alt="Screenshot" width="300">
 
