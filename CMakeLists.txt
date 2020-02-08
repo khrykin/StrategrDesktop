@@ -7,9 +7,11 @@ set(Boost_USE_STATIC_LIBS ON)
 
 message("platform ${CMAKE_GENERATOR_PLATFORM}")
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
-find_package(catch2 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Network REQUIRED)
+
+if (APPLE)
+    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+endif ()
 
 find_library(utf8Proc_LIBRARY_PATH
         libutf8proc.a
@@ -17,13 +19,9 @@ find_library(utf8Proc_LIBRARY_PATH
         utf8proc
         HINTS $ENV{LIBPATH})
 
-if (APPLE)
-    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
-endif ()
+message(${utf8Proc_LIBRARY_PATH})
 
 find_package(nlohmann_json 3.2.0 REQUIRED)
-
-message(${utf8Proc_LIBRARY_PATH})
 
 include_directories(.)
 include_directories(models)
@@ -92,16 +90,8 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/mousehandler.h
         models/mousehandleroperations.h models/selection.cpp models/selection.h models/event.cpp models/event.h)
 
-set(MODELS_TESTS
-        models/tests/activity_tests.cpp
-        models/tests/strategy_activities_test.cpp
-        models/tests/strategy_settings_test.cpp
-        models/tests/strategy_timeslots_test.cpp
-        models/tests/strategy_activities_slots_interaction_test.cpp
-        models/tests/strategy_history_test.cpp
-        models/tests/json_tests.cpp)
-
 set(MODELS_LIBRARIES
+        nlohmann_json::nlohmann_json
         ${utf8Proc_LIBRARY_PATH})
 
 set(UI
@@ -202,10 +192,6 @@ set(UTILITY
         utility/selfupdater.cpp
         utility/selfupdater.h)
 
-set(UI_TESTS
-        ui/tests/main_window_test.cpp
-        utility/testutils.h)
-
 qt5_add_resources(RESOURCES
         resources/fonts.qrc
         resources/icons.qrc)
@@ -254,21 +240,11 @@ if (APPLE)
     SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
 endif ()
 
-add_executable(models_tests
-        tests_main.cpp
-        ${MODELS}
-        ${MODELS_TESTS})
-
-target_link_libraries(models_tests
-        Catch2::Catch2
-        Boost::filesystem
-        ${MODELS_LIBRARIES}
-        ${MODELS_PLATFORM_LIBRARIES})
-
-option(COVERAGE "Generate code coverage" OFF)
 message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
-if (COVERAGE)
+option(WITH_COVERAGE "Generate code coverage" OFF)
+
+if (WITH_COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
         target_compile_options(models_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
         target_link_options(models_tests PUBLIC -fprofile-instr-generate)
@@ -319,22 +295,6 @@ add_executable(Strategr
 
 add_dependencies(Strategr updater)
 
-add_executable(ui_tests
-        qt_tests_main.cpp
-        ${PLATFORM_FILES}
-        ${UI}
-        ${UTILITY}
-        ${UI_TESTS}
-        ${RESOURCES})
-
-target_link_libraries(ui_tests
-        StrategrCore
-        Catch2::Catch2
-        Qt5::Widgets
-        Qt5::Network
-        Qt5::Test
-        ${PLATFORM_LIBRARIES})
-
 target_link_libraries(Strategr
         StrategrCore
         Qt5::Widgets
@@ -362,3 +322,50 @@ set_target_properties(Strategr PROPERTIES
         RESOURCE "${RESOURCES}")
 
 
+option(WITH_TESTS "build tests" OFF)
+
+if(${WITH_TESTS})
+        find_package(Boost COMPONENTS filesystem REQUIRED)
+        find_package(catch2 REQUIRED)
+        find_package(Qt5 COMPONENTS Test REQUIRED)
+
+        set(MODELS_TESTS
+                models/tests/activity_tests.cpp
+                models/tests/strategy_activities_test.cpp
+                models/tests/strategy_settings_test.cpp
+                models/tests/strategy_timeslots_test.cpp
+                models/tests/strategy_activities_slots_interaction_test.cpp
+                models/tests/strategy_history_test.cpp
+                models/tests/json_tests.cpp)
+
+        add_executable(models_tests
+                tests_main.cpp
+                ${MODELS}
+                ${MODELS_TESTS})
+
+        target_link_libraries(models_tests
+                Catch2::Catch2
+                Boost::filesystem
+                ${MODELS_LIBRARIES}
+                ${MODELS_PLATFORM_LIBRARIES})
+
+        set(UI_TESTS
+                ui/tests/main_window_test.cpp
+                utility/testutils.h)
+
+        add_executable(ui_tests
+                qt_tests_main.cpp
+                ${PLATFORM_FILES}
+                ${UI}
+                ${UTILITY}
+                ${UI_TESTS}
+                ${RESOURCES})
+
+        target_link_libraries(ui_tests
+                StrategrCore
+                Catch2::Catch2
+                Qt5::Widgets
+                Qt5::Network
+                Qt5::Test
+                ${PLATFORM_LIBRARIES})
+endif()
