@@ -23,9 +23,6 @@ Application::Application(int &argc, char **argv)
         }
     });
 
-    Application::setAttribute(Qt::AA_EnableHighDpiScaling);
-    Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
     QSettings().setProperty("lastLaunchedVersion",
                             ApplicationSettings::version);
 
@@ -51,7 +48,7 @@ bool Application::event(QEvent *event) {
 }
 
 void Application::setupFonts() {
-    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.ttf") < 0)
+    if (QFontDatabase::addApplicationFont(":/fonts/FontAwesome.otf") < 0)
         qWarning() << "FontAwesome cannot be loaded!";
 
     if (QFontDatabase::addApplicationFont(":/fonts/ionicons.ttf") < 0)
