@@ -26,7 +26,7 @@ NotifierImplementation::NotifierImplementation(stg::strategy *strategy, QObject 
 void NotifierImplementation::setupTrayIcon() {
     contextMenu = new QMenu();
 
-    trayIcon = new QSystemTrayIcon(this);
+    trayIcon = new QSystemTrayIcon(QIcon(":/icons/icon.png"), this);
     trayIcon->setContextMenu(contextMenu);
     trayIcon->show();
 }

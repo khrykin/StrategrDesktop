@@ -21,6 +21,8 @@ if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
 endif ()
 
+find_package(nlohmann_json 3.2.0 REQUIRED)
+
 message(${utf8Proc_LIBRARY_PATH})
 
 include_directories(.)
@@ -205,7 +207,8 @@ set(UI_TESTS
         utility/testutils.h)
 
 qt5_add_resources(RESOURCES
-        resources/fonts.qrc)
+        resources/fonts.qrc
+        resources/icons.qrc)
 
 if (APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
@@ -329,7 +332,8 @@ target_link_libraries(ui_tests
         Catch2::Catch2
         Qt5::Widgets
         Qt5::Network
-        Qt5::Test)
+        Qt5::Test
+        ${PLATFORM_LIBRARIES})
 
 target_link_libraries(Strategr
         StrategrCore
