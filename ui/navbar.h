@@ -4,7 +4,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QWidget>
+
 #include "colorprovider.h"
+#include "iconwidget.h"
 
 #define DEBUG_NAVBAR false
 
@@ -19,8 +21,8 @@ public:
 
     void setTitle(const QString &title);
 
-    QPushButton *leftButton() const;
-    QPushButton *rightButton() const;
+    QWidget *leftButton() const;
+    QWidget *rightButton() const;
     QLabel *titleLabel() const;
 
 #ifdef HIDE_NAVBAR
@@ -48,8 +50,8 @@ public:
             const QString &text,
             const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
             Method slot) {
-        _leftButton->setText(text);
-        QObject::connect(_leftButton, &QPushButton::clicked, receiver, slot);
+        _leftButton->setCode(text);
+        QObject::connect(_leftButton, &IconWidget::clicked, receiver, slot);
     }
 
     template<typename Method>
@@ -57,15 +59,15 @@ public:
             const QString &text,
             const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
             Method slot) {
-        _rightButton->setText(text);
-        QObject::connect(_rightButton, &QPushButton::clicked, receiver, slot);
+        _rightButton->setCode(text);
+        QObject::connect(_rightButton, &IconWidget::clicked, receiver, slot);
     }
 
 private:
     QString _title;
 
-    QPushButton *_leftButton = nullptr;
-    QPushButton *_rightButton = nullptr;
+    IconWidget *_leftButton = nullptr;
+    IconWidget *_rightButton = nullptr;
     QLabel *_titleLabel = nullptr;
 
     QWidget *navbar = nullptr;

@@ -81,7 +81,7 @@ void ActivityListWidget::layoutChildWidgets() {
                               " }");
     scrollArea->setWidget(listWidget);
 
-    searchBox = new SearchBoxWidget("Search activities");
+    searchBox = new SearchBoxWidget("Find...");
     connect(searchBox,
             &SearchBoxWidget::textEdited,
             [=](const QString &text) {
@@ -100,8 +100,7 @@ void ActivityListWidget::layoutChildWidgets() {
                 getBackAction->setEnabled(true);
             });
 
-    auto buttonName = navbar->rightButton() ? "Add" : "+";
-    emptyListNotice = new ColoredLabel(QString("Click \"%1\" to add activities").arg(buttonName));
+    emptyListNotice = new ColoredLabel("Click \"+\" to add activities");
     emptyListNotice->setDynamicColor(&ColorProvider::secondaryTextColor);
     emptyListNotice->setAlignment(Qt::AlignCenter);
     emptyListNotice->setFontHeight(14);
@@ -143,10 +142,10 @@ void ActivityListWidget::setupNavbar() {
     layout()->addWidget(navbar);
 
     navbar->setTitle("Activities");
-    navbar->setLeftButton("Back",
+    navbar->setLeftButton(IconWidget::backCode(),
                           this,
                           &ActivityListWidget::getBack);
-    navbar->setRightButton("Add",
+    navbar->setRightButton(IconWidget::addCode(),
                            this,
                            &ActivityListWidget::showNewActivityMenu);
 }
@@ -237,9 +236,6 @@ void ActivityListWidget::showNewActivityMenu() {
 }
 
 void ActivityListWidget::reloadStrategy() {
-    strategy.activities()
-            .add_on_change_callback(this, &ActivityListWidget::updateUI);
-
     updateUI();
 }
 

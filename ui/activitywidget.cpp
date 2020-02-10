@@ -12,6 +12,7 @@
 #include "colorutils.h"
 #include "applicationsettings.h"
 #include "mainwindow.h"
+#include "mainscene.h"
 
 ActivityWidget::ActivityWidget(stg::activity *activity,
                                QWidget *parent)

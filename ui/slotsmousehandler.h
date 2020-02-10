@@ -32,9 +32,9 @@ private:
 
     stg::mouse_handler handler{strategy(),
                                selection(),
-                               [this] { return slotHeight(); },
-                               [this] { return slotsWidget->geometry(); },
-                               [this] { return viewportRect(); }};
+                               std::bind(&SlotsMouseHandler::slotHeight, this),
+                               std::bind(&QWidget::geometry, slotsWidget),
+                               std::bind(&SlotsMouseHandler::viewportRect, this)};
 
     stg::strategy &strategy();
     stg::selection &selection();

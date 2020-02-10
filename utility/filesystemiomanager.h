@@ -31,8 +31,9 @@ public:
     std::unique_ptr<stg::strategy> read(const QString &readFilepath);
     static std::optional<QString> lastOpenedFilePath();
 
-    std::unique_ptr<stg::strategy> openDefault();
-    std::unique_ptr<stg::strategy> openLastOrDefault();
+    stg::strategy openDefault();
+    stg::strategy openLastOrDefault();
+    stg::strategy openFromPathOrDefault(const QString &path);
 
     void resetFilepath();
     bool askIfWantToDiscardOrLeaveCurrent(const stg::strategy &strategy);
@@ -56,7 +57,7 @@ private:
 
     QWidget *window;
 
-    static constexpr auto searchPattern = "stg::strategy files (*.stg)";
+    static constexpr auto searchPattern = "Strategy files (*.stg)";
 
     static QString destinationDir();
     void write(const stg::strategy &strategy);

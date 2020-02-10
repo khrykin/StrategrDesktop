@@ -2,8 +2,6 @@
 // Created by Dmitry Khrykin on 2019-08-12.
 //
 
-#include <iostream>
-
 #include <QDate>
 #include <QDesktopServices.h>
 #include <QUrl.h>
@@ -13,7 +11,6 @@
 #include "coloredlabel.h"
 #include "colorprovider.h"
 #include "applicationsettings.h"
-
 
 class HyperLinkLabel : public ColoredLabel {
 public:
@@ -32,7 +29,7 @@ private:
         inactive,
         clicked,
         hovered
-    } state;
+    } state = inactive;
 
     void updateColor() {
         auto color = dynamicColor();
@@ -81,7 +78,6 @@ private:
         QDesktopServices::openUrl(QUrl(hyperlink));
     }
 };
-
 
 AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
     auto mainLayout = new QVBoxLayout();

@@ -41,7 +41,6 @@ private:
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *_slotsLayout = nullptr;
 
-
     QTimer *currentTimeTimer = nullptr;
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
 

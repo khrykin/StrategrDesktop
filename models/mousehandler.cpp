@@ -48,6 +48,7 @@ void stg::mouse_handler::mouse_move(const stg::mouse_event &event) {
     current_slot_index = get_slot_index(event);
     current_session_index = get_session_index(current_slot_index);
     current_mouse_zone = get_mouse_zone(current_session_index, event.position);
+
     current_key_modifiers = event.modifiers;
 
     if (current_operaion->type() != none) {
@@ -210,9 +211,6 @@ stg::mouse_handler::range stg::mouse_handler::get_session_range(index_t session_
     auto top = static_cast<int>(strategy.sessions().relative_begin_time(session) * px_in_time());
     auto height = static_cast<int>(session.duration() * px_in_time());
 
-//    std::cout << "slot_index:  " << slot_index << "\n";
-//    std::cout << "session_index:  " << session_index << "\n";
-
     return range{top, top + height};
 }
 
@@ -230,7 +228,8 @@ stg::mouse_handler::mouse_zone stg::mouse_handler::get_mouse_zone(int session_in
             session_range.bottom
     };
 
-//    std::cout << "pos:  " << event.position << "\n";
+//    std::cout << "pos:  " << mouse_pos << "\n";
+//    std::cout << "slot_height:  " << get_slot_height() << "\n";
 //    std::cout << "session_range:  " << session_range << "\n";
 //    std::cout << "top_stretch_zone:  " << top_stretch_zone << "\n";
 //    std::cout << "bottom_stretch_zone:  " << bottom_stretch_zone << "\n";

@@ -67,12 +67,16 @@ stg::time_slots_state::time_slots_state(time_t start_time,
 }
 
 stg::time_slots_state::time_slots_state(std::vector<time_slot> from_vector) {
-    auto first_slot = from_vector.front();
-
-    _begin_time = first_slot.begin_time;
-    _slot_duration = first_slot.duration;
+    assert(!from_vector.empty() && "Can't create time slots from empty vector");
 
     _data = std::move(from_vector);
+    reset_times();
+}
+
+void stg::time_slots_state::reset_times() {
+    auto first_slot = _data.front();
+    _begin_time = first_slot.begin_time;
+    _slot_duration = first_slot.duration;
 }
 
 void stg::time_slots_state::fill_slots(index_t from_index, index_t till_index) {
@@ -241,6 +245,11 @@ bool stg::time_slots_state::previous_slot_empty(index_t index) const {
     } else {
         return _data[index - 1].empty();
     }
+}
+
+void stg::time_slots_state::reset_with(data_t raw_data) {
+    time_slots_state_base::reset_with(raw_data);
+    reset_times();
 }
 
 

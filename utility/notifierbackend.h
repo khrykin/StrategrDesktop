@@ -1,19 +1,21 @@
 #ifndef NOTIFIERBACKEND_H
 #define NOTIFIERBACKEND_H
 
-#include <QObject>
 #include <QString>
-#include <QSystemTrayIcon>
 
-class NotifierBackend : QObject {
-Q_OBJECT
+class NotifierBackend {
 public:
-    explicit NotifierBackend(QSystemTrayIcon *trayIcon,
-                             QObject *parent = nullptr);
+    NotifierBackend();
+    void sendMessage(const QString& title, const QString& message);
 
-    void sendMessage(const QString &title, const QString &message);
 private:
-    QSystemTrayIcon *trayIcon;
+    static void fallbackSendMessage(const QString &title, const QString &message);
+
+#ifdef Q_OS_WIN
+    class WintoastHandler;
+    WintoastHandler *handler = nullptr;
+    bool winToastInitialised = false;
+#endif
 };
 
 

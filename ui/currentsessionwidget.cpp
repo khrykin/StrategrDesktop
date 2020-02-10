@@ -47,7 +47,7 @@ CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *par
     activityLabel->setFontHeight(ApplicationSettings::sessionFontSize - 1);
     activityLabel->setContentsMargins(0, 0, 0, 3);
     activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
-        auto activeSession = strategy.get_active_session();
+        auto activeSession = strategy.active_session();
         if (!activeSession) {
             return;
         }
@@ -188,7 +188,7 @@ void CurrentSessionWidget::mouseReleaseEvent(QMouseEvent *) {
 }
 
 void CurrentSessionWidget::reloadStrategy() {
-    updateUIWithSession(strategy.get_active_session());
+    updateUIWithSession(strategy.active_session());
 }
 
 void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
@@ -208,7 +208,7 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
     isVisible = true;
 
     QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
-        if (strategy.get_active_session()) {
+        if (strategy.active_session()) {
             SlidingAnimator::showWidget(this);
         } else {
             isVisible = false;
@@ -246,7 +246,7 @@ void CurrentSessionWidget::updateUIWithSession(const stg::session *activeSession
 }
 
 QString CurrentSessionWidget::makeActivitySessionTitle() const {
-    auto activitySession = strategy.get_active_session();
+    auto activitySession = strategy.active_session();
     return humanTimeForMinutes(activitySession->duration())
            + " "
            + "<font color=\""
@@ -264,7 +264,7 @@ void CurrentSessionWidget::setProgress(double value) {
 }
 
 void CurrentSessionWidget::reloadSessionIfNeeded() {
-    auto *activeSession = strategy.get_active_session();
+    auto *activeSession = strategy.active_session();
     if (activeSession) {
         updateUIWithSession(activeSession);
         if (!isVisible)

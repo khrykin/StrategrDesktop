@@ -11,10 +11,12 @@
 #include "mainwindow.h"
 #include "aboutwindow.h"
 #include "updatedialog.h"
+#include "mainscene.h"
 
 #ifdef Q_OS_MAC
 
 #include "macoscalendarexporter.h"
+#include "mainscene.h"
 
 #endif
 
@@ -153,7 +155,9 @@ void ApplicationMenu::addExportToCalendarAction() const {
 
         if (result == MacOSCalendarExporter::Response::Export) {
             QSettings().setValue("calendarExportOptions", options);
-            QSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
+
+            if (!calendarTitle.empty())
+                QSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
 
             MacOSCalendarExporter::exportStrategy(window->strategy, options, date, calendarTitle);
         }

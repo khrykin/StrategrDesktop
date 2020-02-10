@@ -1,34 +1,45 @@
 //
 // Created by Dmitry Khrykin on 2019-07-08.
 //
+
 #include <iostream>
+
+#include <QCloseEvent>
 
 #include "mainwindow.h"
 #include "application.h"
 #include "alert.h"
 #include "macoswindow.h"
+#include "mainscene.h"
+#include "applicationmenu.h"
+
+MainWindow::MainWindow(const QString &filePath, QWidget *parent)
+        : strategy(fsIOManager.openFromPathOrDefault(filePath)),
+          QMainWindow(parent) {
+    setup();
+}
 
 MainWindow::MainWindow(QWidget *parent)
-        : QMainWindow(parent),
-          strategy(*fsIOManager.openDefault()) {
+        : strategy(fsIOManager.openDefault()),
+          QMainWindow(parent) {
     setup();
 }
 
 MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
         : QMainWindow(parent),
           fsIOManager(std::move(existingFsIOManager)),
-          strategy(*fsIOManager.openLastOrDefault()) {
+          strategy(fsIOManager.openLastOrDefault()) {
 
     fsIOManager.setWindow(this);
-    if (!fsIOManager.fileInfo().filePath().isEmpty()) {
-        Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
-    }
-
     setup();
 }
 
 void MainWindow::setup() {
     WindowGeometryManager::setInitialGeometry(this);
+
+    if (!fsIOManager.fileInfo().filePath().isEmpty()) {
+        Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
+    }
 
 #ifdef Q_OS_MAC
     MacOSWindow::setup(this);
@@ -94,6 +105,7 @@ void MainWindow::saveCurrentStrategyAsDefault() {
 void MainWindow::clearRecentFilesList() {
     FileSystemIOManager::clearRecent();
     menu()->updateRecentFilesActions();
+    Application::clearRecentFiles();
 }
 
 void MainWindow::openRecentFile() {
@@ -112,10 +124,8 @@ void MainWindow::setIsSaved(bool isSaved) {
     fsIOManager.setIsSaved(isSaved);
 
     auto strategyTitle = fsIOManager.fileInfo().baseName();
-
-    if (strategyTitle.isEmpty()) {
+    if (strategyTitle.isEmpty())
         strategyTitle = "Untitled";
-    }
 
     setWindowModified(!isSaved);
     setWindowTitle(strategyTitle + "[*]");

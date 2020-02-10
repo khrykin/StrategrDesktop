@@ -21,13 +21,11 @@ public:
     void showSessions();
 
     void focusOnCurrentTime();
-    void showStrategySettings();
 
+    void showStrategySettings();
     void showNewActivityMenu();
 
-    stg::selection &selection() {
-        return findChildren<SelectionWidget *>().first()->selection;
-    }
+    stg::selection &selection();
 
     void clearSelection();
     void reloadStrategy();

@@ -16,6 +16,7 @@
         macosx(10.14));
 
 + (void)registerRecentFile:(NSString *)filePath;
++ (void)clearRecentFiles;
 
 @end
 
@@ -34,12 +35,20 @@
             noteNewRecentDocumentURL:[NSURL fileURLWithPath:filePath]];
 }
 
++ (void)clearRecentFiles {
+    [[NSDocumentController sharedDocumentController] clearRecentDocuments:nil];
+}
+
 @end
 
 CocoaDelegate *Application::cocoaDelegate = nullptr;
 
 void Application::registerCocoaRecentFile(const QString &filePath) {
     [CocoaDelegate registerRecentFile:filePath.toNSString()];
+}
+
+void Application::clearCocoaRecentFiles() {
+    [CocoaDelegate clearRecentFiles];
 }
 
 void Application::setupCocoaDelegate() {
@@ -49,6 +58,7 @@ void Application::setupCocoaDelegate() {
         [UNUserNotificationCenter currentNotificationCenter].delegate = cocoaDelegate;
     }
 }
+
 
 void Application::releaseCocoaDelegate() {
     [cocoaDelegate release];

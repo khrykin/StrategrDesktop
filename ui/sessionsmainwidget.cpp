@@ -2,15 +2,17 @@
 // Created by Dmitry Khrykin on 2019-07-10.
 //
 
+#include <functional>
+
 #include <QDebug>
 #include <QPainter>
 
 #include "sessionsmainwidget.h"
-#include "notifierimplementation.h"
 #include "overviewwidget.h"
 #include "strategysettingswidget.h"
 #include "currentsessionwidget.h"
 #include "slotboardwidget.h"
+#include "notifierbackend.h"
 
 SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
                                        QWidget *parent)
@@ -23,7 +25,22 @@ SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
 
     layoutChildWidgets();
 
-    notifier = new NotifierImplementation(&strategy, this);
+    notifier.on_send_notiifcation = [this](const stg::notification &notification) {
+        std::cout << "send notification: " << notification << "\n";
+        notifierBackend.sendMessage(
+                QString::fromStdString(notification.title),
+                QString::fromStdString(notification.message));
+    };
+
+    notifierTimer = new QTimer(this);
+    notifierTimer->setInterval(ApplicationSettings::notifierTimerMillisecondsInterval);
+    connect(notifierTimer,
+            &QTimer::timeout,
+            std::bind(&stg::notifier::send_now_if_needed,
+                      &notifier,
+                      ApplicationSettings::notifierTimerMillisecondsInterval / 1000));
+
+    notifierTimer->start();
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {
@@ -86,17 +103,17 @@ void SessionsMainWidget::reloadStrategy() {
     overviewWidget->reloadStrategy();
     currentSessionWidget->reloadStrategy();
 
-    notifier->setStrategy(&strategy);
+    notifier.schedule();
 }
 
 void SessionsMainWidget::clearSelection() {
     slotBoard->clearSelection();
 }
 
-
 void SessionsMainWidget::updateTimerDependants() {
     overviewWidget->update();
-    currentSessionWidget->reloadSessionIfNeeded();
+    if (!strategy.is_dragging() && !strategy.is_resizing())
+        currentSessionWidget->reloadSessionIfNeeded();
 }
 
 void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {

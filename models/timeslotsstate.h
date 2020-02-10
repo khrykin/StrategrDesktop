@@ -75,6 +75,9 @@ namespace stg {
         std::string class_print_name() const override;
 
         const time_slot &at(index_t index);
+
+        void reset_with(data_t raw_data) override;
+
     private:
         friend strategy;
 
@@ -83,6 +86,8 @@ namespace stg {
 
         time_t slot_begin_time(time_t global_begin_time, index_t slot_index);
         void update_begin_times();
+
+        void reset_times();
     };
 }
 

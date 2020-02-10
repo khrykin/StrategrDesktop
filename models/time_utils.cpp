@@ -40,7 +40,7 @@ namespace stg {
         return clock_now - clock_start_of_today;
     }
 
-    std::string time_utils::human_time_for_minutes(time_utils::minutes minutes) {
+    std::string time_utils::human_string_from_minutes(time_utils::minutes minutes) {
         if (minutes < 1) {
             return "Less than 1 min";
         }
@@ -71,6 +71,22 @@ namespace stg {
 
             result += std::to_string(mins_remainder) + " min";
         }
+
+        return result;
+    }
+
+    std::string time_utils::string_from_seconds(time_utils::minutes total_seconds) {
+        auto hours = total_seconds / 3600;
+        auto minutes = (total_seconds - 3600 * hours) / 60;
+        auto seconds = total_seconds - 3600 * hours - 60 * minutes;
+
+        std::string result = std::to_string(hours) + " h";
+
+        if (minutes)
+            result += " " + std::to_string(minutes) + " m";
+
+        if (seconds)
+            result += " " + std::to_string(seconds) + "s";
 
         return result;
     }
