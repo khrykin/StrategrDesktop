@@ -1,9 +1,10 @@
-#include "navbar.h"
 #include <QLabel>
 #include <QLayout>
 #include <QPainter>
 #include <QStyleOption>
 #include <QVariant>
+
+#include "navbar.h"
 #include "applicationsettings.h"
 
 #ifdef HIDE_NAVBAR
@@ -14,11 +15,11 @@ Navbar::Navbar(QWidget *parent) : QWidget(parent) {
 
 void Navbar::setTitle(const QString &title) {}
 
-QPushButton *Navbar::leftButton() const {
+QWidget *Navbar::leftButton() const {
     return nullptr;
 }
 
-QPushButton *Navbar::rightButton() const {
+QWidget *Navbar::rightButton() const {
     return nullptr;
 }
 
@@ -41,11 +42,11 @@ void Navbar::setTitle(const QString &title) {
     _titleLabel->setText(title);
 }
 
-QPushButton *Navbar::leftButton() const {
+QWidget *Navbar::leftButton() const {
     return _leftButton;
 }
 
-QPushButton *Navbar::rightButton() const {
+QWidget *Navbar::rightButton() const {
     return _rightButton;
 }
 
@@ -58,6 +59,8 @@ void Navbar::paintEvent(QPaintEvent *) {
     painter.setPen(Qt::NoPen);
     painter.setBrush(baseColor());
     painter.drawRect(0, 0, width(), height());
+//    painter.setBrush(borderColor());
+//    painter.drawRect(0, height() - 1, width(), 1);
 }
 
 void Navbar::setupWidgets() {
@@ -70,41 +73,26 @@ void Navbar::setupLayout() {
     setLayout(new QHBoxLayout());
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
-    setFixedHeight(45);
+    setFixedHeight(40);
 }
 
 void Navbar::setupLeftButton() {
-    _leftButton = new QPushButton("");
-    _leftButton->setProperty("navButton", true);
-    _leftButton->setFixedWidth(70);
-    _leftButton->setStyleSheet("[navButton] {"
-                               "background: transparent;"
-                               "font-size: 14px;"
-                               "color: #357EDD;"
-                               "}"
-                               "[navButton]:hover {"
-                               "color: #00449E;"
-                               "}");
+    _leftButton = new IconWidget("", this);
+    _leftButton->setFixedWidth(64);
+    _leftButton->setColor("#094FD1");
+}
+
+void Navbar::setupRightButton() {
+    _rightButton = new IconWidget("", this);
+    _rightButton->setFixedWidth(64);
+    _rightButton->setColor("#094FD1");
 }
 
 void Navbar::setupTitleLabel() {
     _titleLabel = new QLabel(_title);
     _titleLabel->setAlignment(Qt::AlignCenter);
-    _titleLabel->setStyleSheet("font-size: 18px;");
-}
-
-void Navbar::setupRightButton() {
-    _rightButton = new QPushButton("");
-    _rightButton->setProperty("navButton", true);
-    _rightButton->setFixedWidth(70);
-    _rightButton->setStyleSheet("[navButton] {"
-                                "background: transparent;"
-                                "font-size: 14px;"
-                                "color: #357EDD;"
-                                "}"
-                                "[navButton]:hover {"
-                                "color: #00449E;"
-                                "}");
+    _titleLabel->setStyleSheet("font-weight: bold;"
+                               "font-size: 14px;");
 }
 
 void Navbar::addWidgetsToLayout() {

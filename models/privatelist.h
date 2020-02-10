@@ -23,8 +23,8 @@ namespace stg {
         explicit private_list(data_t data = {})
                 : _data(std::move(data)) {}
 
-        void reset_with(data_t data = {}) {
-            _data = data;
+        virtual void reset_with(data_t data) {
+            _data = std::move(data);
         }
 
         const data_t &data() const {

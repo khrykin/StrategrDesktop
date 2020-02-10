@@ -6,22 +6,22 @@
 #define UI_MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QDebug>
-#include <QMenu>
-#include <QCloseEvent>
 
 #include "strategy.h"
 #include "filesystemiomanager.h"
 #include "windowgeometrymanager.h"
-#include "mainscene.h"
-#include "applicationmenu.h"
-#include "macoswindow.h"
+
+class MainScene;
+class ApplicationMenu;
+
+#ifdef Q_OS_MAC
+class MacOSWindow;
+#endif
 
 class MainWindow : public QMainWindow {
 Q_OBJECT
 public:
-    static const bool loadInCurrentWindow = false;
-
+    explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     explicit MainWindow(QWidget *parent = nullptr);
 
     static MainWindow *createLastOpened();

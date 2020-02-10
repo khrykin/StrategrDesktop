@@ -1,27 +1,18 @@
 cmake_minimum_required(VERSION 3.14)
 project(Strategr)
 
-
 set(CMAKE_CXX_STANDARD 17)
 set(Boost_USE_STATIC_LIBS ON)
-
-message("platform ${CMAKE_GENERATOR_PLATFORM}")
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
 
-find_library(utf8Proc_LIBRARY_PATH
-        libutf8proc.a
-        utf8proc_static.lib
-        utf8proc
-        HINTS $ENV{LIBPATH})
+find_library(utf8Proc_LIBRARY_PATH libutf8proc.a utf8proc.lib utf8proc)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
 endif ()
-
-message(${utf8Proc_LIBRARY_PATH})
 
 include_directories(.)
 include_directories(models)
@@ -88,7 +79,11 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/utility.h
         models/mousehandler.cpp
         models/mousehandler.h
-        models/mousehandleroperations.h models/selection.cpp models/selection.h models/event.cpp models/event.h)
+        models/mousehandleroperations.h
+        models/selection.cpp
+        models/selection.h
+        models/event.cpp
+        models/event.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -182,7 +177,11 @@ set(UI
         ui/searchboxwidget.cpp
         ui/searchboxwidget.h
         ui/dynamicpalette.cpp
-        ui/dynamicpalette.h ui/slotboardcircleswidget.cpp ui/slotboardcircleswidget.h)
+        ui/dynamicpalette.h
+        ui/slotboardcircleswidget.cpp
+        ui/slotboardcircleswidget.h
+        ui/iconwidget.cpp
+        ui/iconwidget.h)
 
 set(UTILITY
         ${version_file}
@@ -191,8 +190,6 @@ set(UTILITY
         utility/applicationsettings.h
         utility/utils.cpp
         utility/utils.h
-        utility/notifierimplementation.cpp
-        utility/notifierimplementation.h
         utility/notifierbackend.h
         utility/notifierbackend.cpp
         utility/fontutils.cpp
@@ -248,7 +245,18 @@ if (APPLE)
             deployment/Strategr.icns
             deployment/Strategy.icns)
 
-    SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+endif ()
+
+if (WIN32)
+    set(PLATFORM_FILES
+            deployment/Strategr.rc
+            third-party/wintoast/wintoastlib.h
+            third-party/wintoast/wintoastlib.cpp)
+
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
 endif ()
 
 add_executable(models_tests
@@ -263,7 +271,6 @@ target_link_libraries(models_tests
         ${MODELS_PLATFORM_LIBRARIES})
 
 option(COVERAGE "Generate code coverage" OFF)
-message("Compiler: ${CMAKE_CXX_COMPILER_ID}")
 
 if (COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
@@ -284,8 +291,7 @@ add_library(StrategrCore SHARED ${MODELS})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
-#add_definitions(-DUTF8PROC_STATIC -DWIN32_LEAN_AND_MEAN)
-target_compile_definitions(StrategrCore PUBLIC UTF8PROC_STATIC WIN32_LEAN_AND_MEAN)
+target_compile_definitions(StrategrCore PUBLIC UTF8PROC_STATIC)
 
 target_link_libraries(StrategrCore
         ${MODELS_LIBRARIES}
@@ -338,14 +344,36 @@ target_link_libraries(Strategr
         ${PLATFORM_LIBRARIES})
 
 if (APPLE)
-    if (CMAKE_BUILD_TYPE MATCHES Release)
+    if (CMAKE_BUILD_TYPE MATCHES Rel)
         add_custom_command(TARGET Strategr
                 POST_BUILD
                 COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR} ${VERSION})
-    endif (CMAKE_BUILD_TYPE MATCHES Release)
+    endif (CMAKE_BUILD_TYPE MATCHES Rel)
 
     set_target_properties(updater PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/MacOS")
+endif ()
+
+if (WIN32)
+    if (CMAKE_BUILD_TYPE MATCHES Rel)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss.in"
+                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss")
+
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss.in"
+                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss")
+
+        set_target_properties(Strategr PROPERTIES WIN32_EXECUTABLE ON)
+
+        add_custom_command(TARGET Strategr
+                POST_BUILD
+                COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+    endif (CMAKE_BUILD_TYPE MATCHES Rel)
+
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.ico"
+            DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
+            DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 endif ()
 
 # Set a custom plist file for the app bundle

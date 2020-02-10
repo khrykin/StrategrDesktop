@@ -42,11 +42,10 @@ public:
     static MacOSCalendarExporter::OptionsWindowResult showOptionsAlert(Options initialOptions = defaultOptions,
                                                                        const std::string &initialCalendarName = "");
 
-    static void
-    exportStrategy(const stg::strategy &strategy,
-                   Options options,
-                   time_t dateSecsFromEpoch,
-                   const std::string &calendarTitle = nullptr);
+    static void exportStrategy(const stg::strategy &strategy,
+                               Options options,
+                               time_t dateSecsFromEpoch,
+                               const std::string &calendarTitle = nullptr);
 private:
     static bool optionEnabled(Options optionsMask,
                               Options setting);

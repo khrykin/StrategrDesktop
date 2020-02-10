@@ -301,7 +301,7 @@ const stg::session *stg::strategy::get_current_session() const {
     return nullptr;
 }
 
-const stg::session *stg::strategy::get_active_session() const {
+const stg::session *stg::strategy::active_session() const {
     auto current_session = this->get_current_session();
     if (!current_session || !current_session->activity) {
         return nullptr;
@@ -371,4 +371,12 @@ void stg::strategy::reorder_activities_by_usage() {
     _activities.on_change_event();
 
     commit_to_history();
+}
+
+bool stg::strategy::is_dragging() {
+    return current_drag_operation != nullptr;
+}
+
+bool stg::strategy::is_resizing() {
+    return current_resize_operation != nullptr;
 }

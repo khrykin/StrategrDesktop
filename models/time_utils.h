@@ -10,8 +10,7 @@
 #include <iostream>
 
 namespace stg {
-    class time_utils {
-    public:
+    namespace time_utils {
         using seconds = unsigned;
         using minutes = unsigned;
 
@@ -22,12 +21,13 @@ namespace stg {
         constexpr static auto day_components_from_timestamp = std::localtime;
         constexpr static auto timestamp_from_day_components = std::mktime;
 
-        static timestamp start_of_a_day_from_timestamp(timestamp timestamp);
-        static duration current_day_duration();
-        static minutes current_minutes();
-        static seconds current_seconds();
+        timestamp start_of_a_day_from_timestamp(timestamp timestamp);
+        duration current_day_duration();
+        minutes current_minutes();
+        seconds current_seconds();
 
-        static std::string human_time_for_minutes(minutes minutes);
+        std::string string_from_seconds(minutes total_seconds);
+        std::string human_string_from_minutes(minutes minutes);
     };
 }
 

@@ -14,6 +14,7 @@
 
 #include "macoswindow.h"
 #include "mainwindow.h"
+#include "mainscene.h"
 
 const NSString *ToolbarItemActivitiesIdentifier = @"Activities";
 const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";

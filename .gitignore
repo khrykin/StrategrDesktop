@@ -1,7 +1,8 @@
 .idea
 .vs
 .stfolder
+builds
+.stignore
+.DS_Store
 CMakeSettings.json
-cmake-build-debug
-cmake-build-release
 CMakeLists.txt.user

@@ -63,11 +63,14 @@ void MainScene::clearSelection() {
     sessionsMainWidget->clearSelection();
 }
 
-
 void MainScene::showNewActivityMenu() {
     activitiesWidget->showNewActivityMenu();
 }
 
 void MainScene::reorderActivitiesByUsage() {
     strategy.reorder_activities_by_usage();
+}
+
+stg::selection &MainScene::selection() {
+    return findChildren<SelectionWidget *>().first()->selection;
 }

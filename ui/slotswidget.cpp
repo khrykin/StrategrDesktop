@@ -1,18 +1,16 @@
 #include <QLayout>
 #include <QMenu>
 #include <QPainter>
-#include <QScrollArea>
 #include <QScrollBar>
 #include <QStyleOption>
 #include <QVector>
-#include <QStyleOption>
 
 #include "slotswidget.h"
-#include "third-party/stacklayout.h"
 #include "mainwindow.h"
+#include "mainscene.h"
 #include "utils.h"
 #include "slotsmousehandler.h"
-
+#include "third-party/stacklayout.h"
 
 SlotsWidget::SlotsWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy),
@@ -122,9 +120,6 @@ void SlotsWidget::selectAllSlots() {
 }
 
 void SlotsWidget::reloadStrategy() {
-    strategy.sessions()
-            .add_on_change_callback(this, &SlotsWidget::updateUI);
-
     updateList();
 }
 

@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include <QStyleOption>
 #include <QGraphicsBlurEffect>
+#include <QPainter>
 
 #include "slotboardwidget.h"
 #include "utils.h"
@@ -50,7 +51,6 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
 
     slotRuler = new SlotRuler(makeLabelsForStrategy(),
                               slotsWidget->slotHeight());
-
 
     _slotsLayout = new QVBoxLayout();
     _slotsLayout->setSpacing(0);
@@ -99,12 +99,14 @@ QVector<TimeLabel> SlotBoardWidget::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
     for (auto &timeSlot : strategy.time_slots()) {
-        auto label = QStringForMinutes(timeSlot.begin_time);
-        labels.append(TimeLabel{label, timeSlot.begin_time});
+        auto labelText = QStringForMinutes(timeSlot.begin_time);
+        auto label = TimeLabel{labelText, timeSlot.begin_time};
+
+        labels.append(label);
     }
 
-    auto endTimeLabel = QStringForMinutes(strategy.end_time());
-    labels.append(TimeLabel{endTimeLabel, strategy.end_time()});
+    auto endTimeText = QStringForMinutes(strategy.end_time());
+    labels.append(TimeLabel{endTimeText, strategy.end_time()});
 
     return labels;
 }

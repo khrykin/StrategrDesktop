@@ -20,8 +20,7 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                                            Options options,
                                            time_t dateSecsFromEpoch,
                                            const std::string &calTitle) {
-
-    // Obj-C block seem to can't capture wrapping C++ function's object parameters,
+    // Obj-C block can't capture wrapping C++ function's object parameters,
     // so we copy it here
     std::string calendarTitle = calTitle;
     @autoreleasepool {

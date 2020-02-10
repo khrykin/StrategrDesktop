@@ -6,10 +6,10 @@
 #include "applicationsettings.h"
 #include "utils.h"
 
-SlotRuler::SlotRuler(QVector<TimeLabel> labels,
+SlotRuler::SlotRuler(const QVector<TimeLabel> &labels,
                      int cellHeight,
                      QWidget *parent)
-        : _labels(std::move(labels)),
+        : _labels(labels),
           _cellHeight(cellHeight),
           QWidget(parent) {
     auto *layout = new QVBoxLayout();
@@ -17,21 +17,23 @@ SlotRuler::SlotRuler(QVector<TimeLabel> labels,
     layout->setSpacing(0);
     setLayout(layout);
 
-    setFixedWidth(calculateLabelWidth() + ApplicationSettings::defaultPadding);
+    auto fontWidth = calculateLabelWidth() + ApplicationSettings::defaultPadding;
+    auto width = std::max(fontWidth, 40);
+    setFixedWidth(width);
 
     updateList();
 }
 
 int SlotRuler::calculateLabelWidth() const {
     auto font = QFont();
-    font.setPixelSize(10);
+    font.setPixelSize(bigFontHeight);
     font.setBold(true);
 
     return QFontMetrics(font)
             .horizontalAdvance(QStringForMinutes(0));
 }
 
-QVector<TimeLabel> SlotRuler::labels() const {
+const QVector<TimeLabel> &SlotRuler::labels() const {
     return _labels;
 }
 
@@ -67,7 +69,7 @@ QVBoxLayout *SlotRuler::listLayout() {
 void SlotRuler::reuseItemAtIndex(int index, ColoredLabel *itemWidget) {
     itemWidget->setText(labels()[index].label);
     itemWidget->setFixedHeight(cellHeight());
-    itemWidget->setFontHeight(isIntegerHourAtIndex(index) ? 10 : 9);
+    itemWidget->setFontHeight(isIntegerHourAtIndex(index) ? bigFontHeight : smallFontHeight);
     itemWidget->setDynamicColor(labelColorGetterAtIndex(index));
 }
 
@@ -83,15 +85,17 @@ ColoredLabel *SlotRuler::makeNewItemAtIndex(int index) {
     label->setAlignment(Qt::AlignCenter);
     label->setFixedHeight(cellHeight());
     label->setBold(true);
-    label->setFontHeight(isIntegerHourAtIndex(index) ? 10 : 9);
+    label->setFontHeight(isIntegerHourAtIndex(index) ? bigFontHeight : smallFontHeight);
     label->setDynamicColor(labelColorGetterAtIndex(index));
     label->setText(labels()[index].label);
+
     return label;
 }
 
 bool SlotRuler::isIntegerHourAtIndex(int index) const {
     auto &timeLabel = labels()[index];
     auto isIntegerHour = timeLabel.time % 60 == 0;
+
     return isIntegerHour;
 }
 

@@ -5,10 +5,6 @@
 
 #include "notifierbackend.h"
 
-NotifierBackend::NotifierBackend(QSystemTrayIcon *trayIcon, QObject *parent)
-        : QObject(parent), trayIcon(nullptr) {
-}
-
 void NotifierBackend::sendMessage(const QString &title, const QString &message) {
     @autoreleasepool {
         if (@available(macOS 10.14, *)) {

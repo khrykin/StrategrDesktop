@@ -13,6 +13,8 @@
 #include "strategy.h"
 #include "colorprovider.h"
 #include "selectionwidget.h"
+#include "notifier.h"
+#include "notifierbackend.h"
 
 class NotifierImplementation;
 class StrategySettingsWidget;
@@ -20,6 +22,7 @@ class CurrentSessionWidget;
 class QScrollArea;
 class SlotBoardWidget;
 class OverviewWidget;
+class QTimer;
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
 Q_OBJECT
@@ -36,17 +39,20 @@ public:
     QScrollArea *slotBoardScrollArea() const;
 private:
     stg::strategy &strategy;
+    stg::notifier notifier{strategy};
 
-    NotifierImplementation *notifier = nullptr;
+    NotifierBackend notifierBackend;
+
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
     QScrollArea *_slotBoardScrollArea = nullptr;
     SlotBoardWidget *slotBoard = nullptr;
     OverviewWidget *overviewWidget = nullptr;
 
+    QTimer *notifierTimer = nullptr;
+
     void layoutChildWidgets();
     void updateTimerDependants();
-
     void paintEvent(QPaintEvent *paintEvent) override;
     void updateOverviewWidget() const;
 

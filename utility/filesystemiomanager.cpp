@@ -8,7 +8,8 @@
 #include <QDir>
 
 #include "filesystemiomanager.h"
-#include "ui/mainwindow.h"
+#include "mainwindow.h"
+#include "applicationmenu.h"
 #include "alert.h"
 
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : window(parent) {}
@@ -41,10 +42,13 @@ void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
     QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
 
     if (saveAsFilepath.isEmpty()) {
+        _isSaved = false;
         return;
     }
 
     filepath = saveAsFilepath;
+    _isSaved = true;
+
     QSettings().setValue(Settings::lastOpenedDirectoryKey,
                          fileInfo().absolutePath());
     write(strategy);
@@ -121,7 +125,7 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
     _isSaved = isSaved;
 }
 
-std::unique_ptr<stg::strategy>
+stg::strategy
 FileSystemIOManager::openDefault() {
     if (defaultStrategyIsSet()) {
         auto defaultStrategyString = QSettings()
@@ -134,15 +138,15 @@ FileSystemIOManager::openDefault() {
         resetFilepath();
 
         if (!defaultStrategy) {
-            return std::make_unique<stg::strategy>();
+            return stg::strategy();
         }
 
-        return defaultStrategy;
+        return *defaultStrategy;
     }
 
     resetFilepath();
 
-    return std::make_unique<stg::strategy>();
+    return stg::strategy();
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
@@ -272,15 +276,24 @@ void FileSystemIOManager::setWindow(QWidget *newWindow) {
     window = newWindow;
 }
 
-std::unique_ptr<stg::strategy> FileSystemIOManager::openLastOrDefault() {
+stg::strategy FileSystemIOManager::openLastOrDefault() {
     auto lastOpenedPath = FileSystemIOManager::lastOpenedFilePath();
     if (lastOpenedPath) {
         auto lastOpened = read(*lastOpenedPath);
-        if (lastOpened) {
-            return lastOpened;
-        }
+        if (lastOpened)
+            return *lastOpened;
+
     }
 
     return openDefault();
+}
+
+stg::strategy FileSystemIOManager::openFromPathOrDefault(const QString &path) {
+    auto strategy = read(path);
+
+    if (!strategy)
+        return openDefault();
+
+    return *strategy;
 }
 

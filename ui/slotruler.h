@@ -15,16 +15,15 @@ class SlotRuler : public QWidget,
                   public ColorProvider {
 Q_OBJECT
 public:
-    explicit SlotRuler(QVector<TimeLabel> labels,
+    explicit SlotRuler(const QVector<TimeLabel> &labels,
                        int cellHeight,
                        QWidget *parent = nullptr);
 
-    QVector<TimeLabel> labels() const;
+    const QVector<TimeLabel> &labels() const;
     void setLabels(const QVector<TimeLabel> &labels);
 
     int cellHeight() const;
     void setCellHeight(int cellHeight);
-
 private:
     using ColorGetter = QColor (*)();
     QVector<TimeLabel> _labels;
@@ -42,6 +41,14 @@ private:
     ColoredLabel *makeNewItemAtIndex(int index) override;
 
     void paintEvent(QPaintEvent *) override;
+
+//#ifdef Q_OS_WIN
+//    static const int bigFontHeight = 12;
+//    static const int smallFontHeight = 10;
+//#else
+    static const int bigFontHeight = 10;
+    static const int smallFontHeight = 9;
+//#endif
 };
 
 #endif // SLOTRULER_H
