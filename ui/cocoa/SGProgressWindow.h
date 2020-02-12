@@ -5,5 +5,5 @@
 #import <AppKit/AppKit.h>
 
 @interface SGProgressWindow : NSWindow
-@property(nonatomic, readonly, assign) NSProgressIndicator *progressIndicatior;
+@property(nonatomic, readonly, weak) NSProgressIndicator *progressIndicatior;
 @end

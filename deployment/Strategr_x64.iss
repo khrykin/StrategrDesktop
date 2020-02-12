@@ -1,9 +1,9 @@
 [Setup]
 AppName=Strategr
-AppVersion=0.0.9
+AppVersion=0.0.7
 DefaultDirName={pf64}/Strategr
 DefaultGroupName=Strategr
-OutputBaseFilename=Strategr-x64-v0.0.9
+OutputBaseFilename=Strategr-x64-v0.0.7-13-ga3a8024
 OutputDir=..\builds\Windows\x64-Release\Installer
 ChangesAssociations=yes
  

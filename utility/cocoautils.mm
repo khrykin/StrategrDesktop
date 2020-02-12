@@ -6,7 +6,7 @@ NSImage *NSMakeImageResized(NSImage *anImage, NSSize newSize) {
     if (![sourceImage isValid]) {
         NSLog(@"Invalid Image");
     } else {
-        NSImage *smallImage = [[[NSImage alloc] initWithSize:newSize] autorelease];
+        NSImage *smallImage = [[NSImage alloc] initWithSize:newSize];
         [smallImage lockFocus];
         [sourceImage setSize:newSize];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];

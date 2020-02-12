@@ -72,11 +72,6 @@
     [self setMaxSize:[self maxSize]];
 }
 
-- (void)dealloc {
-    [self.view release];
-    [super dealloc];
-}
-
 // Private
 
 - (void)doAdaptiveSpaceItemInit_ {

@@ -8,18 +8,9 @@
 #import <AppKit/AppKit.h>
 #import <EventKit/EventKit.h>
 
-@protocol SGCalendarManagerDelegate
-@required
-- (unsigned)calendarManagerNumberOfEvents;
-- (unsigned)calendarManagerIndexOfEvent:(EKEvent *)event;
-@optional
-- (void)calendarManagerProgressChanged:(double)doubleValue;
-@end
-
 @interface SGCalendarManager : NSObject
-@property(retain) EKEventStore *store;
-@property(retain) NSString *calendarName;
-@property(nonatomic, assign) id <SGCalendarManagerDelegate> delegate;
+@property(strong) EKEventStore *store;
+@property(strong) NSString *calendarName;
 
 - (instancetype)initWithStore:(EKEventStore *)store;
 
@@ -30,7 +21,7 @@
                           date:(NSDate *)date
                          title:(NSString *)title
                   beginMinutes:(NSTimeInterval)beginMinutes
-                duraionMinutes:(NSTimeInterval)durationMinutes
+               durationMinutes:(NSTimeInterval)durationMinutes
           includeNotifications:(BOOL)includeNotifications;
 
 - (void)removeAllEventsForDate:(NSDate *)date

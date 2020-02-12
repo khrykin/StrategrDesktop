@@ -6,12 +6,11 @@
 #define STRATEGR_SGCALENDAREXPORTPROGRESSWINDOW_H
 
 #import <AppKit/AppKit.h>
+#import <models/apple/SGCalendarExporter.h>
 #import "SGCalendarManager.h"
 #import "SGProgressWindow.h"
 
-@interface SGCalendarExportProgressWindow : SGProgressWindow <SGCalendarManagerDelegate>
-@property(nonatomic) unsigned numberOfEvents;
-@property(nonatomic) unsigned currentEventIndex;
+@interface SGCalendarExportProgressWindow : SGProgressWindow <SGCalendarExporterDelegate>
 @end
 
 #endif //STRATEGR_SGCALENDAREXPORTPROGRESSWINDOW_H
