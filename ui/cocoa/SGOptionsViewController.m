@@ -12,7 +12,6 @@
     view.delegate = self;
 
     [self setView:view];
-    [view release];
 }
 
 - (void)optionsViewWantsExport {
@@ -34,8 +33,8 @@
 }
 
 - (SGCalendarExportOptionsView *)view {
-    return (SGCalendarExportOptionsView * )
-    [super view];
+    return (SGCalendarExportOptionsView *)
+            [super view];
 }
 
 @end

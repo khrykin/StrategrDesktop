@@ -51,7 +51,7 @@
                           date:(NSDate *)date
                          title:(NSString *)title
                   beginMinutes:(NSTimeInterval)beginMinutes
-                duraionMinutes:(NSTimeInterval)durationMinutes
+               durationMinutes:(NSTimeInterval)durationMinutes
           includeNotifications:(BOOL)includeNotifications {
     EKEvent *event = [self makeEventForCalendar:calendar
                                            date:date
@@ -59,10 +59,6 @@
                                    beginMinutes:beginMinutes
                                 durationMinutes:durationMinutes
                            includeNotifications:includeNotifications];
-
-    unsigned currentIndex = [self.delegate calendarManagerIndexOfEvent:event] + 1;
-    unsigned numberOfEvents = [self.delegate calendarManagerNumberOfEvents];
-
     NSError *calError = nil;
 
     [self.store saveEvent:event
@@ -72,10 +68,6 @@
 
     if (calError) {
         NSLog(@"%@", calError);
-    } else {
-        [self delegateProgressWithEvent:event
-                           currentIndex:currentIndex
-                          numberOfEvent:numberOfEvents];
     }
 }
 
@@ -103,15 +95,6 @@
         event.alarms = [self makeAlarms];
 
     return event;
-}
-
-- (void)delegateProgressWithEvent:(EKEvent *)event
-                     currentIndex:(unsigned)currentIndex
-                    numberOfEvent:(unsigned)numberOfEvents {
-    double progress = (float) currentIndex / (float) numberOfEvents;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate calendarManagerProgressChanged:progress];
-    });
 }
 
 - (NSArray *)makeAlarms {
@@ -161,7 +144,6 @@
     NSArray *matchedSources = [[self.store sources] filteredArrayUsingPredicate:iCloudPredicate];
 
     if ([matchedSources count] == 0) {
-        [matchedSources release];
         matchedSources = [[self.store sources] filteredArrayUsingPredicate:localPredicate];
     }
 
@@ -182,10 +164,10 @@
                andCalendarName:(NSString *)calendarName {
     @autoreleasepool {
         NSArray<EKCalendar *> *calendars = nil;
-        if (calendarName)
+        if ([calendarName length] > 0)
             calendars = [self calendarsWithTitle:calendarName];
 
-        NSDateComponents *offsetComponents = [[[NSDateComponents alloc] init] autorelease];
+        NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
         [offsetComponents setDay:1];
 
         NSDate *nextDayDate
@@ -216,11 +198,6 @@
 
 - (NSArray<EKCalendar *> *)fetchCalendars {
     return [self.store calendarsForEntityType:EKEntityTypeEvent];
-}
-
-- (void)dealloc {
-    [self.store release];
-    [super dealloc];
 }
 
 @end

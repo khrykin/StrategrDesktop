@@ -5,16 +5,16 @@
 #import "SGCalendarExportOptionsView.h"
 
 @interface SGCalendarExportOptionsView ()
-@property(nonatomic, assign) NSStackView *stackView;
-@property(nonatomic, assign) NSStackView *checksView;
-@property(nonatomic, assign) NSStackView *rightView;
+@property(nonatomic, weak) NSStackView *stackView;
+@property(nonatomic, weak) NSStackView *checksView;
+@property(nonatomic, weak) NSStackView *rightView;
 
-@property(nonatomic, assign) NSButton *overwriteCheckbox;
-@property(nonatomic, assign) NSButton *notificationsCheckbox;
-@property(nonatomic, assign) NSButton *specificCalendarCheckbox;
-@property(nonatomic, assign) NSTextField *calendarNameTextField;
+@property(nonatomic, weak) NSButton *overwriteCheckbox;
+@property(nonatomic, weak) NSButton *notificationsCheckbox;
+@property(nonatomic, weak) NSButton *specificCalendarCheckbox;
+@property(nonatomic, weak) NSTextField *calendarNameTextField;
 
-@property(nonatomic, assign) NSDatePicker *datePicker;
+@property(nonatomic, weak) NSDatePicker *datePicker;
 @end
 
 @implementation SGCalendarExportOptionsView
@@ -43,13 +43,11 @@
     self.stackView = stackView;
 
     [self addSubview:stackView];
-
-    [stackView release];
 }
 
 - (void)addButtonViews {
     @autoreleasepool {
-        NSStackView *buttonsView = [[[NSStackView alloc] initWithFrame:self.bounds] autorelease];
+        NSStackView *buttonsView = [[NSStackView alloc] initWithFrame:self.bounds];
         buttonsView.spacing = 8;
         buttonsView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
 
@@ -78,28 +76,28 @@
 
 - (void)addBoxView {
     @autoreleasepool {
-        NSBox *box = [[[NSBox alloc] init] autorelease];
+        NSBox *box = [[NSBox alloc] init];
         box.titlePosition = NSNoTitle;
 
-        NSStackView *leftView = [[[NSStackView alloc] init] autorelease];
+        NSStackView *leftView = [[NSStackView alloc] init];
         leftView.spacing = 8;
         leftView.alignment = NSLayoutAttributeLeft;
         leftView.orientation = NSUserInterfaceLayoutOrientationVertical;
 
-        NSStackView *rightView = [[[NSStackView alloc] init] autorelease];
+        NSStackView *rightView = [[NSStackView alloc] init];
         self.rightView = rightView;
         rightView.spacing = 8;
         rightView.alignment = NSLayoutAttributeLeft;
         rightView.orientation = NSUserInterfaceLayoutOrientationVertical;
 
-        NSStackView *boxContainerView = [[[NSStackView alloc] init] autorelease];
+        NSStackView *boxContainerView = [[NSStackView alloc] init];
         boxContainerView.spacing = 8;
         boxContainerView.edgeInsets = NSEdgeInsetsMake(8, 0, 8, 8);
 
         boxContainerView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
         boxContainerView.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-        NSStackView *checksView = [[[NSStackView alloc] init] autorelease];
+        NSStackView *checksView = [[NSStackView alloc] init];
         self.checksView = checksView;
 
         checksView.spacing = 8;
@@ -108,42 +106,45 @@
         [checksView setHuggingPriority:NSLayoutPriorityDefaultHigh
                         forOrientation:NSLayoutConstraintOrientationVertical];
 
-        self.overwriteCheckbox = [NSButton buttonWithTitle:@"Overwrite previous events"
-                                                    target:nil
-                                                    action:nil];
+        NSButton *overwriteCheckbox = [NSButton buttonWithTitle:@"Overwrite previous events"
+                                                         target:nil
+                                                         action:nil];
 
-        self.overwriteCheckbox.state = NSControlStateValueOn;
-        [self.overwriteCheckbox setButtonType:NSButtonTypeSwitch];
-        [checksView addArrangedSubview:self.overwriteCheckbox];
+        overwriteCheckbox.state = NSControlStateValueOn;
+        [overwriteCheckbox setButtonType:NSButtonTypeSwitch];
+        [checksView addArrangedSubview:overwriteCheckbox];
+        self.overwriteCheckbox = overwriteCheckbox;
 
-        self.notificationsCheckbox = [NSButton buttonWithTitle:@"Include notifications"
-                                                        target:nil
-                                                        action:nil];
+        NSButton *notificationsCheckbox = [NSButton buttonWithTitle:@"Include notifications"
+                                                             target:nil
+                                                             action:nil];
 
-        self.notificationsCheckbox.state = NSControlStateValueOn;
-        [self.notificationsCheckbox setButtonType:NSButtonTypeSwitch];
-        [checksView addArrangedSubview:self.notificationsCheckbox];
+        notificationsCheckbox.state = NSControlStateValueOn;
+        [notificationsCheckbox setButtonType:NSButtonTypeSwitch];
+        [checksView addArrangedSubview:notificationsCheckbox];
+        self.notificationsCheckbox = notificationsCheckbox;
 
-        self.specificCalendarCheckbox = [NSButton buttonWithTitle:@"Export to the specific calendar"
-                                                           target:self
-                                                           action:@selector(specificCalendarCheckboxClilcked:)];
+        NSButton *specificCalendarCheckbox = [NSButton buttonWithTitle:@"Export to the specific calendar"
+                                                                target:self
+                                                                action:@selector(specificCalendarCheckboxClilcked:)];
 
-        self.specificCalendarCheckbox.state = NSControlStateValueOff;
-        [self.specificCalendarCheckbox setButtonType:NSButtonTypeSwitch];
-        [checksView addArrangedSubview:self.specificCalendarCheckbox];
+        specificCalendarCheckbox.state = NSControlStateValueOff;
+        [specificCalendarCheckbox setButtonType:NSButtonTypeSwitch];
+        [checksView addArrangedSubview:specificCalendarCheckbox];
+        self.specificCalendarCheckbox = specificCalendarCheckbox;
 
-        self.calendarNameTextField = [NSTextField textFieldWithString:@"Strategr"];
-        self.calendarNameTextField.bezeled = YES;
-        self.calendarNameTextField.bezelStyle = NSTextFieldRoundedBezel;
-        self.calendarNameTextField.placeholderString = @"Calendar Name";
-        self.calendarNameTextField.hidden = YES;
+        NSTextField *calendarNameTextField = [NSTextField textFieldWithString:@"Strategr"];
+        calendarNameTextField.bezeled = YES;
+        calendarNameTextField.bezelStyle = NSTextFieldRoundedBezel;
+        calendarNameTextField.placeholderString = @"Calendar Name";
+        calendarNameTextField.hidden = YES;
 
-        [checksView addArrangedSubview:self.calendarNameTextField];
-
+        [checksView addArrangedSubview:calendarNameTextField];
+        self.calendarNameTextField = calendarNameTextField;
 
         [rightView addArrangedSubview:checksView];
 
-        NSDatePicker *datePicker = [[[NSDatePicker alloc] init] autorelease];
+        NSDatePicker *datePicker = [[NSDatePicker alloc] init];
         datePicker.datePickerMode = NSDatePickerModeSingle;
         datePicker.datePickerStyle = NSDatePickerStyleClockAndCalendar;
         datePicker.datePickerElements = NSDatePickerElementFlagYearMonth |
@@ -175,7 +176,7 @@
     [self addButtonViews];
 }
 
-- (void)setOptionsMask:(unsigned)optionsMask {
+- (void)setOptionsMask:(SGCalendarExportOptions)optionsMask {
     self.overwriteCheckbox.state =
             (optionsMask & SGCalendarExportOptionsOverwriteIsOn) == SGCalendarExportOptionsOverwriteIsOn;
 
@@ -189,7 +190,7 @@
     self.calendarNameTextField.hidden = !specificCalendarOptionIsOn;
 }
 
-- (unsigned)optionsMask {
+- (SGCalendarExportOptions)optionsMask {
     SGCalendarExportOptions mask = (SGCalendarExportOptions) 0;
 
     if (self.overwriteCheckbox.state == NSControlStateValueOn) {

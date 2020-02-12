@@ -1,9 +1,16 @@
 [Setup]
 AppName=Strategr
+<<<<<<< HEAD
 AppVersion=0.0.9
 DefaultDirName={pf}/Strategr
 DefaultGroupName=Strategr
 OutputBaseFilename=Strategr-x86-v0.0.9-9-ga669ff5
+=======
+AppVersion=0.0.7
+DefaultDirName={pf}/Strategr
+DefaultGroupName=Strategr
+OutputBaseFilename=Strategr-x86-v0.0.7-13-ga3a8024
+>>>>>>> master
 OutputDir=..\builds\Windows\x86-Release\Installer
 ChangesAssociations=yes
 

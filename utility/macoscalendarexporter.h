@@ -12,15 +12,6 @@
 
 #include "strategy.h"
 
-#ifdef __OBJC__
-#define OBJC_CLASS(name) @class name
-#else
-#define OBJC_CLASS(name) typedef struct objc_object name
-#endif
-
-OBJC_CLASS(SGCalendarManager);
-OBJC_CLASS(EKEventStore);
-
 class MacOSCalendarExporter {
 public:
     enum class Response {
@@ -39,24 +30,14 @@ public:
     static const Options defaultOptions = OverridePreviousEvents |
                                           IncludeNotifications;
 
-    static MacOSCalendarExporter::OptionsWindowResult showOptionsAlert(Options initialOptions = defaultOptions,
-                                                                       const std::string &initialCalendarName = "");
+    static OptionsWindowResult showOptionsAlert(Options initialOptions = defaultOptions,
+                                                const std::string &initialCalendarName = "");
 
     static void exportStrategy(const stg::strategy &strategy,
                                Options options,
                                time_t dateSecsFromEpoch,
                                const std::string &calendarTitle = nullptr);
 private:
-    static bool optionEnabled(Options optionsMask,
-                              Options setting);
-
-    static void exportSession(const stg::session &strategy,
-                              SGCalendarManager *calendarManager,
-                              Options options,
-                              time_t dateSecsFromEpoch);
-
-    static void exportStrategyUnauthorized(EKEventStore *store, const stg::strategy &strategy, Options options,
-                                           time_t dateSecsFromEpoch, const std::string &calendarTitle);
     static void showAccessDeniedAlert();
 };
 

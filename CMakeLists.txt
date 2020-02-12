@@ -12,6 +12,7 @@ find_library(utf8Proc_LIBRARY_PATH libutf8proc.a utf8proc.lib utf8proc)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+    add_compile_options("-fobjc-arc")
 endif ()
 
 include_directories(.)
@@ -35,7 +36,9 @@ if (APPLE)
             models/apple/NSColor+HexColor.h
             models/apple/NSColor+HexColor.m
             models/apple/SGCalendarManager.m
-            models/apple/SGCalendarManager.h)
+            models/apple/SGCalendarManager.h
+            models/apple/SGCalendarExporter.h
+            models/apple/SGCalendarExporter.mm)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
@@ -92,7 +95,7 @@ set(MODELS_TESTS
         models/tests/strategy_timeslots_test.cpp
         models/tests/strategy_activities_slots_interaction_test.cpp
         models/tests/strategy_history_test.cpp
-        models/tests/json_tests.cpp)
+        models/tests/json_tests.cpp models/apple/SGCalendarExporter.mm)
 
 set(MODELS_LIBRARIES
         ${utf8Proc_LIBRARY_PATH})
@@ -246,6 +249,10 @@ if (APPLE)
             deployment/Strategy.icns)
 
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+
+    set_source_files_properties(ui/application.mm PROPERTIES COMPILE_FLAGS -fno-objc-arc)
+    set_source_files_properties(ui/macoswindow.mm PROPERTIES COMPILE_FLAGS -fno-objc-arc)
+
 endif ()
 
 if (WIN32)

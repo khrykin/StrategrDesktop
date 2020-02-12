@@ -30,7 +30,6 @@
 
 
         [visualEffectView addSubview:contentView];
-        [contentView release];
 
         NSProgressIndicator *progressIndicatior = [[NSProgressIndicator alloc] init];
         progressIndicatior.indeterminate = YES;
@@ -38,10 +37,8 @@
 
         _progressIndicatior = progressIndicatior;
         [contentView addArrangedSubview:progressIndicatior];
-        [progressIndicatior release];
 
         self.contentView = visualEffectView;
-        [visualEffectView release];
 
         [self setContentSize:NSMakeSize(350, 50)];
         [self center];

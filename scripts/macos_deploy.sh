@@ -2,7 +2,7 @@
 build_path=$1
 version=$2
 app_name="Strategr"
-dmg_path="$build_path/$app_name v$version.dmg"
+dmg_path="$build_path/$app_name-v$version.dmg"
 dmg_template_path="$build_path/../../../deployment/package.dmg"
 #entitlements_path="$build_path/../../../deployment/Strategr.entitlements"
 dmg_source_path="./DMGContainer"
