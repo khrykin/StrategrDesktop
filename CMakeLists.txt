@@ -388,9 +388,17 @@ if (WIN32)
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.template.iss"
                 "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss")
 
+        # Deploy Qt
+
         add_custom_command(TARGET Strategr
                 POST_BUILD
                 COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+        # Cleanup deployed dir
+
+        add_custom_command(TARGET Strategr
+                POST_BUILD
+                COMMAND del /Q /F /S "*.manifest")
 
     endif (CMAKE_BUILD_TYPE MATCHES Rel)
 endif ()

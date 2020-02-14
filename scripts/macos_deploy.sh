@@ -39,11 +39,12 @@ codesign -s "$DEVELOPER_CERTIFACATE_ID" \
 				--keychain "$HOME/Library/Keychains/login.keychain" "$dmg_path"
 
 rm -rf "$dmg_source_path"
+rm  "$dmg_template_path"
 
 echo ".dmg created"
 
 echo "Creating updater archive"
 cd "$build_path" || exit
-zip -r --symlinks "macOS_update.zip" "Strategr.app"
+zip -r --symlinks "Strategr.macOS.v$version.zip" "Strategr.app"
 echo "Updater archive created"
 
