@@ -1,13 +1,17 @@
 #
 # Make a version file containing the current version from git.
 #
+
 include(GetGitRevisionDescription)
 git_describe(VERSION --tags)
 git_get_repo_name(REPO_NAME)
 
-message("REPO: ${REPO_NAME}")
+# Get appcast url
+string(REGEX REPLACE "^[^/]+/" "" GITHUB_REPO "${REPO_NAME}")
+string(REGEX REPLACE "/[^/]+$" "" GITHUB_USER "${REPO_NAME}")
+set(APPCAST_URL "https://${GITHUB_USER}.github.io/${GITHUB_REPO}/appcast.xml")
 
-#parse the version information into pieces.
+# Parse the version information into pieces.
 string(REGEX REPLACE "^v([0-9]+)\\..*" "\\1" VERSION_MAJOR "${VERSION}")
 string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*" "\\1" VERSION_MINOR "${VERSION}")
 string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" VERSION_PATCH "${VERSION}")
