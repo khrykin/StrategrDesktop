@@ -42,7 +42,6 @@ void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
     QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
 
     if (saveAsFilepath.isEmpty()) {
-        _isSaved = false;
         return;
     }
 
@@ -65,31 +64,23 @@ void FileSystemIOManager::saveAsDefault(const stg::strategy &strategy) {
 
 std::unique_ptr<stg::strategy>
 FileSystemIOManager::read(const QString &readFilepath) {
-    if (readFilepath.isEmpty()) {
+    if (readFilepath.isEmpty())
         return nullptr;
-    }
 
-    QFile file(readFilepath);
-    if (!file.open(QFile::ReadOnly | QFile::Text)) {
-        showCantOpenDialog(file, readFilepath, file.errorString());
-        return nullptr;
-    }
-
-    QTextStream in(&file);
-    in.setCodec("UTF-8");
-
-    auto strategy = stg::strategy::from_json_string(in.readAll().toStdString());
-
-    file.close();
-
-    if (strategy) {
-        filepath = readFilepath;
-        updateLastOpened();
-        setIsSaved(true);
-        return strategy;
-    } else {
-        auto errorMessage = QObject::tr("The file is corrupt or has a wrong format");
-        showCantOpenDialog(file, readFilepath, errorMessage);
+    try {
+        auto strategy = stg::strategy::from_file(readFilepath.toStdString());
+        if (strategy) {
+            filepath = readFilepath;
+            updateLastOpened();
+            setIsSaved(true);
+            return strategy;
+        } else {
+            auto errorMessage = "The file is corrupt or has a wrong format";
+            showCantOpenDialog(readFilepath, errorMessage);
+        }
+    } catch (const stg::strategy::file_read_exception &) {
+        auto errorMessage = "The file doesn't exist";
+        showCantOpenDialog(readFilepath, errorMessage);
     }
 
     return nullptr;
@@ -171,25 +162,13 @@ QStringList FileSystemIOManager::recentFileNames() {
 }
 
 void FileSystemIOManager::write(const stg::strategy &strategy) {
-    auto json = strategy.to_json_string();
-    QSaveFile file(filepath);
-
-    if (file.open(QIODevice::WriteOnly
-                  | QIODevice::Truncate
-                  | QIODevice::Text)) {
-
-        QTextStream stream(&file);
-        stream.setCodec("UTF-8");
-        stream << QString::fromStdString(json) << endl;
-
-        if (!file.commit()) {
-            showCantSaveDialog(file);
-        }
+    try {
+        strategy.write_to_file(filepath.toStdString());
 
         updateLastOpened();
         setIsSaved(true);
-    } else {
-        showCantSaveDialog(file);
+    } catch (const stg::strategy::file_write_exception &) {
+        showCantSaveDialog();
     }
 }
 
@@ -230,23 +209,21 @@ void FileSystemIOManager::updateLastOpened() {
         }
 }
 
-void FileSystemIOManager::showCantOpenDialog(const QFile &file,
-                                             const QString &path,
+void FileSystemIOManager::showCantOpenDialog(const QString &path,
                                              const QString &errorMessage) {
     Alert::showWarning(window,
                        QObject::tr("Strategy can't be opened"),
-                       QObject::tr("Can't parse file \"%1\":\n\n%2.")
+                       QObject::tr("Can't read file \"%1\":\n\n%2.")
                                .arg(path)
                                .arg(errorMessage));
 }
 
 
-void FileSystemIOManager::showCantSaveDialog(const QSaveFile &file) {
+void FileSystemIOManager::showCantSaveDialog() {
     Alert::showWarning(window,
                        QObject::tr("Strategy can't be saved"),
-                       QObject::tr("Can't serialize to file \"%1\":\n\n%2.")
-                               .arg(filepath)
-                               .arg(file.errorString()));
+                       QObject::tr("Can't save to the \"%1\"")
+                               .arg(filepath));
 }
 
 bool FileSystemIOManager::askIfWantToDiscardOrLeaveCurrent(const stg::strategy &strategy) {

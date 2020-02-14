@@ -5,6 +5,7 @@
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UNUserNotificationCenter.h>
 #import <AppKit/NSDocumentController.h>
+#import <Sparkle/Sparkle.h>
 
 #include "application.h"
 
@@ -43,6 +44,7 @@
 
 CocoaDelegate *Application::cocoaDelegate = nullptr;
 
+
 void Application::registerCocoaRecentFile(const QString &filePath) {
     [CocoaDelegate registerRecentFile:filePath.toNSString()];
 }
@@ -53,6 +55,7 @@ void Application::clearCocoaRecentFiles() {
 
 void Application::setupCocoaDelegate() {
     cocoaDelegate = [[CocoaDelegate alloc] init];
+    [[SUUpdater sharedUpdater] retain];
 
     if (@available(macOS 10.14, *)) {
         [UNUserNotificationCenter currentNotificationCenter].delegate = cocoaDelegate;
@@ -62,4 +65,9 @@ void Application::setupCocoaDelegate() {
 
 void Application::releaseCocoaDelegate() {
     [cocoaDelegate release];
+    [[SUUpdater sharedUpdater] release];
 };
+
+void Application::checkForUpdates() {
+    [[SUUpdater sharedUpdater] checkForUpdates:nil];
+}

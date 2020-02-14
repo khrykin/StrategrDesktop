@@ -9,11 +9,10 @@
 #include <QFileOpenEvent>
 #include <QtDebug>
 #include <QTimer>
+#include <QSystemTrayIcon>
 
 #include "aboutwindow.h"
-#include "updatedialog.h"
 #include "mainwindow.h"
-#include "selfupdater.h"
 
 #ifdef Q_OS_MAC
 Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
@@ -22,34 +21,18 @@ Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
 class Application : public QApplication {
 public:
     Application(int &argc, char **argv);
-
-#ifdef  Q_OS_MAC
-
-    ~Application() override {
-        releaseCocoaDelegate();
-    }
-
-#endif
+    ~Application() override;
 
     static QStringList openedFiles;
     static AboutWindow *aboutWindow;
-    static UpdateDialog *updateDialog;
-
-    static const SelfUpdater &updater();
+    static QSystemTrayIcon *trayIcon;
 
     static void registerOpenedFile(const QString &filePath);
     static void clearRecentFiles();
     static void markFileClosed(const QString &filePath);
     static bool fileIsOpened(const QString &filePath);
-
-#ifdef Q_OS_WIN
-    static bool isGreaterThanWin8() {
-        return _isGreaterThanWin8;
-    }
-#endif
+    static void checkForUpdates();
 private:
-    static SelfUpdater _updater;
-
     static void setupFonts();
 
     bool launchedByOpenEvent = false;
@@ -63,10 +46,6 @@ private:
     void setupCocoaDelegate();
     void releaseCocoaDelegate();
 
-#endif
-
-#ifdef Q_OS_WIN
-    static bool _isGreaterThanWin8;
 #endif
 
     bool event(QEvent *event) override;

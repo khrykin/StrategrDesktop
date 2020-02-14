@@ -25,6 +25,11 @@ namespace stg {
             static constexpr auto number_of_time_slots = (22 - 6) * 60 / time_slot_duration;
         };
 
+        struct file_write_exception : public std::exception {
+        };
+        struct file_read_exception : public std::exception {
+        };
+
         using duration_t = time_slot::duration_t;
         using time_t = time_slot::time_t;
         using time_slot_index_t = time_slots_state::index_t;
@@ -47,6 +52,9 @@ namespace stg {
         static std::unique_ptr<strategy> from_json_string(const std::string &json_string);
         std::string to_json_string() const;
 
+        static std::unique_ptr<strategy> from_file(const std::string &path) noexcept(false);
+        void write_to_file(const std::string &path) const noexcept(false);
+
         const activity_list &activities() const;
         const sessions_list &sessions() const;
         const time_slots_state &time_slots() const;
@@ -63,6 +71,7 @@ namespace stg {
         time_t end_time() const;
         duration_t duration() const;
 
+        /* Real-time properties */
         const session *active_session() const;
         const session *upcoming_session() const;
 
@@ -89,6 +98,7 @@ namespace stg {
         void drag_session(session_index_t session_index, int distance);
         void end_dragging();
 
+        /* History */
         void commit_to_history();
         void undo();
         void redo();

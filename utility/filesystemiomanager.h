@@ -50,7 +50,7 @@ public:
 
 private:
     /// True if current state is saved in a file
-    bool _isSaved = true;
+    bool _isSaved = false;
 
     /// Holds opened file's path
     QString filepath;
@@ -63,10 +63,8 @@ private:
     void write(const stg::strategy &strategy);
     void updateLastOpened();
     int showAreYouSureDialog();
-    void showCantOpenDialog(const QFile &file,
-                            const QString &path,
-                            const QString &errorMessage);
-    void showCantSaveDialog(const QSaveFile &file);
+    void showCantOpenDialog(const QString &path, const QString &errorMessage);
+    void showCantSaveDialog();
 
 };
 

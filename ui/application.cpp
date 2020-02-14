@@ -8,29 +8,29 @@
 #include "application.h"
 
 #ifdef Q_OS_WIN
-#include "Windows.h"
+
+#include <Windows.h>
+#include <winsparkle.h>
+
 #endif
 
 QStringList Application::openedFiles = QStringList();
 
-SelfUpdater Application::_updater = SelfUpdater();
-
 AboutWindow *Application::aboutWindow = nullptr;
 
-UpdateDialog *Application::updateDialog = nullptr;
+QSystemTrayIcon *Application::trayIcon = nullptr;
 
 Application::Application(int &argc, char **argv)
         : QApplication(argc, argv) {
-    Application::setAttribute(Qt::AA_EnableHighDpiScaling);
-    Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
     QSettings().setProperty("lastLaunchedVersion",
                             ApplicationSettings::version);
 
     setupFonts();
 
 #ifdef Q_OS_MAC
+
     setupCocoaDelegate();
+
 #endif
 
     if (argc == 2) {
@@ -43,16 +43,42 @@ Application::Application(int &argc, char **argv)
 
     if (!launchedByOpenEvent) {
 #ifdef Q_OS_MAC
+
         QTimer::singleShot(100, [=]() {
+
 #endif
+
             if (!launchedByOpenEvent) {
                 auto window = MainWindow::createLastOpened();
                 window->show();
             }
+
 #ifdef Q_OS_MAC
+
         });
+
+#endif
+
+#ifdef Q_OS_WIN
+
+        win_sparkle_set_appcast_url(ApplicationSettings::appcastURL);
+        win_sparkle_init();
+
 #endif
     }
+}
+
+Application::~Application() {
+#ifdef Q_OS_MAC
+
+    releaseCocoaDelegate();
+
+#endif
+#ifdef Q_OS_WIN
+
+    win_sparkle_cleanup();
+
+#endif
 }
 
 bool Application::event(QEvent *event) {
@@ -79,26 +105,23 @@ void Application::setupFonts() {
         qWarning() << "Ionicons cannot be loaded!";
 
 #ifdef Q_OS_WIN
+
     if (QFontDatabase().families().contains("Segoe UI")) {
         auto font = QFont("Segoe UI");
         font.setPixelSize(12);
         setFont(font);
-        _isGreaterThanWin8 = true;
-    }  else {
-        _isGreaterThanWin8 = false;
     }
-#endif
-}
 
-const SelfUpdater &Application::updater() {
-    return Application::_updater;
+#endif
 }
 
 void Application::registerOpenedFile(const QString &filePath) {
     openedFiles.append(filePath);
 
 #ifdef Q_OS_MAC
+
     registerCocoaRecentFile(filePath);
+
 #endif
 }
 
@@ -112,13 +135,16 @@ bool Application::fileIsOpened(const QString &filePath) {
 
 void Application::clearRecentFiles() {
 #ifdef Q_OS_MAC
+
     Application::clearCocoaRecentFiles();
+
 #endif
 }
 
-
 #ifdef Q_OS_WIN
 
-bool Application::_isGreaterThanWin8 = false;
+void Application::checkForUpdates() {
+    win_sparkle_check_update_with_ui();
+}
 
 #endif

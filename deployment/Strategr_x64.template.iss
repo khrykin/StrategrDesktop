@@ -1,27 +1,35 @@
 [Setup]
 AppName=Strategr
 AppVersion=@VERSION_SHORT@
-DefaultDirName={pf64}/Strategr
+AppVerName=Strategr v@VERSION_SHORT@
+AppPublisher=Dmitry Khrykin
+AppPublisherURL=https://khrykin.github.io/strategr
 DefaultGroupName=Strategr
-OutputBaseFilename=Strategr-x64-v@VERSION@
-OutputDir=..\builds\Windows\x64-Release\Installer
 ChangesAssociations=yes
+
+DefaultDirName={pf64}\Strategr
+OutputBaseFilename=Strategr.windows-x64.v@VERSION@
+OutputDir=..\builds\Windows\x64-Release\Installer
  
 [Files]
 Source: "..\builds\Windows\x64-Release\Strategr\*"; DestDir: {app}; Flags: recursesubdirs;
 
 [Run]
-Filename: "{app}\vc_redist.x64.exe"; StatusMsg: "Installing Visual Studio C++ Runtime.."; Parameters: "/quiet"; Check: VC2019RedistNeedsInstall; Flags: waituntilterminated
-Filename: "{app}\Strategr.exe"; Description: "Launch Strategr"; Flags: postinstall nowait skipifsilent
+Filename: "{app}\vc_redist.x64.exe"; StatusMsg: "Installing Visual C++ Runtime..."; Parameters: "/quiet"; Check: VC2019RedistNeedsInstall; Flags: waituntilterminated
+Filename: "{app}\Strategr.exe"; Description: "Launch Strategr"; Flags: postinstall nowait
 
 [Icons]
 Name: "{group}\Strategr"; Filename: "{app}\Strategr.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall Strategr"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\Strategr"; Filename: "{app}\Strategr.exe"; WorkingDir: "{app}"; Tasks: desktopicon    
+
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}";
 
 [Registry]
 Root: HKLM; Subkey: "Software\Classes\.stg"; ValueType: string; ValueName: ""; ValueData: "Strategy"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "Software\Classes\Strategy"; ValueType: string; ValueName: ""; ValueData: "Strategy"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\Classes\Strategy\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\Strategy.ico"
+Root: HKLM; Subkey: "Software\Classes\Strategy\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\Strategr.exe,1"
 Root: HKLM; Subkey: "Software\Classes\Strategy\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\Strategr.exe"" ""%1"""
 
 [Code]

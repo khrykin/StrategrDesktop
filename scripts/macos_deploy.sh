@@ -2,7 +2,7 @@
 build_path=$1
 version=$2
 app_name="Strategr"
-dmg_path="$build_path/$app_name-v$version.dmg"
+dmg_path="$build_path/$app_name.v$version.dmg"
 dmg_template_path="$build_path/../../../deployment/package.dmg"
 #entitlements_path="$build_path/../../../deployment/Strategr.entitlements"
 dmg_source_path="./DMGContainer"
@@ -13,7 +13,11 @@ echo "Deploying macOS application"
 
 echo "Signing with certificate: $DEVELOPER_CERTIFACATE_ID"
 
-~/Qt/5.13.0/clang_64/bin/macdeployqt "$build_path/$app_name.app" \
+codesign -s "$DEVELOPER_CERTIFACATE_ID" \
+				--keychain "$HOME/Library/Keychains/login.keychain" \
+				"$build_path/$app_name.app/Contents/Frameworks/Sparkle.framework"
+
+~/Qt/5.14.1/clang_64/bin/macdeployqt "$build_path/$app_name.app" \
 				-codesign="$DEVELOPER_CERTIFACATE_ID"
 
 echo "App bundle created"
@@ -21,7 +25,8 @@ echo "App bundle created"
 echo "Creating .dmg"
 
 mkdir "$dmg_source_path"
-cp -r "$build_path/$app_name.app" "$dmg_source_path/$app_name.app"
+cp -a "$build_path/$app_name.app" "$dmg_source_path/$app_name.app"
+ln -s  "/Applications" "$dmg_source_path/Applications"
 
 hdiutil create "$dmg_template_path" -ov \
 				-volname "$app_name" \
@@ -39,6 +44,6 @@ echo ".dmg created"
 
 echo "Creating updater archive"
 cd "$build_path" || exit
-zip -r "$build_path/macOS_update.zip" "Strategr.app"
+zip -r --symlinks "macOS_update.zip" "Strategr.app"
 echo "Updater archive created"
 

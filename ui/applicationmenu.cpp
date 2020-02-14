@@ -10,7 +10,6 @@
 #include "applicationmenu.h"
 #include "mainwindow.h"
 #include "aboutwindow.h"
-#include "updatedialog.h"
 #include "mainscene.h"
 
 #ifdef Q_OS_MAC
@@ -30,17 +29,14 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     helpMenu->addAction(tr("About"), [=] {
         if (!Application::aboutWindow) {
             Application::aboutWindow = new AboutWindow(window);
+            Application::aboutWindow->show();
         }
 
-        Application::aboutWindow->show();
+        Application::aboutWindow->raise();
     });
 
     auto *updateAction = helpMenu->addAction(tr("Check For Updates..."), [=] {
-        if (!Application::updateDialog) {
-            Application::updateDialog = new UpdateDialog(window);
-        }
-
-        Application::updateDialog->show();
+        Application::checkForUpdates();
     });
 
     updateAction->setMenuRole(QAction::ApplicationSpecificRole);

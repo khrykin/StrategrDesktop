@@ -6,13 +6,20 @@ set(Boost_USE_STATIC_LIBS ON)
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(catch2 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Network Test REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
 
 find_library(utf8Proc_LIBRARY_PATH libutf8proc.a utf8proc.lib utf8proc)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
+    find_library(Sparkle_FRAMEWORK_PATH Sparkle)
+
     add_compile_options("-fobjc-arc")
+endif ()
+
+if (WIN32)
+    find_package(Qt5 COMPONENTS WinExtras REQUIRED)
+    find_library(WinSparkle_PATH WinSparkle)
 endif ()
 
 include_directories(.)
@@ -173,8 +180,6 @@ set(UI
         ui/aboutwindow.h
         ui/applicationicon.cpp
         ui/applicationicon.h
-        ui/updatedialog.cpp
-        ui/updatedialog.h
         ui/overviewwidget.cpp
         ui/overviewwidget.h
         ui/searchboxwidget.cpp
@@ -196,9 +201,7 @@ set(UTILITY
         utility/notifierbackend.h
         utility/notifierbackend.cpp
         utility/fontutils.cpp
-        utility/fontutils.h
-        utility/selfupdater.cpp
-        utility/selfupdater.h)
+        utility/fontutils.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -218,7 +221,7 @@ if (APPLE)
             "-framework Foundation"
             "-framework AppKit"
             "-framework UserNotifications"
-            "-framework EventKit"
+            ${Sparkle_FRAMEWORK_PATH}
             Qt5::MacExtras)
 
     set(PLATFORM_FILES
@@ -244,7 +247,7 @@ if (APPLE)
             ui/cocoa/SGCalendarExportProgressWindow.h
             ui/cocoa/SGCalendarExportProgressWindow.m)
 
-    list(APPEND RESOURCES
+    set(PLATFORM_RESOURCES
             deployment/Strategr.icns
             deployment/Strategy.icns)
 
@@ -256,12 +259,13 @@ if (APPLE)
 endif ()
 
 if (WIN32)
-    set(PLATFORM_FILES
-            deployment/Strategr.rc
-            third-party/wintoast/wintoastlib.h
-            third-party/wintoast/wintoastlib.cpp)
+    set(PLATFORM_RESOURCES
+            ${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc)
 
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
+    set(PLATFORM_LIBRARIES
+            ${WinSparkle_PATH}
+            Qt5::WinExtras)
+
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
 endif ()
@@ -313,9 +317,6 @@ set_target_properties(StrategrCore PROPERTIES
         MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION}
         XCODE_ATTRIBUTE_INSTALL_PATH @executable_path/../Frameworks/)
 
-add_executable(updater
-        updater.cpp)
-
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
 
@@ -325,9 +326,8 @@ add_executable(Strategr
         ${PLATFORM_FILES}
         ${UI}
         ${UTILITY}
-        ${RESOURCES})
-
-add_dependencies(Strategr updater)
+        ${RESOURCES}
+        ${PLATFORM_RESOURCES})
 
 add_executable(ui_tests
         qt_tests_main.cpp
@@ -341,46 +341,58 @@ target_link_libraries(ui_tests
         StrategrCore
         Catch2::Catch2
         Qt5::Widgets
-        Qt5::Network
-        Qt5::Test)
+        Qt5::Test
+        ${PLATFORM_LIBRARIES})
 
 target_link_libraries(Strategr
         StrategrCore
         Qt5::Widgets
-        Qt5::Network
         ${PLATFORM_LIBRARIES})
 
 if (APPLE)
     if (CMAKE_BUILD_TYPE MATCHES Rel)
+        file(COPY ${Sparkle_FRAMEWORK_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+
         add_custom_command(TARGET Strategr
                 POST_BUILD
                 COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR} ${VERSION})
     endif (CMAKE_BUILD_TYPE MATCHES Rel)
-
-    set_target_properties(updater PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/MacOS")
 endif ()
 
 if (WIN32)
+    # Configure resource file
+
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.rc"
+            "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
+
+    # Copy icons
+
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.ico"
+            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
+            DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+
+    # Copy non-Qt dlls
+
+    string(REGEX REPLACE "\\.lib" ".dll" WinSparkle_DLL "${WinSparkle_PATH}")
+    file(COPY "${WinSparkle_DLL}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
     if (CMAKE_BUILD_TYPE MATCHES Rel)
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss.in"
+        set_target_properties(Strategr PROPERTIES WIN32_EXECUTABLE ON)
+
+        # Configure installer scripts
+
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.template.iss"
                 "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss")
 
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss.in"
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.template.iss"
                 "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss")
-
-        set_target_properties(Strategr PROPERTIES WIN32_EXECUTABLE ON)
 
         add_custom_command(TARGET Strategr
                 POST_BUILD
                 COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
     endif (CMAKE_BUILD_TYPE MATCHES Rel)
-
-    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.ico"
-            DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-    file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
-            DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 endif ()
 
 # Set a custom plist file for the app bundle
@@ -390,6 +402,6 @@ set_target_properties(Strategr PROPERTIES
         MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION}
         MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
-        RESOURCE "${RESOURCES}")
+        RESOURCE "${PLATFORM_RESOURCES}")
 
 

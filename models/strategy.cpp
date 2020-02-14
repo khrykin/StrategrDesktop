@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <fstream>
 
 #include "strategy.h"
 #include "json.h"
@@ -379,4 +380,31 @@ bool stg::strategy::is_dragging() {
 
 bool stg::strategy::is_resizing() {
     return current_resize_operation != nullptr;
+}
+
+std::unique_ptr<stg::strategy> stg::strategy::from_file(const std::string &path) {
+    std::ifstream file(path);
+
+    if (file.is_open()) {
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        auto json_string = buffer.str();
+
+        file.close();
+
+        return from_json_string(json_string);
+    } else {
+        throw file_read_exception();
+    }
+}
+
+void stg::strategy::write_to_file(const std::string &path) const {
+    auto file = std::ofstream(path);
+
+    if (file.is_open()) {
+        file << to_json_string();
+        file.close();
+    } else {
+        throw file_write_exception();
+    }
 }

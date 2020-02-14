@@ -1,9 +1,8 @@
+#import <AppKit/AppKit.h>
+
+#include <QtMacExtras>
 
 #include "applicationicon.h"
-
-#import <AppKit/AppKit.h>
-#import <QtMac>
-
 #include "utils.h"
 #include "cocoautils.h"
 

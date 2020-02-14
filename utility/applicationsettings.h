@@ -5,6 +5,8 @@
 #ifndef APPLICATIONSETTINGS_H
 #define APPLICATIONSETTINGS_H
 
+#include <QCoreApplication>
+
 namespace ApplicationSettings {
     const auto windowMinimumWidth = 300;
     const auto windowMinimumHeight = 200;
@@ -27,6 +29,14 @@ namespace ApplicationSettings {
 
     const auto currentTimeMarkerColor = "#FF725C";
     const auto fontResourcePath = "FontAwesome";
+
+#if defined(Q_OS_WIN32) && !defined(Q_OS_WIN64)
+    const auto architectureString = "32";
+#else
+    const auto architectureString = "64";
+#endif
+
+    const auto appcastURL = "https://khrykin.github.io/github-sparkle/appcast.xml";
 
     extern const char *const version;
     extern const char *const shortVersion;

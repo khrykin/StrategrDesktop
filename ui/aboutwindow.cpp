@@ -11,6 +11,7 @@
 #include "coloredlabel.h"
 #include "colorprovider.h"
 #include "applicationsettings.h"
+#include "application.h"
 
 class HyperLinkLabel : public ColoredLabel {
 public:
@@ -80,6 +81,8 @@ private:
 };
 
 AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
+    setAttribute(Qt::WA_DeleteOnClose);
+
     auto mainLayout = new QVBoxLayout();
     setLayout(mainLayout);
     layout()->setSpacing(8);
@@ -92,8 +95,12 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
     mainLabel->setSizePolicy(QSizePolicy::Expanding,
                              QSizePolicy::Fixed);
 
-    auto *versionLabel = new ColoredLabel(QString("Version %1")
-                                                  .arg(ApplicationSettings::version));
+    auto versionString = QString("Version %1").arg(ApplicationSettings::version);
+#ifdef Q_OS_WIN
+    versionString += QString(" %1 bit").arg(ApplicationSettings::architectureString);
+#endif
+
+    auto *versionLabel = new ColoredLabel(versionString);
     versionLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     versionLabel->setAlignment(Qt::AlignCenter);
     versionLabel->setSizePolicy(QSizePolicy::Expanding,
@@ -166,4 +173,8 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
 
     setMinimumHeight(sizeHint().height());
     setMaximumHeight(sizeHint().height());
+}
+
+AboutWindow::~AboutWindow() {
+    Application::aboutWindow = nullptr;
 }

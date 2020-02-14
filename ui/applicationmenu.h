@@ -6,7 +6,6 @@
 
 #include <QMenuBar>
 #include <QMenu>
-#include "selfupdater.h"
 
 class MainWindow;
 

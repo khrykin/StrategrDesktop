@@ -6,3 +6,5 @@ builds
 .DS_Store
 CMakeSettings.json
 CMakeLists.txt.user
+deployment/Strategr_x64.iss
+deployment/Strategr_x86.iss

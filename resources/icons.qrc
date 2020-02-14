@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/icons">
-        <file>icon.png</file>
-        <file>chevron-left-solid.svg</file>
-    </qresource>
-</RCC>
