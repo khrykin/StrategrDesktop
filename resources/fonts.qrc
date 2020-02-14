@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/fonts">
-        <file>FontAwesome.ttf</file>
-        <file>ionicons.ttf</file>
-    </qresource>
-</RCC>
