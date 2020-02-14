@@ -10,7 +10,7 @@ Stategr helps you maximize your productivity, giving you the quickest and most e
 
 
 ## Tech
-Strategr's data model is built is vanilla C++ 17, UI layer is Qt 5.
+Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
 
 ## Platforms
 - [x] macOS
