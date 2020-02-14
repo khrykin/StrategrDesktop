@@ -36,11 +36,10 @@ namespace ApplicationSettings {
     const auto architectureString = "64";
 #endif
 
-    const auto appcastURL = "https://khrykin.github.io/github-sparkle/appcast.xml";
-
     extern const char *const version;
     extern const char *const shortVersion;
     extern const char *const repoName;
+    extern const char *const appcastURL;
 }
 
 

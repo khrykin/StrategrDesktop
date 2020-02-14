@@ -7,3 +7,4 @@
 const char *const ApplicationSettings::version = "@VERSION@";
 const char *const ApplicationSettings::shortVersion = "@VERSION_SHORT@";
 const char *const ApplicationSettings::repoName = "@REPO_NAME@";
+const char *const ApplicationSettings::appcastURL = "@APPCAST_URL@";

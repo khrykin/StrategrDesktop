@@ -52,6 +52,6 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>Strategr would be able to export activity sessions as events to the Calendar</string>
 	<key>SUFeedURL</key>
-	<string>https://khrykin.github.io/github-sparkle/appcast.xml</string>
+	<string>${APPCAST_URL}</string>
 </dict>
 </plist>
