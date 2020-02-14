@@ -69,6 +69,8 @@ Application::Application(int &argc, char **argv)
 }
 
 Application::~Application() {
+    Application::trayIcon->deleteLater();
+
 #ifdef Q_OS_MAC
 
     releaseCocoaDelegate();

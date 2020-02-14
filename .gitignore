@@ -10,7 +10,7 @@ builds
 CMakeSettings.json
 CMakeLists.txt.user
 
-# Inno Setup scripts, configures by cmake
+# Inno Setup scripts, configured by cmake
 deployment/Strategr_x64.iss
 deployment/Strategr_x86.iss
 
