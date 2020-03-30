@@ -26,7 +26,7 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 
     addMenu(helpMenu);
 
-    helpMenu->addAction(tr("About"), [=] {
+    auto *aboutAction = helpMenu->addAction(tr("About"), [=] {
         if (!Application::aboutWindow) {
             Application::aboutWindow = new AboutWindow(window);
             Application::aboutWindow->show();
@@ -35,11 +35,17 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
         Application::aboutWindow->raise();
     });
 
+    aboutAction->setMenuRole(QAction::AboutRole);
+
+//    if (!Application::updateMenuAdded) {
     auto *updateAction = helpMenu->addAction(tr("Check For Updates..."), [=] {
         Application::checkForUpdates();
     });
 
     updateAction->setMenuRole(QAction::ApplicationSpecificRole);
+
+    Application::updateMenuAdded = true;
+//    }
 
     window->setMenuBar(this);
 }

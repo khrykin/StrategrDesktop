@@ -3,19 +3,24 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
+#include <iostream>
+#include <utility>
+
+#include "color.h"
 
 namespace stg {
     struct activity {
-        using color_t = std::string;
+        using color_t = stg::color;
         using name_t = std::string;
         class invalid_property_exception;
 
         static constexpr auto default_color = "#000000";
+        static const std::vector<std::pair<color_t, std::string>> default_colors;
 
-        explicit activity(name_t name, color_t color = default_color);
+        explicit activity(name_t name, color_t color = default_color) noexcept(false);
 
         const name_t &name() const;
-        const name_t &color() const;
+        const color_t &color() const;
 
         activity copy_changing_name(const name_t &name) const;
         activity copy_changing_color(const color_t &color) const;

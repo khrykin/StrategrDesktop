@@ -40,12 +40,13 @@ include(GenerateVersionFile)
 
 if (APPLE)
     set(MODELS_PLATFORM_FILES
-            models/apple/NSColor+HexColor.h
-            models/apple/NSColor+HexColor.m
+            models/apple/NSColor+HexString.h
+            models/apple/NSColor+HexString.m
             models/apple/SGCalendarManager.m
             models/apple/SGCalendarManager.h
             models/apple/SGCalendarExporter.h
-            models/apple/SGCalendarExporter.mm)
+            models/apple/SGCalendarExporter.mm
+            )
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
@@ -93,7 +94,7 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/selection.cpp
         models/selection.h
         models/event.cpp
-        models/event.h)
+        models/event.h models/color.cpp models/color.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -102,10 +103,9 @@ set(MODELS_TESTS
         models/tests/strategy_timeslots_test.cpp
         models/tests/strategy_activities_slots_interaction_test.cpp
         models/tests/strategy_history_test.cpp
-        models/tests/json_tests.cpp models/apple/SGCalendarExporter.mm)
+        models/tests/json_tests.cpp)
 
-set(MODELS_LIBRARIES
-        ${utf8Proc_LIBRARY_PATH})
+set(MODELS_LIBRARIES ${utf8Proc_LIBRARY_PATH})
 
 set(UI
         ui/mainwindow.cpp
@@ -245,7 +245,7 @@ if (APPLE)
             ui/cocoa/SGOptionsViewController.m
             ui/cocoa/SGOptionsViewController.h
             ui/cocoa/SGCalendarExportProgressWindow.h
-            ui/cocoa/SGCalendarExportProgressWindow.m)
+            ui/cocoa/SGCalendarExportProgressWindow.m ui/colorprovider.mm)
 
     set(PLATFORM_RESOURCES
             deployment/Strategr.icns
@@ -393,12 +393,6 @@ if (WIN32)
         add_custom_command(TARGET Strategr
                 POST_BUILD
                 COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-        # Cleanup deployed dir
-
-        add_custom_command(TARGET Strategr
-                POST_BUILD
-                COMMAND del /Q /F /S "*.manifest")
 
     endif (CMAKE_BUILD_TYPE MATCHES Rel)
 endif ()

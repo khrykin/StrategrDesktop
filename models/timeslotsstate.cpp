@@ -20,7 +20,7 @@ void stg::time_slots_state::set_begin_time(time_t begin_time) {
 void stg::time_slots_state::update_begin_times() {
     for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
         _data[slot_index].begin_time
-                = slot_begin_time(_begin_time, slot_index);
+                = make_slot_begin_time(_begin_time, slot_index);
     }
 }
 
@@ -34,14 +34,14 @@ void stg::time_slots_state::set_slot_duration(duration_t slot_duration) {
     for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
         auto &slot = _data[slot_index];
         slot.duration = slot_duration;
-        slot.begin_time = slot_begin_time(begin_time(), slot_index);
+        slot.begin_time = make_slot_begin_time(begin_time(), slot_index);
     }
 
     on_change_event();
 }
 
 stg::time_slots_state::size_t stg::time_slots_state::number_of_slots() const {
-    return _data.size();
+    return static_cast<time_slots_state::size_t>(_data.size());
 }
 
 void stg::time_slots_state::set_number_of_slots(size_t new_number_of_slots) {
@@ -147,7 +147,7 @@ std::string stg::time_slots_state::class_print_name() const {
 
 void stg::time_slots_state::populate(time_t start_time, size_t number_of_slots) {
     for (auto slot_index = 0; slot_index < number_of_slots; ++slot_index) {
-        auto begin_time = slot_begin_time(start_time, slot_index);
+        auto begin_time = make_slot_begin_time(start_time, slot_index);
 
         auto time_slot = stg::time_slot(begin_time, _slot_duration);
         _data.emplace_back(time_slot);
@@ -155,7 +155,7 @@ void stg::time_slots_state::populate(time_t start_time, size_t number_of_slots) 
 }
 
 stg::time_slots_state::time_t
-stg::time_slots_state::slot_begin_time(time_t global_begin_time, index_t slot_index) {
+stg::time_slots_state::make_slot_begin_time(time_t global_begin_time, index_t slot_index) {
     return global_begin_time + slot_index * _slot_duration;
 }
 
@@ -250,6 +250,21 @@ bool stg::time_slots_state::previous_slot_empty(index_t index) const {
 void stg::time_slots_state::reset_with(data_t raw_data) {
     time_slots_state_base::reset_with(raw_data);
     reset_times();
+}
+
+std::vector<stg::time_slots_state::time_t> stg::time_slots_state::times() const {
+    if (empty())
+        return {};
+
+    std::vector<time_t> result;
+
+    for (auto &slot : _data) {
+        result.push_back(slot.begin_time);
+    }
+
+    result.push_back(_data.back().end_time());
+
+    return result;
 }
 
 

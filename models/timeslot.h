@@ -5,13 +5,10 @@
 #ifndef MODELS_TIMESLOT_H
 #define MODELS_TIMESLOT_H
 
-#include <optional>
 #include <iostream>
 
-#include "activity.h"
-
 namespace stg {
-    class strategy;
+    class activity;
 
     struct time_slot {
         using minutes = unsigned;

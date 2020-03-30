@@ -14,6 +14,7 @@
 #include "timeslotsstate.h"
 #include "streamablelist.h"
 #include "sessionscalculator.h"
+#include "activity.h"
 
 namespace stg {
     using activity_sessions_list_base = private_list<session>;

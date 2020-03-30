@@ -33,11 +33,12 @@ namespace stg {
         explicit drag_operation(time_slots_state *time_slots,
                                 indices_vector initial_indices);
 
-        void record_drag(const session::time_slots_state &time_slots_to_drag,
+        void record_drag(const std::vector<time_slot> &time_slots_to_drag,
                          int distance);
 
         bool state_changed();
 
+        time_slots_state::data_t &initial_state();
     private:
         static const unsigned int initial_index_key = 0;
 

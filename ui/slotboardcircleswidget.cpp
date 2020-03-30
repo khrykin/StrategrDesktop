@@ -27,7 +27,7 @@ void SlotBoardCirclesWidget::paintEvent(QPaintEvent *event) {
 
         painter.setRenderHint(QPainter::Antialiasing);
 
-        painter.setPen(QPen(highlightColor(), 2));
+        painter.setPen(QPen(controlColor(), 2));
         painter.setBrush(baseColor());
 
         auto slotsRect = getSlotsRect();
@@ -39,11 +39,11 @@ void SlotBoardCirclesWidget::paintEvent(QPaintEvent *event) {
                          + (_slotBeforeResizeBoundaryIndex + 1) * getSlotHeight()
                          - 1 - radius / 2;
 
-        auto circleLeftRect = QRect(slotsRect.left() + defaultPadding / 2,
+        auto circleLeftRect = QRect(slotsRect.left() + defaultPadding / 2 - 1,
                                     topOffset,
                                     radius,
                                     radius);
-        auto circleRightRect = QRect(slotsRect.right() - radius - defaultPadding + defaultPadding / 2,
+        auto circleRightRect = QRect(slotsRect.right() - radius - defaultPadding + defaultPadding / 2 + 2,
                                      topOffset,
                                      radius,
                                      radius);

@@ -3,6 +3,7 @@
 //
 
 #include "timeslot.h"
+#include "activity.h"
 
 std::ostream &stg::operator<<(std::ostream &os, const stg::time_slot &slot) {
     os << "time_slot(";

@@ -12,6 +12,7 @@ public:
     QCursor resizeVerticalCursor();
     QCursor closedHandCursor();
     QCursor openHandCursor();
+    QCursor dragCopyCursor();
 };
 
 

@@ -19,8 +19,22 @@ namespace stg {
             time_slots_state::data_t time_slots;
 
             friend bool operator==(const entry &lhs, const entry &rhs) {
-                return lhs.activities == rhs.activities
-                       && lhs.time_slots == rhs.time_slots;
+                auto &bigger_container = lhs.activities.size() >= rhs.activities.size()
+                                         ? lhs.activities
+                                         : rhs.activities;
+
+                auto &smaller_container = lhs.activities.size() >= rhs.activities.size()
+                                          ? rhs.activities
+                                          : lhs.activities;
+
+                auto activities_are_equal = std::equal(smaller_container.begin(),
+                                                       smaller_container.end(),
+                                                       bigger_container.begin(),
+                                                       [](const auto &l, const auto &r) {
+                                                           return *l == *r;
+                                                       });
+                return activities_are_equal &&
+                       lhs.time_slots == rhs.time_slots;
             }
 
             friend bool operator!=(const entry &lhs, const entry &rhs) {
@@ -30,13 +44,16 @@ namespace stg {
 
         explicit strategy_history(entry current_state);
 
-        void commit(const entry &new_state);
+        bool commit(const entry &new_state);
 
         std::optional<entry> undo();
         std::optional<entry> redo();
 
         bool has_prevoius_state();
         bool has_next_state();
+
+        bool has_prevoius_activities_state();
+        bool has_next_activities_state();
 
     private:
         entry current_state;

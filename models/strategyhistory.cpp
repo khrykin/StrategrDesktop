@@ -4,13 +4,17 @@
 
 #include "strategyhistory.h"
 
-void stg::strategy_history::commit(const entry &new_state) {
+bool stg::strategy_history::commit(const entry &new_state) {
     if (new_state != current_state) {
         undo_stack.push_back(current_state);
         redo_stack.clear();
 
         current_state = new_state;
+
+        return true;
     }
+
+    return false;
 }
 
 std::optional<stg::strategy_history::entry> stg::strategy_history::undo() {
@@ -49,3 +53,17 @@ bool stg::strategy_history::has_next_state() {
 
 stg::strategy_history::strategy_history(stg::strategy_history::entry current_state)
         : current_state(std::move(current_state)) {}
+
+bool stg::strategy_history::has_prevoius_activities_state() {
+    if (!has_prevoius_state())
+        return false;
+
+    return current_state.activities != undo_stack.back().activities;
+}
+
+bool stg::strategy_history::has_next_activities_state() {
+    if (!has_next_state())
+        return false;
+
+    return current_state.activities != redo_stack.back().activities;
+}

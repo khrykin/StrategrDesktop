@@ -26,6 +26,11 @@ namespace ColorUtils {
         return scale(color, 1 - factor);
     }
 
+    inline QColor desaturated(QColor color, double factor) {
+        color.setHslF(color.hueF(), factor, factor);
+        return color;
+    }
+
     inline QColor QColorFromStdString(const std::string &hex) {
         return QColor(QString::fromStdString(hex));
     }

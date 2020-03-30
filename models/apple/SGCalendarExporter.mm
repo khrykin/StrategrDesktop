@@ -4,7 +4,7 @@
 
 #import "SGCalendarExporter.h"
 #import "SGCalendarManager.h"
-#import "NSColor+HexColor.h"
+#import "NSColor+HexString.h"
 
 #include "strategy.h"
 
@@ -109,16 +109,17 @@
     BOOL includeNotifications = (self.settings.optionsMask & SGCalendarExportOptionsNotificationsIsOn) ==
                                 SGCalendarExportOptionsNotificationsIsOn;
 
-    NSColor *color = nil;
+    CGColorRef color = nil;
     NSString *calendarTitle = self.calendarManager.calendarName;
     if (!calendarTitle) {
         calendarTitle = [NSString stringWithUTF8String:session.activity->name().c_str()];
-        color = [NSColor colorWithHexColorString:
-                [NSString stringWithUTF8String:session.activity->color().c_str()]];
+        color = CGColorCreateWithHexColorString([NSString stringWithUTF8String:session.activity->color()]);
     }
 
     EKCalendar *calendar = [self.calendarManager findOrCreateCalendarWithTitle:calendarTitle
                                                                       andColor:color];
+
+    CGColorRelease(color);
 
     NSString *eventTitle = self.calendarManager.calendarName != nil
                            ? [NSString stringWithUTF8String:session.activity->name().c_str()]

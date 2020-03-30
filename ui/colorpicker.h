@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <optional>
 
+#include "activity.h"
+
 class ColorPicker : public QWidget {
 Q_OBJECT
 public:
@@ -21,12 +23,13 @@ private:
     static const QVector<QColor> defaultColors;
 
     std::optional<QColor> _color;
-    const QVector<QColor> colors = ColorPicker::defaultColors;
+    const std::vector<QColor> colors = colorsFromDefaultColors();
 
     void deselectAll();
 
     void setColorFromPalette(const std::optional<QColor> &color);
 
+    static std::vector<QColor> colorsFromDefaultColors();
 };
 
 #endif // COLORPICKER_H

@@ -4,6 +4,19 @@
 #include "activity.h"
 #include "activityinvalidpropertyexception.h"
 
+const std::vector<std::pair<stg::activity::color_t, std::string>>
+        stg::activity::default_colors = {
+        {"#FF6562", "Red"},
+        {"#FFB700", "Orange"},
+        {"#FFD600", "Yellow"},
+        {"#A463F2", "Purple"},
+        {"#D5008F", "Indigo"},
+        {"#19A974", "Green"},
+        {"#357EDD", "Blue"},
+        {"#000000", "Black"},
+        {"#777777", "Gray"}
+};
+
 stg::activity::activity(name_t name, color_t color) : _color(std::move(color)) {
     if (!is_valid(name)) {
         throw empty_name_exception();
@@ -68,7 +81,7 @@ nlohmann::json stg::activity::to_json() {
 stg::activity stg::activity::from_json(const nlohmann::json &j) {
     auto name = j[keys::name];
 
-    std::string color = activity::default_color;
+    stg::color color = activity::default_color;
     if (j.count(keys::color) && !j[keys::color].is_null()) {
         color = j[keys::color];
     }

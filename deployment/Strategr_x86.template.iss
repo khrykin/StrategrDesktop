@@ -16,7 +16,7 @@ OutputDir=..\builds\Windows\x86-Release\Installer
 Source: "..\builds\Windows\x86-Release\Strategr\*"; DestDir: {app}; Flags: recursesubdirs;
 
 [Run]
-Filename: "{app}\vc_redist.x86.exe"; StatusMsg: "Installing Visual C++ Runtime..."; Parameters: "/quiet"; Check: VC2019RedistNeedsInstall; Flags: waituntilterminated
+Filename: "{app}\vc_redist.x86.exe"; StatusMsg: "Installing Visual C++ Runtime..."; Parameters: "/passive /norestart"; Check: VC2019RedistNeedsInstall; Flags: waituntilterminated
 Filename: "{app}\Strategr.exe"; Description: "Launch Strategr"; Flags: postinstall nowait
 
 [Icons]

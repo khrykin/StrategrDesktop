@@ -26,6 +26,9 @@ public:
     static QStringList openedFiles;
     static AboutWindow *aboutWindow;
     static QSystemTrayIcon *trayIcon;
+    // Workaround for Qt bug:
+    // https://bugreports.qt.io/browse/QTBUG-13898
+    static bool updateMenuAdded;
 
     static void registerOpenedFile(const QString &filePath);
     static void clearRecentFiles();
@@ -36,7 +39,6 @@ private:
     static void setupFonts();
 
     bool launchedByOpenEvent = false;
-
 #ifdef Q_OS_MAC
 
     static CocoaDelegate *cocoaDelegate;

@@ -98,6 +98,9 @@ void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overvi
 void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) const {
     for (auto &item : overview.elements()) {
         auto color = ColorUtils::QColorFromStdString(item.color);
+        if (color.valueF() < 0.2)
+            color.setHsvF(color.hueF(), color.saturationF(), 0.2);
+
         painter.fillRect(item.origin_x, 0, item.width, height(), color);
     }
 }

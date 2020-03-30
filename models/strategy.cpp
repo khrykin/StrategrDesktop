@@ -56,6 +56,11 @@ const stg::activity_list &stg::strategy::activities() const {
     return _activities;
 }
 
+void stg::strategy::silently_add_activity(const activity &activity) {
+    _activities.silently_add(activity);
+    commit_to_history();
+}
+
 void stg::strategy::add_activity(const activity &activity) {
     _activities.add(activity);
     commit_to_history();
@@ -64,6 +69,24 @@ void stg::strategy::add_activity(const activity &activity) {
 void stg::strategy::delete_activity(activity_index activity_index) {
     _time_slots.remove_activity(_activities.at(activity_index));
     _activities.remove_at_index(activity_index);
+
+    commit_to_history();
+}
+
+void stg::strategy::silently_delete_activity(activity_index activity_index) {
+    _time_slots.remove_activity(_activities.at(activity_index));
+    _activities.silently_remove_at_index(activity_index);
+
+    commit_to_history();
+}
+
+void stg::strategy::silently_edit_activity(activity_index activity_index,
+                                           const activity &new_activity) {
+    const auto old_activity = _activities.at(activity_index);
+    _activities.silently_edit_at_index(activity_index, new_activity);
+
+    const auto updated_activity = _activities.at(activity_index);
+    _time_slots.edit_activity(old_activity, updated_activity);
 
     commit_to_history();
 }
@@ -133,7 +156,17 @@ void stg::strategy::make_empty_at(const std::vector<time_slot_index_t> &time_slo
 
 void stg::strategy::drag_activity(activity_index from_index, activity_index to_index) {
     _activities.drag(from_index, to_index);
+
+    commit_to_history();
 }
+
+
+void stg::strategy::silently_drag_activity(stg::activity_index from_index, stg::activity_index to_index) {
+    _activities.silently_drag(from_index, to_index);
+
+    commit_to_history();
+}
+
 
 void stg::strategy::fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index) {
     assert(current_resize_operation && "fill_time_slots must be called between "
@@ -160,9 +193,8 @@ stg::strategy_history::entry stg::strategy::make_history_entry() {
 }
 
 void stg::strategy::commit_to_history() {
-    history.commit(make_history_entry());
-
-    on_change_event();
+    if (history.commit(make_history_entry()))
+        on_change_event();
 }
 
 void stg::strategy::undo() {
@@ -256,6 +288,13 @@ void stg::strategy::end_dragging() {
     current_drag_operation.reset();
 }
 
+void stg::strategy::cancel_dragging() {
+    _time_slots.reset_with(current_drag_operation->initial_state());
+    current_drag_operation.reset();
+
+    time_slots_changed();
+}
+
 void stg::strategy::begin_resizing() {
     current_resize_operation = std::make_shared<resize_operation>(&_time_slots);
 }
@@ -270,6 +309,23 @@ void stg::strategy::end_resizing() {
     }
 
     current_resize_operation.reset();
+}
+
+void stg::strategy::copy_session(stg::strategy::session_index_t session_index,
+                                 stg::strategy::time_slot_index_t begin_index) {
+    auto &session = sessions()[session_index];
+    if (!session.activity) {
+        return;
+    }
+
+    auto copied_session_indices = std::vector<time_slot_index_t>(session.length());
+    std::iota(copied_session_indices.begin(),
+              copied_session_indices.end(),
+              begin_index);
+
+    _time_slots.set_activity_at_indices(session.activity, copied_session_indices);
+
+    commit_to_history();
 }
 
 stg::strategy::duration_t stg::strategy::duration() const {
@@ -368,10 +424,12 @@ void stg::strategy::reorder_activities_by_usage() {
         };
     }
 
-    _activities.reset_with(reordered);
-    _activities.on_change_event();
+    if (_activities.data() != reordered) {
+        _activities.reset_with(reordered);
+        _activities.on_change_event();
 
-    commit_to_history();
+        commit_to_history();
+    }
 }
 
 bool stg::strategy::is_dragging() {
@@ -408,3 +466,12 @@ void stg::strategy::write_to_file(const std::string &path) const {
         throw file_write_exception();
     }
 }
+
+bool stg::strategy::has_activities_undo() {
+    return history.has_prevoius_activities_state();
+}
+
+bool stg::strategy::has_activities_redo() {
+    return history.has_next_activities_state();
+}
+

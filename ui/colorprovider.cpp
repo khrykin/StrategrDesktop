@@ -31,6 +31,14 @@ QColor ColorProvider::selectionColor() {
     return selectionColor;
 }
 
+//#ifndef Q_OS_MAC
+
+QColor ColorProvider::controlColor() {
+    return highlightColor();
+}
+
+//#endif
+
 QColor ColorProvider::textColor() {
     return QApplication::palette().color(QPalette::Text);
 }

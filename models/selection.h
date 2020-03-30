@@ -35,6 +35,7 @@ namespace stg {
         bool only_non_empty_selected() const;
 
         bool has_selected(index_t slot_index);
+        bool is_all_selected();
 
         void reload();
 

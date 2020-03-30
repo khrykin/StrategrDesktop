@@ -2,7 +2,15 @@
 // Created by Dmitry Khrykin on 2019-08-17.
 //
 
+#import <TargetConditionals.h>
+
 #import "SGCalendarManager.h"
+
+#if !TARGET_OS_IOS
+
+#import <AppKit/AppKit.h>
+
+#endif
 
 @implementation SGCalendarManager
 - (instancetype)initWithStore:(EKEventStore *)store {
@@ -18,7 +26,7 @@
     return [[self fetchCalendars] filteredArrayUsingPredicate:predicate];
 }
 
-- (EKCalendar *)findOrCreateCalendarWithTitle:(NSString *)title andColor:(NSColor *)color {
+- (EKCalendar *)findOrCreateCalendarWithTitle:(NSString *)title andColor:(CGColorRef)color {
     NSArray<EKCalendar *> *matchedCalendars = [self calendarsWithTitle:title];
 
     NSError *saveCalError = nil;
@@ -27,12 +35,21 @@
     if ([matchedCalendars count] != 0) {
         calendar = matchedCalendars[0];
 
-        if (color && ![calendar.color isEqual:color]) {
-            calendar.color = color;
-            [self.store saveCalendar:calendar
-                              commit:YES
-                               error:&saveCalError];
+#if !TARGET_OS_IOS
+        if (color) {
+            NSColor *nsColor = [NSColor colorWithCGColor:color];
+            if (![calendar.color isEqual:nsColor]) {
+                calendar.color = nsColor;
+            }
         }
+#else
+        if (color && !CGColorEqualToColor(calendar.CGColor, color)) {
+            calendar.CGColor = color;
+        }
+#endif
+        [self.store saveCalendar:calendar
+                          commit:YES
+                           error:&saveCalError];
 
     } else {
         calendar = [self makeCalendarWithTitle:title andColor:color];
@@ -123,12 +140,17 @@
 }
 
 - (EKCalendar *)makeCalendarWithTitle:(NSString *)title
-                             andColor:(NSColor *)color {
+                             andColor:(CGColorRef)color {
     EKCalendar *calendar = [EKCalendar calendarForEntityType:EKEntityTypeEvent
                                                   eventStore:self.store];
 
     calendar.title = title;
-    calendar.color = color;
+
+#if !TARGET_OS_IOS
+    calendar.color = [NSColor colorWithCGColor:color];
+#else
+    calendar.CGColor = color;
+#endif
 
     NSPredicate *iCloudPredicate = [NSPredicate predicateWithBlock:^BOOL(EKSource *source,
                                                                          NSDictionary<NSString *, id> *bindings) {
@@ -153,11 +175,13 @@
 }
 
 + (void)launchCalendarApp {
+#if !TARGET_OS_IOS
     [[NSWorkspace sharedWorkspace] launchApplication:@"/Applications/Calendar.app"];
     NSArray *apps = [NSRunningApplication
             runningApplicationsWithBundleIdentifier:@"com.apple.iCal"];
     [(NSRunningApplication *) apps[0]
             activateWithOptions:NSApplicationActivateAllWindows];
+#endif
 };
 
 - (void)removeAllEventsForDate:(NSDate *)date

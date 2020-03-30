@@ -23,6 +23,7 @@ public:
     static QColor highlightColor();
     static QColor highlightedTextColor();
     static QColor selectionColor();
+    static QColor controlColor();
     static QColor textColor();
     static QColor textColorJustLighter();
     static QColor secondaryTextColor();

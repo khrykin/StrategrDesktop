@@ -70,7 +70,7 @@ stg::json::parse_time_slots(const nlohmann::json &json,
              ++it) {
 
             auto slot_index = it - json[keys::slots].begin();
-            auto time_slot_begin_time = begin_time + slot_index * time_slot_duration;
+            auto time_slot_begin_time = static_cast<time_slot::time_t>(begin_time + slot_index * time_slot_duration);
 
             auto time_slot = stg::time_slot(time_slot_begin_time,
                                             time_slot_duration);

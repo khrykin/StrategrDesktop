@@ -9,14 +9,18 @@
 #include <QStringList>
 #include <QFontMetrics>
 #include "session.h"
+#include "activity.h"
 #include "applicationsettings.h"
 #include "utils.h"
 #include "colorutils.h"
 
 namespace FontUtils {
-    inline void drawSessionTitle(const stg::session &session,
-                                 QPainter &painter,
-                                 const QRect &rect) {
+    inline void
+    drawSessionTitle(const stg::session &session,
+                     QPainter &painter,
+                     const QRect &rect,
+                     QColor durationColor = QColor(255, 255, 255, 0),
+                     QColor titleColor = QColor(255, 255, 255, 0)) {
 
         auto name = QString::fromStdString(session.activity->name());
         auto duration = humanTimeForMinutes(session.duration());
@@ -45,28 +49,38 @@ namespace FontUtils {
         auto origin = QPoint(rect.x() + (rect.width() - wholeSize.width()) / 2,
                              rect.y() + (rect.height() - wholeSize.height()) / 2);
 
-        auto headRect = QRect(origin.x(),
-                              origin.y(),
-                              headSize.width(),
-                              headSize.height());
+        auto durationRect = QRect(origin.x(),
+                                  origin.y(),
+                                  headSize.width(),
+                                  headSize.height());
 
-        auto tailRect = QRect(origin.x() + headSize.width(),
-                              origin.y(),
-                              tailSize.width(),
-                              tailSize.height());
+        auto titleRect = QRect(origin.x() + headSize.width(),
+                               origin.y(),
+                               tailSize.width(),
+                               tailSize.height());
 
-        auto headColor = ColorUtils::overlayWithAlpha(
-                QApplication::palette().color(QPalette::WindowText),
-                0.5);
 
-        auto tailColor = ColorUtils::safeForegroundColor(
-                ColorUtils::QColorFromStdString(session.activity->color())
-        );
+        if (durationColor == QColor(255, 255, 255, 0))
+            durationColor = ColorUtils::overlayWithAlpha(
+                    QApplication::palette().color(QPalette::WindowText),
+                    0.5);
 
-        painter.setPen(headColor);
-        painter.drawText(headRect, head);
-        painter.setPen(tailColor);
-        painter.drawText(tailRect, tail);
+        if (titleColor == QColor(255, 255, 255, 0))
+            titleColor = ColorUtils::safeForegroundColor(
+                    ColorUtils::QColorFromStdString(session.activity->color())
+            );
+
+        auto thickFont = painter.font();
+        auto thinFont = painter.font();
+        thinFont.setBold(false);
+
+//        painter.setFont(thinFont);
+        painter.setPen(durationColor);
+        painter.drawText(durationRect, head);
+
+//        painter.setFont(thickFont);
+        painter.setPen(titleColor);
+        painter.drawText(titleRect, tail);
 
         painter.setPen(Qt::NoPen);
     }

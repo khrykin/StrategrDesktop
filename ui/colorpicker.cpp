@@ -1,21 +1,10 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <random>
+#include <algorithm>
 
 #include "colorpicker.h"
 #include "colorpickeritem.h"
-
-const QVector<QColor> ColorPicker::defaultColors = QVector{
-        QColor("#FF4136"),
-        QColor("#FFB700"),
-        QColor("#FFD700"),
-        QColor("#A463F2"),
-        QColor("#D5008F"),
-        QColor("#19A974"),
-        QColor("#357EDD"),
-        QColor("#000000"),
-        QColor("#777777")
-};
 
 ColorPicker::ColorPicker(QWidget *parent) : QWidget(parent) {
     auto *mainLayout = new QHBoxLayout(this);
@@ -24,15 +13,15 @@ ColorPicker::ColorPicker(QWidget *parent) : QWidget(parent) {
                                    0,
                                    0,
                                    0);
-            foreach (const auto &color, colors) {
-            auto *item = new ColorPickerItem(color, this);
-            connect(item,
-                    &ColorPickerItem::clicked,
-                    this,
-                    &ColorPicker::setColorFromPalette);
+    for (const auto &color : colors) {
+        auto *item = new ColorPickerItem(color, this);
+        connect(item,
+                &ColorPickerItem::clicked,
+                this,
+                &ColorPicker::setColorFromPalette);
 
-            mainLayout->addWidget(item);
-        }
+        mainLayout->addWidget(item);
+    }
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 }
@@ -45,7 +34,7 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
     if (!color)
         return deselectAll();
 
-    auto indexOfColor = colors.indexOf(*color);
+    auto indexOfColor = std::distance(colors.begin(), std::find(colors.begin(), colors.end(), *color));
     if (indexOfColor < 0)
         return deselectAll();
 
@@ -62,7 +51,7 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
 void ColorPicker::setRandomColor() {
     std::random_device seeder;
     std::mt19937 engine(seeder());
-    std::uniform_int_distribution<int> dist(0, colors.length() - 1);
+    std::uniform_int_distribution<int> dist(0, colors.size() - 1);
     int index = dist(engine);
 
     setColor(colors[index]);
@@ -78,5 +67,17 @@ void ColorPicker::deselectAll() {
 void ColorPicker::setColorFromPalette(const std::optional<QColor> &color) {
     setColor(color);
     emit colorChangedByClick(_color);
+}
+
+std::vector<QColor> ColorPicker::colorsFromDefaultColors() {
+    std::vector<QColor> result;
+    std::transform(stg::activity::default_colors.begin(),
+                   stg::activity::default_colors.end(),
+                   std::back_inserter(result),
+                   [=](const auto &color_info) {
+                       return QColor(color_info.first);
+                   });
+
+    return result;
 }
 

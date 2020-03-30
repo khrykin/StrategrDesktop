@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include "sessionslist.h"
+#include "activity.h"
 
 stg::sessions_list::index_t
 stg::sessions_list::session_index_for_time_slot_index(index_t time_slot_index) const {

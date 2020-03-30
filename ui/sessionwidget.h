@@ -15,9 +15,9 @@ class SessionWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 
 public:
+    static QColor borderColor();
     explicit SessionWidget(stg::session activitySession,
                            QWidget *parent = nullptr);
-
 
     bool isSelected() const;
     void setIsSelected(bool isSelected);
@@ -26,12 +26,15 @@ public:
     void setSlotHeight(int slotHeight);
 
     void setSelectBorder(bool isBorderSelected);
-
-    static QColor borderColor();
+    void setDimmed(bool dimmed);
+    bool drawsBorders() const;
+    void setDrawsBorders(bool drawsBorders);
 private:
     int slotHeight = ApplicationSettings::defaultSlotHeight;
     bool _isSelected = false;
     bool isBorderSelected = false;
+    bool dimmed = false;
+    bool _drawsBorders = true;
 
     stg::session activitySession;
     stg::session previousActivitySession = stg::session();
@@ -44,12 +47,13 @@ private:
     void updateUI();
     int expectedHeight();
 
+    QColor backgroundColor() const;
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;
 
     void paintEvent(QPaintEvent *event) override;
 
-    void drawSelection(QPainter &painter) const;
+    void drawBackground(QPainter &painter) const;
     void drawRulers(QPainter &painter) const;
     void drawLabel(QPainter &painter) const;
 };

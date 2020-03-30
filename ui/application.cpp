@@ -15,6 +15,7 @@
 #endif
 
 QStringList Application::openedFiles = QStringList();
+bool Application::updateMenuAdded = false;
 
 AboutWindow *Application::aboutWindow = nullptr;
 
@@ -69,7 +70,7 @@ Application::Application(int &argc, char **argv)
 }
 
 Application::~Application() {
-    Application::trayIcon->deleteLater();
+    delete Application::trayIcon;
 
 #ifdef Q_OS_MAC
 

@@ -36,6 +36,7 @@ namespace stg {
         activity *at(activity_index item_index) const;
 
         std::optional<index_t> index_of(const activity *activity) const;
+        std::optional<index_t> index_of(const activity &activity) const;
 
         activity_list search(std::string query) const;
 
@@ -43,16 +44,19 @@ namespace stg {
     private:
         friend strategy;
 
-        void add(const activity &activity);
-        void remove_at_index(activity_index index);
-        void edit_at_index(activity_index index, const activity &new_activity);
+        void silently_add(const activity &activity) noexcept(false);
+        void add(const activity &activity) noexcept(false);
 
+        void silently_remove_at_index(activity_index index);
+        void remove_at_index(activity_index index);
+
+        void silently_edit_at_index(activity_index index, const activity &new_activity) noexcept(false);
+        void edit_at_index(activity_index index, const activity &new_activity) noexcept(false);
+
+        void silently_drag(activity_index from_index, activity_index to_index);
         void drag(activity_index from_index, activity_index to_index);
 
         bool has(const activity &searched_activity) const;
-
-        void rotate_left(activity_index from_index, activity_index to_index);
-        void rotate_right(activity_index from_index, activity_index to_index);
     };
 
     class activity_list::already_present_exception : public std::exception {

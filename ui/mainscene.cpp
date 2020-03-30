@@ -12,7 +12,6 @@
 
 MainScene::MainScene(stg::strategy &strategy, QWidget *parent)
         : SlidingStackedWidget(parent), strategy(strategy) {
-
     sessionsMainWidget = new SessionsMainWidget(strategy, this);
     activitiesWidget = new ActivityListWidget(strategy, this);
 

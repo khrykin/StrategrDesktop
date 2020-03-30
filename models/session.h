@@ -12,12 +12,11 @@ namespace stg {
     struct activity;
 
     struct session {
-        using length_t = unsigned int;
+        using length_t = int;
         using time_t = time_slot::time_t;
         using duration_t = time_slot::duration_t;
-        using time_slots_state  = std::vector<time_slot>;
 
-        time_slots_state time_slots{};
+        std::vector<time_slot> time_slots{};
         activity *activity = time_slot::no_activity;
 
         length_t length() const;

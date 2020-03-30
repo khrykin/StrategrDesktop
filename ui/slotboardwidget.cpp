@@ -41,7 +41,7 @@ void SlotBoardWidget::setupCurrentTimeTimer() {
     currentTimeTimer->start();
 }
 
-void SlotBoardWidget::layoutChildWidgets(QHBoxLayout * mainLayout) {
+void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
     slotsWidget = new SlotsWidget(strategy);
     connect(slotsWidget,
             &SlotsWidget::sessionsChanged,
@@ -98,15 +98,12 @@ void SlotBoardWidget::updateUI() {
 QVector<TimeLabel> SlotBoardWidget::makeLabelsForStrategy() {
     QVector<TimeLabel> labels;
 
-    for (auto &timeSlot : strategy.time_slots()) {
-        auto labelText = QStringForMinutes(timeSlot.begin_time);
-        auto label = TimeLabel{labelText, timeSlot.begin_time};
+    for (auto &time : strategy.time_slots().times()) {
+        auto labelText = QStringForMinutes(time);
+        auto label = TimeLabel{labelText, time};
 
         labels.append(label);
     }
-
-    auto endTimeText = QStringForMinutes(strategy.end_time());
-    labels.append(TimeLabel{endTimeText, strategy.end_time()});
 
     return labels;
 }

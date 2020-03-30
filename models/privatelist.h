@@ -94,14 +94,11 @@ namespace stg {
                 return false;
             }
 
-            for (auto item_index = 0;
-                 item_index < lhs.size();
-                 item_index++) {
+            for (auto item_index = 0; item_index < lhs.size(); item_index++) {
                 if (lhs[item_index] != rhs[item_index]) {
                     return false;
                 }
             }
-
 
             return true;
         };

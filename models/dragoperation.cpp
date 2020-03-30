@@ -10,7 +10,7 @@ stg::drag_operation::drag_operation(time_slots_state *time_slots, indices_vector
           initial_dragged_indices(std::move(initial_indices)) {
 }
 
-void stg::drag_operation::record_drag(const session::time_slots_state &time_slots_to_drag, int distance) {
+void stg::drag_operation::record_drag(const std::vector<time_slot> &time_slots_to_drag, int distance) {
     if (distance == 0) {
         return;
     }
@@ -67,7 +67,7 @@ void stg::drag_operation::restore_cache(const indices_range &restore_cache_range
                                         const indices_cache &cache,
                                         movements_state &movements) const {
     for (size_t i = 0; i < cache.size(); i++) {
-        auto insert_at_index = restore_cache_range.first + i;
+        auto insert_at_index = static_cast<index_t>(restore_cache_range.first + i);
         auto[history_index, activity] = cache[i];
 
         movements[history_index] = insert_at_index;
@@ -319,6 +319,10 @@ stg::drag_operation::find_avaliable_movement_index(indices_range session_range,
 
 bool stg::drag_operation::state_changed() {
     return time_slots->data() != initial_time_slots;
+}
+
+stg::time_slots_state::data_t &stg::drag_operation::initial_state() {
+    return initial_time_slots;
 }
 
 stg::drag_operation::index_t stg::drag_operation::indices_range::size() const {

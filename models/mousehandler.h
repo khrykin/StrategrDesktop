@@ -22,16 +22,19 @@ namespace stg {
     struct mouse_parameters {
         int stretch_zone_size = 5;
         int direction_change_resolution = 2;
-        int autoscroll_zone_size = 70;
+        int autoscroll_zone_size = 40;
     };
 
     class mouse_handler {
     public:
+        using index_t = stg::strategy::time_slot_index_t;
+
         enum class cursor {
             pointer,
             closed_hand,
             open_hand,
-            resize
+            resize,
+            drag_copy
         };
 
         enum class scroll_direction {
@@ -52,10 +55,15 @@ namespace stg {
         std::function<void()> on_open_activities = nullptr;
         std::function<void(const point &)> on_show_context_menu = nullptr;
         std::function<void(const std::vector<index_t> &)> on_select_sessions = nullptr;
-        std::function<void(index_t, index_t)> on_resize_boundary_change = nullptr;
+        std::function<void(index_t session_before_boundary_index,
+                           index_t slot_before_boundary_index)> on_resize_boundary_change = nullptr;
         std::function<void(scroll_direction)> on_start_auto_scroll = nullptr;
         std::function<void()> on_stop_auto_scroll = nullptr;
-        std::function<void(const point &, index_t, index_t)> on_context_menu_event = nullptr;
+        std::function<void(const point &,
+                           index_t current_slot_index,
+                           index_t current_session_index)> on_context_menu_event = nullptr;
+
+        std::function<void(index_t session_index, index_t first_slot_index)> on_draw_dragged_session = nullptr;
 
         explicit mouse_handler(stg::strategy &strategy,
                                stg::selection &selection,
@@ -66,9 +74,11 @@ namespace stg {
 
         ~mouse_handler();
 
+        // Note: all event positions must be in slotboard view's coordinate space
         void mouse_press(const mouse_event &event);
         void mouse_move(const mouse_event &event);
         void mouse_release(const mouse_event &event);
+
         void key_down(const event &event);
         void key_up(const event &event);
 
@@ -91,7 +101,8 @@ namespace stg {
             none,
             drag,
             resize,
-            select
+            select,
+            copy_drag
         };
 
         struct operation;
@@ -106,9 +117,12 @@ namespace stg {
         struct select_operation;
         friend struct select_operation;
 
-        using index_t = stg::strategy::time_slot_index_t;
+        struct copy_drag_operation;
+        friend struct copy_drag_operation;
 
+        // Slotboard view bounds relative to scroll view content
         std::function<rect()> get_bounds = nullptr;
+        // Scroll view viewport bounds relative to slotboard
         std::function<rect()> get_viewport = nullptr;
         std::function<int()> get_slot_height = nullptr;
 

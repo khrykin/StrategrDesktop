@@ -44,3 +44,7 @@ QCursor CursorProvider::openHandCursor() {
     return QCursor(Qt::OpenHandCursor);
 #endif
 }
+
+QCursor CursorProvider::dragCopyCursor() {
+    return QCursor(Qt::DragCopyCursor);
+}

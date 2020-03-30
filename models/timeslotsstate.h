@@ -13,6 +13,11 @@
 #include "streamablelist.h"
 
 namespace stg {
+    class strategy;
+    class sessions_calculator;
+    class drag_operation;
+    class resize_operation;
+
     using time_slots_state_base = private_list<time_slot>;
     class time_slots_state :
             public time_slots_state_base,
@@ -22,6 +27,21 @@ namespace stg {
         using time_t = time_slot::time_t;
         using duration_t = time_slot::duration_t;
         using size_t = int;
+
+        bool next_slot_empty(index_t index) const;
+        bool previous_slot_empty(index_t index) const;
+
+        bool has_activity(const activity *activity);
+
+        std::vector<time_t> times() const;
+    private:
+        friend strategy;
+        friend sessions_calculator;
+        friend drag_operation;
+        friend resize_operation;
+
+        time_t _begin_time = 0;
+        duration_t _slot_duration = 0;
 
         time_slots_state(time_t start_time,
                          duration_t slot_duration,
@@ -65,11 +85,6 @@ namespace stg {
         void swap(index_t first_index, index_t second_index);
         void silently_swap(index_t first_index, index_t second_index);
 
-        bool next_slot_empty(index_t index) const;
-        bool previous_slot_empty(index_t index) const;
-
-        bool has_activity(const activity *activity);
-
         time_slots_state &operator=(const time_slots_state &new_state);
 
         std::string class_print_name() const override;
@@ -78,13 +93,7 @@ namespace stg {
 
         void reset_with(data_t raw_data) override;
 
-    private:
-        friend strategy;
-
-        time_t _begin_time = 0;
-        duration_t _slot_duration = 0;
-
-        time_t slot_begin_time(time_t global_begin_time, index_t slot_index);
+        time_t make_slot_begin_time(time_t global_begin_time, index_t slot_index);
         void update_begin_times();
 
         void reset_times();

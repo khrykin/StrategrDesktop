@@ -41,6 +41,10 @@ private:
     int slotHeight();
 
     QTimer *autoscrollAnimation = nullptr;
+    int draggedSessionIndex = -1;
+    stg::rect draggedSessionRect = stg::rect::zero;
+    SessionWidget *draggedSessionWidget = nullptr;
+    QPropertyAnimation *draggedSessionAnimation = nullptr;
 
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
     SlotBoardWidget *slotBoard();
@@ -49,7 +53,6 @@ private:
     stg::rect viewportRect();
 
     void selectSessionsAtIndices(const std::vector<int> &sessionIndices);
-    void setSelectedForSessionIndex(int sessionIndex, bool isSelected);
 
     void updateCursor(stg::mouse_handler::cursor new_cursor);
     void updateResizeBoundary(int sessionBeforeBoundaryIndex,
@@ -67,5 +70,6 @@ private:
 
     void leaveEvent(QEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 };
 #endif //STRATEGR_SLOTSMOUSEHANDLER_H

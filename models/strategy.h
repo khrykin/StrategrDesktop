@@ -38,6 +38,8 @@ namespace stg {
 
         static constexpr auto no_activity = time_slot::no_activity;
 
+#pragma mark - Constructors & Operators
+
         explicit strategy(time_t begin_time_t = defaults::begin_time,
                           duration_t time_slot_duration_t = defaults::time_slot_duration,
                           size_t number_of_time_slots = defaults::number_of_time_slots);
@@ -49,15 +51,21 @@ namespace stg {
 
         strategy &operator=(const strategy &other);
 
+#pragma mark - Import & Export
+
         static std::unique_ptr<strategy> from_json_string(const std::string &json_string);
         std::string to_json_string() const;
 
         static std::unique_ptr<strategy> from_file(const std::string &path) noexcept(false);
         void write_to_file(const std::string &path) const noexcept(false);
 
+#pragma mark - Collections
+
         const activity_list &activities() const;
         const sessions_list &sessions() const;
         const time_slots_state &time_slots() const;
+
+#pragma mark - Time Grid Properties
 
         time_t begin_time() const;
         void set_begin_time(time_t begin_time);
@@ -71,20 +79,26 @@ namespace stg {
         time_t end_time() const;
         duration_t duration() const;
 
-        /* Real-time properties */
+#pragma mark - Real-time Properties
+
         const session *active_session() const;
         const session *upcoming_session() const;
 
-        /* Operations on activities */
-        void add_activity(const activity &activity);
+#pragma mark - Operations On Activities
+
+        void add_activity(const activity &activity) noexcept(false);
+        void silently_add_activity(const activity &activity) noexcept(false);
         void delete_activity(activity_index activity_index);
-        void edit_activity(activity_index activity_index, const activity &new_activity);
+        void silently_delete_activity(activity_index activity_index);
+        void edit_activity(activity_index activity_index, const activity &new_activity) noexcept(false);
+        void silently_edit_activity(activity_index activity_index, const activity &new_activity) noexcept(false);
         void drag_activity(activity_index from_index, activity_index to_index);
+        void silently_drag_activity(activity_index from_index, activity_index to_index);
         void reorder_activities_by_usage();
 
-        /* Operations on slots */
-        void place_activity(activity_index activity_index,
-                            const std::vector<time_slot_index_t> &time_slot_indices);
+#pragma mark - Operations On Slots
+
+        void place_activity(activity_index activity_index, const std::vector<time_slot_index_t> &time_slot_indices);
         void make_empty_at(const std::vector<time_slot_index_t> &time_slot_indices);
         void shift_below_time_slot(time_slot_index_t from_index, int length);
 
@@ -97,11 +111,16 @@ namespace stg {
         void begin_dragging(session_index_t session_index);
         void drag_session(session_index_t session_index, int distance);
         void end_dragging();
+        void cancel_dragging();
 
-        /* History */
+        void copy_session(session_index_t session_index, time_slot_index_t begin_index);
+#pragma mark - History
+
         void commit_to_history();
         void undo();
         void redo();
+        bool has_activities_undo();
+        bool has_activities_redo();
     private:
         activity_list _activities;
         time_slots_state _time_slots;

@@ -2,7 +2,6 @@
 // Created by Dmitry Khrykin on 2019-07-10.
 //
 
-#include <cmath>
 #include <algorithm>
 
 #include <QMenu>
@@ -10,6 +9,7 @@
 #include <QPainter>
 #include <QTimer>
 #include <QScrollBar>
+#include <QGraphicsDropShadowEffect>
 
 #include "slotsmousehandler.h"
 #include "macoswindow.h"
@@ -20,7 +20,6 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
         : QFrame(nullptr),
           slotsWidget(slotsWidget) {
     setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
 
     using namespace std::placeholders;
 
@@ -31,6 +30,98 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
     handler.on_stop_auto_scroll = std::bind(&SlotsMouseHandler::stopAutoScroll, this);
     handler.on_context_menu_event = std::bind(&SlotsMouseHandler::showContextMenu, this, _1, _2, _3);
     handler.on_open_activities = std::bind(&SlotsWidget::openActivitiesWindow, slotsWidget);
+    handler.on_draw_dragged_session = [this](int sessionIndex, int firstSlotIndex) {
+        auto getRect = [=]() -> QRect {
+            const auto &session = strategy().sessions()[sessionIndex];
+
+            auto lastSlotIndex = firstSlotIndex + session.length();
+            auto &lastSlot = strategy().time_slots()[lastSlotIndex];
+            auto bottomMargin = lastSlot.end_time() % 60 == 0 ? 2 : 4;
+            auto horizontalMargin = 8;
+            auto rect = QRect(horizontalMargin,
+                              firstSlotIndex * slotHeight() + 2,
+                              width() - 2 * horizontalMargin,
+                              session.length() * slotHeight() - bottomMargin);
+
+            return rect;
+        };
+
+        auto makeBigRect = [=](const QRect &smallRect) -> QRect {
+            auto bigRect = smallRect;
+            bigRect.setX(smallRect.x() - 2);
+            bigRect.setWidth(smallRect.width() + 4);
+            return bigRect;
+        };
+
+        auto makeSmallRect = [=](const QRect &bigRect) -> QRect {
+            auto smallRect = bigRect;
+            smallRect.setX(bigRect.x() + 2);
+            smallRect.setWidth(bigRect.width() - 4);
+            return smallRect;
+        };
+
+        bool initial = false;
+
+        if (!draggedSessionWidget && sessionIndex >= 0) {
+            initial = true;
+
+            draggedSessionWidget = new SessionWidget(strategy().sessions()[sessionIndex], this);
+            draggedSessionWidget->setDrawsBorders(false);
+            draggedSessionWidget->setIsSelected(true);
+
+            auto *effect = new QGraphicsDropShadowEffect;
+            effect->setBlurRadius(20);
+            effect->setXOffset(0);
+            effect->setYOffset(0);
+            effect->setColor(QColor(0xCCCCCC));
+
+            draggedSessionWidget->setGraphicsEffect(effect);
+
+            draggedSessionWidget->setVisible(true);
+
+            draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
+            draggedSessionAnimation->setDuration(50);
+            auto smallRect = getRect();
+            auto bigRect = makeBigRect(smallRect);
+
+            draggedSessionWidget->setGeometry(smallRect);
+            draggedSessionAnimation->setStartValue(smallRect);
+            draggedSessionAnimation->setEndValue(bigRect);
+
+            draggedSessionAnimation->start();
+        }
+
+        if (draggedSessionWidget && sessionIndex < 0) {
+            if (draggedSessionAnimation)
+                draggedSessionAnimation->deleteLater();
+
+            draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
+            draggedSessionAnimation->setDuration(50);
+            auto draggedSessionWidgetLocal = draggedSessionWidget;
+            draggedSessionWidget = nullptr;
+
+            connect(draggedSessionAnimation, &QPropertyAnimation::finished, [this, draggedSessionWidgetLocal]() {
+                draggedSessionAnimation->deleteLater();
+                draggedSessionWidgetLocal->deleteLater();
+
+                draggedSessionAnimation = nullptr;
+            });
+
+            auto smallRect = makeSmallRect(draggedSessionWidgetLocal->geometry());
+
+            draggedSessionAnimation->setStartValue(draggedSessionWidgetLocal->geometry());
+            draggedSessionAnimation->setEndValue(smallRect);
+
+            draggedSessionAnimation->start();
+        }
+
+        if (draggedSessionWidget && !initial) {
+            auto smallRect = getRect();
+            auto bigRect = makeBigRect(smallRect);
+
+            draggedSessionWidget->setGeometry(bigRect);
+        }
+    };
 }
 
 int SlotsMouseHandler::slotHeight() {
@@ -145,6 +236,9 @@ void SlotsMouseHandler::updateCursor(stg::mouse_handler::cursor new_cursor) {
         case mouse_handler::cursor::open_hand:
             setCursor(openHandCursor());
             break;
+        case mouse_handler::cursor::drag_copy:
+            setCursor(dragCopyCursor());
+            break;
     }
 }
 
@@ -174,20 +268,22 @@ void SlotsMouseHandler::showContextMenu(const stg::point &position,
 }
 
 void SlotsMouseHandler::selectSessionsAtIndices(const std::vector<int> &sessionIndices) {
+    auto nothingSelected = sessionIndices.empty();
+
     for (int i = 0; i < slotsWidget->slotsLayout->layout()->count(); i++) {
         auto isSelected = std::find(sessionIndices.begin(),
                                     sessionIndices.end(),
                                     i) != sessionIndices.end();
-        setSelectedForSessionIndex(i, isSelected);
-    }
-}
 
-void SlotsMouseHandler::setSelectedForSessionIndex(int sessionIndex,
-                                                   bool isSelected) {
-    auto *sessionWidget = sessionWidgetAtIndex(sessionIndex);
+        auto *sessionWidget = sessionWidgetAtIndex(i);
+        if (!sessionWidget)
+            continue;
 
-    if (sessionWidget && sessionWidget->isSelected() != isSelected) {
-        sessionWidget->setIsSelected(isSelected);
+        if (sessionWidget->isSelected() != isSelected) {
+            sessionWidget->setIsSelected(isSelected);
+        }
+
+        sessionWidget->setDimmed(!isSelected && !nothingSelected);
     }
 }
 
@@ -203,4 +299,8 @@ SessionWidget
 
 stg::strategy &SlotsMouseHandler::strategy() {
     return slotsWidget->strategy;
+}
+
+void SlotsMouseHandler::showEvent(QShowEvent *event) {
+    setFocus();
 }

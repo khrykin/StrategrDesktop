@@ -21,8 +21,8 @@ stg::overview::elements() {
 
     auto prev_origin_x = 0;
     for (auto &item : activity_sessions.overview()) {
-        auto current_width = std::lround(item.duration_percentage * width);
-        auto origin_x = std::lround(item.begin_percentage * width);
+        auto current_width = static_cast<int>(std::lround(item.duration_percentage * width));
+        auto origin_x = static_cast<int>(std::lround(item.begin_percentage * width));
 
         if (origin_x != prev_origin_x) {
             current_width += origin_x - prev_origin_x;
@@ -30,9 +30,7 @@ stg::overview::elements() {
         }
 
         if (item.color) {
-            result.push_back(overview_item{static_cast<int>(origin_x),
-                                           static_cast<int>(current_width),
-                                           *item.color});
+            result.push_back(overview_item{origin_x, current_width, *item.color});
         }
 
         prev_origin_x = origin_x + current_width;

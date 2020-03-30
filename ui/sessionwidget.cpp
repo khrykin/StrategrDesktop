@@ -30,26 +30,41 @@ void SessionWidget::paintEvent(QPaintEvent *) {
 
     painter.setPen(Qt::NoPen);
 
-    drawBorder(painter);
+    if (_drawsBorders)
+        drawBorder(painter);
+
+    drawBackground(painter);
 
     if (activitySession.activity) {
-        drawRulers(painter);
+        if (_drawsBorders)
+            drawRulers(painter);
+
         drawLabel(painter);
     }
 
-    if (isSelected()) {
-        drawSelection(painter);
-    }
+//    if (dimmed) {
+//        auto dimColor = baseColor();
+//        dimColor.setAlphaF(0.2);
+//
+//        painter.setBrush(dimColor);
+//        painter.drawRect(contentsRect());
+//    }
 }
 
 void SessionWidget::drawRulers(QPainter &painter) const {
-    auto baseColor = palette().color(QPalette::Base);
-    auto alphaFactor = ColorUtils::shadesAlphaFactor(8);
+    auto blackColor = QColor(Qt::black);
+    auto desaturatedColor = sessionColor();
+    desaturatedColor.setHslF(desaturatedColor.hueF(), 0.3, 0.75);
 
-    auto rulerColor = ColorUtils::overlayWithAlpha(
-            QColor(ApplicationSettings::rowBorderColor),
-            0.06 * alphaFactor,
-            baseColor);
+    auto rulerColor = isSelected()
+                      ? ColorUtils::overlayWithAlpha(blackColor, 0.3, selectedBackgroundColor())
+                      : desaturatedColor;
+
+    if (isSelected() && rulerColor.lightnessF() < 0.1) {
+        rulerColor = QColor(Qt::white);
+    }
+
+    rulerColor.setAlphaF(0.2);
 
     painter.setBrush(rulerColor);
 
@@ -62,7 +77,7 @@ void SessionWidget::drawRulers(QPainter &painter) const {
 
         auto thickness = timeSlot.end_time() % 60 == 0 ? 2 : 1;
         auto rulerRect = QRect(0,
-                               slotHeight * (timeSlotIndex + 1) - 1,
+                               slotHeight * (timeSlotIndex + 1) - thickness,
                                width(),
                                thickness);
 
@@ -70,37 +85,42 @@ void SessionWidget::drawRulers(QPainter &painter) const {
     }
 }
 
-void SessionWidget::drawSelection(QPainter &painter) const {
+void SessionWidget::drawBackground(QPainter &painter) const {
     if (!activitySession.activity) {
         return;
     }
 
+    auto color = isSelected() ? selectedBackgroundColor() : backgroundColor();
+
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setBrush(selectedBackgroundColor());
+    painter.setBrush(color);
 
     auto lastTimeSlot = activitySession.time_slots.back();
     auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 || isBorderSelected ? 1 : 0;
-    auto selectionRect = QRect(1,
+    auto selectionRect = QRect(0,
                                2,
-                               width() - 2,
+                               width(),
                                height() - 5 - bottomMargin);
 
     painter.drawRoundedRect(selectionRect, 4, 4);
 }
 
-QColor SessionWidget::selectedBackgroundColor() const {
+QColor SessionWidget::backgroundColor() const {
     using namespace ColorUtils;
 
     if (!activitySession.activity) {
-        return overlayWithAlpha(textColor(),
-                                0.05 * shadesAlphaFactor(0));
+        return QColor(255, 255, 255, 255);
     }
 
-    auto backgroundColor = sessionColor().lighter(110);
-    backgroundColor.setAlphaF(0.02);
+    auto backgroundColor = sessionColor();///.lighter(110);
+    backgroundColor.setAlphaF(0.2);
 
-    auto selectedBackgroundColor = backgroundColor;
-    selectedBackgroundColor.setAlphaF(0.1);
+    return backgroundColor;
+}
+
+QColor SessionWidget::selectedBackgroundColor() const {
+    auto selectedBackgroundColor = backgroundColor();
+    selectedBackgroundColor.setAlphaF(1);
 
     return selectedBackgroundColor;
 }
@@ -124,7 +144,7 @@ void SessionWidget::drawBorder(QPainter &painter) {
                             width(),
                             borderThickness);
 
-    painter.setBrush(isBorderSelected ? highlightColor() : borderColor());
+    painter.setBrush(isBorderSelected ? controlColor() : borderColor());
     painter.drawRect(borderRect);
 }
 
@@ -201,9 +221,38 @@ void SessionWidget::drawLabel(QPainter &painter) const {
                           width() - 2 * ApplicationSettings::defaultPadding,
                           height() - 2 * ApplicationSettings::defaultPadding);
 
+    auto sessionColorDesaturated
+            = ColorUtils::overlayWithAlpha(textColor(), 0.5, selectedBackgroundColor());
+    sessionColorDesaturated.setHsvF(sessionColorDesaturated.hueF(),
+                                    sessionColorDesaturated.saturationF() - 0.3 > 0
+                                    ? sessionColorDesaturated.saturationF() - 0.3
+                                    : 0,
+                                    sessionColorDesaturated.valueF());
+    auto selectedDurationColor
+            = ColorUtils::overlayWithAlpha(baseColor(), 0.7, selectedBackgroundColor());
+
+    auto durationColor = isSelected()
+                         ? selectedDurationColor
+                         : sessionColorDesaturated;
+
+    auto titleColor = isSelected() ? Qt::white : sessionColor();
+
+    if (sessionColor() == QColor(Qt::black)) {
+        titleColor = textColor();
+    }
+
+    if (sessionColor().lightnessF() < 0.2) {
+        if (isSelected()) {
+            titleColor = Qt::white;
+            durationColor = ColorUtils::overlayWithAlpha(Qt::white, 0.5, sessionColor());
+        }
+    }
+
     FontUtils::drawSessionTitle(activitySession,
                                 painter,
-                                textRect);
+                                textRect,
+                                durationColor,
+                                titleColor);
 
     painter.setPen(Qt::NoPen);
 }
@@ -211,5 +260,19 @@ void SessionWidget::drawLabel(QPainter &painter) const {
 void SessionWidget::setSelectBorder(bool newIsBorderSelected) {
     isBorderSelected = newIsBorderSelected;
 
+    update();
+}
+
+void SessionWidget::setDimmed(bool dimmed) {
+    this->dimmed = dimmed;
+    update();
+}
+
+bool SessionWidget::drawsBorders() const {
+    return _drawsBorders;
+}
+
+void SessionWidget::setDrawsBorders(bool drawsBorders) {
+    _drawsBorders = drawsBorders;
     update();
 }

@@ -33,7 +33,7 @@ void stg::mouse_handler::mouse_press(const stg::mouse_event &event) {
     current_operaion = get_operation(current_key_modifiers);
     current_operaion->init(event);
 
-    if (event.modifiers == event::right_key && on_context_menu_event) {
+    if ((event.modifiers & event::right_key) == event::right_key && on_context_menu_event) {
         on_context_menu_event(event.position,
                               current_slot_index,
                               current_session_index);
@@ -85,15 +85,19 @@ void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
 }
 
 void stg::mouse_handler::key_down(const event &event) {
-//    std::cout << "key_down" << "\n";
+    current_key_modifiers |= event.modifiers;
     update_cursor(event.modifiers);
 }
 
 void stg::mouse_handler::key_up(const event &event) {
-//    std::cout << "key_up" << "\n";
+    current_key_modifiers |= event.modifiers;
     update_cursor(event.modifiers);
 }
 
+void stg::mouse_handler::auto_scroll_frame(const stg::point &new_mouse_position) {
+    auto new_event = mouse_event(new_mouse_position, current_key_modifiers);
+    mouse_move(new_event);
+}
 
 void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
     auto viewport = get_viewport();
@@ -108,6 +112,9 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
             viewport.height - autoscroll_zone_size,
             viewport.height
     };
+
+//    std::cout << "viewport: " << viewport << " " << viewport.top + viewport.height << "\n";
+//    std::cout << "bounds: " << bounds << " " << bounds.top + bounds.height << "\n";
 
     auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
                                 viewport.top > -bounds.top &&
@@ -138,11 +145,6 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
         if (on_stop_auto_scroll)
             on_stop_auto_scroll();
     }
-}
-
-void stg::mouse_handler::auto_scroll_frame(const stg::point &new_mouse_position) {
-    auto new_event = mouse_event(new_mouse_position, current_key_modifiers);
-    mouse_move(new_event);
 }
 
 std::unique_ptr<stg::mouse_handler::operation>
@@ -196,6 +198,10 @@ stg::mouse_handler::get_operation(event::key_modifiers modifiers) {
         }
     } else if (modifiers == (mouse_event::left_key | mouse_event::ctrl_key)) {
         return make_operation<select_operation>();
+    } else if (modifiers == (mouse_event::left_key | mouse_event::alt_key) &&
+               !current_slot.empty() &&
+               zone == mouse_zone::drag) {
+        return make_operation<copy_drag_operation>();
     }
 
     return make_operation<none_operation>();
@@ -270,14 +276,16 @@ stg::mouse_handler::index_t stg::mouse_handler::get_slot_index(const stg::mouse_
 }
 
 void stg::mouse_handler::update_cursor(event::key_modifiers modifiers) {
+    if (!on_cursor_change)
+        return;
+
     auto new_cursor = get_cursor(modifiers);
     if (new_cursor == current_cursor)
         return;
 
     current_cursor = new_cursor;
 
-    if (on_cursor_change)
-        on_cursor_change(new_cursor);
+    on_cursor_change(new_cursor);
 }
 
 void stg::mouse_handler::update_direction(const stg::mouse_event &event) {
@@ -307,6 +315,12 @@ stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
     auto next_empty = time_slots.next_slot_empty(current_slot_index);
     auto prev_empty = time_slots.previous_slot_empty(current_slot_index);
 
+    if ((modifiers & mouse_event::alt_key) == mouse_event::alt_key &&
+        !current_slot.empty() &&
+        mouse_zone == mouse_zone::drag) {
+        return cursor::drag_copy;
+    }
+
     if (selection.has_selected(current_slot_index)) {
         return cursor::pointer;
     }
@@ -334,7 +348,6 @@ stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
                            (current_slot.empty() && !next_empty)
                            ? cursor::resize
                            : cursor::pointer;
-
             }
         case drag:
             return cursor::closed_hand;
@@ -342,6 +355,8 @@ stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
             return cursor::resize;
         case select:
             return cursor::pointer;
+        case copy_drag:
+            return cursor::drag_copy;
     }
 }
 
@@ -388,6 +403,9 @@ namespace stg {
                 break;
             case mouse_handler::select:
                 os << "select";
+                break;
+            case mouse_handler::copy_drag:
+                os << "copy_drag";
                 break;
         }
 

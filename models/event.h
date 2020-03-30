@@ -14,14 +14,19 @@ namespace stg {
         static constexpr key_modifiers left_key = 1u << 0u;
         static constexpr key_modifiers right_key = 1u << 1u;
         static constexpr key_modifiers ctrl_key = 1u << 2u;
+        static constexpr key_modifiers alt_key = 1u << 3u;
 
         explicit event(key_modifiers modifiers);
 
         template<class QtLikeEvent>
         event(QtLikeEvent *evt) {
-            if (evt->modifiers() == 0x04000000) {
+            if ((evt->modifiers() & 0x04000000) == 0x04000000) {
                 modifiers |= ctrl_key;
-            };
+            }
+
+            if ((evt->modifiers() & 0x08000000) == 0x08000000) {
+                modifiers |= alt_key;
+            }
         }
 
         bool has_only(key_modifiers mod) const;

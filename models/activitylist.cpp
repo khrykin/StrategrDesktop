@@ -13,29 +13,49 @@
 #include <regex>
 #include "utility.h"
 
-void stg::activity_list::add(const activity &activity) {
+void stg::activity_list::silently_add(const activity &activity) {
     if (has(activity)) {
         throw already_present_exception();
     }
 
+    std::cout << "add_activity: " << activity << "\n";
 
     _data.push_back(std::make_shared<stg::activity>(activity));
+}
+
+void stg::activity_list::add(const activity &activity) {
+    silently_add(activity);
 
     on_change_event();
+}
+
+void stg::activity_list::silently_remove_at_index(stg::activity_index index) {
+    _data.erase(_data.begin() + index);
 }
 
 void stg::activity_list::remove_at_index(activity_index index) {
-    _data.erase(_data.begin() + index);
-
+    silently_remove_at_index(index);
     on_change_event();
 }
 
-void stg::activity_list::edit_at_index(activity_index index, const activity &new_activity) {
+void stg::activity_list::silently_edit_at_index(activity_index index, const activity &new_activity) {
+    if (*_data[index] == new_activity) {
+        return;
+    }
+
     if (has(new_activity)) {
         throw already_present_exception();
     }
 
     _data[index] = std::make_shared<activity>(new_activity);
+}
+
+void stg::activity_list::edit_at_index(activity_index index, const activity &new_activity) {
+    if (*_data[index] == new_activity) {
+        return;
+    }
+
+    silently_edit_at_index(index, new_activity);
 
     on_change_event();
 }
@@ -50,34 +70,25 @@ bool stg::activity_list::has(const activity &searched_activity) const {
     return false;
 }
 
-void stg::activity_list::drag(activity_index from_index, activity_index to_index) {
+void stg::activity_list::silently_drag(activity_index from_index, activity_index to_index) {
     if (from_index == to_index) {
         return;
     }
 
-    if (to_index < from_index) {
-        rotate_left(from_index, to_index);
-    } else {
-        rotate_right(from_index, to_index);
-    }
+    if (from_index > to_index)
+        std::rotate(_data.rend() - from_index - 1,
+                    _data.rend() - from_index,
+                    _data.rend() - to_index);
+    else
+        std::rotate(_data.begin() + from_index,
+                    _data.begin() + from_index + 1,
+                    _data.begin() + to_index + 1);
+}
+
+void stg::activity_list::drag(activity_index from_index, activity_index to_index) {
+    silently_drag(from_index, to_index);
 
     on_change_event();
-}
-
-void stg::activity_list::rotate_left(activity_index from_index, activity_index to_index) {
-    rotate(_data.begin() + to_index,
-           _data.begin() + from_index,
-           _data.end());
-}
-
-void stg::activity_list::rotate_right(activity_index from_index, activity_index to_index) {
-    auto last_index = _data.size() - 1;
-    auto from_index_right = last_index - from_index;
-    auto to_index_right = last_index - to_index;
-
-    rotate(_data.rbegin() + to_index_right,
-           _data.rbegin() + from_index_right,
-           _data.rend());
 }
 
 std::string stg::activity_list::class_print_name() const {
@@ -110,13 +121,28 @@ stg::activity *stg::activity_list::at(activity_index item_index) const {
 
 std::optional<stg::activity_list::index_t>
 stg::activity_list::index_of(const activity *activity) const {
-    for (auto activity_index = 0; activity_index < size(); activity_index++) {
-        if (_data[activity_index].get() == activity) {
-            return activity_index;
-        }
+    auto it = std::find_if(_data.begin(), _data.end(), [=](auto &a) {
+        return a.get() == activity;
+    });
+
+    if (it == _data.end()) {
+        return std::nullopt;
     }
 
-    return std::nullopt;
+    return std::distance(_data.begin(), it);
+}
+
+std::optional<stg::activity_list::index_t>
+stg::activity_list::index_of(const activity &activity) const {
+    auto it = std::find_if(_data.begin(), _data.end(), [&](auto &a) {
+        return *a == activity;
+    });
+
+    if (it == _data.end()) {
+        return std::nullopt;
+    }
+
+    return std::distance(_data.begin(), it);
 }
 
 stg::activity_list
