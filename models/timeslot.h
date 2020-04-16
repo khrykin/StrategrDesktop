@@ -8,7 +8,7 @@
 #include <iostream>
 
 namespace stg {
-    class activity;
+    struct activity;
 
     struct time_slot {
         using minutes = unsigned;

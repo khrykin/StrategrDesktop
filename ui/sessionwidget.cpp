@@ -112,8 +112,8 @@ QColor SessionWidget::backgroundColor() const {
         return QColor(255, 255, 255, 255);
     }
 
-    auto backgroundColor = sessionColor();///.lighter(110);
-    backgroundColor.setAlphaF(0.2);
+    auto backgroundColor = sessionColor();
+    backgroundColor.setAlphaF(0.15);
 
     return backgroundColor;
 }
@@ -223,11 +223,8 @@ void SessionWidget::drawLabel(QPainter &painter) const {
 
     auto sessionColorDesaturated
             = ColorUtils::overlayWithAlpha(textColor(), 0.5, selectedBackgroundColor());
-    sessionColorDesaturated.setHsvF(sessionColorDesaturated.hueF(),
-                                    sessionColorDesaturated.saturationF() - 0.3 > 0
-                                    ? sessionColorDesaturated.saturationF() - 0.3
-                                    : 0,
-                                    sessionColorDesaturated.valueF());
+    sessionColorDesaturated.setHsvF(sessionColorDesaturated.hueF(), 0.2, 0.5);
+
     auto selectedDurationColor
             = ColorUtils::overlayWithAlpha(baseColor(), 0.7, selectedBackgroundColor());
 

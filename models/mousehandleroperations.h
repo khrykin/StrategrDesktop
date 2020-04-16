@@ -10,20 +10,46 @@
 #include "mousehandler.h"
 
 struct stg::mouse_handler::operation {
+    enum class state {
+        started,
+        performing,
+        idle
+    };
+
     explicit operation(mouse_handler *handler) : handler(*handler) {}
 
     virtual ~operation() = default;
 
     virtual operation_type type() = 0;
 
-    virtual void init(const mouse_event &event) = 0;
-    virtual void perform(const mouse_event &event) = 0;
-    virtual void teardown(const mouse_event &event) = 0;
+    state state() const {
+        return _state;
+    }
+
+    void start(const mouse_event &event) {
+        init(event);
+        _state = state::started;
+    }
+
+    void perform(const mouse_event &event) {
+        _state = state::performing;
+        change(event);
+    }
+
+    void stop(const mouse_event &event) {
+        teardown(event);
+        _state = state::idle;
+    }
 
     virtual void handle_direction_change() {};
 protected:
     mouse_handler &handler;
     stg::strategy &strategy = handler.strategy;
+    enum state _state = state::idle;
+
+    virtual void init(const mouse_event &event) = 0;
+    virtual void change(const mouse_event &event) = 0;
+    virtual void teardown(const mouse_event &event) = 0;
 };
 
 struct stg::mouse_handler::none_operation : public operation {
@@ -33,9 +59,10 @@ struct stg::mouse_handler::none_operation : public operation {
         return none;
     }
 
+private:
     void init(const mouse_event &event) override {};
 
-    void perform(const mouse_event &event) override {};
+    void change(const mouse_event &event) override {};
 
     void teardown(const mouse_event &event) override {};
 };
@@ -47,34 +74,65 @@ struct stg::mouse_handler::copy_drag_operation : public operation {
         return copy_drag;
     }
 
+private:
+    point previous_position;
+    point initial_position;
+
+    index_t previous_slot_index = -1;
+    index_t dragged_session_index = -1;
+    index_t handle_slot_index = -1;
+
+    int global_distance = 0;
+
+    int current_session_height = 0;
+
     void init(const mouse_event &event) override {
         handler.selection.deselect_all();
 
         dragged_session_index = handler.current_session_index;
         previous_position = event.position;
+        initial_position = event.position;
 
         auto &session = strategy.sessions()[handler.current_session_index];
         auto &current_time_slot = strategy.time_slots()[handler.current_slot_index];
 
-        handle_slot_index = std::distance(session.time_slots.begin(),
+        handle_slot_index = static_cast<index_t>(std::distance(session.time_slots.begin(),
                                           std::find(session.time_slots.begin(),
                                                     session.time_slots.end(),
-                                                    current_time_slot));
-
-        std::cout << "handle_slot_index: " << handle_slot_index << "\n";
+                                                    current_time_slot)));
 
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
     };
 
-    void perform(const mouse_event &event) override {
+    void change(const mouse_event &event) override {
         if (!event.with(mouse_event::alt_key)) {
             dragged_session_index = -1;
-            teardown(event);
+            stop(event);
             handler.current_operaion = handler.make_operation<none_operation>();
             return;
         }
 
+        auto get_global_distance = [this](const mouse_event &event) -> int {
+            auto new_global_distance = static_cast<int>(
+                    (event.position.y - initial_position.y - 0.5 * handler.get_slot_height())
+                    / handler.get_slot_height()
+            );
+
+            if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
+                new_global_distance++;
+            }
+
+            return new_global_distance;
+        };
+
+        auto new_global_distance = get_global_distance(event);
+        if (new_global_distance == global_distance)
+            return;
+
+        global_distance = new_global_distance;
+
+        previous_position = event.position;
 
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
@@ -90,14 +148,6 @@ struct stg::mouse_handler::copy_drag_operation : public operation {
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(-1, -1);
     };
-private:
-    point previous_position;
-
-    index_t previous_slot_index = -1;
-    index_t dragged_session_index = -1;
-    index_t handle_slot_index = -1;
-
-    int current_session_height = 0;
 
     int get_delta(int prev_pos, int current_pos) {
         auto slot_height = handler.get_slot_height();
@@ -109,7 +159,8 @@ private:
     index_t get_first_slot_index() {
         auto &current_session = strategy.sessions()[dragged_session_index];
 
-        auto first_slot_index = handler.current_slot_index - handle_slot_index;
+        auto first_slot_index = *strategy.time_slots().index_of(current_session.time_slots.front()) +
+                                global_distance;
         auto last_slot_index = first_slot_index + current_session.length();
 
         if (first_slot_index < 0) {
@@ -129,65 +180,89 @@ struct stg::mouse_handler::drag_operation : public operation {
         return drag;
     }
 
+    void switch_to_copy(const mouse_event &event) const {
+        strategy.cancel_dragging();
+
+        if (handler.on_select_sessions)
+            handler.on_select_sessions({});
+
+        auto new_current_operation = handler.make_operation<copy_drag_operation>();
+
+        auto fake_initial_event = mouse_event(initial_position, event.modifiers);
+        handler.current_slot_index = initial_slot_index;
+        handler.current_session_index = initial_session_index;
+
+        new_current_operation->start(fake_initial_event);
+        new_current_operation->perform(event);
+
+        handler.current_operaion = std::move(new_current_operation);
+    };
+private:
+    point initial_position;
+
+    index_t initial_session_index = -1;
+    index_t dragged_session_index = -1;
+    index_t initial_slot_index = -1;
+
+    int global_distance = 0;
+
     void init(const mouse_event &event) override {
         handler.selection.deselect_all();
 
         initial_session_index = handler.current_session_index;
         initial_slot_index = handler.current_slot_index;
 
+        dragged_session_index = initial_session_index;
+
         if (handler.on_select_sessions)
             handler.on_select_sessions({initial_session_index});
 
         strategy.begin_dragging(handler.current_session_index);
 
-        previous_session_index = handler.current_session_index;
-        previous_slot_index = handler.current_slot_index;
-        previous_position = event.position;
+        initial_position = event.position;
     };
 
-    void perform(const mouse_event &event) override {
+    void change(const mouse_event &event) override {
         if (event.with(mouse_event::alt_key)) {
-            strategy.cancel_dragging();
-            if (handler.on_select_sessions)
-                handler.on_select_sessions({});
+            switch_to_copy(event);
+            return;
+        }
 
-            handler.current_session_index = initial_session_index;
+        auto get_global_distance = [this](const mouse_event &event) -> int {
+            auto new_global_distance = static_cast<int>(
+                    (event.position.y - initial_position.y - 0.5 * handler.get_slot_height())
+                    / handler.get_slot_height()
+            );
 
-            auto new_current_operaion = handler.make_operation<copy_drag_operation>();
+            if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
+                new_global_distance++;
+            }
 
-            auto actual_current_slot_index = handler.current_slot_index;
-            handler.current_slot_index = initial_slot_index;
-            new_current_operaion->init(event);
+            return new_global_distance;
+        };
 
-            handler.current_slot_index = actual_current_slot_index;
-            new_current_operaion->perform(event);
-
-            handler.current_operaion = std::move(new_current_operaion);
+        auto new_global_distance = get_global_distance(event);
+        if (new_global_distance == global_distance) {
+            if (global_distance == 0)
+                _state = state::started;
 
             return;
         }
 
-        auto current_session = strategy.sessions()[handler.current_session_index];
-        auto boundary_delta = get_delta(previous_position.y, event.position.y);
-        previous_position = event.position;
-
-        if (boundary_delta < handler.get_slot_height() / 2) {
-            return;
-        }
-
-        auto distance = handler.current_slot_index - previous_slot_index;
-        if (!distance)
+        auto new_local_distance = new_global_distance - global_distance;
+        if (new_local_distance < 0 && dragged_session_index == 0)
             return;
 
-        strategy.drag_session(previous_session_index, distance);
+        if (new_local_distance > 0 && dragged_session_index == strategy.sessions().size() - 1)
+            return;
 
-        previous_session_index = strategy.sessions()
-                .session_index_for_time_slot_index(handler.current_slot_index);
-        previous_slot_index = handler.current_slot_index;
+        global_distance = new_global_distance;
+
+        dragged_session_index = strategy.drag_session(dragged_session_index, new_local_distance);
 
         if (handler.on_select_sessions)
-            handler.on_select_sessions({previous_session_index});
-    };
+            handler.on_select_sessions({dragged_session_index});
+    }
 
     void teardown(const mouse_event &event) override {
         strategy.end_dragging();
@@ -195,19 +270,6 @@ struct stg::mouse_handler::drag_operation : public operation {
         if (handler.on_select_sessions)
             handler.on_select_sessions({});
     };
-private:
-    point previous_position;
-    index_t initial_session_index = -1;
-    index_t initial_slot_index = -1;
-    index_t previous_slot_index = -1;
-    index_t previous_session_index = -1;
-
-    int get_delta(int prev_pos, int current_pos) {
-        auto slot_height = handler.get_slot_height();
-        auto closest_slot_boundary = std::round(prev_pos / slot_height) * slot_height;
-
-        return std::abs(static_cast<int>(current_pos - closest_slot_boundary));
-    }
 };
 
 struct stg::mouse_handler::resize_operation : public operation {
@@ -218,6 +280,15 @@ struct stg::mouse_handler::resize_operation : public operation {
         return resize;
     }
 
+private:
+    bool finished = false;
+
+    index_t handle_index = -1;
+    index_t boundary_slot_index = -1;
+
+    point initial_position;
+    mouse_zone initial_mouse_zone = mouse_zone::out_of_bounds;
+
     void init(const mouse_event &event) override {
         handler.selection.deselect_all();
 
@@ -225,12 +296,12 @@ struct stg::mouse_handler::resize_operation : public operation {
         initial_mouse_zone = handler.current_mouse_zone;
         initial_position = event.position;
 
-        select_sessions(handle_index, initial_mouse_zone);
+        select_sessions(event, handle_index, initial_mouse_zone);
 
         strategy.begin_resizing();
     }
 
-    void perform(const mouse_event &event) override {
+    void change(const mouse_event &event) override {
         if (finished)
             return;
 
@@ -244,7 +315,11 @@ struct stg::mouse_handler::resize_operation : public operation {
             return;
         }
 
-        strategy.fill_time_slots(source_slot_index, handler.current_slot_index);
+        if (event.with(event::shift_key)) {
+            strategy.fill_time_slots_shifting(source_slot_index, handler.current_slot_index);
+        } else {
+            strategy.fill_time_slots(source_slot_index, handler.current_slot_index);
+        }
 
         auto new_mouse_zone = handler.current_direction == direction::down
                               ? mouse_zone::stretch_bottom
@@ -254,7 +329,7 @@ struct stg::mouse_handler::resize_operation : public operation {
         initial_position = event.position;
         initial_mouse_zone = new_mouse_zone;
 
-        select_sessions(handle_index, initial_mouse_zone);
+        select_sessions(event, handle_index, initial_mouse_zone);
     }
 
     void teardown(const mouse_event &event) override {
@@ -283,15 +358,6 @@ struct stg::mouse_handler::resize_operation : public operation {
         }
     }
 
-private:
-    bool finished = false;
-
-    index_t handle_index = -1;
-    index_t boundary_slot_index = -1;
-
-    point initial_position;
-    mouse_zone initial_mouse_zone = mouse_zone::out_of_bounds;
-
     int get_boundary_delta(int prev_pos, int current_pos) {
         auto boundary_pos = get_boundary_position();
         auto delta = static_cast<int>(current_pos - boundary_pos);
@@ -303,7 +369,9 @@ private:
         return handler.get_slot_height() * (boundary_slot_index + 1);
     }
 
-    void select_sessions(index_t source_index, enum mouse_zone mouse_zone) {
+    void select_sessions(const mouse_event &event,
+                         index_t source_index,
+                         enum mouse_zone mouse_zone) {
         auto first_selection_index = strategy.sessions()
                 .session_index_for_time_slot_index(source_index);
 
@@ -338,11 +406,31 @@ private:
 
         if (first_session_empty && second_session_empty) {
             teardown(mouse_event(point(), 0));
+            handler.current_operaion = handler.make_operation<none_operation>();
             return;
         }
 
         if (handler.on_select_sessions) {
             auto selected = get_selected(first_selection_index, second_selection_index);
+
+            if (event.with(event::shift_key)) {
+                if (mouse_zone == mouse_zone::stretch_top) {
+                    if (handler.current_direction == direction::down)
+                        selected.erase(selected.begin());
+
+                    if (handler.current_direction == direction::up)
+                        selected.erase(selected.end() - 1);
+                }
+
+                if (mouse_zone == mouse_zone::stretch_bottom) {
+                    if (handler.current_direction == direction::up)
+                        selected.erase(selected.end() - 1);
+
+                    if (handler.current_direction == direction::down)
+                        selected.erase(selected.end() - 1);
+                }
+            }
+
             handler.on_select_sessions(selected);
         }
 
@@ -384,6 +472,10 @@ struct stg::mouse_handler::select_operation : public operation {
         return select;
     }
 
+private:
+    std::unique_ptr<event> initial_event;
+    stg::mouse_handler::index_t initial_slot_index = -1;
+
     void init(const mouse_event &event) override {
         initial_event = std::make_unique<mouse_event>(event);
         initial_slot_index = handler.current_slot_index;
@@ -396,7 +488,7 @@ struct stg::mouse_handler::select_operation : public operation {
         handler.selection.toggle_at(handler.current_slot_index);
     };
 
-    void perform(const mouse_event &event) override {
+    void change(const mouse_event &event) override {
         if (current_slot_is_selected()) {
             return;
         }
@@ -418,10 +510,6 @@ struct stg::mouse_handler::select_operation : public operation {
             }
         }
     };
-
-private:
-    std::unique_ptr<event> initial_event;
-    stg::mouse_handler::index_t initial_slot_index = -1;
 
     bool current_slot_is_selected() {
         return handler.selection.has_selected(handler.current_slot_index);

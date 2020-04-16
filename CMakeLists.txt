@@ -94,7 +94,9 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/selection.cpp
         models/selection.h
         models/event.cpp
-        models/event.h models/color.cpp models/color.h)
+        models/event.h
+        models/color.cpp
+        models/color.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -211,7 +213,7 @@ qt5_add_resources(RESOURCES
         resources/fonts.qrc)
 
 if (APPLE)
-    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
     set(MODELS_PLATFORM_LIBRARIES
             "-framework Foundation"
             "-framework AppKit"

@@ -17,8 +17,8 @@
 
 #endif
 
-NotifierBackend::NotifierBackend() {
 #ifdef Q_OS_WIN
+NotifierBackend::NotifierBackend() {
 
     if (!Application::trayIcon) {
         Application::trayIcon = new QSystemTrayIcon();
@@ -31,8 +31,9 @@ NotifierBackend::NotifierBackend() {
         Application::trayIcon->show();
     }
 
-#endif
 }
+#endif
+
 
 #ifndef Q_OS_MAC
 
@@ -42,7 +43,7 @@ void NotifierBackend::sendMessage(const QString &title, const QString &message) 
     if (Application::trayIcon && QSystemTrayIcon::supportsMessages()) {
         Application::trayIcon->showMessage(title, message, ApplicationIcon::defaultIcon(), 10000);
     } else {
-        std::cout << "Error: Can't send no tification\n";
+        std::cout << "Error: Can't send notification\n";
     }
 
 #endif

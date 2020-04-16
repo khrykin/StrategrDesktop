@@ -119,6 +119,7 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
             auto smallRect = getRect();
             auto bigRect = makeBigRect(smallRect);
 
+            draggedSessionAnimation->stop();
             draggedSessionWidget->setGeometry(bigRect);
         }
     };
@@ -156,6 +157,9 @@ void SlotsMouseHandler::mousePressEvent(QMouseEvent *event) {
 }
 
 void SlotsMouseHandler::mouseMoveEvent(QMouseEvent *event) {
+    if (!hasFocus())
+        setFocus();
+
     handler.mouse_move(event);
 }
 

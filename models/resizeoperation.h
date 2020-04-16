@@ -15,6 +15,9 @@ namespace stg {
         void fill_slots(time_slots_state::index_t from_index,
                         time_slots_state::index_t till_index);
 
+        void fill_slots_shifting(time_slots_state::index_t from_index,
+                                 time_slots_state::index_t till_index);
+
         bool state_changed();
     private:
         time_slots_state *time_slots;

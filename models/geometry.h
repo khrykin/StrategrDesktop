@@ -95,9 +95,11 @@ namespace stg {
         }
     };
 
-    constexpr inline point point::zero = point();
+    inline constexpr point point::zero = point();
 
     struct rect {
+        static const rect zero;
+
         int left = 0;
         int top = 0;
         int width = 0;
@@ -170,11 +172,9 @@ namespace stg {
                << r.height << " ]";
             return os;
         }
-
-        static const rect zero;
     };
 
-    constexpr inline auto rect::zero = rect{0, 0, 0, 0};
+    inline constexpr rect rect::zero = rect{0, 0, 0, 0};
 }
 
 #endif //STRATEGR_GEOMETRY_H

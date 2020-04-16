@@ -71,8 +71,8 @@ void ColorPicker::setColorFromPalette(const std::optional<QColor> &color) {
 
 std::vector<QColor> ColorPicker::colorsFromDefaultColors() {
     std::vector<QColor> result;
-    std::transform(stg::activity::default_colors.begin(),
-                   stg::activity::default_colors.end(),
+    std::transform(stg::activity::default_colors().begin(),
+                   stg::activity::default_colors().end(),
                    std::back_inserter(result),
                    [=](const auto &color_info) {
                        return QColor(color_info.first);

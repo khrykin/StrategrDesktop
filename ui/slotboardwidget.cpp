@@ -16,6 +16,7 @@
 #include "slotruler.h"
 #include "currenttimemarker.h"
 #include "slotboardcircleswidget.h"
+#include "slotsmousehandler.h"
 
 SlotBoardWidget::SlotBoardWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {

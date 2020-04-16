@@ -64,12 +64,12 @@ private:
     void showContextMenu(const stg::point &position, int slotIndex, int sessionIndex);
 
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
     void leaveEvent(QEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
     void showEvent(QShowEvent *event) override;
 };
 #endif //STRATEGR_SLOTSMOUSEHANDLER_H

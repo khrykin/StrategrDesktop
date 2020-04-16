@@ -13,6 +13,12 @@ void stg::resize_operation::fill_slots(time_slots_state::index_t from_index,
     time_slots->fill_slots(from_index, till_index);
 }
 
+void stg::resize_operation::fill_slots_shifting(time_slots_state::index_t from_index,
+                                                time_slots_state::index_t till_index) {
+    time_slots->fill_slots_shifting(from_index, till_index);
+}
+
 bool stg::resize_operation::state_changed() {
     return time_slots->data() != initial_time_slots;
 }
+

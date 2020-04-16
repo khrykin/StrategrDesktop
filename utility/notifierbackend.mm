@@ -5,6 +5,30 @@
 
 #include "notifierbackend.h"
 
+NotifierBackend::NotifierBackend() {
+    @autoreleasepool {
+        if (@available(macOS 10.14, *)) {
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            UNAuthorizationOptions options = UNAuthorizationOptionAlert |
+                                             UNAuthorizationOptionBadge |
+                                             UNAuthorizationOptionSound;
+
+            [center requestAuthorizationWithOptions:options
+                                  completionHandler:^(BOOL granted, NSError *error) {
+                                      if (granted) {
+                                          NSLog(@"Notifications granted");
+                                      }
+
+                                      if (error) {
+                                          NSLog(@"Can't authorize notifications: %@\n%@",
+                                                error.localizedDescription,
+                                                error.localizedFailureReason);
+                                      }
+                                  }];
+        }
+    }
+}
+
 void NotifierBackend::sendMessage(const QString &title, const QString &message) {
     @autoreleasepool {
         if (@available(macOS 10.14, *)) {
@@ -22,8 +46,14 @@ void NotifierBackend::sendMessage(const QString &title, const QString &message) 
                                                            content:content
                                                            trigger:trigger];
 
-            [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request
-                                                                   withCompletionHandler:nil];
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            [center addNotificationRequest:request
+                     withCompletionHandler:^(NSError *__nullable error) {
+                         if (error) {
+                             NSLog(@"Can't send notification: %@",
+                                   error.localizedDescription);
+                         }
+                     }];
         } else {
             NSUserNotification *notification = [[NSUserNotification alloc] init];
             notification.title = title.toNSString();

@@ -104,16 +104,18 @@ namespace stg {
 
         bool is_resizing();
         void begin_resizing();
+        void fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index);
         void fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index);
         void end_resizing();
 
         bool is_dragging();
         void begin_dragging(session_index_t session_index);
-        void drag_session(session_index_t session_index, int distance);
+        stg::sessions_list::index_t drag_session(session_index_t session_index, int distance);
         void end_dragging();
         void cancel_dragging();
 
         void copy_session(session_index_t session_index, time_slot_index_t begin_index);
+
 #pragma mark - History
 
         void commit_to_history();

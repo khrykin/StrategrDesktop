@@ -12,10 +12,12 @@ namespace stg {
     struct activity {
         using color_t = stg::color;
         using name_t = std::string;
+        using color_info_t = std::pair<color_t, std::string>;
+
         class invalid_property_exception;
 
         static constexpr auto default_color = "#000000";
-        static const std::vector<std::pair<color_t, std::string>> default_colors;
+        static const std::vector<color_info_t> &default_colors();
 
         explicit activity(name_t name, color_t color = default_color) noexcept(false);
 

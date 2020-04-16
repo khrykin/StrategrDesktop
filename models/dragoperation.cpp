@@ -10,19 +10,22 @@ stg::drag_operation::drag_operation(time_slots_state *time_slots, indices_vector
           initial_dragged_indices(std::move(initial_indices)) {
 }
 
-void stg::drag_operation::record_drag(const std::vector<time_slot> &time_slots_to_drag, int distance) {
+std::vector<stg::drag_operation::index_t>
+stg::drag_operation::record_drag(const std::vector<time_slot> &time_slots_to_drag, int distance) {
     if (distance == 0) {
-        return;
+        return {};
     }
 
     auto range_to_drag = indices_range{*time_slots->index_of(time_slots_to_drag.front()),
                                        *time_slots->index_of(time_slots_to_drag.back())};
 
     // Drag operation_type is divided into two phases:
-    // 1. Drag selected slots to their new positions, switching them is nearby slots;
+    // 1. Drag selected slots to their new positions, switching the nearby slots;
     auto new_dragged_indices = silently_drag(range_to_drag, distance);
     // 2. Try to restore nearby sessions' initial positions.
     invalidate_drag(new_dragged_indices);
+
+    return new_dragged_indices;
 }
 
 stg::drag_operation::indices_vector

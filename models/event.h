@@ -15,6 +15,7 @@ namespace stg {
         static constexpr key_modifiers right_key = 1u << 1u;
         static constexpr key_modifiers ctrl_key = 1u << 2u;
         static constexpr key_modifiers alt_key = 1u << 3u;
+        static constexpr key_modifiers shift_key = 1u << 4u;
 
         explicit event(key_modifiers modifiers);
 
@@ -27,6 +28,10 @@ namespace stg {
             if ((evt->modifiers() & 0x08000000) == 0x08000000) {
                 modifiers |= alt_key;
             }
+
+            if ((evt->modifiers() & 0x02000000) == 0x02000000) {
+                modifiers |= shift_key;
+            }
         }
 
         bool has_only(key_modifiers mod) const;
@@ -36,7 +41,7 @@ namespace stg {
     };
 
     struct mouse_event : public event {
-        mouse_event(const point &position, key_modifiers modifiers = left_key);
+        explicit mouse_event(const point &position, key_modifiers modifiers = left_key);
 
         template<class QtLikeEvent>
         mouse_event(QtLikeEvent *evt) : event(evt), position(evt->pos()) {

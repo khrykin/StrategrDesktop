@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <cassert>
 
 #include "timeslotsstate.h"
 
@@ -79,31 +80,101 @@ void stg::time_slots_state::reset_times() {
     _slot_duration = first_slot.duration;
 }
 
-void stg::time_slots_state::fill_slots(index_t from_index, index_t till_index) {
+void stg::time_slots_state::silently_fill_slots(index_t from_index, index_t till_index) {
     auto source_index = from_index;
 
     if (till_index < from_index) {
         std::swap(till_index, from_index);
     }
 
-    if (till_index >= size() - 1) {
-        till_index = size() - 1;
-    } else if (from_index < 0) {
-        from_index = 0;
-    } else if (till_index < 0 || from_index >= size() - 1) {
-        return;
-    }
+    make_safe(till_index);
+    make_safe(from_index);
 
-    auto new_activity = has_index(source_index)
-                        ? _data[source_index].activity
-                        : time_slot::no_activity;
+    auto source_activity = has_index(source_index)
+                           ? _data[source_index].activity
+                           : time_slot::no_activity;
 
-    for (auto copy_index = from_index; copy_index <= till_index; copy_index++) {
-        _data[copy_index].activity = new_activity;
+    for (auto i = from_index; i <= till_index; i++) {
+        _data[i].activity = source_activity;
     }
+}
+
+void stg::time_slots_state::fill_slots(index_t from_index, index_t till_index) {
+    silently_fill_slots(from_index, till_index);
 
     on_change_event();
 }
+
+void stg::time_slots_state::fill_slots_shifting(index_t from_index, index_t till_index) {
+    auto result = _data;
+
+    if (from_index == till_index)
+        return;
+
+    auto source_activity = has_index(from_index)
+                           ? _data[from_index].activity
+                           : time_slot::no_activity;
+
+    auto activities_not_equal = [&](const auto &v) {
+        return v.activity != source_activity;
+    };
+
+    if (till_index > from_index) {
+        auto movable_begin = from_index < 0
+                             ? _data.begin()
+                             : std::find_if(_data.begin() + from_index,
+                                            std::next(_data.begin() + till_index),
+                                            activities_not_equal);
+        if (movable_begin != _data.end()) {
+            auto movable_begin_index = std::distance(_data.begin(), movable_begin);
+            auto move_to_index = till_index + 1;
+
+            if (move_to_index < _data.size()) {
+                auto move_distance = move_to_index - movable_begin_index;
+                auto movable_last_index = _data.size() - 1 - move_distance;
+
+                for (auto i = movable_begin_index; i <= movable_last_index; i++) {
+                    result[i + move_distance].activity = _data[i].activity;
+                }
+            }
+        }
+    } else {
+        auto movable_rbegin = from_index >= _data.size()
+                              ? _data.rbegin()
+                              : std::find_if(_data.rbegin() + (_data.size() - 1 - from_index),
+                                             std::next(_data.rbegin() + (_data.size() - 1 - till_index)),
+                                             activities_not_equal);
+
+        if (movable_rbegin != _data.rend()) {
+            auto movable_last_index = std::distance(movable_rbegin, _data.rend()) - 1;
+            auto move_to_index = till_index - 1;
+
+            if (move_to_index >= 0) {
+                auto move_distance = movable_last_index - move_to_index;
+                auto movable_begin_index = move_distance;
+
+                for (auto i = movable_begin_index; i <= movable_last_index; i++) {
+                    result[i - move_distance].activity = _data[i].activity;
+                }
+            }
+        }
+    }
+
+    make_safe(till_index);
+    make_safe(from_index);
+
+    if (till_index < from_index)
+        std::swap(till_index, from_index);
+
+    for (auto i = from_index; i <= till_index; i++) {
+        result[i].activity = source_activity;
+    }
+
+    _data = result;
+
+    on_change_event();
+}
+
 
 void stg::time_slots_state::silently_set_activity_at_index(index_t slot_index, activity *activity) {
     if (!has_index(slot_index)) {
@@ -265,6 +336,15 @@ std::vector<stg::time_slots_state::time_t> stg::time_slots_state::times() const 
     result.push_back(_data.back().end_time());
 
     return result;
+}
+
+void stg::time_slots_state::make_safe(index_t &index) {
+    if (empty())
+        index = 0;
+    else if (index < 0)
+        index = 0;
+    else if (index >= size())
+        index = size() - 1;
 }
 
 

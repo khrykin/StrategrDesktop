@@ -31,7 +31,7 @@ void stg::mouse_handler::mouse_press(const stg::mouse_event &event) {
     current_key_modifiers = event.modifiers;
 
     current_operaion = get_operation(current_key_modifiers);
-    current_operaion->init(event);
+    current_operaion->start(event);
 
     if ((event.modifiers & event::right_key) == event::right_key && on_context_menu_event) {
         on_context_menu_event(event.position,
@@ -62,7 +62,7 @@ void stg::mouse_handler::mouse_move(const stg::mouse_event &event) {
 }
 
 void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
-    current_operaion->teardown(event);
+    current_operaion->stop(event);
     current_operaion = make_operation<none_operation>();
 
     update_cursor(event.modifiers);
@@ -86,11 +86,33 @@ void stg::mouse_handler::mouse_release(const stg::mouse_event &event) {
 
 void stg::mouse_handler::key_down(const event &event) {
     current_key_modifiers |= event.modifiers;
+
+    if (current_operaion->type() == drag &&
+        current_operaion->state() == operation::state::started) {
+        if (event.with(event::alt_key)) {
+            auto fake_event = mouse_event(previous_position, event.modifiers);
+            current_operaion->stop(fake_event);
+            current_operaion = make_operation<copy_drag_operation>();
+            current_operaion->start(fake_event);
+        }
+    }
+
     update_cursor(event.modifiers);
 }
 
 void stg::mouse_handler::key_up(const event &event) {
     current_key_modifiers |= event.modifiers;
+
+    if (current_operaion->type() == copy_drag &&
+        current_operaion->state() == operation::state::started) {
+        if (!event.with(event::alt_key)) {
+            auto fake_event = mouse_event(previous_position, event.modifiers);
+            current_operaion->stop(fake_event);
+            current_operaion = make_operation<drag_operation>();
+            current_operaion->start(fake_event);
+        }
+    }
+
     update_cursor(event.modifiers);
 }
 
@@ -113,9 +135,6 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
             viewport.height
     };
 
-//    std::cout << "viewport: " << viewport << " " << viewport.top + viewport.height << "\n";
-//    std::cout << "bounds: " << bounds << " " << bounds.top + bounds.height << "\n";
-
     auto needs_autoscroll_top = top_autoscroll_zone.contains(pos_in_viewport.y) &&
                                 viewport.top > -bounds.top &&
                                 event.position.y > 0;
@@ -129,7 +148,7 @@ void stg::mouse_handler::handle_autoscroll(const stg::mouse_event &event) {
     if (!autoscroll_is_on && needs_autoscroll) {
         autoscroll_is_on = true;
 
-        scroll_direction direction = scroll_direction::down;
+        auto direction = scroll_direction::down;
         if (needs_autoscroll_top) {
             direction = scroll_direction::up;
         } else if (needs_autoscroll_bottom) {
@@ -159,7 +178,8 @@ stg::mouse_handler::get_operation(event::key_modifiers modifiers) {
 
     auto current_selected = selection.has_selected(current_slot_index);
 
-    if (modifiers == mouse_event::left_key) {
+    if (modifiers == mouse_event::left_key ||
+        modifiers == (mouse_event::left_key | mouse_event::shift_key)) {
         if (!selection.empty() && current_selected) {
             return make_operation<select_operation>();
         }
@@ -315,7 +335,11 @@ stg::mouse_handler::get_cursor(event::key_modifiers modifiers) {
     auto next_empty = time_slots.next_slot_empty(current_slot_index);
     auto prev_empty = time_slots.previous_slot_empty(current_slot_index);
 
-    if ((modifiers & mouse_event::alt_key) == mouse_event::alt_key &&
+
+    auto alt_key_is_pressed = modifiers == (mouse_event::alt_key | mouse_event::left_key) ||
+                              modifiers == mouse_event::alt_key;
+
+    if (alt_key_is_pressed &&
         !current_slot.empty() &&
         mouse_zone == mouse_zone::drag) {
         return cursor::drag_copy;

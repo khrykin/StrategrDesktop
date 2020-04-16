@@ -4,17 +4,20 @@
 #include "activity.h"
 #include "activityinvalidpropertyexception.h"
 
-const std::vector<std::pair<stg::activity::color_t, std::string>>
-        stg::activity::default_colors = {
-        {"#FF6562", "Red"},
-        {"#FFB700", "Orange"},
-        {"#FFD600", "Yellow"},
-        {"#A463F2", "Purple"},
-        {"#D5008F", "Indigo"},
-        {"#19A974", "Green"},
-        {"#357EDD", "Blue"},
-        {"#000000", "Black"},
-        {"#777777", "Gray"}
+const std::vector<stg::activity::color_info_t> &stg::activity::default_colors() {
+    const static std::vector<stg::activity::color_info_t> colors = {
+            {"#FF6562", "Red"},
+            {"#FFB700", "Orange"},
+            {"#FFD600", "Yellow"},
+            {"#A463F2", "Purple"},
+            {"#D5008F", "Indigo"},
+            {"#19A974", "Green"},
+            {"#357EDD", "Blue"},
+            {"#000000", "Black"},
+            {"#777777", "Gray"}
+    };
+
+    return colors;
 };
 
 stg::activity::activity(name_t name, color_t color) : _color(std::move(color)) {

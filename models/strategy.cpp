@@ -167,6 +167,12 @@ void stg::strategy::silently_drag_activity(stg::activity_index from_index, stg::
     commit_to_history();
 }
 
+void stg::strategy::fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index) {
+    assert(current_resize_operation && "fill_time_slots must be called between "
+                                       "begin_resizing() and end_resizing() calls");
+
+    current_resize_operation->fill_slots_shifting(from_index, till_index);
+}
 
 void stg::strategy::fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index) {
     assert(current_resize_operation && "fill_time_slots must be called between "
@@ -233,27 +239,32 @@ void stg::strategy::shift_below_time_slot(stg::strategy::time_slot_index_t from_
     commit_to_history();
 }
 
-void stg::strategy::drag_session(stg::strategy::session_index_t session_index,
-                                 int distance) {
+stg::sessions_list::index_t
+stg::strategy::drag_session(stg::strategy::session_index_t session_index,
+                            int distance) {
     assert(current_drag_operation && "drag_session must be called between "
                                      "begin_dragging() and end_dragging() calls");
-
 
     if (session_index < 0 ||
         session_index > sessions().size() - 1 ||
         distance == 0) {
-        return;
+        return session_index;
     }
 
-    const auto session = sessions()[session_index];
+    const auto &session = sessions()[session_index];
     if (session.activity == stg::strategy::no_activity) {
-        return;
+        return session_index;
     }
 
-
-    current_drag_operation->record_drag(session.time_slots, distance);
+    auto new_indexes = current_drag_operation->record_drag(session.time_slots, distance);
 
     time_slots_changed();
+
+    auto new_session_index = new_indexes.empty()
+                             ? session_index
+                             : sessions().session_index_for_time_slot_index(new_indexes.front());
+
+    return new_session_index;
 }
 
 void stg::strategy::begin_dragging(session_index_t session_index) {

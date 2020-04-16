@@ -69,7 +69,9 @@ namespace stg {
 
         void silently_set_activity_at_index(index_t slot_index, activity *activity);
 
+        void silently_fill_slots(index_t from_index, index_t till_index);
         void fill_slots(index_t from_index, index_t till_index);
+        void fill_slots_shifting(index_t from_index, index_t till_index);
 
         void shift_below(index_t from_index, size_t length);
 
@@ -87,16 +89,16 @@ namespace stg {
 
         time_slots_state &operator=(const time_slots_state &new_state);
 
-        std::string class_print_name() const override;
-
         const time_slot &at(index_t index);
-
-        void reset_with(data_t raw_data) override;
 
         time_t make_slot_begin_time(time_t global_begin_time, index_t slot_index);
         void update_begin_times();
-
         void reset_times();
+
+        void make_safe(index_t &index);
+
+        std::string class_print_name() const override;
+        void reset_with(data_t raw_data) override;
     };
 }
 

@@ -60,8 +60,6 @@ void stg::selection::select_all() {
     std::iota(begin(), end(), 0);
 
     on_change_event();
-
-    std::cout << "empty bitch?: " << empty() << "\n";
 }
 
 void stg::selection::fill(index_t from_index, index_t to_index) {
