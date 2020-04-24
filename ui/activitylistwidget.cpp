@@ -115,9 +115,6 @@ void ActivityListWidget::layoutChildWidgets() {
             &ActivityEditorMenu::submitActivity,
             [&](const stg::activity &activity) {
                 strategy.add_activity(activity);
-                if (isShowingSearchResults()) {
-                    performSearch();
-                }
             });
 }
 
@@ -130,7 +127,7 @@ void ActivityListWidget::setSelectedForItemAtIndex(int index, bool isSelected) c
 }
 
 void ActivityListWidget::deselectAllItems() {
-    for (size_t i = 0; i < strategy.activities().size(); i++) {
+    for (size_t i = 0; i < numberOfItems(); i++) {
         setSelectedForItemAtIndex(i, false);
     }
 
@@ -171,10 +168,7 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
                                               ActivityWidget *item) {
     item->disconnect();
 
-    auto activityIndex = itemIndex;
-    if (isShowingSearchResults()) {
-        activityIndex = *strategy.activities().index_of(searchResults.at(itemIndex));
-    }
+    auto activityIndex = *strategy.activities().index_from_filtered(itemIndex);
 
     connect(item, &ActivityWidget::selected, [=] {
         strategy.place_activity(activityIndex, mainScene()->selection());
@@ -185,18 +179,10 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
 
     connect(item, &ActivityWidget::activityDeleted, [=] {
         strategy.delete_activity(activityIndex);
-
-        if (isShowingSearchResults()) {
-            performSearch();
-        }
     });
 
     connect(item, &ActivityWidget::activityEdited, [=](const stg::activity &newActivity) {
         strategy.edit_activity(activityIndex, newActivity);
-
-        if (isShowingSearchResults()) {
-            performSearch();
-        }
     });
 
     connect(item, &ActivityWidget::hovered, [=] {
@@ -209,14 +195,14 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
     });
 }
 
-bool ActivityListWidget::isShowingSearchResults() const {
-    return !QRegExp("\\s*").exactMatch(searchBox->text());
-}
-
 void ActivityListWidget::performSearch() {
-    searchResults = strategy.activities().search(searchBox->text().toStdString());
-    updateList();
-    deselectAllItems();
+    auto searchQuery = searchBox->text().toStdString();
+    auto needsToUpdateList = strategy.activities().search(searchQuery);
+
+    if (needsToUpdateList) {
+        updateList();
+        deselectAllItems();
+    }
 }
 
 void ActivityListWidget::showNewActivityMenu() {
@@ -240,9 +226,7 @@ void ActivityListWidget::reloadStrategy() {
 }
 
 int ActivityListWidget::numberOfItems() {
-    return isShowingSearchResults()
-           ? searchResults.size()
-           : strategy.activities().size();
+    return strategy.activities().filtered().size();
 }
 
 QVBoxLayout *ActivityListWidget::listLayout() {
@@ -250,17 +234,14 @@ QVBoxLayout *ActivityListWidget::listLayout() {
 }
 
 void ActivityListWidget::reuseItemAtIndex(int index, ActivityWidget *itemWidget) {
-    auto activity = isShowingSearchResults()
-                    ? searchResults.at(index)
-                    : strategy.activities().at(index);
+    auto activity = strategy.activities().filtered().at(index).get();
+
     itemWidget->setActivity(activity);
     reconnectItemAtIndex(index, itemWidget);
 }
 
 ActivityWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
-    auto activity = isShowingSearchResults()
-                    ? searchResults.at(index)
-                    : strategy.activities().at(index);
+    auto activity = strategy.activities().filtered().at(index).get();
 
     auto itemWidget = new ActivityWidget(activity);
     reconnectItemAtIndex(index, itemWidget);

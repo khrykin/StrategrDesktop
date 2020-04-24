@@ -58,11 +58,13 @@ const stg::activity_list &stg::strategy::activities() const {
 
 void stg::strategy::silently_add_activity(const activity &activity) {
     _activities.silently_add(activity);
+
     commit_to_history();
 }
 
 void stg::strategy::add_activity(const activity &activity) {
     _activities.add(activity);
+
     commit_to_history();
 }
 

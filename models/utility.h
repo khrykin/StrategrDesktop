@@ -6,6 +6,7 @@
 #define STRATEGR_UTILITY_H
 
 #include <string>
+#include <regex>
 #include <codecvt>
 #include <utf8proc.h>
 
@@ -23,6 +24,11 @@ namespace stg::text {
     inline std::string utf8_fold_case(const std::string &str) {
         auto *lowered = (char *) utf8proc_NFKC_Casefold((utf8proc_uint8_t *) str.c_str());
         return std::string(lowered);
+    }
+
+    inline void strip_bounding_whitespaces(std::string &str) {
+        str = std::regex_replace(str, std::regex("^\\s*"), "");
+        str = std::regex_replace(str, std::regex("\\s*$"), "");
     }
 }
 #endif //STRATEGR_UTILITY_H

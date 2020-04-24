@@ -81,6 +81,7 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
 
             draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
             draggedSessionAnimation->setDuration(50);
+
             auto smallRect = getRect();
             auto bigRect = makeBigRect(smallRect);
 

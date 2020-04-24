@@ -35,7 +35,6 @@ protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
     stg::strategy &strategy;
-    stg::activity_list searchResults;
 
     SearchBoxWidget *searchBox = nullptr;
     QScrollArea *scrollArea = nullptr;
@@ -57,7 +56,6 @@ private:
     void getBack();
 
     void performSearch();
-    bool isShowingSearchResults() const;
 
     void setSelectedForItemAtIndex(int index, bool isSelected) const;
     void deselectAllItems();

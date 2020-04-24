@@ -19,17 +19,10 @@ namespace stg {
             time_slots_state::data_t time_slots;
 
             friend bool operator==(const entry &lhs, const entry &rhs) {
-                auto &bigger_container = lhs.activities.size() >= rhs.activities.size()
-                                         ? lhs.activities
-                                         : rhs.activities;
-
-                auto &smaller_container = lhs.activities.size() >= rhs.activities.size()
-                                          ? rhs.activities
-                                          : lhs.activities;
-
-                auto activities_are_equal = std::equal(smaller_container.begin(),
-                                                       smaller_container.end(),
-                                                       bigger_container.begin(),
+                auto activities_are_equal = std::equal(lhs.activities.begin(),
+                                                       lhs.activities.end(),
+                                                       rhs.activities.begin(),
+                                                       rhs.activities.end(),
                                                        [](const auto &l, const auto &r) {
                                                            return *l == *r;
                                                        });

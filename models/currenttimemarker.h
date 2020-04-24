@@ -14,19 +14,19 @@ namespace stg {
     public:
         explicit current_time_marker(const strategy &strategy);
 
-        bool is_visible() const;
-        bool is_hidden() const;
+        auto is_visible() const -> bool;
+        auto is_hidden() const -> bool;
 
-        rect rect_in_parent(const rect &parent_rect,
-                            int marker_radius = 0) const;
+        auto rect_in_parent(const rect &parent_rect,
+                            int marker_radius = 0) const -> rect;
 
-        int scroll_offset_in_parent(const rect &parent_rect,
-                                    int window_height) const;
+        auto scroll_offset_in_parent(const rect &parent_rect,
+                                     int window_height) const -> int;
     private:
         const strategy &strategy;
 
-        int top_offset_in(int total_height) const;
-        float relative_position() const;
+        auto top_offset_in(int total_height) const -> int;
+        auto relative_position() const -> float;
     };
 }
 

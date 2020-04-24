@@ -38,11 +38,19 @@ namespace stg {
         std::optional<index_t> index_of(const activity *activity) const;
         std::optional<index_t> index_of(const activity &activity) const;
 
-        activity_list search(std::string query) const;
+        bool search(std::string query) const;
+        const activity_list::data_t &filtered() const;
+        std::optional<index_t> index_from_filtered(index_t index_in_filtered) const;
+        std::optional<index_t> index_in_filtered(index_t activity_index) const;
+
+        void reset_with(data_t data) override;
 
         std::string class_print_name() const override;
     private:
         friend strategy;
+
+        mutable std::string search_query;
+        mutable activity_list::data_t search_results;
 
         void silently_add(const activity &activity) noexcept(false);
         void add(const activity &activity) noexcept(false);

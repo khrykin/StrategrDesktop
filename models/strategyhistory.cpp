@@ -4,6 +4,9 @@
 
 #include "strategyhistory.h"
 
+stg::strategy_history::strategy_history(entry current_state)
+        : current_state(std::move(current_state)) {}
+
 bool stg::strategy_history::commit(const entry &new_state) {
     if (new_state != current_state) {
         undo_stack.push_back(current_state);
@@ -50,9 +53,6 @@ bool stg::strategy_history::has_prevoius_state() {
 bool stg::strategy_history::has_next_state() {
     return !redo_stack.empty();
 }
-
-stg::strategy_history::strategy_history(stg::strategy_history::entry current_state)
-        : current_state(std::move(current_state)) {}
 
 bool stg::strategy_history::has_prevoius_activities_state() {
     if (!has_prevoius_state())
