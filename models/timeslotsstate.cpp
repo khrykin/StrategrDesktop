@@ -44,6 +44,15 @@ void stg::time_slots_state::set_slot_duration(duration_t slot_duration) {
 
     _slot_duration = slot_duration;
 
+    auto desired_number_of_slots = (end_time() - begin_time()) / slot_duration;
+    while (number_of_slots() > desired_number_of_slots) {
+        _data.pop_back();
+    }
+
+    while (number_of_slots() < desired_number_of_slots) {
+        _data.push_back(time_slot(0, slot_duration));
+    }
+
     for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
         auto &slot = _data[slot_index];
         slot.duration = slot_duration;

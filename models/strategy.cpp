@@ -128,12 +128,6 @@ namespace stg {
         return _time_slots.number_of_slots();
     }
 
-    void strategy::set_number_of_time_slots(size_t number_of_time_slots) {
-        _time_slots.set_number_of_slots(number_of_time_slots);
-
-        commit_to_history();
-    }
-
     void strategy::set_end_time(time_t end_time) {
         _time_slots.set_end_time(end_time);
 

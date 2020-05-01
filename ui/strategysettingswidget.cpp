@@ -85,9 +85,12 @@ void StrategySettingsWidget::createSlotDurationForm() {
 
     connect(slotDurationEdit, QOverload<int>::of(&QSpinBox::valueChanged),
             [this](int value) {
+                save();
+
                 beginTimeEdit->minuteStepSize = value;
                 endTimeEdit->minuteStepSize = value;
-                save();
+
+                endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
             });
 
     mainLayout->addWidget(formWidget);

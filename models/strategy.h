@@ -75,11 +75,10 @@ namespace stg {
         auto time_slot_duration() const -> duration_t;
         void set_time_slot_duration(duration_t time_slot_duration);
 
-        auto number_of_time_slots() const -> size_t;
-        void set_number_of_time_slots(size_t number_of_time_slots);
-
         auto end_time() const -> time_t;
         void set_end_time(time_t end_time);
+
+        auto number_of_time_slots() const -> size_t;
 
         auto duration() const -> duration_t;
 
