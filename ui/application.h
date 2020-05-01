@@ -13,6 +13,7 @@
 
 #include "aboutwindow.h"
 #include "mainwindow.h"
+#include "models/theme.h"
 
 #ifdef Q_OS_MAC
 Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
@@ -35,6 +36,7 @@ public:
     static void markFileClosed(const QString &filePath);
     static bool fileIsOpened(const QString &filePath);
     static void checkForUpdates();
+    static auto theme() -> const stg::theme &;
 private:
     static void setupFonts();
 

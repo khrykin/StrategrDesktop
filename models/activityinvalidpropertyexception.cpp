@@ -5,10 +5,12 @@
 #include "activityinvalidpropertyexception.h"
 #include <utility>
 
-const char *stg::activity::invalid_property_exception::what() const noexcept {
-    return message.c_str();
-}
+namespace stg {
+    activity::invalid_property_exception::invalid_property_exception(std::string message) :
+            std::exception(),
+            message(std::move(message)) {}
 
-stg::activity::invalid_property_exception::invalid_property_exception(std::string message) :
-        std::exception(),
-        message(std::move(message)) {}
+    auto activity::invalid_property_exception::what() const noexcept -> const char * {
+        return message.c_str();
+    }
+}

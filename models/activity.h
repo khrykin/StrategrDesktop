@@ -17,24 +17,49 @@ namespace stg {
         class invalid_property_exception;
 
         static constexpr auto default_color = "#000000";
-        static const std::vector<color_info_t> &default_colors();
+        static auto default_colors() -> const std::vector<color_info_t> &;
 
         explicit activity(name_t name, color_t color = default_color) noexcept(false);
 
-        const name_t &name() const;
-        const color_t &color() const;
+        auto name() const -> const name_t &;
+        auto color() const -> const color_t &;
 
-        activity copy_changing_name(const name_t &name) const;
-        activity copy_changing_color(const color_t &color) const;
+        auto light_color() const -> color_t {
+            auto clr = color();
+            clr.set_alpha_component(0.15);
 
-        friend bool operator==(const activity &lhs, const activity &rhs);
-        friend bool operator!=(const activity &lhs, const activity &rhs);
+            return clr;
+        }
 
-        friend std::ostream &operator<<(std::ostream &os,
-                                        const activity &activity);
+        auto desaturated_light_color() const -> color_t {
+            auto clr = color();
+            clr.set_hsl(clr.hue(), 0.3, 0.75);
+            clr.set_alpha_component(0.2);
 
-        nlohmann::json to_json();
-        static activity from_json(const nlohmann::json &j);
+            return clr;
+        }
+
+        auto desaturated_dark_color() const -> color_t {
+            auto clr = color_t();
+
+            if (color().lightness() < 0.2)
+                clr = color_t(0xffffffff);
+
+            clr.set_alpha_component(0.1);
+            return clr;
+        }
+
+        auto with_name(const name_t &name) const -> activity;
+        auto with_color(const color_t &color) const -> activity;
+
+        friend auto operator==(const activity &lhs, const activity &rhs) -> bool;
+        friend auto operator!=(const activity &lhs, const activity &rhs) -> bool;
+
+        friend auto operator<<(std::ostream &os,
+                               const activity &activity) -> std::ostream &;
+
+        auto to_json() const -> nlohmann::json;
+        static auto from_json(const nlohmann::json &j) -> activity;
 
     private:
         name_t _name;
@@ -45,9 +70,9 @@ namespace stg {
             static constexpr auto color = "color";
         };
 
-        static invalid_property_exception empty_name_exception();
+        static auto empty_name_exception() -> invalid_property_exception;
 
-        static bool is_valid(const name_t &name);
+        static auto is_valid(const name_t &name) -> bool;
     };
 }
 

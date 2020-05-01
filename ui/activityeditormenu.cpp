@@ -53,11 +53,12 @@ void ActivityEditorMenu::setupColorDialog() {
 void ActivityEditorMenu::addCustomColorAction() {
     customColorAction = new QAction(tr("Custom Color"));
     customColorAction->setCheckable(true);
+
     customColorAction->setChecked(!colorPicker->color());
 
     connect(customColorAction, &QAction::triggered, [=]() {
         if (activity) {
-            colorDialog->setCurrentColor(ColorUtils::QColorFromStdString(activity->color()));
+            colorDialog->setCurrentColor(activity->color());
         } else if (colorPicker->color()) {
             colorDialog->setCurrentColor(*colorPicker->color());
         }

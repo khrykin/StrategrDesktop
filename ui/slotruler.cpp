@@ -1,10 +1,13 @@
-#include "slotruler.h"
 #include <QDebug>
 #include <QPainter>
 #include <QStyleOption>
 #include <QVBoxLayout>
+
 #include "applicationsettings.h"
 #include "utils.h"
+#include "slotruler.h"
+#include "slotboardwidget.h"
+#include "slotswidget.h"
 
 SlotRuler::SlotRuler(const QVector<TimeLabel> &labels,
                      int cellHeight,
@@ -13,15 +16,17 @@ SlotRuler::SlotRuler(const QVector<TimeLabel> &labels,
           _cellHeight(cellHeight),
           QWidget(parent) {
     auto *layout = new QVBoxLayout();
-    layout->setContentsMargins(ApplicationSettings::defaultPadding, 0, 0, 0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     setLayout(layout);
 
-    auto fontWidth = calculateLabelWidth() + ApplicationSettings::defaultPadding;
+    auto fontWidth = calculateLabelWidth() + 2 * ApplicationSettings::defaultPadding;
     auto width = std::max(fontWidth, 40);
     setFixedWidth(width);
 
     updateList();
+
+    selection().add_on_change_callback(this, &SlotRuler::updateList);
 }
 
 int SlotRuler::calculateLabelWidth() const {
@@ -45,10 +50,38 @@ void SlotRuler::setLabels(const QVector<TimeLabel> &labels) {
 }
 
 void SlotRuler::paintEvent(QPaintEvent *) {
-    QStyleOption opt;
-    opt.init(this);
     QPainter p(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+
+    auto handleBorderColor = highlightColor();
+    handleBorderColor.setAlphaF(0.25);
+
+    auto handleBgColor = highlightColor();
+    handleBgColor.setAlphaF(0.1);
+
+    p.setBrush(handleBgColor);
+    p.setPen(handleBorderColor);
+
+//    for (auto &selectionSegment : selection().grouped()) {
+//        auto firstIndex = selectionSegment.front();
+//        auto lastIndex = selectionSegment.back() + 1;
+//
+//        auto handleWidth = calculateLabelWidth() + 4;
+//        auto handleHeight = bigFontHeight * 1.5;
+//
+//        auto rect1 = QRect((width() - handleWidth) / 2,
+//                           firstIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
+//                           handleWidth,
+//                           handleHeight);
+//
+//        auto rect2 = QRect((width() - handleWidth) / 2,
+//                           lastIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
+//                           handleWidth,
+//                           handleHeight);
+//
+//
+//        p.drawRoundedRect(rect1, 2, 2);
+//        p.drawRoundedRect(rect2, 2, 2);
+//    }
 }
 
 int SlotRuler::cellHeight() const { return _cellHeight; }
@@ -77,6 +110,12 @@ SlotRuler::ColorGetter SlotRuler::labelColorGetterAtIndex(int index) {
     auto colorGetter = this->isIntegerHourAtIndex(index)
                        ? &SlotRuler::secondaryTextColor
                        : &SlotRuler::tertiaryTextColor;
+
+    if (selection().is_boundary(index) ||
+        slotsWidget()->slotBeforeBoundaryIndex() == index - 1)
+        colorGetter = &SlotRuler::controlColor;
+
+
     return colorGetter;
 }
 
@@ -97,5 +136,14 @@ bool SlotRuler::isIntegerHourAtIndex(int index) const {
     auto isIntegerHour = timeLabel.time % 60 == 0;
 
     return isIntegerHour;
+}
+
+const stg::selection &SlotRuler::selection() const {
+    return slotsWidget()->selection();
+}
+
+SlotsWidget *SlotRuler::slotsWidget() const {
+    auto slotBoardWidget = qobject_cast<SlotBoardWidget *>(parentWidget());
+    return slotBoardWidget->slotsWidget();
 }
 

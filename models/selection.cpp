@@ -100,7 +100,7 @@ bool stg::selection::only_non_empty_selected() const {
     }) == end();
 }
 
-bool stg::selection::has_selected(index_t slot_index) {
+bool stg::selection::has_selected(index_t slot_index) const {
     return std::find(begin(), end(), slot_index) != end();
 }
 
@@ -145,12 +145,17 @@ void stg::selection::on_change_event() {
     reload();
 }
 
-const stg::grouped_selection &stg::selection::grouped() {
+const stg::grouped_selection &stg::selection::grouped() const {
     return _grouped;
 }
 
-bool stg::selection::is_all_selected() {
+bool stg::selection::is_all_selected() const {
     return size() == strategy.number_of_time_slots();
+}
+
+bool stg::selection::is_boundary(stg::index_t slot_index) const {
+    return (!has_selected(slot_index - 1) && has_selected(slot_index))
+           || (has_selected(slot_index - 1) && !has_selected(slot_index));
 }
 
 

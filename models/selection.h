@@ -34,15 +34,17 @@ namespace stg {
         bool only_empty_selected() const;
         bool only_non_empty_selected() const;
 
-        bool has_selected(index_t slot_index);
-        bool is_all_selected();
+        bool has_selected(index_t slot_index) const;
+        bool is_all_selected() const;
+
+        bool is_boundary(index_t slot_index) const;
 
         void reload();
 
         bool is_clicked() const;
         void set_is_clicked(bool is_clicked);
 
-        const grouped_selection &grouped();
+        const grouped_selection &grouped() const;
 
         void on_change_event() override;
     private:

@@ -36,10 +36,10 @@ namespace stg {
         seconds delivery_time;
 
     private:
-        static std::string make_string_uuid();
-        static std::string make_title(const session &session, type type);
-        static std::string make_sub_title(const session &session, type type);
-        static seconds make_delivery_time(const session &session, type type);
+        static auto make_string_uuid() -> std::string;
+        static auto make_title(const session &session, type type) -> std::string;
+        static auto make_sub_title(const session &session, type type) -> std::string;
+        static auto make_delivery_time(const session &session, type type) -> seconds;
 
         friend bool operator==(const notification &lhs, const notification &rhs);
 
@@ -55,8 +55,8 @@ namespace stg {
         using resetter_t = std::function<void(const std::vector<std::string> &)>;
         using sender_t = std::function<void(const notification &)>;
 
-        static seconds immediate_delivery_seconds(minutes minutes_time);
-        static seconds prepare_delivery_seconds(minutes minutes_time);
+        static auto immediate_delivery_seconds(minutes minutes_time) -> seconds;
+        static auto prepare_delivery_seconds(minutes minutes_time) -> seconds;
 
         scheduler_t on_schedule_notifications = nullptr;
         resetter_t on_delete_notifications = nullptr;
@@ -70,8 +70,8 @@ namespace stg {
 
         void send_now_if_needed(seconds polling_seconds_interval);
 
-        const std::vector<stg::notification> &scheduled_notifications() const;
-        std::vector<std::string> scheduled_identifiers() const;
+        auto scheduled_notifications() const -> const std::vector<stg::notification> &;
+        auto scheduled_identifiers() const -> std::vector<std::string>;
 
         static const seconds prepare_seconds_interval = 5 * 60;
         static const seconds immediate_seconds_interval = 20;

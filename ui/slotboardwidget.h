@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QScrollArea>
+#include <QPropertyAnimation>
 
 #include "strategy.h"
 #include "currenttimemarkerwidget.h"
@@ -28,25 +29,28 @@ public:
 
     void clearSelection();
     void focusOnCurrentTime();
+
     QVBoxLayout *slotsLayout() const;
+    SlotsWidget *slotsWidget() const;
+
 signals:
     void timerTick();
     void timeSlotsChange();
 private:
     stg::strategy &strategy;
 
-    SlotsWidget *slotsWidget = nullptr;
+    SlotsWidget *_slotsWidget = nullptr;
     SlotBoardCirclesWidget *circlesWidget = nullptr;
+    SessionWidget *draggedSessionWidget = nullptr;
 
     SlotRuler *slotRuler = nullptr;
     QVBoxLayout *_slotsLayout = nullptr;
 
+    QPropertyAnimation *draggedSessionAnimation = nullptr;
     QTimer *currentTimeTimer = nullptr;
     CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
 
-    int slotBeforeResizeBoundaryIndex = -2;
-
-    QVector<TimeLabel> makeLabelsForStrategy();
+    QVector<TimeLabel> makeLabels();
 
     void handleTimeSlotsChange();
     void updateUI();
@@ -56,11 +60,12 @@ private:
     QScrollArea *parentScrollArea();
     void setupCurrentTimeTimer();
     void timerCallback();
+    void updateSlotsLayout() const;
+    void drawDraggedSession(int, int);
 
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
 
-    void updateSlotsLayout() const;
 };
 
 #endif // SLOTBOARD_H

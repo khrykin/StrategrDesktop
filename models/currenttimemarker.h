@@ -20,8 +20,8 @@ namespace stg {
         auto rect_in_parent(const rect &parent_rect,
                             int marker_radius = 0) const -> rect;
 
-        auto scroll_offset_in_parent(const rect &parent_rect,
-                                     int window_height) const -> int;
+        auto scroll_offset(const rect &slots_rect,
+                           int viewport_height) const -> int;
     private:
         const strategy &strategy;
 

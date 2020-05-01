@@ -9,7 +9,7 @@
 
 namespace stg {
     struct event {
-        using key_modifiers = uint8_t;
+        using key_modifiers = uint16_t;
 
         static constexpr key_modifiers left_key = 1u << 0u;
         static constexpr key_modifiers right_key = 1u << 1u;
@@ -34,13 +34,15 @@ namespace stg {
             }
         }
 
-        bool has_only(key_modifiers mod) const;
-        bool with(key_modifiers mod) const;
+        auto has_only(key_modifiers mod) const -> bool;
+        auto with(key_modifiers mod) const -> bool;
 
         key_modifiers modifiers = 0;
     };
 
     struct mouse_event : public event {
+        point position;
+
         explicit mouse_event(const point &position, key_modifiers modifiers = left_key);
 
         template<class QtLikeEvent>
@@ -52,8 +54,7 @@ namespace stg {
             }
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const mouse_event &e);
-        point position;
+        friend auto operator<<(std::ostream &os, const mouse_event &e) -> std::ostream &;
     };
 };
 

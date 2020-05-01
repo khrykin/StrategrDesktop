@@ -14,15 +14,15 @@ stg::mouse_event::mouse_event(const stg::point &position,
           position(position) {
 }
 
-bool stg::event::has_only(stg::event::key_modifiers mod) const {
+auto stg::event::has_only(stg::event::key_modifiers mod) const -> bool {
     return modifiers == mod;
 }
 
-bool stg::event::with(stg::event::key_modifiers mod) const {
+auto stg::event::with(stg::event::key_modifiers mod) const -> bool {
     return (modifiers & mod) == mod;
 }
 
-std::ostream &stg::operator<<(std::ostream &os, const stg::mouse_event &e) {
+auto stg::operator<<(std::ostream &os, const stg::mouse_event &e) -> std::ostream & {
     os << "mouse_event {\n";
     os << "  position: [" << e.position.x << ", " << e.position.y << "]\n";
     os << "  modifiers: [";

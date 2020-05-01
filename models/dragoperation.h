@@ -33,29 +33,31 @@ namespace stg {
         explicit drag_operation(time_slots_state *time_slots,
                                 indices_vector initial_indices);
 
-        std::vector<index_t> record_drag(const std::vector<time_slot> &time_slots_to_drag,
-                                         int distance);
+        auto record_drag(const std::vector<time_slot> &time_slots_to_drag,
+                         int distance) -> std::vector<index_t>;
 
-        bool state_changed();
+        auto state_changed() -> bool;
 
-        time_slots_state::data_t &initial_state();
+        auto initial_state() -> time_slots_state::data_t &;
     private:
-        static const unsigned int initial_index_key = 0;
-
         struct indices_range {
             indices_range(index_t frst, index_t lst);
 
             index_t first = 0;
             index_t last = 0;
 
-            index_t size() const;
+            auto size() const -> index_t;
 
-            friend std::ostream &operator<<(std::ostream &os,
-                                            const indices_range &r) {
+            friend auto operator<<(std::ostream &os,
+                                   const indices_range &r) -> std::ostream & {
                 os << "[" << r.first << ", " << r.last << "]";
                 return os;
             }
         };
+
+        using ranges_tuple = std::tuple<indices_range, indices_range, indices_range>;
+
+        static const unsigned int initial_index_key = 0;
 
         time_slots_state *time_slots;
         time_slots_state::data_t initial_time_slots = time_slots->data();
@@ -64,44 +66,41 @@ namespace stg {
 
         history_state history = history_state();
 
-        indices_vector silently_drag(const indices_range &range_to_drag,
-                                     int distance);
+        auto silently_drag(const indices_range &range_to_drag,
+                           int distance) -> indices_vector;
 
         void restore_cache(const indices_range &restore_cache_range,
                            const indices_cache &cache,
                            movements_state &movements) const;
 
-        std::tuple<indices_range, indices_range, indices_range>
-        get_ranges(const indices_range &indices_to_drag,
-                   index_t destination_index,
-                   int distance) const;
+        auto get_ranges(const indices_range &indices_to_drag,
+                        index_t destination_index,
+                        int distance) const -> ranges_tuple;
 
-        indices_range get_new_dragging_indices(const indices_range &dragging_indices,
-                                               index_t destination_index,
-                                               int distance) const;
+        static auto get_new_dragging_indices(const indices_range &dragging_indices,
+                                             index_t destination_index,
+                                             int distance) -> indices_range;
 
-        indices_range get_cache_range(const indices_range &dragging_indices,
-                                      index_t destination_index,
-                                      int distance) const;
+        static auto get_cache_range(const indices_range &dragging_indices,
+                                    index_t destination_index,
+                                    int distance) -> indices_range;
 
-        indices_cache make_cache(indices_range cache_indices) const;
+        auto make_cache(indices_range cache_indices) const -> indices_cache;
 
         void apply_movements_to_history(const movements_state &movements);
 
         void invalidate_drag(const indices_vector &new_dragged_indices);
 
-        indices_range find_session_range_for(index_t time_slot_index);
-        index_t find_avaliable_movement_index(indices_range session_range,
-                                              index_t target_index);
+        auto find_session_range_for(index_t time_slot_index) -> indices_range;
+        auto find_avaliable_movement_index(indices_range session_range,
+                                           index_t target_index) -> index_t;
 
-        index_t get_initial(index_t index);
+        auto get_initial(index_t index) -> index_t;
 
+        static void print_history(const std::string &name,
+                                  const history_state &history_state);
         static void print_indices(const std::string &name,
                                   const indices_vector &indices_state);
-
-
-        void print_history(const std::string &name,
-                           const history_state &history_state);
         static void print_movements(const movements_state &movements);
     };
 }

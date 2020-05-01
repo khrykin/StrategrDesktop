@@ -39,9 +39,8 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    auto penColor = selectionColor();
-    penColor.setAlphaF(1.0);
-    penColor.setHsvF(penColor.hueF(), penColor.saturationF(), 1.0, 1.0);
+    auto penColor = controlColor();
+    penColor.setAlphaF(0.5);
 
     painter.setPen(QPen(penColor, 1));
 //    painter.setPen(Qt::NoPen);
@@ -53,7 +52,7 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
                      ? clickedColor
                      : selectionColor());
 
-    for (auto &selectionItem : selection.grouped()) {
+    for (const auto &selectionItem : selection.grouped()) {
         drawSelectionForItem(selectionItem, painter);
     }
 }
@@ -66,9 +65,9 @@ void SelectionWidget::drawSelectionForItem(const stg::grouped_selection_element 
     const auto &lastTimeSlot = strategy.time_slots()[selectionItem.back()];
     auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 ? 1 : 0;
 
-    auto rect = QRect(contentsMargins().left(),
+    auto rect = QRect(contentsMargins().left() + 1,
                       contentsMargins().top() + topPosition + 2,
-                      width() - contentsMargins().right() - contentsMargins().left(),
+                      width() - contentsMargins().right() - contentsMargins().left() - 1,
                       widgetHeight - bottomMargin - 5);
 
     painter.drawRoundedRect(rect, 4, 4);

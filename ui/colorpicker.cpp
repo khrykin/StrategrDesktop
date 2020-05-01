@@ -9,10 +9,8 @@
 ColorPicker::ColorPicker(QWidget *parent) : QWidget(parent) {
     auto *mainLayout = new QHBoxLayout(this);
     mainLayout->setSpacing(0);
-    mainLayout->setContentsMargins(0,
-                                   0,
-                                   0,
-                                   0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+
     for (const auto &color : colors) {
         auto *item = new ColorPickerItem(color, this);
         connect(item,
@@ -34,12 +32,13 @@ void ColorPicker::setColor(const std::optional<QColor> &color) {
     if (!color)
         return deselectAll();
 
-    auto indexOfColor = std::distance(colors.begin(), std::find(colors.begin(), colors.end(), *color));
-    if (indexOfColor < 0)
+    auto it = std::find(colors.begin(), colors.end(), *color);
+    if (it == colors.end())
         return deselectAll();
 
     _color = color;
 
+    auto indexOfColor = std::distance(colors.begin(), it);
     for (auto i = 0; i < layout()->count(); i++) {
         auto *item = qobject_cast<ColorPickerItem *>(layout()->itemAt(i)->widget());
         item->setIsSelected(indexOfColor == i);

@@ -9,7 +9,9 @@
 #include "timelabel.h"
 #include "coloredlabel.h"
 #include "colorprovider.h"
+#include "selection.h"
 
+class SlotsWidget;
 class SlotRuler : public QWidget,
                   public ReactiveList<ColoredLabel>,
                   public ColorProvider {
@@ -22,8 +24,15 @@ public:
     const QVector<TimeLabel> &labels() const;
     void setLabels(const QVector<TimeLabel> &labels);
 
+    const stg::selection &selection() const;
+
     int cellHeight() const;
     void setCellHeight(int cellHeight);
+
+    void updateList() {
+        ReactiveList<ColoredLabel>::updateList();
+    }
+
 private:
     using ColorGetter = QColor (*)();
     QVector<TimeLabel> _labels;
@@ -33,6 +42,8 @@ private:
     bool isIntegerHourAtIndex(int index) const;
 
     ColorGetter labelColorGetterAtIndex(int index);
+
+    SlotsWidget *slotsWidget() const;
 
     // ReactiveList
     int numberOfItems() override;

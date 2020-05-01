@@ -40,13 +40,13 @@ TEST_CASE("stg::activity immutability", "[activity]") {
     const auto activity = stg::activity(intial_name);
 
     SECTION("copy changing name") {
-        REQUIRE(activity.copy_changing_name("Some 2")
+        REQUIRE(activity.with_name("Some 2")
                 == stg::activity("Some 2"));
         REQUIRE(activity == stg::activity(intial_name));
     }
 
     SECTION("copy changing color") {
-        REQUIRE(activity.copy_changing_color(RED_COLOR)
+        REQUIRE(activity.with_color(RED_COLOR)
                 == stg::activity(intial_name, RED_COLOR));
         REQUIRE(activity == stg::activity(intial_name));
     }

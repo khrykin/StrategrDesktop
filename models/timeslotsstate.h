@@ -61,6 +61,9 @@ namespace stg {
         size_t number_of_slots() const;
         void set_number_of_slots(size_t new_number_of_slots);
 
+        auto end_time() const -> time_t;
+        void set_end_time(time_t end_time);
+
         void set_activity_at_indices(activity *activity,
                                      const std::vector<index_t> &indices);
 

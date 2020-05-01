@@ -47,7 +47,6 @@ private:
     void updateUI();
     int expectedHeight();
 
-    QColor backgroundColor() const;
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;
 

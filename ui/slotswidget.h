@@ -27,15 +27,19 @@ public:
     explicit SlotsWidget(stg::strategy &strategy,
                          QWidget *parent = nullptr);
 
-    void reloadStrategy();
     int slotHeight() const;
 
+    void reloadStrategy();
     void deselectAllSlots();
+
+    int slotBeforeBoundaryIndex() const;
 
     const stg::selection &selection();
 signals:
     void sessionsChanged();
     void resizeBoundaryChanged(int, int);
+    void drawDraggedSession(int, int);
+
 private:
     friend SlotsMouseHandler;
     stg::strategy &strategy;
@@ -46,7 +50,7 @@ private:
     SlotsMouseHandler *mouseHandler = nullptr;
 
     int _slotHeight = ApplicationSettings::defaultSlotHeight;
-    int slotBeforeBoundaryIndex = -2;
+    int _slotBeforeBoundaryIndex = -2;
 
     QAction *setActivityAction = nullptr;
     QAction *deleteActivityAction = nullptr;
@@ -65,7 +69,8 @@ private:
 
     void updateUI();
     void updateContentsMargins();
-    void updateResizeBoundary(int sessionBeforeBoundaryIndex, int slotBeforeBoundaryIndex);
+    void updateResizeBoundary(int sessionBeforeBoundaryIndex,
+                              int slotBeforeBoundaryIndex);
 
     void onSelectionChange();
 

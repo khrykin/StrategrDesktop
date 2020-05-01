@@ -53,7 +53,5 @@
 	<string>Strategr would be able to export activity sessions as events to the Calendar</string>
 	<key>SUFeedURL</key>
 	<string>${APPCAST_URL}</string>
-	<key>SUPublicEDKey</key>
-	<string>G0A4GIM5nGFE2ANNKzogtjCjWHwItD6oy56yL1qJngQ=</string>
 </dict>
 </plist>

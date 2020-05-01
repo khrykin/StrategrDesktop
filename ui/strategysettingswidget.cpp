@@ -76,7 +76,7 @@ void StrategySettingsWidget::createSlotDurationForm() {
     slotDurationEdit->setAlignment(Qt::AlignRight);
     slotDurationEdit->setStyleSheet("color: #888;");
 
-    auto slotDurationEditDecorator = new SpinBoxDecorator(slotDurationEdit, this);
+    auto *slotDurationEditDecorator = new SpinBoxDecorator(slotDurationEdit, this);
     slotDurationEditDecorator->setSizePolicy(QSizePolicy::Fixed,
                                              QSizePolicy::Fixed);
 
@@ -215,7 +215,6 @@ void StrategySettingsWidget::save() {
     auto slotDuration = slotDurationEdit->value();
     auto beginTime = minutesFromQTime(beginTimeEdit->time());
     auto endTime = minutesFromQTime(endTimeEdit->time());
-    auto numberOfSlots = (endTime - beginTime) / slotDuration;
 
     if (slotDuration != strategy.time_slot_duration()) {
         strategy.set_time_slot_duration(slotDuration);
@@ -225,29 +224,12 @@ void StrategySettingsWidget::save() {
         strategy.set_begin_time(beginTime);
     }
 
-    if (numberOfSlots != strategy.number_of_time_slots()) {
-        strategy.set_number_of_time_slots(numberOfSlots);
+    if (endTime != strategy.end_time()) {
+        strategy.set_end_time(endTime);
     }
 }
 
 void StrategySettingsWidget::endTimeChanged(const QTime &time) {
-    auto slotDuration = slotDurationEdit->value();
-    auto mins = minutesFromQTime(time);
-    if (mins <= minutesFromQTime(beginTimeEdit->time())) {
-        endTimeEdit->setTime(beginTimeEdit->time().addSecs(slotDuration * 60));
-        return;
-    }
-
-    auto remainder = mins % slotDuration;
-    if (remainder != 0) {
-        mins = remainder < slotDuration / 2 ? mins - remainder
-                                            : mins - remainder + slotDuration;
-    }
-
-    if (mins != minutesFromQTime(time)) {
-        endTimeEdit->setTime(QTimeFromMinutes(mins));
-    }
-
     save();
 }
 

@@ -12,11 +12,20 @@ stg::time_slots_state::time_t stg::time_slots_state::begin_time() const {
 }
 
 void stg::time_slots_state::set_begin_time(time_t begin_time) {
+    if (begin_time == _begin_time)
+        return;
+
     _begin_time = begin_time;
+
+    auto max_number_of_slots = 24 * 60 / slot_duration();
+    while (number_of_slots() > max_number_of_slots) {
+        _data.pop_back();
+    }
+
     update_begin_times();
+
     on_change_event();
 }
-
 
 void stg::time_slots_state::update_begin_times() {
     for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
@@ -30,6 +39,9 @@ stg::time_slots_state::duration_t stg::time_slots_state::slot_duration() const {
 }
 
 void stg::time_slots_state::set_slot_duration(duration_t slot_duration) {
+    if (slot_duration == _slot_duration)
+        return;
+
     _slot_duration = slot_duration;
 
     for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
@@ -72,6 +84,19 @@ stg::time_slots_state::time_slots_state(std::vector<time_slot> from_vector) {
 
     _data = std::move(from_vector);
     reset_times();
+}
+
+void stg::time_slots_state::set_end_time(time_t end_time) {
+    if (end_time <= begin_time()) {
+        end_time += 24 * 60;
+    }
+
+    auto number_of_slots = (end_time - begin_time()) / slot_duration();
+    set_number_of_slots(number_of_slots);
+}
+
+auto stg::time_slots_state::end_time() const -> time_t {
+    return last().end_time();
 }
 
 void stg::time_slots_state::reset_times() {

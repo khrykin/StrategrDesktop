@@ -40,77 +40,81 @@ namespace stg {
 
 #pragma mark - Constructors & Operators
 
-        explicit strategy(time_t begin_time_t = defaults::begin_time,
-                          duration_t time_slot_duration_t = defaults::time_slot_duration,
-                          size_t number_of_time_slots = defaults::number_of_time_slots);
-
+        explicit strategy(time_t
+                          begin_time_t = defaults::begin_time,
+                          duration_t
+                          time_slot_duration_t = defaults::time_slot_duration,
+                          size_t
+                          number_of_time_slots = defaults::number_of_time_slots
+        );
         strategy(const time_slots_state::data_t &time_slots,
                  const activity_list::data_t &activities);
-
         strategy(const strategy &other);
 
-        strategy &operator=(const strategy &other);
+        auto operator=(const strategy &other) -> strategy &;
 
 #pragma mark - Import & Export
 
-        static std::unique_ptr<strategy> from_json_string(const std::string &json_string);
-        std::string to_json_string() const;
+        static auto from_json_string(const std::string &json_string) -> std::unique_ptr<strategy>;
+        auto to_json_string() const -> std::string;
 
-        static std::unique_ptr<strategy> from_file(const std::string &path) noexcept(false);
+        static auto from_file(const std::string &path) noexcept(false) -> std::unique_ptr<strategy>;
         void write_to_file(const std::string &path) const noexcept(false);
 
 #pragma mark - Collections
 
-        const activity_list &activities() const;
-        const sessions_list &sessions() const;
-        const time_slots_state &time_slots() const;
+        auto activities() const -> const activity_list &;
+        auto sessions() const -> const sessions_list &;
+        auto time_slots() const -> const time_slots_state &;
 
 #pragma mark - Time Grid Properties
 
-        time_t begin_time() const;
+        auto begin_time() const -> time_t;
         void set_begin_time(time_t begin_time);
 
-        duration_t time_slot_duration() const;
+        auto time_slot_duration() const -> duration_t;
         void set_time_slot_duration(duration_t time_slot_duration);
 
-        size_t number_of_time_slots() const;
+        auto number_of_time_slots() const -> size_t;
         void set_number_of_time_slots(size_t number_of_time_slots);
 
-        time_t end_time() const;
-        duration_t duration() const;
+        auto end_time() const -> time_t;
+        void set_end_time(time_t end_time);
 
-#pragma mark - Real-time Properties
+        auto duration() const -> duration_t;
 
-        const session *active_session() const;
-        const session *upcoming_session() const;
+#pragma mark - Real-Time Properties
+
+        auto active_session() const -> const session *;
+        auto upcoming_session() const -> const session *;
 
 #pragma mark - Operations On Activities
 
         void add_activity(const activity &activity) noexcept(false);
         void silently_add_activity(const activity &activity) noexcept(false);
-        void delete_activity(activity_index activity_index);
-        void silently_delete_activity(activity_index activity_index);
-        void edit_activity(activity_index activity_index, const activity &new_activity) noexcept(false);
-        void silently_edit_activity(activity_index activity_index, const activity &new_activity) noexcept(false);
-        void drag_activity(activity_index from_index, activity_index to_index);
-        void silently_drag_activity(activity_index from_index, activity_index to_index);
+        void delete_activity(activity_index_t activity_index);
+        void silently_delete_activity(activity_index_t activity_index);
+        void edit_activity(activity_index_t activity_index, const activity &new_activity) noexcept(false);
+        void silently_edit_activity(activity_index_t activity_index, const activity &new_activity) noexcept(false);
+        void drag_activity(activity_index_t from_index, activity_index_t to_index);
+        void silently_drag_activity(activity_index_t from_index, activity_index_t to_index);
         void reorder_activities_by_usage();
 
 #pragma mark - Operations On Slots
 
-        void place_activity(activity_index activity_index, const std::vector<time_slot_index_t> &time_slot_indices);
+        void place_activity(activity_index_t activity_index, const std::vector<time_slot_index_t> &time_slot_indices);
         void make_empty_at(const std::vector<time_slot_index_t> &time_slot_indices);
         void shift_below_time_slot(time_slot_index_t from_index, int length);
 
-        bool is_resizing();
+        auto is_resizing() -> bool;
         void begin_resizing();
         void fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index);
         void fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index);
         void end_resizing();
 
-        bool is_dragging();
+        auto is_dragging() -> bool;
         void begin_dragging(session_index_t session_index);
-        stg::sessions_list::index_t drag_session(session_index_t session_index, int distance);
+        auto drag_session(session_index_t session_index, int distance) -> sessions_list::index_t;
         void end_dragging();
         void cancel_dragging();
 
@@ -121,8 +125,12 @@ namespace stg {
         void commit_to_history();
         void undo();
         void redo();
-        bool has_activities_undo();
-        bool has_activities_redo();
+
+        auto has_undo() -> bool;
+        auto has_redo() -> bool;
+
+        auto has_activities_undo() -> bool;
+        auto has_activities_redo() -> bool;
     private:
         activity_list _activities;
         time_slots_state _time_slots;
@@ -136,13 +144,12 @@ namespace stg {
         void setup_time_slots_callback();
 
         // current session, may be empty
-        const session *get_current_session() const;
+        auto get_current_session() const -> const session *;
 
-        strategy_history::entry make_history_entry();
+        auto make_history_entry() -> strategy_history::entry;
         void apply_history_entry(const std::optional<strategy_history::entry> &history_entry);
 
-        std::vector<time_slot_index_t>
-        global_slot_indices_from_session(const session &session) const;
+        auto global_slot_indices_from_session(const session &session) const -> std::vector<time_slot_index_t>;
     };
 }
 

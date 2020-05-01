@@ -113,7 +113,7 @@
     NSString *calendarTitle = self.calendarManager.calendarName;
     if (!calendarTitle) {
         calendarTitle = [NSString stringWithUTF8String:session.activity->name().c_str()];
-        color = CGColorCreateWithHexColorString([NSString stringWithUTF8String:session.activity->color()]);
+        color = session.activity->color().to_cg_color();
     }
 
     EKCalendar *calendar = [self.calendarManager findOrCreateCalendarWithTitle:calendarTitle

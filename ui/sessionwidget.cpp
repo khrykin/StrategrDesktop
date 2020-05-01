@@ -14,7 +14,9 @@
 #include "strategy.h"
 #include "colorutils.h"
 #include "fontutils.h"
+#include "application.h"
 #include "applicationsettings.h"
+#include "theme.h"
 
 SessionWidget::SessionWidget(stg::session activitySession,
                              QWidget *parent)
@@ -52,23 +54,12 @@ void SessionWidget::paintEvent(QPaintEvent *) {
 }
 
 void SessionWidget::drawRulers(QPainter &painter) const {
-    auto blackColor = QColor(Qt::black);
-    auto desaturatedColor = sessionColor();
-    desaturatedColor.setHslF(desaturatedColor.hueF(), 0.3, 0.75);
-
-    auto rulerColor = isSelected()
-                      ? ColorUtils::overlayWithAlpha(blackColor, 0.3, selectedBackgroundColor())
-                      : desaturatedColor;
-
-    if (isSelected() && rulerColor.lightnessF() < 0.1) {
-        rulerColor = QColor(Qt::white);
-    }
-
-    rulerColor.setAlphaF(0.2);
+    QColor rulerColor = Application::theme()
+            .session_ruler_color(activitySession, isSelected());
 
     painter.setBrush(rulerColor);
 
-    for (auto &timeSlot : activitySession.time_slots) {
+    for (const auto &timeSlot : activitySession.time_slots) {
         auto timeSlotIndex = static_cast<int>(&timeSlot - &activitySession.time_slots[0]);
 
         if (timeSlotIndex == activitySession.length() - 1) {
@@ -90,44 +81,29 @@ void SessionWidget::drawBackground(QPainter &painter) const {
         return;
     }
 
-    auto color = isSelected() ? selectedBackgroundColor() : backgroundColor();
+    QColor color = Application::theme()
+            .session_background_color(activitySession, isSelected());
 
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(color);
 
     auto lastTimeSlot = activitySession.time_slots.back();
     auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 || isBorderSelected ? 1 : 0;
-    auto selectionRect = QRect(0,
-                               2,
-                               width(),
-                               height() - 5 - bottomMargin);
+    auto backgroundRect = QRect(0,
+                                2,
+                                width(),
+                                height() - 5 - bottomMargin);
 
-    painter.drawRoundedRect(selectionRect, 4, 4);
-}
-
-QColor SessionWidget::backgroundColor() const {
-    using namespace ColorUtils;
-
-    if (!activitySession.activity) {
-        return QColor(255, 255, 255, 255);
-    }
-
-    auto backgroundColor = sessionColor();
-    backgroundColor.setAlphaF(0.15);
-
-    return backgroundColor;
+    painter.drawRoundedRect(backgroundRect, 4, 4);
 }
 
 QColor SessionWidget::selectedBackgroundColor() const {
-    auto selectedBackgroundColor = backgroundColor();
-    selectedBackgroundColor.setAlphaF(1);
-
-    return selectedBackgroundColor;
+    return QColor(activitySession.activity->color());
 }
 
 QColor SessionWidget::sessionColor() const {
     auto color = activitySession.activity
-                 ? QColor(QString::fromStdString(activitySession.activity->color()))
+                 ? QColor(activitySession.activity->color())
                  : QColor();
     return color;
 }
@@ -195,8 +171,7 @@ void SessionWidget::updateUI() {
     previousEndTime = activitySession.end_time();
 }
 
-void SessionWidget::setActivitySession(
-        const stg::session &newActivitySession) {
+void SessionWidget::setActivitySession(const stg::session &newActivitySession) {
     activitySession = newActivitySession;
     updateUI();
 }
@@ -210,40 +185,23 @@ int SessionWidget::expectedHeight() {
 }
 
 void SessionWidget::drawLabel(QPainter &painter) const {
+    using namespace ApplicationSettings;
+
     auto font = QFont();
     font.setBold(true);
-    font.setPixelSize(ApplicationSettings::sessionFontSize);
+    font.setPixelSize(sessionFontSize);
 
     painter.setFont(font);
 
-    auto textRect = QRect(ApplicationSettings::defaultPadding,
-                          ApplicationSettings::defaultPadding,
-                          width() - 2 * ApplicationSettings::defaultPadding,
-                          height() - 2 * ApplicationSettings::defaultPadding);
+    auto textRect = QRect(defaultPadding,
+                          defaultPadding,
+                          width() - 2 * defaultPadding,
+                          height() - 2 * defaultPadding);
 
-    auto sessionColorDesaturated
-            = ColorUtils::overlayWithAlpha(textColor(), 0.5, selectedBackgroundColor());
-    sessionColorDesaturated.setHsvF(sessionColorDesaturated.hueF(), 0.2, 0.5);
-
-    auto selectedDurationColor
-            = ColorUtils::overlayWithAlpha(baseColor(), 0.7, selectedBackgroundColor());
-
-    auto durationColor = isSelected()
-                         ? selectedDurationColor
-                         : sessionColorDesaturated;
-
-    auto titleColor = isSelected() ? Qt::white : sessionColor();
-
-    if (sessionColor() == QColor(Qt::black)) {
-        titleColor = textColor();
-    }
-
-    if (sessionColor().lightnessF() < 0.2) {
-        if (isSelected()) {
-            titleColor = Qt::white;
-            durationColor = ColorUtils::overlayWithAlpha(Qt::white, 0.5, sessionColor());
-        }
-    }
+    auto durationColor = Application::theme()
+            .session_duration_color(activitySession, isSelected());
+    auto titleColor = Application::theme()
+            .session_title_color(activitySession, isSelected());
 
     FontUtils::drawSessionTitle(activitySession,
                                 painter,

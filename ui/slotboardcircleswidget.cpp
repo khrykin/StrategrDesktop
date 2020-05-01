@@ -32,21 +32,21 @@ void SlotBoardCirclesWidget::paintEvent(QPaintEvent *event) {
 
         auto slotsRect = getSlotsRect();
 
-        auto radius = 6;
+        auto diameter = 6;
         auto firstSlotTopOffset = slotsRect.top() + 2;
 
         auto topOffset = firstSlotTopOffset
                          + (_slotBeforeResizeBoundaryIndex + 1) * getSlotHeight()
-                         - 1 - radius / 2;
+                         - 1 - diameter / 2;
 
-        auto circleLeftRect = QRect(slotsRect.left() + defaultPadding / 2 - 1,
+        auto circleLeftRect = QRect(slotsRect.left() - defaultPadding / 2 - 1,
                                     topOffset,
-                                    radius,
-                                    radius);
-        auto circleRightRect = QRect(slotsRect.right() - radius - defaultPadding + defaultPadding / 2 + 2,
+                                    diameter,
+                                    diameter);
+        auto circleRightRect = QRect(slotsRect.right() - diameter - defaultPadding + defaultPadding / 2 + 2,
                                      topOffset,
-                                     radius,
-                                     radius);
+                                     diameter,
+                                     diameter);
 
         painter.drawEllipse(circleLeftRect);
         painter.drawEllipse(circleRightRect);

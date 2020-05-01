@@ -27,6 +27,8 @@ public:
 signals:
     void resizeBoundaryChanged(int sessionBeforeBoundaryIndex,
                                int slotBeforeBoundaryIndex);
+    void drawDraggedSession(int sessionIndex,
+                            int firstSlotIndex);
 private:
     SlotsWidget *slotsWidget;
 
@@ -43,8 +45,6 @@ private:
     QTimer *autoscrollAnimation = nullptr;
     int draggedSessionIndex = -1;
     stg::rect draggedSessionRect = stg::rect::zero;
-    SessionWidget *draggedSessionWidget = nullptr;
-    QPropertyAnimation *draggedSessionAnimation = nullptr;
 
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
     SlotBoardWidget *slotBoard();
