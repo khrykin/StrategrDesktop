@@ -6,6 +6,7 @@
 #include <QSettings>
 
 #include "application.h"
+#include "colorprovider.h"
 
 #ifdef Q_OS_WIN
 
@@ -142,6 +143,20 @@ void Application::clearRecentFiles() {
     Application::clearCocoaRecentFiles();
 
 #endif
+}
+
+auto Application::theme() -> const stg::theme & {
+    static auto theme = stg::theme();
+
+    theme.get_text_color = [] {
+        return ColorProvider::textColor();
+    };
+
+    theme.get_base_color = [] {
+        return ColorProvider::baseColor();
+    };
+
+    return theme;
 }
 
 #ifdef Q_OS_WIN

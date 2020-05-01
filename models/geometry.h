@@ -81,11 +81,11 @@ namespace stg {
                     static_cast<double>(y)};
         }
 
-        point operator+(const point &other) const {
+        auto operator+(const point &other) const -> point {
             return point{x + other.x, y + other.y};
         }
 
-        point operator-(const point &other) const {
+        auto operator-(const point &other) const -> point {
             return point{x - other.x, y - other.y};
         }
 
@@ -107,7 +107,7 @@ namespace stg {
 
         constexpr rect(std::initializer_list<int> l = {}) noexcept {
             if (l.size() == 4) {
-                auto it = l.begin();
+                const auto *it = l.begin();
                 left = *it++;
                 top = *it++;
                 width = *it++;
@@ -145,7 +145,7 @@ namespace stg {
                     }};
         }
 
-        point origin() {
+        auto origin() const -> point {
             return point{left, top};
         }
 
@@ -153,18 +153,18 @@ namespace stg {
             return *this != rect::zero;
         }
 
-        friend bool operator==(const rect &lhs, const rect &rhs) {
+        friend auto operator==(const rect &lhs, const rect &rhs) -> bool {
             return lhs.left == rhs.left &&
                    lhs.top == rhs.top &&
                    lhs.width == rhs.width &&
                    lhs.height == rhs.height;
         }
 
-        friend bool operator!=(const rect &lhs, const rect &rhs) {
+        friend auto operator!=(const rect &lhs, const rect &rhs) -> bool {
             return !(lhs == rhs);
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const rect &r) {
+        friend auto operator<<(std::ostream &os, const rect &r) -> std::ostream & {
             os << "rect [ "
                << r.left << " "
                << r.top << " "

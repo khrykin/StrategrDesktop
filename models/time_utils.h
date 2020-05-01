@@ -21,13 +21,13 @@ namespace stg {
         constexpr static auto day_components_from_timestamp = std::localtime;
         constexpr static auto timestamp_from_day_components = std::mktime;
 
-        timestamp start_of_a_day_from_timestamp(timestamp timestamp);
-        duration current_day_duration();
-        minutes current_minutes();
-        seconds current_seconds();
+        auto start_of_a_day_from_timestamp(timestamp timestamp) -> time_utils::timestamp;
+        auto current_day_duration() -> duration;
+        auto current_minutes() -> minutes;
+        auto current_seconds() -> seconds;
 
-        std::string string_from_seconds(minutes total_seconds);
-        std::string human_string_from_minutes(minutes minutes);
+        auto string_from_seconds(minutes total_seconds) -> std::string;
+        auto human_string_from_minutes(minutes minutes) -> std::string;
     };
 }
 

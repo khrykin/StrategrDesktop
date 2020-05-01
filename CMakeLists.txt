@@ -46,7 +46,7 @@ if (APPLE)
             models/apple/SGCalendarManager.h
             models/apple/SGCalendarExporter.h
             models/apple/SGCalendarExporter.mm
-            )
+            models/color.mm)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
@@ -96,7 +96,9 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/event.cpp
         models/event.h
         models/color.cpp
-        models/color.h)
+        models/color.h
+        models/theme.cpp
+        models/theme.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp

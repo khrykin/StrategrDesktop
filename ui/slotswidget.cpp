@@ -45,6 +45,11 @@ void SlotsWidget::layoutChildWidgets() {
             this,
             &SlotsWidget::updateResizeBoundary);
 
+    connect(mouseHandler,
+            &SlotsMouseHandler::drawDraggedSession,
+            this,
+            &SlotsWidget::drawDraggedSession);
+
     layout()->addWidget(slotsWidget);
     layout()->addWidget(selectionWidget);
     layout()->addWidget(mouseHandler);
@@ -189,30 +194,34 @@ void SlotsWidget::paintEvent(QPaintEvent *event) {
 
     painter.setPen(Qt::NoPen);
 
-    auto borderColor = slotBeforeBoundaryIndex == -1
-                       ? highlightColor()
+    auto borderColor = _slotBeforeBoundaryIndex == -1
+                       ? controlColor()
                        : ColorProvider::borderColor();
 
     painter.setBrush(borderColor);
 
     auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
-    auto borderRect = QRect(8, 0, width() - 8 * 2, thickness);
+    auto borderRect = QRect(0, 0, width() - ApplicationSettings::defaultPadding, thickness);
 
     painter.drawRect(borderRect);
 }
 
 void SlotsWidget::updateContentsMargins() {
     auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
-    slotsLayout->setContentsMargins(8, thickness, 8, 0);
-    selectionWidget->setContentsMargins(8, thickness, 8, 0);
+    slotsLayout->setContentsMargins(0, thickness, ApplicationSettings::defaultPadding, 0);
+    selectionWidget->setContentsMargins(0, thickness, ApplicationSettings::defaultPadding, 0);
 }
 
 void SlotsWidget::updateResizeBoundary(int sessionBeforeBoundaryIndex,
                                        int slotBeforeBoundaryIndex) {
-    this->slotBeforeBoundaryIndex = slotBeforeBoundaryIndex;
+    this->_slotBeforeBoundaryIndex = slotBeforeBoundaryIndex;
     update();
 
     emit resizeBoundaryChanged(sessionBeforeBoundaryIndex, slotBeforeBoundaryIndex);
+}
+
+int SlotsWidget::slotBeforeBoundaryIndex() const {
+    return _slotBeforeBoundaryIndex;
 }
 
 

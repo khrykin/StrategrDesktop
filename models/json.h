@@ -16,8 +16,8 @@ namespace stg {
 
     class json {
     public:
-        static std::string serialize(const strategy &strategy);
-        static std::unique_ptr<strategy> parse(const std::string &json_string);
+        static auto serialize(const strategy &strategy) -> std::string;
+        static auto parse(const std::string &json_string) -> std::unique_ptr<strategy>;
 
         struct keys {
             static constexpr auto slot_duration = "slotDuration";
@@ -28,12 +28,9 @@ namespace stg {
     private:
         activity_list activities;
 
-        static activity_list::data_t
-        parse_activities(const nlohmann::json &json);
-
-        static time_slots_state::data_t
-        parse_time_slots(const nlohmann::json &json,
-                         const activity_list::data_t &activities);
+        static auto parse_activities(const nlohmann::json &json) -> activity_list::data_t;
+        static auto parse_time_slots(const nlohmann::json &json,
+                                     const activity_list::data_t &activities) -> time_slots_state::data_t;
     };
 }
 

@@ -23,6 +23,8 @@ SlotBoardWidget::SlotBoardWidget(stg::strategy &strategy, QWidget *parent)
     auto *mainLayout = new QHBoxLayout();
     setLayout(mainLayout);
 
+    setMouseTracking(true);
+
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
 
@@ -43,19 +45,18 @@ void SlotBoardWidget::setupCurrentTimeTimer() {
 }
 
 void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
-    slotsWidget = new SlotsWidget(strategy);
-    connect(slotsWidget,
+    _slotsWidget = new SlotsWidget(strategy, this);
+    connect(_slotsWidget,
             &SlotsWidget::sessionsChanged,
             this,
             &SlotBoardWidget::handleTimeSlotsChange);
 
-
-    slotRuler = new SlotRuler(makeLabelsForStrategy(),
-                              slotsWidget->slotHeight());
+    slotRuler = new SlotRuler(makeLabels(),
+                              _slotsWidget->slotHeight(), this);
 
     _slotsLayout = new QVBoxLayout();
     _slotsLayout->setSpacing(0);
-    _slotsLayout->addWidget(slotsWidget);
+    _slotsLayout->addWidget(_slotsWidget);
     _slotsLayout->addStretch();
 
     updateSlotsLayout();
@@ -64,15 +65,25 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
     mainLayout->addLayout(_slotsLayout);
 
     circlesWidget = new SlotBoardCirclesWidget(
-            std::bind(&SlotsWidget::slotHeight, slotsWidget),
-            std::bind(&SlotsWidget::geometry, slotsWidget),
+            std::bind(&SlotsWidget::slotHeight, _slotsWidget),
+            std::bind(&SlotsWidget::geometry, _slotsWidget),
             this
     );
 
-    connect(slotsWidget,
+    connect(_slotsWidget,
             &SlotsWidget::resizeBoundaryChanged,
             circlesWidget,
             &SlotBoardCirclesWidget::updateResizeBoundary);
+
+    connect(_slotsWidget,
+            &SlotsWidget::resizeBoundaryChanged,
+            slotRuler,
+            &SlotRuler::updateList);
+
+    connect(_slotsWidget,
+            &SlotsWidget::drawDraggedSession,
+            this,
+            &SlotBoardWidget::drawDraggedSession);
 
     circlesWidget->setGeometry(geometry());
 
@@ -82,24 +93,25 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
 }
 
 void SlotBoardWidget::updateSlotsLayout() const {
-    _slotsLayout->setContentsMargins(0, slotsWidget->slotHeight() / 2, 0, 0);
+    _slotsLayout->setContentsMargins(0, _slotsWidget->slotHeight() / 2, 0, 0);
 }
 
 void SlotBoardWidget::reloadStrategy() {
-    slotsWidget->reloadStrategy();
+    _slotsWidget->reloadStrategy();
 
     updateUI();
 }
 
 void SlotBoardWidget::updateUI() {
-    slotRuler->setLabels(makeLabelsForStrategy());
+    slotRuler->setLabels(makeLabels());
     updateCurrentTimeMarker();
 }
 
-QVector<TimeLabel> SlotBoardWidget::makeLabelsForStrategy() {
+QVector<TimeLabel> SlotBoardWidget::makeLabels() {
     QVector<TimeLabel> labels;
 
     for (auto &time : strategy.time_slots().times()) {
+        auto minutes = time % 60;
         auto labelText = QStringForMinutes(time);
         auto label = TimeLabel{labelText, time};
 
@@ -110,14 +122,14 @@ QVector<TimeLabel> SlotBoardWidget::makeLabelsForStrategy() {
 }
 
 void SlotBoardWidget::clearSelection() {
-    slotsWidget->deselectAllSlots();
+    _slotsWidget->deselectAllSlots();
 }
 
 void SlotBoardWidget::updateCurrentTimeMarker() {
     auto currentTimeMarker = stg::current_time_marker(strategy);
 
-    auto rect = currentTimeMarker.rect_in_parent(slotsWidget->geometry(),
-                                                 CurrentTimeMarkerWidget::markerSize);
+    auto parentRect = _slotsWidget->geometry();
+    auto rect = currentTimeMarker.rect_in_parent(parentRect, CurrentTimeMarkerWidget::markerSize);
 
     currentTimeMarkerWidget->setGeometry(rect);
 
@@ -133,8 +145,8 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
 
 void SlotBoardWidget::focusOnCurrentTime() {
     auto topOffset = stg::current_time_marker(strategy)
-            .scroll_offset_in_parent(slotsWidget->geometry(),
-                                     parentWidget()->contentsRect().height());
+            .scroll_offset(_slotsWidget->geometry(),
+                           parentWidget()->contentsRect().height());
 
     auto scrollBar = parentScrollArea()->verticalScrollBar();
 
@@ -153,7 +165,7 @@ QScrollArea *SlotBoardWidget::parentScrollArea() {
 
 void SlotBoardWidget::handleTimeSlotsChange() {
     updateCurrentTimeMarker();
-    slotRuler->setLabels(makeLabelsForStrategy());
+    slotRuler->setLabels(makeLabels());
 
     emit timeSlotsChange();
 }
@@ -180,5 +192,107 @@ void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
 
 QVBoxLayout *SlotBoardWidget::slotsLayout() const {
     return _slotsLayout;
+}
+
+SlotsWidget *SlotBoardWidget::slotsWidget() const {
+    return _slotsWidget;
+}
+
+void SlotBoardWidget::drawDraggedSession(int sessionIndex, int firstSlotIndex) {
+    auto getRect = [=]() -> QRect {
+        const auto &session = strategy.sessions()[sessionIndex];
+
+        auto lastSlotIndex = firstSlotIndex + session.length();
+        const auto &lastSlot = strategy.time_slots()[lastSlotIndex];
+        auto bottomMargin = lastSlot.end_time() % 60 == 0 ? 2 : 4;
+        auto horizontalMargin = 8;
+        auto rect = QRect(slotRuler->width(),
+                          firstSlotIndex * slotsWidget()->slotHeight() + slotsWidget()->geometry().top() + 2,
+                          slotsWidget()->width() - horizontalMargin,
+                          session.length() * slotsWidget()->slotHeight() - bottomMargin);
+
+        return rect;
+    };
+
+    auto makeBigRect = [=](const QRect &smallRect) -> QRect {
+        auto bigRect = smallRect;
+        bigRect.setX(smallRect.x() - 2);
+        bigRect.setWidth(smallRect.width() + 4);
+        return bigRect;
+    };
+
+    auto makeSmallRect = [=](const QRect &bigRect) -> QRect {
+        auto smallRect = bigRect;
+        smallRect.setX(bigRect.x() + 2);
+        smallRect.setWidth(bigRect.width() - 4);
+        return smallRect;
+    };
+
+    bool initial = false;
+
+    if (!draggedSessionWidget && sessionIndex >= 0) {
+        initial = true;
+
+        draggedSessionWidget = new SessionWidget(strategy.sessions()[sessionIndex], this);
+        draggedSessionWidget->setDrawsBorders(false);
+        draggedSessionWidget->setIsSelected(true);
+
+        auto shadowColor = textColor();
+        shadowColor.setAlphaF(0.2);
+
+        auto *effect = new QGraphicsDropShadowEffect;
+        effect->setBlurRadius(25);
+        effect->setXOffset(0);
+        effect->setYOffset(0);
+        effect->setColor(shadowColor);
+
+        draggedSessionWidget->setGraphicsEffect(effect);
+
+        draggedSessionWidget->setVisible(true);
+
+        draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
+        draggedSessionAnimation->setDuration(50);
+
+        auto smallRect = getRect();
+        auto bigRect = makeBigRect(smallRect);
+
+        draggedSessionWidget->setGeometry(smallRect);
+        draggedSessionAnimation->setStartValue(smallRect);
+        draggedSessionAnimation->setEndValue(bigRect);
+
+        draggedSessionAnimation->start();
+    }
+
+    if (draggedSessionWidget && sessionIndex < 0) {
+        if (draggedSessionAnimation)
+            draggedSessionAnimation->deleteLater();
+
+        draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
+        draggedSessionAnimation->setDuration(50);
+        auto draggedSessionWidgetLocal = draggedSessionWidget;
+        draggedSessionWidget = nullptr;
+
+        connect(draggedSessionAnimation, &QPropertyAnimation::finished, [this, draggedSessionWidgetLocal]() {
+            draggedSessionAnimation->deleteLater();
+            draggedSessionWidgetLocal->deleteLater();
+
+            draggedSessionAnimation = nullptr;
+        });
+
+        auto smallRect = makeSmallRect(draggedSessionWidgetLocal->geometry());
+
+        draggedSessionAnimation->setStartValue(draggedSessionWidgetLocal->geometry());
+        draggedSessionAnimation->setEndValue(smallRect);
+
+        draggedSessionAnimation->start();
+    }
+
+    if (draggedSessionWidget && !initial) {
+        auto smallRect = getRect();
+        auto bigRect = makeBigRect(smallRect);
+
+        draggedSessionAnimation->stop();
+        draggedSessionWidget->setGeometry(bigRect);
+    }
 }
 

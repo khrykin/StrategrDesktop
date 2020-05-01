@@ -39,15 +39,15 @@ auto stg::current_time_marker::rect_in_parent(const rect &parent_rect,
     };
 }
 
-auto stg::current_time_marker::scroll_offset_in_parent(const rect &parent_rect,
-                                                       int window_height) const -> int {
-    auto rect = rect_in_parent(parent_rect);
-    auto top_offset = rect.top - window_height / 2;
+auto stg::current_time_marker::scroll_offset(const rect &slots_rect,
+                                             int viewport_height) const -> int {
+    auto rect = rect_in_parent(slots_rect);
+    auto top_offset = rect.top - viewport_height / 2;
 
     if (top_offset < 0) {
         top_offset = 0;
-    } else if (top_offset > parent_rect.height) {
-        top_offset = parent_rect.height;
+    } else if (top_offset > slots_rect.height - viewport_height) {
+        top_offset = slots_rect.height - viewport_height;
     }
 
     return top_offset;

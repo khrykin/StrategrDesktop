@@ -31,98 +31,7 @@ SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
     handler.on_context_menu_event = std::bind(&SlotsMouseHandler::showContextMenu, this, _1, _2, _3);
     handler.on_open_activities = std::bind(&SlotsWidget::openActivitiesWindow, slotsWidget);
     handler.on_draw_dragged_session = [this](int sessionIndex, int firstSlotIndex) {
-        auto getRect = [=]() -> QRect {
-            const auto &session = strategy().sessions()[sessionIndex];
-
-            auto lastSlotIndex = firstSlotIndex + session.length();
-            auto &lastSlot = strategy().time_slots()[lastSlotIndex];
-            auto bottomMargin = lastSlot.end_time() % 60 == 0 ? 2 : 4;
-            auto horizontalMargin = 8;
-            auto rect = QRect(horizontalMargin,
-                              firstSlotIndex * slotHeight() + 2,
-                              width() - 2 * horizontalMargin,
-                              session.length() * slotHeight() - bottomMargin);
-
-            return rect;
-        };
-
-        auto makeBigRect = [=](const QRect &smallRect) -> QRect {
-            auto bigRect = smallRect;
-            bigRect.setX(smallRect.x() - 2);
-            bigRect.setWidth(smallRect.width() + 4);
-            return bigRect;
-        };
-
-        auto makeSmallRect = [=](const QRect &bigRect) -> QRect {
-            auto smallRect = bigRect;
-            smallRect.setX(bigRect.x() + 2);
-            smallRect.setWidth(bigRect.width() - 4);
-            return smallRect;
-        };
-
-        bool initial = false;
-
-        if (!draggedSessionWidget && sessionIndex >= 0) {
-            initial = true;
-
-            draggedSessionWidget = new SessionWidget(strategy().sessions()[sessionIndex], this);
-            draggedSessionWidget->setDrawsBorders(false);
-            draggedSessionWidget->setIsSelected(true);
-
-            auto *effect = new QGraphicsDropShadowEffect;
-            effect->setBlurRadius(20);
-            effect->setXOffset(0);
-            effect->setYOffset(0);
-            effect->setColor(QColor(0xCCCCCC));
-
-            draggedSessionWidget->setGraphicsEffect(effect);
-
-            draggedSessionWidget->setVisible(true);
-
-            draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
-            draggedSessionAnimation->setDuration(50);
-
-            auto smallRect = getRect();
-            auto bigRect = makeBigRect(smallRect);
-
-            draggedSessionWidget->setGeometry(smallRect);
-            draggedSessionAnimation->setStartValue(smallRect);
-            draggedSessionAnimation->setEndValue(bigRect);
-
-            draggedSessionAnimation->start();
-        }
-
-        if (draggedSessionWidget && sessionIndex < 0) {
-            if (draggedSessionAnimation)
-                draggedSessionAnimation->deleteLater();
-
-            draggedSessionAnimation = new QPropertyAnimation(draggedSessionWidget, "geometry");
-            draggedSessionAnimation->setDuration(50);
-            auto draggedSessionWidgetLocal = draggedSessionWidget;
-            draggedSessionWidget = nullptr;
-
-            connect(draggedSessionAnimation, &QPropertyAnimation::finished, [this, draggedSessionWidgetLocal]() {
-                draggedSessionAnimation->deleteLater();
-                draggedSessionWidgetLocal->deleteLater();
-
-                draggedSessionAnimation = nullptr;
-            });
-
-            auto smallRect = makeSmallRect(draggedSessionWidgetLocal->geometry());
-
-            draggedSessionAnimation->setStartValue(draggedSessionWidgetLocal->geometry());
-            draggedSessionAnimation->setEndValue(smallRect);
-
-            draggedSessionAnimation->start();
-        }
-
-        if (draggedSessionWidget && !initial) {
-            auto smallRect = getRect();
-            auto bigRect = makeBigRect(smallRect);
-
-            draggedSessionAnimation->stop();
-            draggedSessionWidget->setGeometry(bigRect);
-        }
+        emit drawDraggedSession(sessionIndex, firstSlotIndex);
     };
 }
 
@@ -135,17 +44,15 @@ stg::selection &SlotsMouseHandler::selection() {
 }
 
 SlotBoardWidget *SlotsMouseHandler::slotBoard() {
-    return qobject_cast<SlotBoardWidget *>
-            (slotsWidget->parent());
+    return qobject_cast<SlotBoardWidget *>(slotsWidget->parent());
 }
 
 QScrollArea *SlotsMouseHandler::slotBoardScrollArea() {
-    return qobject_cast<SessionsMainWidget *>
-            (slotsWidget
-                     ->parent() // layout
-                     ->parent() // slotboard
-                     ->parent() // scroll area
-                     ->parent()) // layout
+    return qobject_cast<SessionsMainWidget *>(slotsWidget
+                                                      ->parent() // layout
+                                                      ->parent() // slotboard
+                                                      ->parent() // scroll area
+                                                      ->parent()) // layout
             ->slotBoardScrollArea();
 }
 

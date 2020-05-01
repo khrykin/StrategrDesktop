@@ -31,13 +31,15 @@ QColor ColorProvider::selectionColor() {
     return selectionColor;
 }
 
-//#ifndef Q_OS_MAC
+#ifndef Q_OS_MAC
 
 QColor ColorProvider::controlColor() {
-    return highlightColor();
+    auto color = highlightColor();
+    color.setHsvF(color.hueF(), 1.0, color.valueF());
+    return color;
 }
 
-//#endif
+#endif
 
 QColor ColorProvider::textColor() {
     return QApplication::palette().color(QPalette::Text);

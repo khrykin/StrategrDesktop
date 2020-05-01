@@ -11,7 +11,7 @@ namespace stg {
     class activity::invalid_property_exception : public std::exception {
     public:
         explicit invalid_property_exception(std::string message);
-        const char *what() const noexcept override;
+        auto what() const noexcept -> const char * override;
 
     private:
         std::string message;
