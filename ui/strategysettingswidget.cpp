@@ -111,8 +111,10 @@ void StrategySettingsWidget::createStartTimeForm() {
     formWidget->layout()->addWidget(beginTimeEditDecorator);
 
     connect(beginTimeEdit, &QTimeEdit::timeChanged,
-            [this](const QTime &time) {
+            [this](const QTime &) {
                 save();
+
+                endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
             });
 
     mainLayout->addWidget(formWidget);
@@ -152,7 +154,7 @@ QColor StrategySettingsWidget::labelColor() const {
 }
 
 RowWidget *StrategySettingsWidget::makeFormRowWidget() {
-    auto formRowWidget = new RowWidget(this);
+    auto *formRowWidget = new RowWidget(this);
 
     auto *formLayout = new QHBoxLayout();
     formLayout->setSpacing(5);
@@ -173,7 +175,7 @@ void StrategySettingsWidget::paintEvent(QPaintEvent *) {
 }
 
 ColoredLabel *StrategySettingsWidget::makeFormLabel(const QString &text) {
-    auto label = new ColoredLabel(text);
+    auto *label = new ColoredLabel(text);
     label->setBold(true);
     label->setDynamicColor(&ColorProvider::textColorJustLighter);
 
@@ -234,6 +236,8 @@ void StrategySettingsWidget::save() {
 
 void StrategySettingsWidget::endTimeChanged(const QTime &time) {
     save();
+
+    endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
 }
 
 void StrategySettingsWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {

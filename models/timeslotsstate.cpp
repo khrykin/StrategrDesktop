@@ -101,6 +101,11 @@ void stg::time_slots_state::set_end_time(time_t end_time) {
     }
 
     auto number_of_slots = (end_time - begin_time()) / slot_duration();
+    if (number_of_slots < 1) {
+        number_of_slots = 1;
+        end_time = begin_time() + slot_duration();
+    }
+
     set_number_of_slots(number_of_slots);
 }
 

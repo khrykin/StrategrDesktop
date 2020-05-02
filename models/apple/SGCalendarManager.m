@@ -147,7 +147,7 @@
     calendar.title = title;
 
 #if !TARGET_OS_IOS
-    calendar.color = [NSColor colorWithCGColor:color];
+    calendar.color = color != nil ? [NSColor colorWithCGColor:color] : nil;
 #else
     calendar.CGColor = color;
 #endif
