@@ -5,7 +5,10 @@
 #import <EventKit/EventKit.h>
 #import <AppKit/AppKit.h>
 
-#import "cocoa/SGOptionsViewController.h"
+#import "cocoa/SGCalendarExportViewController.h"
+#import "cocoa/SGCalendarImportViewController.h"
+#import "cocoa/SGCalendarImportView.h"
+#import "cocoa/SGCalendarExportView.h"
 #import "cocoa/SGCalendarExportProgressWindow.h"
 #import "SGCalendarExporter.h"
 
@@ -16,9 +19,8 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                                            time_t dateSecsFromEpoch,
                                            const std::string &calTitle) {
     // Obj-C block can't capture a C++ function parameter so we copy it here
-    NSString *calendarTitle = [NSString stringWithCString:calTitle.c_str()
-                                                 encoding:NSUTF8StringEncoding];
-    [SGCalendarExporter requestExport:^(EKEventStore *store) {
+    NSString *calendarTitle = [NSString stringWithUTF8String:calTitle.c_str()];
+    [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
         if (!store) {
             return showAccessDeniedAlert();
         }
@@ -30,7 +32,7 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
         progressWindow.releasedWhenClosed = NO;
         [progressWindow makeKeyAndOrderFront:nil];
 
-        auto strategyPtr = (void *) &strategy;
+        auto *strategyPtr = (void *) &strategy;
 
         SGCalendarExporterSettings *settings = [[SGCalendarExporterSettings alloc] init];
         settings.optionsMask = static_cast<SGCalendarExportOptions>(options);
@@ -67,25 +69,24 @@ void MacOSCalendarExporter::showAccessDeniedAlert() {
     }
 }
 
-MacOSCalendarExporter::OptionsWindowResult
-MacOSCalendarExporter::showOptionsAlert(Options initialOptions, const std::string &initialCalendarName) {
-    SGOptionsWindowViewController *optionsWindowViewController
-            = [[SGOptionsWindowViewController alloc] init];
-    SGCalendarExportOptionsView *optionsView = (SGCalendarExportOptionsView *) optionsWindowViewController.view;
+MacOSCalendarExporter::ExportOptionsWindowResult
+MacOSCalendarExporter::showExportOptionsWindow(Options initialOptions, const std::string &initialCalendarName) {
+    SGCalendarExportViewController *optionsWindowViewController
+            = [[SGCalendarExportViewController alloc] init];
+    SGCalendarExportView *optionsView = [[SGCalendarExportView alloc] init];
+    optionsWindowViewController.view = optionsView;
+
     optionsView.optionsMask = static_cast<SGCalendarExportOptions>(initialOptions);
 
     if (!initialCalendarName.empty())
-        optionsView.calendarName = [NSString stringWithCString:initialCalendarName.c_str()
-                                                      encoding:NSUTF8StringEncoding];
+        optionsView.calendarName = [NSString stringWithUTF8String:initialCalendarName.c_str()];
 
     NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
 
     window.delegate = optionsWindowViewController;
     window.title = @"Export Strategy to Calendar";
     window.styleMask |= NSWindowStyleMaskUtilityWindow;
-    window.styleMask = window.styleMask & ~(NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable);
-
-    [window setContentSize:window.contentView.frame.size];
+    window.styleMask &= ~(NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable);
 
     NSApplication *app = [NSApplication sharedApplication];
     NSModalSession session = [app beginModalSessionForWindow:window];
@@ -93,7 +94,7 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions, const std::strin
     Options optionsMask = 0;
     NSDate *date = [NSDate date];
     std::string calendarName;
-    NSModalResponse response;
+    NSModalResponse response = NSModalResponseCancel;
     for (;;) {
         response = [app runModalSession:session];
         if (response != NSModalResponseContinue) {
@@ -101,7 +102,7 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions, const std::strin
                 optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
                 date = optionsView.date;
                 if (optionsView.calendarName)
-                    calendarName = [optionsView.calendarName cStringUsingEncoding:NSUTF8StringEncoding];
+                    calendarName = optionsView.calendarName.UTF8String;
             }
 
             break;
@@ -110,8 +111,79 @@ MacOSCalendarExporter::showOptionsAlert(Options initialOptions, const std::strin
 
     [app endModalSession:session];
 
-    return OptionsWindowResult(reinterpret_cast<Response &&>(response),
-                               reinterpret_cast<Options &&>(optionsMask),
-                               static_cast<time_t &&>(date.timeIntervalSince1970),
-                               calendarName);
+    return ExportOptionsWindowResult{static_cast<Response>(response),
+                                     optionsMask,
+                                     static_cast<time_t>(date.timeIntervalSince1970),
+                                     calendarName};
+}
+
+MacOSCalendarExporter::ImportOptionsWindowResult
+MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options initialOptions,
+                                               std::unique_ptr<std::vector<std::string>> initialCalendarsIdentifiers) {
+    SGCalendarImportViewController *optionsWindowViewController
+            = [[SGCalendarImportViewController alloc] init];
+    SGCalendarImportView *optionsView = [[SGCalendarImportView alloc] init];
+    optionsWindowViewController.view = optionsView;
+//    optionsView.optionsMask = static_cast<SGCalendarExportOptions>(initialOptions);
+
+    NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
+
+    window.delegate = optionsWindowViewController;
+    window.title = @"Import Strategy from Calendar";
+    window.styleMask |= NSWindowStyleMaskUtilityWindow;
+    window.styleMask &= ~(NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable);
+
+    NSApplication *app = [NSApplication sharedApplication];
+    NSModalSession session = [app beginModalSessionForWindow:window];
+
+    NSMutableArray<NSString *> *nsCalendarsIdentifiers = nil;
+
+    if (initialCalendarsIdentifiers) {
+        nsCalendarsIdentifiers = [[NSMutableArray alloc] init];
+        for (auto &identifier: *initialCalendarsIdentifiers) {
+            [nsCalendarsIdentifiers addObject:[NSString stringWithUTF8String:identifier.c_str()]];
+        }
+    }
+
+    [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
+        if (!store) {
+            return showAccessDeniedAlert();
+        }
+
+        NSArray *calendars = [store calendarsForEntityType:EKEntityTypeEvent];
+        optionsView.calendars = calendars;
+        optionsView.selectedCalendarsIdentifiers = nsCalendarsIdentifiers;
+    }];
+
+    Options optionsMask = 0;
+    NSDate *date = [NSDate date];
+    NSModalResponse response = NSModalResponseCancel;
+    std::unique_ptr<std::vector<std::string>> outputCalendarsIdentifiers = nullptr;
+
+    for (;;) {
+        response = [app runModalSession:session];
+        if (response != NSModalResponseContinue) {
+            if (response == NSModalResponseOK) {
+                NSLog(@"Selected Calendars: %@", optionsView.selectedCalendarsIdentifiers);
+
+//                optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
+                date = optionsView.date;
+                if (optionsView.selectedCalendarsIdentifiers) {
+                    outputCalendarsIdentifiers = std::make_unique<std::vector<std::string>>();
+                    for (NSString *calendarIdentifier in optionsView.selectedCalendarsIdentifiers) {
+                        outputCalendarsIdentifiers->push_back(calendarIdentifier.UTF8String);
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    [app endModalSession:session];
+
+    return ImportOptionsWindowResult{static_cast<Response>(response),
+                                     optionsMask,
+                                     static_cast<time_t>(date.timeIntervalSince1970),
+                                     std::move(outputCalendarsIdentifiers)};
 }

@@ -224,4 +224,27 @@
     return [self.store calendarsForEntityType:EKEntityTypeEvent];
 }
 
++ (void)requestCalendarAccess:(void (^)(EKEventStore *store))completionHandler {
+    EKAuthorizationStatus authorizationStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
+    EKEventStore *store = [[EKEventStore alloc] init];
+
+    if (authorizationStatus != EKAuthorizationStatusAuthorized) {
+        [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
+            if (!granted) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completionHandler(nil);
+                });
+
+                return;
+            }
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(store);
+            });
+        }];
+    } else {
+        completionHandler(store);
+    }
+}
+
 @end

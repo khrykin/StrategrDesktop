@@ -38,14 +38,10 @@ namespace stg {
 
     strategy &stg::strategy::operator=(const strategy &other) {
         _time_slots.reset_with(other.time_slots().data());
-        // Note: _time_slots on_change callback is private,
-        // so we don't call on_change_event();
+        _time_slots.on_change_event();
 
         _activities.reset_with(other.activities().data());
         _activities.on_change_event();
-
-        _sessions.reset_with(other.sessions().data());
-        _sessions.on_change_event();
 
         history = strategy_history(make_history_entry());
 

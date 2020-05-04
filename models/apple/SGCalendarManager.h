@@ -28,7 +28,11 @@
 - (void)removeAllEventsForDate:(NSDate *)date
                andCalendarName:(NSString *)calendarName;
 
+- (NSArray<EKCalendar *> *)fetchCalendars;
+
 + (void)launchCalendarApp;
+
++ (void)requestCalendarAccess:(void (^)(EKEventStore *store))completionHandler;
 @end
 
 #endif //STRATEGR_SGCALENDARMANAGER_H

@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <vector>
+#include <string>
+
 #include <QString>
 #include <QTime>
 #include <QWidget>
@@ -16,7 +19,7 @@
 
 QString humanTimeForMinutes(int mins);
 
-int minutesFromQTime(const QTime &time);
+int QTimeToMinutes(const QTime &time);
 
 QTime QTimeFromMinutes(int minutes);
 QString QStringForMinutes(int minutes);
@@ -44,7 +47,11 @@ double devicePixelRatio();
 /* Strings */
 namespace StringUtils {
     QString toSentenceCase(QString string);
+
 }
+
+std::vector<std::string> QStringListToStdVector(const QStringList &list);
+QStringList QStringListFromStdVector(const std::vector<std::string> &vector);
 
 /* Multithreading */
 

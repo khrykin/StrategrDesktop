@@ -46,7 +46,7 @@ if (APPLE)
             models/apple/SGCalendarManager.h
             models/apple/SGCalendarExporter.h
             models/apple/SGCalendarExporter.mm
-            models/color.mm)
+            models/color.mm models/apple/SGCalendarImporter.mm models/apple/SGCalendarImporter.h)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
@@ -225,6 +225,8 @@ if (APPLE)
             "-framework Foundation"
             "-framework AppKit"
             "-framework UserNotifications"
+            "-framework CoreImage"
+            "-framework QuartzCore"
             ${Sparkle_FRAMEWORK_PATH}
             Qt5::MacExtras)
 
@@ -233,10 +235,6 @@ if (APPLE)
             ui/alert.mm
             ui/macoswindow.mm
             ui/applicationicon.mm
-            ui/cocoa/SGCalendarExportOptionsView.h
-            ui/cocoa/SGCalendarExportOptionsView.m
-            ui/cocoa/SGProgressWindow.h
-            ui/cocoa/SGProgressWindow.m
             utility/notifierbackend.mm
             utility/cocoautils.h
             utility/cocoautils.mm
@@ -246,10 +244,22 @@ if (APPLE)
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h
-            ui/cocoa/SGOptionsViewController.m
-            ui/cocoa/SGOptionsViewController.h
+            ui/cocoa/SGCalendarExportViewController.m
+            ui/cocoa/SGCalendarExportViewController.h
             ui/cocoa/SGCalendarExportProgressWindow.h
-            ui/cocoa/SGCalendarExportProgressWindow.m ui/colorprovider.mm)
+            ui/cocoa/SGCalendarExportProgressWindow.m
+            ui/cocoa/SGCalendarExportView.h
+            ui/cocoa/SGCalendarExportView.m
+            ui/cocoa/SGProgressWindow.h
+            ui/cocoa/SGProgressWindow.m
+            ui/cocoa/SGCalendarImportExportView.h
+            ui/cocoa/SGCalendarImportExportViewSubclass.h
+            ui/cocoa/SGCalendarImportExportView.m
+            ui/cocoa/SGCalendarImportView.h
+            ui/cocoa/SGCalendarImportView.m
+            ui/cocoa/SGColoredCheckBoxView.h
+            ui/cocoa/SGColoredCheckBoxView.m
+            ui/colorprovider.mm ui/cocoa/SGCalendarImportViewController.m ui/cocoa/SGCalendarImportViewController.h)
 
     set(PLATFORM_RESOURCES
             deployment/Strategr.icns

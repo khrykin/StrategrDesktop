@@ -2,6 +2,7 @@
 
 #include <QPainter>
 #include <QStyleOption>
+#include <QKeyEvent>
 
 #include "strategysettingswidget.h"
 #include "abstractspinboxdecorator.h"
@@ -75,6 +76,7 @@ void StrategySettingsWidget::createSlotDurationForm() {
     slotDurationEdit->setSuffix(" min");
     slotDurationEdit->setAlignment(Qt::AlignRight);
     slotDurationEdit->setStyleSheet("color: #888;");
+    slotDurationEdit->installEventFilter(this);
 
     auto *slotDurationEditDecorator = new SpinBoxDecorator(slotDurationEdit, this);
     slotDurationEditDecorator->setSizePolicy(QSizePolicy::Fixed,
@@ -85,12 +87,9 @@ void StrategySettingsWidget::createSlotDurationForm() {
 
     connect(slotDurationEdit, QOverload<int>::of(&QSpinBox::valueChanged),
             [this](int value) {
-                save();
-
-                beginTimeEdit->minuteStepSize = value;
-                endTimeEdit->minuteStepSize = value;
-
-                endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
+                auto slotDuration = slotDurationEdit->value();
+                strategy.set_time_slot_duration(slotDuration);
+                reloadStrategy();
             });
 
     mainLayout->addWidget(formWidget);
@@ -102,6 +101,7 @@ void StrategySettingsWidget::createStartTimeForm() {
     beginTimeEdit = new SteppedTimeEdit();
     beginTimeEdit->setAlignment(Qt::AlignRight);
     beginTimeEdit->setStyleSheet("color: #888;");
+    beginTimeEdit->installEventFilter(this);
 
     auto *beginTimeEditDecorator = new TimeEditDecorator(beginTimeEdit, this);
     beginTimeEditDecorator->setSizePolicy(QSizePolicy::Fixed,
@@ -112,9 +112,9 @@ void StrategySettingsWidget::createStartTimeForm() {
 
     connect(beginTimeEdit, &QTimeEdit::timeChanged,
             [this](const QTime &) {
-                save();
-
-                endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
+                auto beginTime = QTimeToMinutes(beginTimeEdit->time());
+                strategy.set_begin_time(beginTime);
+                reloadStrategy();
             });
 
     mainLayout->addWidget(formWidget);
@@ -132,6 +132,7 @@ void StrategySettingsWidget::createEndTimeForm() {
     endTimeEdit = new SteppedTimeEdit();
     endTimeEdit->setAlignment(Qt::AlignRight);
     endTimeEdit->setStyleSheet("color: #888;");
+    endTimeEdit->installEventFilter(this);
 
     auto *endTimeEditDecorator = new TimeEditDecorator(endTimeEdit, this);
     endTimeEditDecorator->setSizePolicy(QSizePolicy::Fixed,
@@ -142,8 +143,11 @@ void StrategySettingsWidget::createEndTimeForm() {
 
     mainLayout->addWidget(formWidget);
 
-    connect(endTimeEdit, &QTimeEdit::timeChanged, this,
-            &StrategySettingsWidget::endTimeChanged);
+    connect(endTimeEdit, &QTimeEdit::timeChanged, this, [this] {
+        auto endTime = QTimeToMinutes(endTimeEdit->time());
+        strategy.set_end_time(endTime);
+        reloadStrategy();
+    });
 }
 
 QColor StrategySettingsWidget::labelColor() const {
@@ -187,8 +191,6 @@ void StrategySettingsWidget::updateUI() {
     auto beginTime = QTimeFromMinutes(strategy.begin_time());
     auto endTime = QTimeFromMinutes(strategy.end_time());
 
-    dontSave = true;
-
     if (slotDuration != slotDurationEdit->value()) {
         slotDurationEdit->setValue(slotDuration);
     }
@@ -208,36 +210,6 @@ void StrategySettingsWidget::updateUI() {
     if (endTimeEdit->minuteStepSize != strategy.time_slot_duration()) {
         endTimeEdit->minuteStepSize = strategy.time_slot_duration();
     }
-
-    dontSave = false;
-}
-
-void StrategySettingsWidget::save() {
-    if (dontSave) {
-        return;
-    }
-
-    auto slotDuration = slotDurationEdit->value();
-    auto beginTime = minutesFromQTime(beginTimeEdit->time());
-    auto endTime = minutesFromQTime(endTimeEdit->time());
-
-    if (slotDuration != strategy.time_slot_duration()) {
-        strategy.set_time_slot_duration(slotDuration);
-    }
-
-    if (beginTime != strategy.begin_time()) {
-        strategy.set_begin_time(beginTime);
-    }
-
-    if (endTime != strategy.end_time()) {
-        strategy.set_end_time(endTime);
-    }
-}
-
-void StrategySettingsWidget::endTimeChanged(const QTime &time) {
-    save();
-
-    endTimeEdit->setTime(QTimeFromMinutes(strategy.end_time()));
 }
 
 void StrategySettingsWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
@@ -250,4 +222,9 @@ void StrategySettingsWidget::slideAndShow(const std::function<void()> &onFinishe
     SlidingAnimator::Options options;
     options.onFinishedCallback = onFinishedCallback;
     SlidingAnimator::showWidget(this, options);
+}
+
+bool StrategySettingsWidget::eventFilter(QObject *object, QEvent *event) {
+    // Disable all built-in shortcuts
+    return event->type() == QEvent::ShortcutOverride;
 }

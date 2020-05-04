@@ -2,6 +2,8 @@
 // Created by Dmitry Khrykin on 2019-07-08.
 //
 
+#include <algorithm>
+
 #include <QAction>
 #include <QMessageBox>
 #include <QSettings>
@@ -11,6 +13,7 @@
 #include "mainwindow.h"
 #include "aboutwindow.h"
 #include "mainscene.h"
+#include "utils.h"
 
 #ifdef Q_OS_MAC
 
@@ -139,9 +142,10 @@ void ApplicationMenu::setupFileMenu() {
                         QKeySequence(Qt::CTRL + Qt::Key_D));
 
     addExportToCalendarAction();
+    addImportFromCalendarAction();
 }
 
-void ApplicationMenu::addExportToCalendarAction() const {
+void ApplicationMenu::addExportToCalendarAction() {
 #ifdef Q_OS_MAC
     fileMenu->addSeparator();
     fileMenu->addAction(tr("Export To Calendar"), [this]() {
@@ -152,16 +156,63 @@ void ApplicationMenu::addExportToCalendarAction() const {
 
         auto initialCalendarTitle = QSettings().value("exportCalendarTitle").toString().toStdString();
 
-        auto[result, options, date, calendarTitle] = MacOSCalendarExporter::showOptionsAlert(initialOptions,
-                                                                                             initialCalendarTitle);
-
-        if (result == MacOSCalendarExporter::Response::Export) {
+        auto[result, options, date, calendarTitle] = MacOSCalendarExporter::showExportOptionsWindow(initialOptions,
+                                                                                                    initialCalendarTitle);
+        if (result == MacOSCalendarExporter::Response::Perform) {
             QSettings().setValue("calendarExportOptions", options);
 
             if (!calendarTitle.empty())
                 QSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
 
             MacOSCalendarExporter::exportStrategy(window->strategy, options, date, calendarTitle);
+        }
+    });
+#endif
+}
+
+void ApplicationMenu::addImportFromCalendarAction() {
+#ifdef Q_OS_MAC
+    fileMenu->addAction(tr("Import From Calendar"), [this]() {
+        auto optionsWasSet = !QSettings().value("calendarImportOptions").isNull();
+        auto initialOptions = optionsWasSet
+                              ? QSettings().value("calendarImportOptions").toUInt()
+                              : MacOSCalendarExporter::defaultOptions;
+
+        std::unique_ptr<std::vector<std::string>> initialCalendarIdentifiers = nullptr;
+
+        auto initialCalendarIdentifiersWasSet = !QSettings().value("importCalendarsIdentifiers").isNull();
+        if (initialCalendarIdentifiersWasSet) {
+            auto qInitialCalendarIdentifiers = QSettings().value("importCalendarsIdentifiers").toString().split(
+                    ";");
+
+            qDebug() << "qInitialCalendarIdentifiers: " << qInitialCalendarIdentifiers << "\n";
+
+            initialCalendarIdentifiers = std::make_unique<std::vector<std::string>>(
+                    !qInitialCalendarIdentifiers.isEmpty()
+                    ? QStringListToStdVector(qInitialCalendarIdentifiers)
+                    : std::vector<std::string>()
+            );
+        }
+
+        auto[
+        result,
+        options,
+        date,
+        calendarsIdentifiers
+        ] = MacOSCalendarExporter::showImportOptionsWindow(initialOptions,
+                                                           std::move(initialCalendarIdentifiers));
+
+        if (result == MacOSCalendarExporter::Response::Perform) {
+            QSettings().setValue("calendarImportOptions", options);
+
+            if (calendarsIdentifiers) {
+                auto qCalendarsIdentifiers = QStringListFromStdVector(*calendarsIdentifiers);
+                QSettings().setValue("importCalendarsIdentifiers", qCalendarsIdentifiers.join(";"));
+            } else {
+                QSettings().remove("importCalendarsIdentifiers");
+            }
+
+//            auto strategy = MacOSCalendarExporter::importStrategy(options, date, calendarsIdentifiers);
         }
     });
 #endif

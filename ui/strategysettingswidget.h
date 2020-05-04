@@ -31,7 +31,6 @@ signals:
 
 private:
     stg::strategy &strategy;
-    bool dontSave = false;
 
     QVBoxLayout *mainLayout = nullptr;
     QSpinBox *slotDurationEdit = nullptr;
@@ -51,8 +50,7 @@ private:
 
     void updateUI();
 
-    void save();
-    void endTimeChanged(const QTime &time);
+    bool eventFilter(QObject *object, QEvent *event) override;
 
     void paintEvent(QPaintEvent *) override;
     QColor labelColor() const;

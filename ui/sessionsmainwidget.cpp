@@ -41,6 +41,10 @@ SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
                       ApplicationSettings::notifierTimerMillisecondsInterval / 1000));
 
     notifierTimer->start();
+
+    strategy.time_slots().add_on_change_callback([this] {
+        strategySettingsWidget->reloadStrategy();
+    });
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {

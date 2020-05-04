@@ -1,7 +1,9 @@
-#include "utils.h"
+#include <algorithm>
 
 #include <QTimer>
 #include <QApplication>
+
+#include "utils.h"
 
 QString humanTimeForMinutes(int mins) {
     if (mins < 1) {
@@ -38,7 +40,7 @@ QString humanTimeForMinutes(int mins) {
     return result;
 }
 
-int minutesFromQTime(const QTime &time) {
+int QTimeToMinutes(const QTime &time) {
     return time.msecsSinceStartOfDay() / 60 / 1000;
 }
 
@@ -75,6 +77,27 @@ void dispatchToMainThread(const std::function<void()> &callback) {
                               "start",
                               Qt::QueuedConnection,
                               Q_ARG(int, 0));
+}
+
+std::vector<std::string> QStringListToStdVector(const QStringList &list) {
+    std::vector<std::string> result;
+    std::transform(list.begin(),
+                   list.end(),
+                   std::back_inserter(result), [](const QString &s) {
+                return s.toStdString();
+            });
+
+    return result;
+}
+
+QStringList QStringListFromStdVector(const std::vector<std::string> &vector) {
+    QStringList result;
+
+    for (const auto &string : vector) {
+        result.append(QString::fromStdString(string));
+    }
+
+    return result;
 }
 
 QString StringUtils::toSentenceCase(QString string) {

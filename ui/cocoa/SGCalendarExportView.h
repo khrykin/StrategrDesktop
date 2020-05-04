@@ -5,21 +5,17 @@
 #ifndef STRATEGR_OPTIONSVIEW_H
 #define STRATEGR_OPTIONSVIEW_H
 
-#import <AppKit/AppKit.h>
 #import "SGCalendarExporter.h"
+#import "SGCalendarImportExportView.h"
 
-@protocol SGCalendarExportOptionsViewDelegate
-- (void)optionsViewWantsCancel;
-- (void)optionsViewWantsExport;
-@end
+@interface SGCalendarExportView : SGCalendarImportExportView
 
-@interface SGCalendarExportOptionsView : NSView
-@property(nonatomic, weak) id <SGCalendarExportOptionsViewDelegate> delegate;
 @property(nonatomic, readonly) NSDate *date;
 @property(nonatomic, weak) NSString *calendarName;
 @property(nonatomic) SGCalendarExportOptions optionsMask;
 
 - (NSString *)description;
+
 @end
 
 #endif //STRATEGR_OPTIONSVIEW_H

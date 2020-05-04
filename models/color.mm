@@ -9,23 +9,17 @@
 
 namespace stg {
     auto color::to_cg_color() const -> struct CGColor * {
-        auto color_space = CGColorSpaceCreateDeviceRGB();
-        auto cg_color = CGColorCreate(color_space, components().data());
+        auto *color_space = CGColorSpaceCreateDeviceRGB();
+        auto *cg_color = CGColorCreate(color_space, components().data());
         CGColorSpaceRelease(color_space);
+
         return cg_color;
     }
 
     auto color::from_cg_color(CGColor *cg_color) -> color {
-        const auto *components = CGColorGetComponents(cg_color);
         auto color_space_model = CGColorSpaceGetModel(CGColorGetColorSpace(cg_color));
 
-        if (color_space_model != kCGColorSpaceModelRGB
-            && color_space_model != kCGColorSpaceModelMonochrome) {
-            auto color_space = CGColorSpaceCreateDeviceRGB();
-            cg_color = CGColorCreateCopyByMatchingToColorSpace(color_space, kCGRenderingIntentDefault, cg_color, nil);
-            color_space_model = kCGColorSpaceModelRGB;
-        }
-
+        const auto *components = CGColorGetComponents(cg_color);
         if (color_space_model == kCGColorSpaceModelRGB) {
             return color(static_cast<uint8_t>(255u * components[0]),
                          static_cast<uint8_t>(255u * components[1]),

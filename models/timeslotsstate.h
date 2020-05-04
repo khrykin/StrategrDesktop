@@ -28,12 +28,12 @@ namespace stg {
         using duration_t = time_slot::duration_t;
         using size_t = int;
 
-        bool next_slot_empty(index_t index) const;
-        bool previous_slot_empty(index_t index) const;
+        auto next_slot_empty(index_t index) const -> bool;
+        auto previous_slot_empty(index_t index) const -> bool;
 
-        bool has_activity(const activity *activity);
+        auto has_activity(const activity *activity) -> bool;
 
-        std::vector<time_t> times() const;
+        auto times() const -> std::vector<time_t>;
     private:
         friend strategy;
         friend sessions_calculator;
@@ -47,18 +47,20 @@ namespace stg {
                          duration_t slot_duration,
                          size_t number_of_slots);
 
-        // nb! you can't create time_slots_state from empty vector,
+        // NB! you can't create time_slots_state from empty vector,
         // since there would be no way to find out slot_duration
         // and begin_time
         explicit time_slots_state(std::vector<time_slot> from_vector);
 
-        time_t begin_time() const;
+        auto operator=(const time_slots_state &new_state) -> time_slots_state &;
+
+        auto begin_time() const -> time_t;
         void set_begin_time(time_t begin_time);
 
-        duration_t slot_duration() const;
+        auto slot_duration() const -> duration_t;
         void set_slot_duration(duration_t slot_duration);
 
-        size_t number_of_slots() const;
+        auto number_of_slots() const -> size_t;
         void set_number_of_slots(size_t new_number_of_slots);
 
         auto end_time() const -> time_t;
@@ -80,28 +82,28 @@ namespace stg {
 
         void populate(time_t start_time, size_t number_of_slots);
 
-        iterator find_slot_with_activity(const activity *activity);
+        auto find_slot_with_activity(const activity *activity) -> iterator;
 
         void remove_activity(activity *activity);
 
-        void edit_activity(activity *old_activity,
-                           activity *new_activity);
+        void edit_activity(activity *old_activity, activity *new_activity);
 
         void swap(index_t first_index, index_t second_index);
         void silently_swap(index_t first_index, index_t second_index);
 
-        time_slots_state &operator=(const time_slots_state &new_state);
+        auto at(index_t index) -> const time_slot &;
 
-        const time_slot &at(index_t index);
+        auto first_activity_in_time_window(time_t begin_time, time_t end_time) const -> activity *;
+        auto slots_in_time_window(time_t begin_time, time_t end_time) -> std::vector<time_slot *>;
 
-        time_t make_slot_begin_time(time_t global_begin_time, index_t slot_index);
+        auto make_slot_begin_time(time_t global_begin_time, index_t slot_index) const -> time_t;
         void update_begin_times();
         void reset_times();
 
-        void make_safe(index_t &index);
-
-        std::string class_print_name() const override;
+        void make_safe_index(index_t &index);
         void reset_with(data_t raw_data) override;
+
+        auto class_print_name() const -> std::string override;
     };
 }
 

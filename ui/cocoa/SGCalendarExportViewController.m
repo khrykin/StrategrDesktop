@@ -2,19 +2,11 @@
 // Created by Dmitry Khrykin on 2019-08-17.
 //
 
-#import "SGOptionsViewController.h"
+#import "SGCalendarExportViewController.h"
 
-@implementation SGOptionsWindowViewController
-- (void)loadView {
-    NSRect initialFrame = NSMakeRect(0, 0, 400, 200);
+@implementation SGCalendarExportViewController
 
-    SGCalendarExportOptionsView *view = [[SGCalendarExportOptionsView alloc] initWithFrame:initialFrame];
-    view.delegate = self;
-
-    [self setView:view];
-}
-
-- (void)optionsViewWantsExport {
+- (void)optionsViewWantsPerform {
     [[NSApplication sharedApplication] stopModalWithCode:NSModalResponseOK];
     [self.view.window close];
 }
@@ -30,11 +22,6 @@
     }
 
     return YES;
-}
-
-- (SGCalendarExportOptionsView *)view {
-    return (SGCalendarExportOptionsView *)
-            [super view];
 }
 
 @end

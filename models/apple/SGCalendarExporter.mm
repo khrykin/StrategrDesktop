@@ -12,34 +12,14 @@
 @end
 
 @interface SGCalendarExporter ()
+
 @property(nonatomic) stg::strategy *strategy;
 @property(nonatomic, strong) EKEventStore *eventStore;
 @property(nonatomic, strong) SGCalendarManager *calendarManager;
+
 @end
 
 @implementation SGCalendarExporter
-+ (void)requestExport:(void (^)(EKEventStore *store))completionHandler {
-    EKAuthorizationStatus authorizationStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
-    EKEventStore *store = [[EKEventStore alloc] init];
-
-    if (authorizationStatus != EKAuthorizationStatusAuthorized) {
-        [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-            if (!granted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completionHandler(nil);
-                });
-
-                return;
-            }
-
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionHandler(store);
-            });
-        }];
-    } else {
-        completionHandler(store);
-    }
-}
 
 - (instancetype)initWithStrategyPtr:(void *)strategyPtr
                          eventStore:(EKEventStore *)store
@@ -49,7 +29,7 @@
         self.eventStore = store;
         self.settings = settings;
 
-        self.calendarManager = [[SGCalendarManager alloc] initWithStore:self.eventStore];
+        self.calendarManager = [[SGCalendarManager alloc] initWithStore:store];
     }
 
     return self;

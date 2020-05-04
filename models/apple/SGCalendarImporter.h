@@ -1,9 +1,10 @@
 //
-// Created by Dmitry Khrykin on 2020-02-10.
+// Created by Dmitry Khrykin on 03/05/2020.
 //
 
-#ifndef STRATEGR_SGCALENDAREXPORTER_H
-#define STRATEGR_SGCALENDAREXPORTER_H
+#ifndef STRATEGR_SGCALENDARIMPORTER_H
+#define STRATEGR_SGCALENDARIMPORTER_H
+
 
 #include <Foundation/Foundation.h>
 #include <EventKit/EventKit.h>
@@ -18,7 +19,7 @@ typedef NS_OPTIONS(unsigned, SGCalendarExportOptions) {
 };
 
 NS_SWIFT_NAME(CalendarExporterSettings)
-@interface SGCalendarExporterSettings : NSObject
+@interface SGCalendarImporterSettings : NSObject
 
 @property(nonatomic) SGCalendarExportOptions optionsMask;
 @property(nonatomic, strong) NSString *calendarName;
@@ -27,27 +28,29 @@ NS_SWIFT_NAME(CalendarExporterSettings)
 @end
 
 NS_SWIFT_NAME(CalendarExporterDelegate)
-@protocol SGCalendarExporterDelegate
+@protocol SGCalendarImporterDelegate
 
 @optional
 - (void)calendarManagerProgressChanged:(double)doubleValue;
 
 @end
 
-NS_SWIFT_NAME(CalendarExporter)
-@interface SGCalendarExporter : NSObject
+NS_SWIFT_NAME(CalendarImporter)
+@interface SGCalendarImporter : NSObject
 
-@property(nonatomic, weak) id <SGCalendarExporterDelegate> delegate;
-@property(nonatomic, strong) SGCalendarExporterSettings *settings;
+typedef void (^SGCalendarImportCompletionHandler)(void *strategyPtr);
+
+@property(nonatomic, weak) id <SGCalendarImporterDelegate> delegate;
+@property(nonatomic, strong) SGCalendarImporterSettings *settings;
 
 - (instancetype)initWithStrategyPtr:(void *)strategyPtr
                          eventStore:(EKEventStore *)store
-                           settings:(SGCalendarExporterSettings *)settings;
+                           settings:(SGCalendarImporterSettings *)settings;
 
-- (void)export:(void (^)())completionHandler;
+- (void)import:(SGCalendarImportCompletionHandler)completionHandler;
 
 @end
 
 NS_ASSUME_NONNULL_END
 
-#endif //STRATEGR_SGCALENDAREXPORTER_H
+#endif //STRATEGR_SGCALENDARIMPORTER_H
