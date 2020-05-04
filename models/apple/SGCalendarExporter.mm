@@ -45,20 +45,15 @@
         auto nonEmptySessions = strategy.sessions().get_non_empty();
         auto numberOfEvents = static_cast<unsigned int>(nonEmptySessions.size());
 
-        if ((optionsMask & SGCalendarExportOptionsOverwriteIsOn) == SGCalendarExportOptionsOverwriteIsOn) {
+        if ((optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite) {
             NSString *calendarName = self.settings.calendarName;
 
             [self.calendarManager removeAllEventsForDate:date andCalendarName:calendarName];
         }
 
-        if ((optionsMask & SGCalendarExportOptionsSpecificCalendarIsOn) ==
-            SGCalendarExportOptionsSpecificCalendarIsOn) {
-            self.calendarManager.calendarName = self.settings.calendarName;
-        }
-
         if (nonEmptySessions.empty()) {
             dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.delegate calendarManagerProgressChanged:1.0];
+                [self.delegate calendarExporterProgressChanged:1.0];
             });
         } else {
             for (auto &session : nonEmptySessions) {
@@ -71,7 +66,7 @@
                 auto progress = static_cast<float>(currentEventIndex + 1) / numberOfEvents;
 
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    [self.delegate calendarManagerProgressChanged:progress];
+                    [self.delegate calendarExporterProgressChanged:progress];
                 });
             }
         }
@@ -86,11 +81,20 @@
         return;
 
     NSDate *date = self.settings.date;
-    BOOL includeNotifications = (self.settings.optionsMask & SGCalendarExportOptionsNotificationsIsOn) ==
-                                SGCalendarExportOptionsNotificationsIsOn;
+    BOOL includeNotifications = (self.settings.optionsMask & SGCalendarExportOptionsIncludeNotifications) ==
+                                SGCalendarExportOptionsIncludeNotifications;
 
     CGColorRef color = nil;
-    NSString *calendarTitle = self.calendarManager.calendarName;
+
+//        if ((optionsMask & SGCalendarExportOptionsUseSpecificCalendar) ==
+//            SGCalendarExportOptionsUseSpecificCalendar) {
+//            self.calendarManager.calendarName = self.settings.calendarName;
+//        }
+
+    NSString *calendarTitle = self.settings.calendarName;
+
+    NSLog(@"Export with calendar title: %@", calendarTitle);
+
     if (!calendarTitle) {
         calendarTitle = [NSString stringWithUTF8String:session.activity->name().c_str()];
         color = session.activity->color().to_cg_color();
@@ -99,9 +103,7 @@
     EKCalendar *calendar = [self.calendarManager findOrCreateCalendarWithTitle:calendarTitle
                                                                       andColor:color];
 
-    CGColorRelease(color);
-
-    NSString *eventTitle = self.calendarManager.calendarName != nil
+    NSString *eventTitle = self.settings.calendarName != nil
                            ? [NSString stringWithUTF8String:session.activity->name().c_str()]
                            : calendarTitle;
 

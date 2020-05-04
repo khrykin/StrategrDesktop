@@ -10,7 +10,9 @@
 #import "cocoa/SGCalendarImportView.h"
 #import "cocoa/SGCalendarExportView.h"
 #import "cocoa/SGCalendarExportProgressWindow.h"
+
 #import "SGCalendarExporter.h"
+#import "SGCalendarImporter.h"
 
 #include "macoscalendarexporter.h"
 
@@ -19,7 +21,7 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
                                            time_t dateSecsFromEpoch,
                                            const std::string &calTitle) {
     // Obj-C block can't capture a C++ function parameter so we copy it here
-    NSString *calendarTitle = [NSString stringWithUTF8String:calTitle.c_str()];
+    NSString *calendarTitle = calTitle.empty() ? nil : [NSString stringWithUTF8String:calTitle.c_str()];
     [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
         if (!store) {
             return showAccessDeniedAlert();
@@ -32,14 +34,12 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy,
         progressWindow.releasedWhenClosed = NO;
         [progressWindow makeKeyAndOrderFront:nil];
 
-        auto *strategyPtr = (void *) &strategy;
-
         SGCalendarExporterSettings *settings = [[SGCalendarExporterSettings alloc] init];
         settings.optionsMask = static_cast<SGCalendarExportOptions>(options);
         settings.date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
         settings.calendarName = calendarTitle;
 
-        SGCalendarExporter *exporter = [[SGCalendarExporter alloc] initWithStrategyPtr:strategyPtr
+        SGCalendarExporter *exporter = [[SGCalendarExporter alloc] initWithStrategyPtr:(void *) &strategy
                                                                             eventStore:store
                                                                               settings:settings];
         exporter.delegate = progressWindow;
@@ -186,4 +186,35 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
                                      optionsMask,
                                      static_cast<time_t>(date.timeIntervalSince1970),
                                      std::move(outputCalendarsIdentifiers)};
+}
+
+void MacOSCalendarExporter::importStrategy(stg::strategy &strategy,
+                                           MacOSCalendarExporter::Options options,
+                                           time_t dateSecsFromEpoch,
+                                           std::unique_ptr<std::vector<std::string>> initialCalendarsIdentifiers) {
+    NSMutableArray *calendarsIdentifiers = nil;
+    if (initialCalendarsIdentifiers) {
+        calendarsIdentifiers = [[NSMutableArray alloc] init];
+        for (auto &identifier : *initialCalendarsIdentifiers) {
+            [calendarsIdentifiers addObject:[NSString stringWithUTF8String:identifier.c_str()]];
+        }
+    }
+
+    [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
+        if (!store) {
+            return showAccessDeniedAlert();
+        }
+
+        SGCalendarImporterSettings *settings = [[SGCalendarImporterSettings alloc] init];
+        settings.optionsMask = static_cast<SGCalendarImportOptions>(options);
+        settings.date = [NSDate dateWithTimeIntervalSince1970:dateSecsFromEpoch];
+        settings.calendarsIdentifiers = calendarsIdentifiers;
+
+        SGCalendarImporter *calendarImporter = [[SGCalendarImporter alloc] initWithStrategyPtr:(void *) &strategy
+                                                                                    eventStore:store
+                                                                                      settings:settings];
+        [calendarImporter import:^{
+            std::cout << "strategy imported \n";
+        }];
+    }];
 }

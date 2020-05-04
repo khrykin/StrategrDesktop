@@ -27,6 +27,12 @@ public:
     explicit SlotsWidget(stg::strategy &strategy,
                          QWidget *parent = nullptr);
 
+    QAction *setActivityAction = nullptr;
+    QAction *deleteActivityAction = nullptr;
+    QAction *clearSelectionAction = nullptr;
+    QAction *shiftSlotsBelowAction = nullptr;
+    QAction *selectAllAction = nullptr;
+
     int slotHeight() const;
 
     void reloadStrategy();
@@ -51,12 +57,6 @@ private:
 
     int _slotHeight = ApplicationSettings::defaultSlotHeight;
     int _slotBeforeBoundaryIndex = -2;
-
-    QAction *setActivityAction = nullptr;
-    QAction *deleteActivityAction = nullptr;
-    QAction *clearSelectionAction = nullptr;
-    QAction *shiftSlotsBelowAction = nullptr;
-    QAction *selectAllAction = nullptr;
 
     void openActivitiesWindow();
     void deleteActivityInSelection();

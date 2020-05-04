@@ -12,16 +12,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_SWIFT_NAME(CalendarExportOptions)
 typedef NS_OPTIONS(unsigned, SGCalendarExportOptions) {
-    SGCalendarExportOptionsOverwriteIsOn = 1 << 0,
-    SGCalendarExportOptionsNotificationsIsOn = 1 << 1,
-    SGCalendarExportOptionsSpecificCalendarIsOn = 1 << 2
+    SGCalendarExportOptionsOverwrite = 1 << 0,
+    SGCalendarExportOptionsIncludeNotifications = 1 << 1,
+    SGCalendarExportOptionsUseSpecificCalendar = 1 << 2
 };
 
 NS_SWIFT_NAME(CalendarExporterSettings)
 @interface SGCalendarExporterSettings : NSObject
 
 @property(nonatomic) SGCalendarExportOptions optionsMask;
-@property(nonatomic, strong) NSString *calendarName;
+@property(nonatomic, strong) NSString *_Nullable calendarName;
 @property(nonatomic, strong) NSDate *date;
 
 @end
@@ -30,7 +30,7 @@ NS_SWIFT_NAME(CalendarExporterDelegate)
 @protocol SGCalendarExporterDelegate
 
 @optional
-- (void)calendarManagerProgressChanged:(double)doubleValue;
+- (void)calendarExporterProgressChanged:(double)doubleValue;
 
 @end
 

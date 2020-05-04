@@ -18,6 +18,7 @@ SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setFocusPolicy(Qt::ClickFocus);
+
     installEventFilter(this);
 
     lineEdit = new QLineEdit();
@@ -37,7 +38,7 @@ SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
             this,
             &SearchBoxWidget::textEdited);
 
-    auto layout = new QHBoxLayout(this);
+    auto *layout = new QHBoxLayout(this);
 
     layout->addWidget(lineEdit);
     layout->setContentsMargins(iconRect().width() + 3 * ApplicationSettings::defaultPadding,
@@ -47,8 +48,7 @@ SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
 
     cancelAction = new QAction("Cancel", this);
     cancelAction->setShortcut(QKeySequence(Qt::Key_Escape));
-    connect(cancelAction,
-            &QAction::triggered,
+    connect(cancelAction, &QAction::triggered,
             [this]() {
                 if (!lineEdit->text().isEmpty()) {
                     lineEdit->setText("");

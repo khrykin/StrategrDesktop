@@ -7,6 +7,10 @@
 
 #include "strategy.h"
 
+@implementation SGCalendarImporterSettings
+
+@end
+
 @interface SGCalendarImporter ()
 
 @property(nonatomic) stg::strategy *strategy;
@@ -31,8 +35,17 @@
     return self;
 }
 
-- (void)import:(SGCalendarImportCompletionHandler)completionHandler {
+- (void)import:(void (^)())completionHandler {
+    NSArray<EKEvent *> *events = [self.calendarManager eventsWithDate:self.settings.date
+                                                 calendarsIdentifiers:self.settings.calendarsIdentifiers];
 
+    NSLog(@"events found %@", events);
+
+    for (EKEvent *event in events) {
+
+    }
+
+    completionHandler();
 }
 
 @end

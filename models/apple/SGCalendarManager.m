@@ -23,7 +23,7 @@
 
 - (NSArray<EKCalendar *> *)calendarsWithTitle:(NSString *)title {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"title==%@", title];
-    return [[self fetchCalendars] filteredArrayUsingPredicate:predicate];
+    return [[self calendars] filteredArrayUsingPredicate:predicate];
 }
 
 - (EKCalendar *)findOrCreateCalendarWithTitle:(NSString *)title andColor:(CGColorRef)color {
@@ -220,7 +220,7 @@
     }
 }
 
-- (NSArray<EKCalendar *> *)fetchCalendars {
+- (NSArray<EKCalendar *> *)calendars {
     return [self.store calendarsForEntityType:EKEntityTypeEvent];
 }
 
@@ -245,6 +245,35 @@
     } else {
         completionHandler(store);
     }
+}
+
+- (NSArray<EKEvent *> *)eventsWithDate:(NSDate *)date
+                  calendarsIdentifiers:(NSArray<NSString *> *_Nullable)calendarsIdentifiers {
+    NSDate *beginningOfToday = [self beginningOfDayForDate:date];
+    NSDate *beginningOfTomorrow = [beginningOfToday dateByAddingTimeInterval:24 * 60 * 60];
+
+    NSMutableArray<EKCalendar *> *calendars = nil;
+    if (calendarsIdentifiers) {
+        calendars = [[NSMutableArray alloc] init];
+
+        for (NSString *calendarIdentifier in calendarsIdentifiers) {
+            EKCalendar *calendar = [self.store calendarWithIdentifier:calendarIdentifier];
+            if (calendar)
+                [calendars addObject:calendar];
+        }
+    }
+
+    NSPredicate *datePredicate = [self.store predicateForEventsWithStartDate:beginningOfToday
+                                                                     endDate:beginningOfTomorrow
+                                                                   calendars:calendars];
+
+    NSArray<EKEvent *> *events = [self.store eventsMatchingPredicate:datePredicate];
+
+    NSPredicate *nonAllDayPredicate = [NSPredicate predicateWithBlock:^BOOL(EKEvent *event, NSDictionary *_) {
+        return !event.allDay;
+    }];
+
+    return [events filteredArrayUsingPredicate:nonAllDayPredicate];
 }
 
 @end

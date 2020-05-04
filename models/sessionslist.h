@@ -13,7 +13,6 @@
 #include "notifiableonchange.h"
 #include "timeslotsstate.h"
 #include "streamablelist.h"
-#include "sessionscalculator.h"
 #include "activity.h"
 
 namespace stg {
@@ -35,29 +34,32 @@ namespace stg {
             index_t start_index = 0;
             index_t end_index = 0;
 
-            bool contain(index_t index) {
+            auto contain(index_t index) const -> bool {
                 return index >= start_index && index <= end_index;
             }
         };
 
-        std::vector<session> get_non_empty() const;
+        auto get_non_empty() const -> std::vector<session>;
 
-        bounds get_bounds_for(index_t session_index) const;
+        auto get_bounds_for(index_t session_index) const -> bounds;
 
-        stg::sessions_list::index_t session_index_for_time_slot_index(index_t time_slot_index) const;
+        auto session_index_for_time_slot_index(index_t time_slot_index) const -> stg::sessions_list::index_t;
 
-        const session *session_after(const session &activity_session) const;
-        const session *session_before(const session &activity_session) const;
+        auto session_after(const session &activity_session) const -> const session *;
+        auto session_before(const session &activity_session) const -> const session *;
 
-        time_slot::time_t relative_begin_time(const session &session) const;
+        auto relative_begin_time(const session &session) const -> time_slot::time_t;
+        auto duration() const -> time_slot::duration_t;
 
-        std::vector<overview_item> overview() const;
+        auto overview() const -> std::vector<overview_item>;
 
-        std::string class_print_name() const override;
+
+        auto class_print_name() const -> std::string override;
+
     private:
         using activity_sessions_list_base::activity_sessions_list_base;
 
-        void recalculate(const time_slots_state &time_slots_state);
+        void recalculate(const time_slots_state &time_slots);
 
         friend strategy;
     };

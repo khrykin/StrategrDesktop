@@ -67,8 +67,6 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/sessionslist.cpp
         models/sessionslist.h
         models/streamablelist.h
-        models/sessionscalculator.cpp
-        models/sessionscalculator.h
         models/strategyhistory.cpp
         models/strategyhistory.h
         models/session.cpp

@@ -18,10 +18,8 @@
 #include "applicationsettings.h"
 #include "theme.h"
 
-SessionWidget::SessionWidget(stg::session activitySession,
-                             QWidget *parent)
-        : activitySession(std::move(activitySession)),
-          QWidget(parent) {
+SessionWidget::SessionWidget(stg::session activitySession, QWidget *parent)
+        : activitySession(std::move(activitySession)), QWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
     updateUI();
@@ -37,25 +35,18 @@ void SessionWidget::paintEvent(QPaintEvent *) {
 
     drawBackground(painter);
 
-    if (activitySession.activity) {
-        if (_drawsBorders)
-            drawRulers(painter);
+    if (_drawsBorders)
+        drawRulers(painter);
 
+    if (activitySession.activity) {
         drawLabel(painter);
     }
-
-//    if (dimmed) {
-//        auto dimColor = baseColor();
-//        dimColor.setAlphaF(0.2);
-//
-//        painter.setBrush(dimColor);
-//        painter.drawRect(contentsRect());
-//    }
 }
 
 void SessionWidget::drawRulers(QPainter &painter) const {
-    QColor rulerColor = Application::theme()
-            .session_ruler_color(activitySession, isSelected());
+    QColor rulerColor = activitySession.activity
+                        ? QColor(Application::theme().session_ruler_color(activitySession, isSelected()))
+                        : borderColor();
 
     painter.setBrush(rulerColor);
 
@@ -89,16 +80,13 @@ void SessionWidget::drawBackground(QPainter &painter) const {
 
     auto lastTimeSlot = activitySession.time_slots.back();
     auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 || isBorderSelected ? 1 : 0;
-    auto backgroundRect = QRect(0,
-                                2,
-                                width(),
-                                height() - 5 - bottomMargin);
+    auto backgroundRect = QRect(0, 2, width(), height() - 5 - bottomMargin);
 
     painter.drawRoundedRect(backgroundRect, 4, 4);
 }
 
 QColor SessionWidget::selectedBackgroundColor() const {
-    return QColor(activitySession.activity->color());
+    return activitySession.activity->color();
 }
 
 QColor SessionWidget::sessionColor() const {

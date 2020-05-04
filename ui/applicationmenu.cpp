@@ -182,8 +182,7 @@ void ApplicationMenu::addImportFromCalendarAction() {
 
         auto initialCalendarIdentifiersWasSet = !QSettings().value("importCalendarsIdentifiers").isNull();
         if (initialCalendarIdentifiersWasSet) {
-            auto qInitialCalendarIdentifiers = QSettings().value("importCalendarsIdentifiers").toString().split(
-                    ";");
+            auto qInitialCalendarIdentifiers = QSettings().value("importCalendarsIdentifiers").toString().split(";");
 
             qDebug() << "qInitialCalendarIdentifiers: " << qInitialCalendarIdentifiers << "\n";
 
@@ -212,7 +211,7 @@ void ApplicationMenu::addImportFromCalendarAction() {
                 QSettings().remove("importCalendarsIdentifiers");
             }
 
-//            auto strategy = MacOSCalendarExporter::importStrategy(options, date, calendarsIdentifiers);
+            MacOSCalendarExporter::importStrategy(window->strategy, options, date, std::move(calendarsIdentifiers));
         }
     });
 #endif

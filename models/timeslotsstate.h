@@ -31,6 +31,11 @@ namespace stg {
         auto next_slot_empty(index_t index) const -> bool;
         auto previous_slot_empty(index_t index) const -> bool;
 
+        auto begin_time() const -> time_t;
+        auto end_time() const -> time_t;
+        auto slot_duration() const -> duration_t;
+        auto number_of_slots() const -> size_t;
+
         auto has_activity(const activity *activity) -> bool;
 
         auto times() const -> std::vector<time_t>;
@@ -54,38 +59,24 @@ namespace stg {
 
         auto operator=(const time_slots_state &new_state) -> time_slots_state &;
 
-        auto begin_time() const -> time_t;
         void set_begin_time(time_t begin_time);
-
-        auto slot_duration() const -> duration_t;
         void set_slot_duration(duration_t slot_duration);
-
-        auto number_of_slots() const -> size_t;
         void set_number_of_slots(size_t new_number_of_slots);
-
-        auto end_time() const -> time_t;
         void set_end_time(time_t end_time);
-
         void set_activity_at_indices(activity *activity,
                                      const std::vector<index_t> &indices);
 
-        void silently_set_activity_at_indices(activity *activity,
-                                              const std::vector<index_t> &indices);
-
+        void silently_set_activity_at_indices(activity *activity, const std::vector<index_t> &indices);
         void silently_set_activity_at_index(index_t slot_index, activity *activity);
-
         void silently_fill_slots(index_t from_index, index_t till_index);
         void fill_slots(index_t from_index, index_t till_index);
         void fill_slots_shifting(index_t from_index, index_t till_index);
-
         void shift_below(index_t from_index, size_t length);
 
         void populate(time_t start_time, size_t number_of_slots);
 
         auto find_slot_with_activity(const activity *activity) -> iterator;
-
         void remove_activity(activity *activity);
-
         void edit_activity(activity *old_activity, activity *new_activity);
 
         void swap(index_t first_index, index_t second_index);

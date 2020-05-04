@@ -5,13 +5,15 @@
 #ifndef STRATEGR_SGCALENDARMANAGER_H
 #define STRATEGR_SGCALENDARMANAGER_H
 
+
 #import <Foundation/Foundation.h>
 #import <EventKit/EventKit.h>
 #import <CoreGraphics/CGColor.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface SGCalendarManager : NSObject
 @property(strong) EKEventStore *store;
-@property(strong) NSString *calendarName;
 
 - (instancetype)initWithStore:(EKEventStore *)store;
 
@@ -28,11 +30,16 @@
 - (void)removeAllEventsForDate:(NSDate *)date
                andCalendarName:(NSString *)calendarName;
 
-- (NSArray<EKCalendar *> *)fetchCalendars;
+- (NSArray<EKCalendar *> *)calendars;
+
+- (NSArray<EKEvent *> *)eventsWithDate:(NSDate *)date
+                  calendarsIdentifiers:(NSArray<NSString *> *_Nullable)calendarsIdentifiers;
 
 + (void)launchCalendarApp;
 
 + (void)requestCalendarAccess:(void (^)(EKEventStore *store))completionHandler;
 @end
+
+NS_ASSUME_NONNULL_END
 
 #endif //STRATEGR_SGCALENDARMANAGER_H

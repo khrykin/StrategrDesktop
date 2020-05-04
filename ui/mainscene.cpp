@@ -18,10 +18,8 @@ MainScene::MainScene(stg::strategy &strategy, QWidget *parent)
     addWidget(sessionsMainWidget);
     addWidget(activitiesWidget);
 
-    connect(activitiesWidget,
-            &ActivityListWidget::wantToGetBack,
-            this,
-            &MainScene::showSessions);
+    connect(activitiesWidget, &ActivityListWidget::wantToGetBack,
+            this, &MainScene::showSessions);
 }
 
 void MainScene::showActivities() {

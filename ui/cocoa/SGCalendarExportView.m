@@ -84,13 +84,13 @@
 
 - (void)setOptionsMask:(SGCalendarExportOptions)optionsMask {
     self.overwriteCheckbox.state =
-            (optionsMask & SGCalendarExportOptionsOverwriteIsOn) == SGCalendarExportOptionsOverwriteIsOn;
+            (optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite;
 
     self.notificationsCheckbox.state =
-            (optionsMask & SGCalendarExportOptionsNotificationsIsOn) == SGCalendarExportOptionsNotificationsIsOn;
+            (optionsMask & SGCalendarExportOptionsIncludeNotifications) == SGCalendarExportOptionsIncludeNotifications;
 
     BOOL specificCalendarOptionIsOn =
-            (optionsMask & SGCalendarExportOptionsSpecificCalendarIsOn) == SGCalendarExportOptionsSpecificCalendarIsOn;
+            (optionsMask & SGCalendarExportOptionsUseSpecificCalendar) == SGCalendarExportOptionsUseSpecificCalendar;
 
     self.specificCalendarCheckbox.state = specificCalendarOptionIsOn;
     self.calendarNameTextField.hidden = !specificCalendarOptionIsOn;
@@ -100,15 +100,15 @@
     SGCalendarExportOptions mask = (SGCalendarExportOptions) 0;
 
     if (self.overwriteCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsOverwriteIsOn;
+        mask = mask | SGCalendarExportOptionsOverwrite;
     }
 
     if (self.notificationsCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsNotificationsIsOn;
+        mask = mask | SGCalendarExportOptionsIncludeNotifications;
     }
 
     if (self.specificCalendarCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsSpecificCalendarIsOn;
+        mask = mask | SGCalendarExportOptionsUseSpecificCalendar;
     }
 
     return mask;
@@ -152,17 +152,18 @@
 
 - (NSString *)description {
     NSString *overwriteIsOn =
-            (self.optionsMask & SGCalendarExportOptionsOverwriteIsOn) == SGCalendarExportOptionsOverwriteIsOn
+            (self.optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite
             ? @"YES"
             : @"NO";
     NSString *notificationsIsOn =
-            (self.optionsMask & SGCalendarExportOptionsNotificationsIsOn) == SGCalendarExportOptionsNotificationsIsOn
+            (self.optionsMask & SGCalendarExportOptionsIncludeNotifications) ==
+            SGCalendarExportOptionsIncludeNotifications
             ? @"YES"
             : @"NO";
 
     NSString *specificCalendarIsOn =
-            (self.optionsMask & SGCalendarExportOptionsSpecificCalendarIsOn) ==
-            SGCalendarExportOptionsSpecificCalendarIsOn
+            (self.optionsMask & SGCalendarExportOptionsUseSpecificCalendar) ==
+            SGCalendarExportOptionsUseSpecificCalendar
             ? @"YES"
             : @"NO";
 

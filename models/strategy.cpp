@@ -140,7 +140,7 @@ namespace stg {
             return;
         }
 
-        auto activity = activities().at(activity_index);
+        auto *activity = activities().at(activity_index);
         _time_slots.set_activity_at_indices(activity, time_slot_indices);
 
         commit_to_history();

@@ -12,6 +12,7 @@ namespace stg {
         auto *color_space = CGColorSpaceCreateDeviceRGB();
         auto *cg_color = CGColorCreate(color_space, components().data());
         CGColorSpaceRelease(color_space);
+        CFAutorelease(cg_color);
 
         return cg_color;
     }

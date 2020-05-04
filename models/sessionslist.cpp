@@ -6,104 +6,129 @@
 #include "sessionslist.h"
 #include "activity.h"
 
-stg::sessions_list::index_t
-stg::sessions_list::session_index_for_time_slot_index(index_t time_slot_index) const {
-    index_t slots_count = 0;
-    for (auto &session : _data) {
-        auto first_slot_index = slots_count;
-        auto next_slot_index = slots_count + static_cast<index_t>(session.length());
+namespace stg {
 
-        if (first_slot_index <= time_slot_index &&
-            time_slot_index < next_slot_index) {
-            return static_cast<index_t>(&session - &_data[0]);
+    auto sessions_list::session_index_for_time_slot_index(index_t time_slot_index) const -> index_t {
+        index_t slots_count = 0;
+
+        for (const auto &session : _data) {
+            auto first_slot_index = slots_count;
+            auto next_slot_index = slots_count + static_cast<index_t>(session.length());
+
+            if (first_slot_index <= time_slot_index && time_slot_index < next_slot_index) {
+                return static_cast<index_t>(&session - &_data[0]);
+            }
+
+            slots_count = next_slot_index;
         }
 
-        slots_count = next_slot_index;
+        return -1;
     }
 
-    return -1;
-}
+    void sessions_list::recalculate(const time_slots_state &time_slots) {
+        std::vector<session> result;
 
-void stg::sessions_list::recalculate(const time_slots_state &time_slots_state) {
-    _data = sessions_calculator::calculate(time_slots_state);
+        auto cached_session = session();
 
-    on_change_event();
-}
+        for (const auto &time_slot : time_slots) {
+            auto time_slot_index = &time_slot - &time_slots[0];
+            auto *previous_activity = time_slot_index > 0
+                                      ? time_slots[time_slot_index - 1].activity
+                                      : time_slot::no_activity;
 
-const stg::session *
-stg::sessions_list::session_after(const session &activity_session) const {
-    auto it = find_const(activity_session);
-    return it < std::prev(_data.end()) ? &*std::next(it) : nullptr;
-}
+            auto *current_activity = time_slot.activity;
 
-const stg::session *
-stg::sessions_list::session_before(const session &activity_session) const {
-    auto it = find_const(activity_session);
-    return it > _data.begin() ? &*std::prev(it) : nullptr;
-}
+            bool activity_changed = previous_activity != current_activity;
 
-std::string stg::sessions_list::class_print_name() const {
-    return "sessions_list";
-}
+            auto default_session = session{{time_slot}, time_slot.activity};
 
-std::vector<stg::sessions_list::overview_item>
-stg::sessions_list::overview() const {
-    if (_data.empty()) {
-        return {};
+            if (time_slot_index == 0 || activity_changed) {
+                if (activity_changed && time_slot_index != 0)
+                    result.push_back(cached_session);
+
+                cached_session = default_session;
+            } else {
+                cached_session.time_slots.push_back(time_slot);
+            }
+
+            if (time_slot_index == time_slots.number_of_slots() - 1) {
+                result.push_back(cached_session);
+            }
+        }
+
+        _data = result;
+
+        on_change_event();
     }
 
-    auto overall_begin_time = _data.front().begin_time();
-    auto total_duraion = _data.back().end_time() - overall_begin_time;
+    auto sessions_list::session_after(const session &activity_session) const -> const session * {
+        auto it = find_const(activity_session);
+        return it < std::prev(_data.end()) ? &*std::next(it) : nullptr;
+    }
 
-    std::vector<overview_item> result;
-    std::transform(_data.begin(),
-                   _data.end(),
-                   std::back_inserter(result),
-                   [total_duraion, overall_begin_time](auto &session) {
-                       auto duration_percentage = static_cast<float>(session.duration())
-                                                  / total_duraion;
-                       auto begin_percentage = static_cast<float>(session.begin_time()
-                                                                  - overall_begin_time)
-                                               / total_duraion;
+    auto sessions_list::session_before(const session &activity_session) const -> const session * {
+        auto it = find_const(activity_session);
+        return it > _data.begin() ? &*std::prev(it) : nullptr;
+    }
 
-                       auto color = session.activity
-                                    ? std::make_optional(session.activity->color())
-                                    : std::nullopt;
+    auto sessions_list::class_print_name() const -> std::string {
+        return "sessions_list";
+    }
 
-                       return overview_item{
-                               duration_percentage,
-                               begin_percentage,
-                               color
-                       };
-                   });
+    auto sessions_list::overview() const -> std::vector<overview_item> {
+        if (_data.empty())
+            return {};
 
-    return result;
-}
+        auto overall_begin_time = _data.front().begin_time();
 
-std::vector<stg::session> stg::sessions_list::get_non_empty() const {
-    std::vector<session> result;
-    std::copy_if(_data.begin(),
-                 _data.end(),
-                 std::back_inserter(result),
-                 [](auto &session) {
-                     return session.activity != time_slot::no_activity;
-                 });
+        std::vector<overview_item> result;
+        auto make_overview_item = [overall_begin_time, this](auto &session) {
+            auto duration_percentage = (float) session.duration() / duration();
+            auto begin_percentage = (float) (session.begin_time() - overall_begin_time) / duration();
 
-    return result;
-}
+            auto color = session.activity
+                         ? std::make_optional(session.activity->color())
+                         : std::nullopt;
 
-stg::time_slot::time_t stg::sessions_list::relative_begin_time(const stg::session &session) const {
-    return session.begin_time() - _data.front().begin_time();
-}
+            return overview_item{duration_percentage,
+                                 begin_percentage,
+                                 color};
+        };
 
-stg::sessions_list::bounds stg::sessions_list::get_bounds_for(index_t session_index) const {
-    auto &session = _data[session_index];
+        std::transform(_data.begin(), _data.end(),
+                       std::back_inserter(result), make_overview_item);
 
-    auto global_begin_time = _data.front().begin_time();
-    auto slot_duration = static_cast<index_t>(session.time_slots.front().duration);
+        return result;
+    }
 
-    auto start_index = static_cast<index_t>(session.begin_time() - global_begin_time) / slot_duration;
-    auto end_index = start_index + static_cast<index_t>(session.length());
+    auto sessions_list::duration() const -> time_slot::duration_t {
+        if (_data.empty()) return 0;
+        return _data.back().end_time() - _data.front().begin_time();;
+    }
 
-    return {start_index, end_index};
+    auto sessions_list::get_non_empty() const -> std::vector<session> {
+        std::vector<session> result;
+        std::copy_if(_data.begin(), _data.end(),
+                     std::back_inserter(result), [](auto &session) {
+                    return session.activity != time_slot::no_activity;
+                });
+
+        return result;
+    }
+
+    auto sessions_list::relative_begin_time(const session &session) const -> time_slot::time_t {
+        return session.begin_time() - _data.front().begin_time();
+    }
+
+    auto sessions_list::get_bounds_for(index_t session_index) const -> bounds {
+        const auto &session = _data[session_index];
+
+        auto global_begin_time = _data.front().begin_time();
+        auto slot_duration = static_cast<index_t>(session.time_slots.front().duration);
+
+        auto start_index = static_cast<index_t>(session.begin_time() - global_begin_time) / slot_duration;
+        auto end_index = start_index + static_cast<index_t>(session.length());
+
+        return {start_index, end_index};
+    }
 }

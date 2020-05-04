@@ -14,7 +14,7 @@
     return self;
 }
 
-- (void)calendarManagerProgressChanged:(double)doubleValue {
+- (void)calendarExporterProgressChanged:(double)doubleValue {
     if (self.progressIndicatior.indeterminate) {
         self.progressIndicatior.indeterminate = NO;
     }

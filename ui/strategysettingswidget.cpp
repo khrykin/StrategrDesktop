@@ -12,11 +12,9 @@
 #include "colorutils.h"
 #include "rowwidget.h"
 
-StrategySettingsWidget::StrategySettingsWidget(stg::strategy &strategy,
-                                               QWidget *parent)
+StrategySettingsWidget::StrategySettingsWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
-    setSizePolicy(QSizePolicy::Expanding,
-                  QSizePolicy::Fixed);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     createLayout();
     createHeader();

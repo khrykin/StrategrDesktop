@@ -53,6 +53,12 @@ public:
                                Options options,
                                time_t dateSecsFromEpoch,
                                const std::string &calendarTitle = nullptr);
+
+
+    static void importStrategy(stg::strategy &strategy,
+                               Options options,
+                               time_t dateSecsFromEpoch,
+                               std::unique_ptr<std::vector<std::string>> initialCalendarsIdentifiers = nullptr);
 private:
     static void showAccessDeniedAlert();
 };

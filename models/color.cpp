@@ -12,17 +12,11 @@
 #include "color.h"
 
 namespace stg {
-    color::color(uint32_t data) :
-            data(data) {
-    }
+    color::color(uint32_t data) : data(data) {}
 
-    color::color(const char *str) :
-            data(parse_hex_string(str)) {
-    }
+    color::color(const char *str) : data(parse_hex_string(str)) {}
 
-    color::color(const std::string &str) :
-            data(parse_hex_string(str)) {
-    }
+    color::color(const std::string &str) : data(parse_hex_string(str)) {}
 
     auto color::operator=(const std::string &str) -> color & {
         data = parse_hex_string(str);
@@ -55,6 +49,7 @@ namespace stg {
                    << std::left
                    << std::setfill('0')
                    << (unsigned) value;
+
             return stream.str();
         };
 
@@ -200,8 +195,7 @@ namespace stg {
         }
 
         auto m = lightness - 0.5 * chroma;
-        std::transform(rgb.begin(),
-                       rgb.end(),
+        std::transform(rgb.begin(), rgb.end(),
                        rgb.begin(), [&m](auto &c) {
                     return c + m;
                 });

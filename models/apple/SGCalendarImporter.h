@@ -12,17 +12,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 NS_SWIFT_NAME(CalendarExportOptions)
-typedef NS_OPTIONS(unsigned, SGCalendarExportOptions) {
-    SGCalendarExportOptionsOverwriteIsOn = 1 << 0,
-    SGCalendarExportOptionsNotificationsIsOn = 1 << 1,
-    SGCalendarExportOptionsSpecificCalendarIsOn = 1 << 2
+typedef NS_OPTIONS(unsigned, SGCalendarImportOptions) {
+    SGCalendarImportOptionsOverwrite = 1 << 0
 };
 
-NS_SWIFT_NAME(CalendarExporterSettings)
+NS_SWIFT_NAME(CalendarImporterSettings)
 @interface SGCalendarImporterSettings : NSObject
 
-@property(nonatomic) SGCalendarExportOptions optionsMask;
-@property(nonatomic, strong) NSString *calendarName;
+@property(nonatomic) SGCalendarImportOptions optionsMask;
+@property(nonatomic, strong) NSArray<NSString *> *_Nullable calendarsIdentifiers;
 @property(nonatomic, strong) NSDate *date;
 
 @end
@@ -38,8 +36,6 @@ NS_SWIFT_NAME(CalendarExporterDelegate)
 NS_SWIFT_NAME(CalendarImporter)
 @interface SGCalendarImporter : NSObject
 
-typedef void (^SGCalendarImportCompletionHandler)(void *strategyPtr);
-
 @property(nonatomic, weak) id <SGCalendarImporterDelegate> delegate;
 @property(nonatomic, strong) SGCalendarImporterSettings *settings;
 
@@ -47,7 +43,7 @@ typedef void (^SGCalendarImportCompletionHandler)(void *strategyPtr);
                          eventStore:(EKEventStore *)store
                            settings:(SGCalendarImporterSettings *)settings;
 
-- (void)import:(SGCalendarImportCompletionHandler)completionHandler;
+- (void)import:(void (^)())completionHandler;
 
 @end
 

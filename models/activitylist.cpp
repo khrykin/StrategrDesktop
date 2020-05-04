@@ -161,10 +161,11 @@ namespace stg {
     auto activity_list::search(std::string query) const -> bool {
         text::strip_bounding_whitespaces(query);
 
+        auto old_query = search_query;
         search_query = query;
 
         if (query.empty()) {
-            auto was_updated = !search_results.empty();
+            auto was_updated = !search_results.empty() || !old_query.empty();
             search_results.clear();
 
             return was_updated;
@@ -173,15 +174,14 @@ namespace stg {
         query = text::utf8_fold_case(query);
 
         data_t results;
-        std::copy_if(begin(),
-                     end(),
+        std::copy_if(begin(), end(),
                      std::back_inserter(results),
                      [&query](auto activity) {
                          auto name = text::utf8_fold_case(activity->name());
                          return name.find(query) != std::string::npos;
                      });
 
-        auto was_updated = search_results != results;
+        auto was_updated = old_query.empty() || search_results != results;
 
         search_results = results;
 
