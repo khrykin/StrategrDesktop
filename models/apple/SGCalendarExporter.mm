@@ -41,7 +41,7 @@
         NSDate *date = self.settings.date;
         SGCalendarExportOptions optionsMask = self.settings.optionsMask;
 
-        auto nonEmptySessions = strategy->sessions().get_non_empty();
+        auto nonEmptySessions = self->strategy->sessions().get_non_empty();
         auto numberOfEvents = static_cast<unsigned int>(nonEmptySessions.size());
 
         if ((optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite) {

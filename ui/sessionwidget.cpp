@@ -43,7 +43,7 @@ void SessionWidget::paintEvent(QPaintEvent *) {
     }
 }
 
-void SessionWidget::drawRulers(QPainter &painter) const {
+void SessionWidget::drawRulers(QPainter &painter) {
     QColor rulerColor = activitySession.activity
                         ? QColor(Application::theme().session_ruler_color(activitySession, isSelected()))
                         : borderColor();
@@ -67,7 +67,7 @@ void SessionWidget::drawRulers(QPainter &painter) const {
     }
 }
 
-void SessionWidget::drawBackground(QPainter &painter) const {
+void SessionWidget::drawBackground(QPainter &painter) {
     if (!activitySession.activity) {
         return;
     }
@@ -172,7 +172,7 @@ int SessionWidget::expectedHeight() {
     return static_cast<int>(activitySession.length()) * slotHeight;
 }
 
-void SessionWidget::drawLabel(QPainter &painter) const {
+void SessionWidget::drawLabel(QPainter &painter) {
     using namespace ApplicationSettings;
 
     auto font = QFont();

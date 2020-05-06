@@ -33,7 +33,7 @@ namespace stg {
         for (const auto &time_slot : time_slots) {
             auto time_slot_index = &time_slot - &time_slots[0];
             auto *previous_activity = time_slot_index > 0
-                                      ? time_slots[time_slot_index - 1].activity
+                                      ? time_slots[(index_t) time_slot_index - 1].activity
                                       : time_slot::no_activity;
 
             auto *current_activity = time_slot.activity;

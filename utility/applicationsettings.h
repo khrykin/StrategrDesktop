@@ -10,7 +10,7 @@
 namespace ApplicationSettings {
     const auto windowMinimumWidth = 300;
     const auto windowMinimumHeight = 200;
-    const auto windowInitialWidth = 400;
+    const auto windowInitialWidth = 350;
 
     const auto defaultSlotHeight = 35;
     const auto defaultActivityItemHeight = 40;

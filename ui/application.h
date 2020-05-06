@@ -27,6 +27,7 @@ public:
     static QStringList openedFiles;
     static AboutWindow *aboutWindow;
     static QSystemTrayIcon *trayIcon;
+    static QSettings &currentSettings();
     // Workaround for Qt bug:
     // https://bugreports.qt.io/browse/QTBUG-13898
     static bool updateMenuAdded;

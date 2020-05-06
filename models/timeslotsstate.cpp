@@ -76,7 +76,7 @@ namespace stg {
         for (auto &slot : _data) {
             auto slot_index = &slot - &_data[0];
             slot.duration = slot_duration;
-            slot.begin_time = make_slot_begin_time(begin_time(), slot_index);
+            slot.begin_time = make_slot_begin_time(begin_time(), (index_t) slot_index);
 
             slot.activity = old_state.first_activity_in_time_window(slot.begin_time, slot.end_time());
         }
@@ -357,7 +357,7 @@ namespace stg {
         auto copied_length = till_index - from_index;
         auto destination_end_index = destination_index + copied_length;
         if (destination_end_index > _data.size() - 1)
-            destination_end_index = _data.size() - 1;
+            destination_end_index = (index_t) _data.size() - 1;
 
         auto index_in_copied = 0;
         std::for_each(_data.begin() + destination_index,

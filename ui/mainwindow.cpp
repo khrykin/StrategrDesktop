@@ -41,14 +41,11 @@ void MainWindow::setup() {
         Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
     }
 
-    auto *menuParent = this;
-
 #ifdef Q_OS_MAC
     MacOSWindow::setup(this);
 #endif
 
     strategy.add_on_change_callback(this, &MainWindow::strategyStateChanged);
-
 
     _scene = new MainScene(strategy, this);
     _menu = new ApplicationMenu(this);
@@ -198,8 +195,12 @@ void MainWindow::closeEvent(QCloseEvent *event) {
 }
 
 void MainWindow::teardown() {
+    if (alreadyTornDown)
+        return;
+
     WindowGeometryManager::saveGeometry(this);
     Application::markFileClosed(fsIOManager.fileInfo().filePath());
+    alreadyTornDown = true;
 }
 
 MainWindow *MainWindow::createLastOpened() {

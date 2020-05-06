@@ -2,11 +2,10 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QStandardPaths>
-#include <QTextStream>
 #include <QDir>
 
+#include "application.h"
 #include "filesystemiomanager.h"
 #include "mainwindow.h"
 #include "applicationmenu.h"
@@ -15,10 +14,13 @@
 FileSystemIOManager::FileSystemIOManager(QWidget *parent) : window(parent) {}
 
 QString FileSystemIOManager::getOpenFileName() {
-    auto openFilepath = QFileDialog::getOpenFileName(
-            window, QObject::tr("Open Strategy"), destinationDir(), searchPattern);
+    auto openFilepath = QFileDialog::getOpenFileName(window,
+                                                     QObject::tr("Open Strategy"), destinationDir(),
+                                                     searchPattern);
 
-    QSettings().setValue(Settings::lastOpenedDirectoryKey, openFilepath);
+    Application::currentSettings()
+            .setValue(Settings::lastOpenedDirectoryKey, openFilepath);
+
     return openFilepath;
 }
 
@@ -33,13 +35,13 @@ void FileSystemIOManager::save(const stg::strategy &strategy) {
 
 void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
     auto filePath = QDir(destinationDir()).absoluteFilePath(fileInfo().fileName());
-    auto saveAsFilepath = QFileDialog::getSaveFileName(
-            window,
-            QObject::tr("Save Strategy As"),
-            filePath,
-            searchPattern);
+    auto saveAsFilepath = QFileDialog::getSaveFileName(window,
+                                                       QObject::tr("Save Strategy As"),
+                                                       filePath,
+                                                       searchPattern);
 
-    QSettings().setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
+    Application::currentSettings()
+            .setValue(Settings::lastOpenedDirectoryKey, saveAsFilepath);
 
     if (saveAsFilepath.isEmpty()) {
         return;
@@ -48,22 +50,22 @@ void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
     filepath = saveAsFilepath;
     _isSaved = true;
 
-    QSettings().setValue(Settings::lastOpenedDirectoryKey,
-                         fileInfo().absolutePath());
+    Application::currentSettings()
+            .setValue(Settings::lastOpenedDirectoryKey, fileInfo().absolutePath());
+
     write(strategy);
 }
 
 void FileSystemIOManager::saveAsDefault(const stg::strategy &strategy) {
-    QSettings().setValue(Settings::defaultStrategyKey,
-                         QString::fromStdString(strategy.to_json_string()));
-    QMessageBox msgBox(window);
+    Application::currentSettings().setValue(Settings::defaultStrategyKey,
+                                            QString::fromStdString(strategy.to_json_string()));
+    auto msgBox = QMessageBox(window);
     msgBox.setText("Current strategy has been saved as your default.");
     msgBox.setWindowModality(Qt::WindowModal);
     msgBox.exec();
 }
 
-std::unique_ptr<stg::strategy>
-FileSystemIOManager::read(const QString &readFilepath) {
+std::unique_ptr<stg::strategy> FileSystemIOManager::read(const QString &readFilepath) {
     if (readFilepath.isEmpty())
         return nullptr;
 
@@ -73,6 +75,7 @@ FileSystemIOManager::read(const QString &readFilepath) {
             filepath = readFilepath;
             updateLastOpened();
             setIsSaved(true);
+
             return strategy;
         } else {
             auto errorMessage = "The file is corrupt or has a wrong format";
@@ -86,9 +89,8 @@ FileSystemIOManager::read(const QString &readFilepath) {
     return nullptr;
 }
 
-std::optional<QString>
-FileSystemIOManager::lastOpenedFilePath() {
-    QSettings settings;
+std::optional<QString> FileSystemIOManager::lastOpenedFilePath() {
+    auto &settings = Application::currentSettings();
     if (!settings.value(Settings::lastOpenedStrategyKey).isNull()) {
         auto lastFilepath = settings
                 .value(Settings::lastOpenedStrategyKey)
@@ -105,7 +107,8 @@ void FileSystemIOManager::resetFilepath() {
 }
 
 void FileSystemIOManager::clearRecent() {
-    QSettings().setValue(Settings::recentFilesKey, QStringList());
+    Application::currentSettings()
+            .setValue(Settings::recentFilesKey, QStringList());
 }
 
 bool FileSystemIOManager::isSaved() const {
@@ -119,7 +122,7 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
 stg::strategy
 FileSystemIOManager::openDefault() {
     if (defaultStrategyIsSet()) {
-        auto defaultStrategyString = QSettings()
+        auto defaultStrategyString = Application::currentSettings()
                 .value(Settings::defaultStrategyKey)
                 .toString()
                 .toStdString();
@@ -141,13 +144,13 @@ FileSystemIOManager::openDefault() {
 }
 
 bool FileSystemIOManager::defaultStrategyIsSet() {
-    return !QSettings().value(Settings::defaultStrategyKey).isNull();
+    return !Application::currentSettings().value(Settings::defaultStrategyKey).isNull();
 }
 
 QFileInfo FileSystemIOManager::fileInfo() { return QFileInfo(filepath); }
 
 QStringList FileSystemIOManager::recentPaths() {
-    auto recentFilesSetting = QSettings().value(Settings::recentFilesKey);
+    auto recentFilesSetting = Application::currentSettings().value(Settings::recentFilesKey);
     return recentFilesSetting.toStringList();
 }
 
@@ -173,7 +176,7 @@ void FileSystemIOManager::write(const stg::strategy &strategy) {
 }
 
 QString FileSystemIOManager::destinationDir() {
-    QSettings settings;
+    auto &settings = Application::currentSettings();
     if (!settings.value(Settings::lastOpenedDirectoryKey).isNull()) {
         auto lastOpenedDirectory =
                 settings.value(Settings::lastOpenedDirectoryKey).toString();
@@ -187,7 +190,7 @@ QString FileSystemIOManager::destinationDir() {
 void FileSystemIOManager::updateLastOpened() {
     auto absoluteFilePath = fileInfo().absoluteFilePath();
 
-    QSettings settings;
+    auto &settings = Application::currentSettings();
     settings.setValue(Settings::lastOpenedStrategyKey, absoluteFilePath);
     settings.setValue(Settings::lastOpenedDirectoryKey,
                       fileInfo().absolutePath());

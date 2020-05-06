@@ -42,7 +42,6 @@ private:
     stg::strategy::duration_t previousDuration = 0;
     stg::strategy::time_t previousEndTime = 0;
 
-    void drawBorder(QPainter &painter);
 
     void updateUI();
     int expectedHeight();
@@ -52,9 +51,10 @@ private:
 
     void paintEvent(QPaintEvent *event) override;
 
-    void drawBackground(QPainter &painter) const;
-    void drawRulers(QPainter &painter) const;
-    void drawLabel(QPainter &painter) const;
+    void drawBorder(QPainter &painter);
+    void drawBackground(QPainter &painter);
+    void drawRulers(QPainter &painter);
+    void drawLabel(QPainter &painter);
 };
 
 

@@ -165,10 +165,9 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
         response = [app runModalSession:session];
         if (response != NSModalResponseContinue) {
             if (response == NSModalResponseOK) {
-                NSLog(@"Selected Calendars: %@", optionsView.selectedCalendarsIdentifiers);
-
                 optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
                 date = optionsView.date;
+
                 if (optionsView.selectedCalendarsIdentifiers) {
                     outputCalendarsIdentifiers = std::make_unique<std::vector<std::string>>();
                     for (NSString *calendarIdentifier in optionsView.selectedCalendarsIdentifiers) {

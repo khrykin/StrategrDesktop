@@ -56,6 +56,7 @@ private:
     ApplicationMenu *_menu = nullptr;
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
     stg::strategy strategy;
+    bool alreadyTornDown = false;
 
     void setIsSaved(bool isSaved);
     void setStrategy(const stg::strategy &newStrategy);

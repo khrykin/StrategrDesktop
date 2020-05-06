@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
+#include "application.h"
 #include "windowgeometrymanager.h"
 #include "mainwindow.h"
 #include "macoswindow.h"
@@ -12,37 +13,46 @@
 QWidgetList WindowGeometryManager::windows;
 
 void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
-    windows.append(window);
-
     window->setMinimumWidth(ApplicationSettings::windowMinimumWidth);
     window->setMinimumHeight(ApplicationSettings::windowMinimumHeight);
 
-    auto initValue = QSettings().value(windowGeometrySetting);
-    auto initRect = initValue.isValid()
-                    ? initValue.toRect()
-                    : defaultInitialRect(window);
+    auto &settings = Application::currentSettings();
 
-    if (windows.count() > 1) {
-        initRect = initRectForExtraWindows(initRect, window);
+    if (settings.value(windowGeometrySetting).isNull()) {
+        window->setGeometry(defaultInitialRect(window));
+    } else {
+        auto storedData = settings.value(windowGeometrySetting).toByteArray();
+        window->restoreGeometry(storedData);
     }
 
-    window->setGeometry(initRect);
+#ifdef Q_OS_MAC
+    window->setGeometry(MacOSWindow::adjustedGeometry(window));
+#endif
+
+    if (windows.count() > 0) {
+        auto fixedGeometry = window->geometry();
+        auto width = window->geometry().width();
+        fixedGeometry.setLeft(minLeft() - width);
+
+        if (fixedGeometry.left() < 0)
+            fixedGeometry.setLeft(maxRight());
+
+        fixedGeometry.setWidth(width);
+
+        window->setGeometry(fixedGeometry);
+    }
+
+    windows.append(window);
 }
 
 void WindowGeometryManager::saveGeometry(MainWindow *window) {
     windows.removeAll(window);
 
-    auto geometry = window->geometry();
-
-#ifdef Q_OS_MAC
-    geometry = MacOSWindow::geometry(window);
-#endif
-
-    QSettings().setValue(windowGeometrySetting, geometry);
+    Application::currentSettings().setValue(windowGeometrySetting, window->saveGeometry());
 }
 
 void WindowGeometryManager::resetSavedGeometry() {
-    QSettings().remove(windowGeometrySetting);
+    Application::currentSettings().remove(windowGeometrySetting);
 }
 
 QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
@@ -51,13 +61,9 @@ QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
     const auto availableSize = avaliableDesktopSize(window);
 
     const auto windowInitialHeight = availableSize.height();
-    const auto windowInitialLeft =
-            (availableSize.width() - windowInitialWidth) / 2;
+    const auto windowInitialLeft = (availableSize.width() - windowInitialWidth) / 2;
 
-    return QRect(windowInitialLeft,
-                 0,
-                 windowInitialWidth,
-                 windowInitialHeight);
+    return {windowInitialLeft, 0, windowInitialWidth, windowInitialHeight};
 
 }
 
@@ -65,23 +71,20 @@ QSize WindowGeometryManager::avaliableDesktopSize(QWidget *widget) {
     return QDesktopWidget().availableGeometry(widget).size();
 }
 
-QRect WindowGeometryManager::initRectForExtraWindows(const QRect &defaultRect,
-                                                     QWidget *window) {
-    auto adjustFactor = defaultAdjustFactor * (windows.count() - 1);
-    auto initRect = QRect(defaultRect.x() + adjustFactor,
-                          defaultRect.y(),
-                          defaultRect.width(),
-                          defaultRect.height()
-    );
+int WindowGeometryManager::minLeft() {
+    auto leftWindow = *std::min_element(windows.begin(), windows.end(),
+                                        [](QWidget *a, QWidget *b) {
+                                            return a->geometry().left() < b->geometry().left();
+                                        });
 
-    if (initRect.right() > avaliableDesktopSize(window).width()) {
-        initRect.setLeft(0);
-    }
+    return leftWindow->geometry().left();
+}
 
-    if (initRect.left() < 0) {
-        initRect.setLeft(0);
-    }
+int WindowGeometryManager::maxRight() {
+    auto rightWindow = *std::max_element(windows.begin(), windows.end(),
+                                         [](QWidget *a, QWidget *b) {
+                                             return a->geometry().right() < b->geometry().right();
+                                         });
 
-
-    return initRect;
+    return rightWindow->geometry().right();
 }

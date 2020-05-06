@@ -22,10 +22,18 @@ AboutWindow *Application::aboutWindow = nullptr;
 
 QSystemTrayIcon *Application::trayIcon = nullptr;
 
+QSettings &Application::currentSettings() {
+    static auto settings = QSettings(QCoreApplication::organizationName(),
+                                     QCoreApplication::applicationName());
+
+    return settings;
+}
+
+
 Application::Application(int &argc, char **argv)
         : QApplication(argc, argv) {
-    QSettings().setProperty("lastLaunchedVersion",
-                            ApplicationSettings::version);
+    currentSettings().setProperty("lastLaunchedVersion",
+                                  ApplicationSettings::version);
 
     setupFonts();
 

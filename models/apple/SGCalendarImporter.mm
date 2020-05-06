@@ -7,7 +7,7 @@
 #import "SGCalendarImporter.h"
 #import "SGCalendarManager.h"
 
-#ifdef TARGET_OS_MAC
+#if !TARGET_OS_IOS
 
 #import <AppKit/AppKit.h>
 
@@ -47,10 +47,8 @@
 - (void)import:(void (^)())completionHandler {
     NSArray<EKEvent *> *ekEvents = [self.calendarManager eventsWithDate:self.settings.date
                                                    calendarsIdentifiers:self.settings.calendarsIdentifiers];
-
-    NSLog(@"events found %@", ekEvents);
-
     std::vector<stg::strategy::event> events;
+
     for (EKEvent *ekEvent in ekEvents) {
         EKCalendar *calendar = ekEvent.calendar;
         NSDate *today = [NSCalendar.currentCalendar startOfDayForDate:[[NSDate alloc] init]];

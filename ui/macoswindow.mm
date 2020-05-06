@@ -306,7 +306,7 @@ QPixmap MacOSWindow::openHandCursor() {
     return QtMac::fromCGImageRef(cgRef);
 }
 
-QRect MacOSWindow::geometry(MainWindow *window) {
+QRect MacOSWindow::adjustedGeometry(MainWindow *window) {
     // What is 16? I've no idea...
     auto yDifference = 16;
     // What is 22? God only knows.

@@ -17,10 +17,12 @@ public:
     static void saveGeometry(MainWindow *window);
     static void resetSavedGeometry();
 
+    static int minLeft();
+    static int maxRight();
+
 private:
     static QRect defaultInitialRect(QWidget *window);
     static QSize avaliableDesktopSize(QWidget *widget);
-    static QRect initRectForExtraWindows(const QRect &defaultRect, QWidget *window);
 
     static constexpr auto windowGeometrySetting = "windowGeometry";
     static constexpr auto defaultAdjustFactor = 30;

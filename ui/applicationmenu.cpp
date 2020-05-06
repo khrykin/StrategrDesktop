@@ -145,25 +145,28 @@ void ApplicationMenu::setupFileMenu() {
 
     addImportFromCalendarAction();
     addExportToCalendarAction();
+
+    fileMenu->addSeparator();
 }
 
 void ApplicationMenu::addExportToCalendarAction() {
 #ifdef Q_OS_MAC
     fileMenu->addAction(tr("Export To Calendar"), [this]() {
-        auto optionsWasSet = !QSettings().value("calendarExportOptions").isNull();
+        auto optionsWasSet = !Application::currentSettings().value("calendarExportOptions").isNull();
         auto initialOptions = optionsWasSet
-                              ? QSettings().value("calendarExportOptions").toUInt()
+                              ? Application::currentSettings().value("calendarExportOptions").toUInt()
                               : MacOSCalendarExporter::defaultOptions;
 
-        auto initialCalendarTitle = QSettings().value("exportCalendarTitle").toString().toStdString();
+        auto initialCalendarTitle = Application::currentSettings().value(
+                "exportCalendarTitle").toString().toStdString();
 
         auto[result, options, date, calendarTitle] = MacOSCalendarExporter::showExportOptionsWindow(initialOptions,
                                                                                                     initialCalendarTitle);
         if (result == MacOSCalendarExporter::Response::Perform) {
-            QSettings().setValue("calendarExportOptions", options);
+            Application::currentSettings().setValue("calendarExportOptions", options);
 
             if (!calendarTitle.empty())
-                QSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
+                Application::currentSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
 
             MacOSCalendarExporter::exportStrategy(window->strategy, options, date, calendarTitle);
         }
@@ -174,16 +177,18 @@ void ApplicationMenu::addExportToCalendarAction() {
 void ApplicationMenu::addImportFromCalendarAction() {
 #ifdef Q_OS_MAC
     fileMenu->addAction(tr("Import From Calendar"), [this]() {
-        auto optionsWasSet = !QSettings().value("calendarImportOptions").isNull();
+        auto optionsWasSet = !Application::currentSettings().value("calendarImportOptions").isNull();
         auto initialOptions = optionsWasSet
-                              ? QSettings().value("calendarImportOptions").toUInt()
+                              ? Application::currentSettings().value("calendarImportOptions").toUInt()
                               : MacOSCalendarExporter::defaultOptions;
 
         std::unique_ptr<std::vector<std::string>> initialCalendarIdentifiers = nullptr;
 
-        auto initialCalendarIdentifiersWasSet = !QSettings().value("importCalendarsIdentifiers").isNull();
+        auto initialCalendarIdentifiersWasSet = !Application::currentSettings().value(
+                "importCalendarsIdentifiers").isNull();
         if (initialCalendarIdentifiersWasSet) {
-            auto qInitialCalendarIdentifiers = QSettings().value("importCalendarsIdentifiers").toString().split(";");
+            auto qInitialCalendarIdentifiers = Application::currentSettings().value(
+                    "importCalendarsIdentifiers").toString().split(";");
 
             initialCalendarIdentifiers = std::make_unique<std::vector<std::string>>(
                     !qInitialCalendarIdentifiers.isEmpty()
@@ -192,22 +197,18 @@ void ApplicationMenu::addImportFromCalendarAction() {
             );
         }
 
-        auto[
-        result,
-        options,
-        date,
-        calendarsIdentifiers
-        ] = MacOSCalendarExporter::showImportOptionsWindow(initialOptions,
-                                                           std::move(initialCalendarIdentifiers));
+        auto[result, options, date, calendarsIdentifiers] = MacOSCalendarExporter::showImportOptionsWindow(
+                initialOptions,
+                std::move(initialCalendarIdentifiers));
 
         if (result == MacOSCalendarExporter::Response::Perform) {
-            QSettings().setValue("calendarImportOptions", options);
+            Application::currentSettings().setValue("calendarImportOptions", options);
 
             if (calendarsIdentifiers) {
                 auto qCalendarsIdentifiers = QStringListFromStdVector(*calendarsIdentifiers);
-                QSettings().setValue("importCalendarsIdentifiers", qCalendarsIdentifiers.join(";"));
+                Application::currentSettings().setValue("importCalendarsIdentifiers", qCalendarsIdentifiers.join(";"));
             } else {
-                QSettings().remove("importCalendarsIdentifiers");
+                Application::currentSettings().remove("importCalendarsIdentifiers");
             }
 
             MacOSCalendarExporter::importStrategy(window->strategy, options, date, std::move(calendarsIdentifiers));

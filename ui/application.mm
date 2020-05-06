@@ -55,19 +55,18 @@ void Application::clearCocoaRecentFiles() {
 
 void Application::setupCocoaDelegate() {
     cocoaDelegate = [[CocoaDelegate alloc] init];
-    [[SUUpdater sharedUpdater] retain];
+    [SUUpdater.sharedUpdater retain];
 
     if (@available(macOS 10.14, *)) {
         [UNUserNotificationCenter currentNotificationCenter].delegate = cocoaDelegate;
     }
 }
 
-
 void Application::releaseCocoaDelegate() {
     [cocoaDelegate release];
-    [[SUUpdater sharedUpdater] release];
+    [SUUpdater.sharedUpdater release];
 };
 
 void Application::checkForUpdates() {
-    [[SUUpdater sharedUpdater] checkForUpdates:nil];
+    [SUUpdater.sharedUpdater checkForUpdates:nil];
 }

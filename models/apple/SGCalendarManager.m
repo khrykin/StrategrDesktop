@@ -6,7 +6,7 @@
 
 #import "SGCalendarManager.h"
 
-#if TARGET_OS_MAC
+#if !TARGET_OS_IOS
 
 #import <AppKit/AppKit.h>
 
@@ -35,7 +35,7 @@
     if ([matchedCalendars count] != 0) {
         calendar = matchedCalendars[0];
 
-#if TARGET_OS_MAC
+#if !TARGET_OS_IOS
         if (color) {
             NSColor *nsColor = [NSColor colorWithCGColor:color];
             if (![calendar.color isEqual:nsColor]) {
