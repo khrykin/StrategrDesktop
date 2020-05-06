@@ -60,7 +60,7 @@ namespace stg {
         static const unsigned int initial_index_key = 0;
 
         time_slots_state *time_slots;
-        time_slots_state::data_t initial_time_slots = time_slots->data();
+        time_slots_state::data_t initial_time_slots = time_slots->_data;
 
         indices_vector initial_dragged_indices;
 

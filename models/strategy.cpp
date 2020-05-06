@@ -8,7 +8,8 @@
 #include "time_utils.h"
 
 namespace stg {
-    strategy::strategy(time_t begin_time, duration_t time_slot_duration,
+    strategy::strategy(time_t begin_time,
+                       duration_t time_slot_duration,
                        size_t number_of_time_slots)
             : _time_slots(time_slots_state(begin_time,
                                            time_slot_duration,
@@ -80,10 +81,10 @@ namespace stg {
 
     void strategy::silently_edit_activity(activity_index_t activity_index,
                                           const activity &new_activity) {
-        const auto old_activity = _activities.at(activity_index);
+        auto *const old_activity = _activities.at(activity_index);
         _activities.silently_edit_at_index(activity_index, new_activity);
 
-        const auto updated_activity = _activities.at(activity_index);
+        auto *const updated_activity = _activities.at(activity_index);
         _time_slots.edit_activity(old_activity, updated_activity);
 
         commit_to_history();
@@ -136,9 +137,8 @@ namespace stg {
 
     void strategy::place_activity(activity_index_t activity_index,
                                   const std::vector<time_slot_index_t> &time_slot_indices) {
-        if (!activities().has_index(activity_index)) {
+        if (!activities().has_index(activity_index))
             return;
-        }
 
         auto *activity = activities().at(activity_index);
         _time_slots.set_activity_at_indices(activity, time_slot_indices);
@@ -160,8 +160,7 @@ namespace stg {
     }
 
 
-    void strategy::silently_drag_activity(stg::activity_index_t from_index,
-                                          stg::activity_index_t to_index) {
+    void strategy::silently_drag_activity(activity_index_t from_index, activity_index_t to_index) {
         _activities.silently_drag(from_index, to_index);
 
         commit_to_history();
@@ -192,13 +191,11 @@ namespace stg {
     }
 
     void strategy::setup_time_slots_callback() {
-        _time_slots.add_on_change_callback(this,
-                                           &strategy::time_slots_changed);
+        _time_slots.add_on_change_callback(this, &strategy::time_slots_changed);
     }
 
     auto strategy::make_history_entry() -> strategy_history::entry {
-        return strategy_history::entry{_activities.data(),
-                                       _time_slots.data()};
+        return strategy_history::entry{_activities.data(), _time_slots.data()};
     }
 
     void strategy::commit_to_history() {
@@ -409,35 +406,30 @@ namespace stg {
             pairs.emplace_back(elem);
         }
 
-        std::sort(pairs.begin(),
-                  pairs.end(),
-                  [=](auto &a, auto &b) {
-                      return a.second > b.second;
-                  });
+        std::sort(pairs.begin(), pairs.end(), [=](auto &a, auto &b) {
+            return a.second > b.second;
+        });
 
-        std::vector<std::shared_ptr<activity>> reordered;
+        activity_list::data_t reordered;
         for (auto &elem : pairs) {
             if (!elem.first)
                 continue;
 
             auto index = *activities().index_of(elem.first);
-            auto activity = _activities._data[index];
+            auto &activity = _activities._data[index];
 
             reordered.push_back(activity);
         }
 
         for (const auto &activity : _activities) {
-            if (std::find_if(reordered.begin(),
-                             reordered.end(),
-                             [activity](auto a) {
-                                 return a == activity;
-                             }) == reordered.end()) {
-
+            if (std::find_if(reordered.begin(), reordered.end(), [&activity](auto &a) {
+                return a == activity;
+            }) == reordered.end()) {
                 reordered.push_back(activity);
             };
         }
 
-        if (_activities.data() != reordered) {
+        if (_activities._data != reordered) {
             _activities.reset_with(reordered);
             _activities.on_change_event();
 
@@ -496,4 +488,49 @@ namespace stg {
         return history.has_next_state();
     }
 
+    void strategy::copy_slots(time_slot_index_t from_index, time_slot_index_t till_index,
+                              time_slot_index_t destination_index) {
+        _time_slots.copy_slots(from_index, till_index, destination_index);
+
+        commit_to_history();
+    }
+
+    void strategy::import_events(const std::vector<event> &events, bool override = false) {
+        std::cout << "imported_events (override: " << override << "): [\n";
+
+        if (override)
+            for (auto &slot : _time_slots._data)
+                slot.activity = no_activity;
+
+        for (const auto &event: events) {
+            std::cout << "\tevent: " << event.name
+                      << ", color: " << event.color
+                      << ", begin_time: " << event.begin_time
+                      << ", end_time: " << event.end_time << "\n";
+
+            auto proposed_activity = stg::activity(event.name, event.color);
+
+            const auto round_boundaries = true;
+            auto slots_for_event = _time_slots.slots_in_time_window(event.begin_time,
+                                                                    event.end_time,
+                                                                    round_boundaries);
+
+            auto activity_index = activities().index_of(proposed_activity);
+            if (!activity_index) {
+                _activities.silently_add(proposed_activity);
+                activity_index = _activities.size() - 1;
+            }
+
+            auto *activity = activities().at(*activity_index);
+            for (auto &slot : slots_for_event)
+                slot->activity = activity;
+        }
+
+        _activities.on_change_event();
+        time_slots_changed();
+
+        commit_to_history();
+
+        std::cout << "]\n";
+    }
 }

@@ -13,6 +13,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SGCalendarManager : NSObject
+
 @property(strong) EKEventStore *store;
 
 - (instancetype)initWithStore:(EKEventStore *)store;
@@ -38,6 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)launchCalendarApp;
 
 + (void)requestCalendarAccess:(void (^)(EKEventStore *store))completionHandler;
+
 @end
 
 NS_ASSUME_NONNULL_END

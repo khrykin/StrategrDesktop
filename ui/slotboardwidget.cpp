@@ -236,6 +236,7 @@ void SlotBoardWidget::drawDraggedSession(int sessionIndex, int firstSlotIndex) {
         draggedSessionWidget = new SessionWidget(strategy.sessions()[sessionIndex], this);
         draggedSessionWidget->setDrawsBorders(false);
         draggedSessionWidget->setIsSelected(true);
+        currentTimeMarkerWidget->raise();
 
         auto shadowColor = textColor();
         shadowColor.setAlphaF(0.2);
@@ -272,12 +273,13 @@ void SlotBoardWidget::drawDraggedSession(int sessionIndex, int firstSlotIndex) {
         auto draggedSessionWidgetLocal = draggedSessionWidget;
         draggedSessionWidget = nullptr;
 
-        connect(draggedSessionAnimation, &QPropertyAnimation::finished, [this, draggedSessionWidgetLocal]() {
-            draggedSessionAnimation->deleteLater();
-            draggedSessionWidgetLocal->deleteLater();
+        connect(draggedSessionAnimation, &QPropertyAnimation::finished,
+                [this, draggedSessionWidgetLocal]() {
+                    draggedSessionAnimation->deleteLater();
+                    draggedSessionWidgetLocal->deleteLater();
 
-            draggedSessionAnimation = nullptr;
-        });
+                    draggedSessionAnimation = nullptr;
+                });
 
         auto smallRect = makeSmallRect(draggedSessionWidgetLocal->geometry());
 

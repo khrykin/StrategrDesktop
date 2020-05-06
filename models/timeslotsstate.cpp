@@ -139,7 +139,7 @@ namespace stg {
     }
 
     void time_slots_state::reset_times() {
-        auto first_slot = _data.front();
+        auto &first_slot = _data.front();
         _begin_time = first_slot.begin_time;
         _slot_duration = first_slot.duration;
     }
@@ -348,6 +348,27 @@ namespace stg {
         on_change_event();
     }
 
+    void time_slots_state::copy_slots(index_t from_index, index_t till_index, index_t destination_index) {
+        data_t copied_slots;
+        std::copy(_data.begin() + from_index,
+                  _data.begin() + till_index,
+                  std::back_inserter(copied_slots));
+
+        auto copied_length = till_index - from_index;
+        auto destination_end_index = destination_index + copied_length;
+        if (destination_end_index > _data.size() - 1)
+            destination_end_index = _data.size() - 1;
+
+        auto index_in_copied = 0;
+        std::for_each(_data.begin() + destination_index,
+                      _data.begin() + destination_end_index,
+                      [&index_in_copied, copied_slots](auto &slot) {
+                          slot.activity = copied_slots[index_in_copied].activity;
+                          index_in_copied++;
+                      });
+
+        on_change_event();
+    }
 
     void time_slots_state::swap(index_t first_index, index_t second_index) {
         silently_swap(first_index, second_index);
@@ -434,21 +455,30 @@ namespace stg {
     }
 
     auto time_slots_state::slots_in_time_window(time_slots_state::time_t begin_time,
-                                                time_slots_state::time_t end_time) -> std::vector<time_slot *> {
+                                                time_slots_state::time_t end_time,
+                                                bool round = false) -> std::vector<time_slot *> {
         assert(end_time >= begin_time && "end_time must be greater than begin_time");
 
         std::vector<time_slot *> result;
 
         for (auto &slot : _data) {
+            if (slot.begin_time >= begin_time && slot.end_time() <= end_time) {
+                result.push_back(&slot);
+            } else if (round
+                       && begin_time >= slot.begin_time && begin_time <= slot.end_time()
+                       && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration()) {
+                result.push_back(&slot);
+            } else if (round
+                       && end_time >= slot.begin_time && end_time <= slot.end_time()
+                       && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration()) {
+                result.push_back(&slot);
+            }
+
             if (slot.end_time() > end_time)
                 break;
 
             if (slot.end_time() < begin_time)
                 continue;
-
-            if (slot.begin_time >= begin_time && slot.end_time() <= end_time) {
-                result.push_back(&slot);
-            }
         }
 
         return result;

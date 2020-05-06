@@ -10,7 +10,10 @@
 #include <array>
 #include <ostream>
 
+#if __APPLE__
 struct CGColor;
+#endif
+
 namespace stg {
     struct color {
         template<typename T,
@@ -95,8 +98,10 @@ namespace stg {
         auto components() const -> std::array<double, 4>;
         auto info() const -> std::string;
 
+#if __APPLE__
         auto to_cg_color() const -> CGColor *;
         static auto from_cg_color(CGColor *cg_color) -> color;
+#endif
 
         auto to_hex_string() const -> std::string;
     private:

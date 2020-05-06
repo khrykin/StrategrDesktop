@@ -72,7 +72,7 @@ namespace stg {
         void fill_slots(index_t from_index, index_t till_index);
         void fill_slots_shifting(index_t from_index, index_t till_index);
         void shift_below(index_t from_index, size_t length);
-
+        void copy_slots(index_t from_index, index_t till_index, index_t destination_index);
         void populate(time_t start_time, size_t number_of_slots);
 
         auto find_slot_with_activity(const activity *activity) -> iterator;
@@ -85,7 +85,9 @@ namespace stg {
         auto at(index_t index) -> const time_slot &;
 
         auto first_activity_in_time_window(time_t begin_time, time_t end_time) const -> activity *;
-        auto slots_in_time_window(time_t begin_time, time_t end_time) -> std::vector<time_slot *>;
+        auto slots_in_time_window(time_slots_state::time_t begin_time,
+                                  time_slots_state::time_t end_time,
+                                  bool round) -> std::vector<time_slot *>;
 
         auto make_slot_begin_time(time_t global_begin_time, index_t slot_index) const -> time_t;
         void update_begin_times();

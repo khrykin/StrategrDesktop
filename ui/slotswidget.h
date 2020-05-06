@@ -33,6 +33,9 @@ public:
     QAction *shiftSlotsBelowAction = nullptr;
     QAction *selectAllAction = nullptr;
 
+    QAction *copyAction = nullptr;
+    QAction *pasteAction = nullptr;
+
     int slotHeight() const;
 
     void reloadStrategy();

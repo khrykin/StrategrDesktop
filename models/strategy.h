@@ -19,6 +19,12 @@
 namespace stg {
     class strategy : public notifiable_on_change {
     public:
+        using duration_t = time_slot::duration_t;
+        using time_t = time_slot::time_t;
+        using time_slot_index_t = time_slots_state::index_t;
+        using session_index_t = sessions_list::index_t;
+        using size_t = time_slots_state::size_t;
+
         struct defaults {
             static constexpr auto time_slot_duration = 15;
             static constexpr auto begin_time = 6 * 60;
@@ -27,28 +33,28 @@ namespace stg {
 
         struct file_write_exception : public std::exception {
         };
+
         struct file_read_exception : public std::exception {
         };
 
-        using duration_t = time_slot::duration_t;
-        using time_t = time_slot::time_t;
-        using time_slot_index_t = time_slots_state::index_t;
-        using session_index_t = sessions_list::index_t;
-        using size_t = time_slots_state::size_t;
+        struct event {
+            std::string name;
+            stg::color color;
+            time_t begin_time = 0;
+            time_t end_time = 0;
+        };
 
         static constexpr auto no_activity = time_slot::no_activity;
 
 #pragma mark - Constructors & Operators
 
-        explicit strategy(time_t
-                          begin_time_t = defaults::begin_time,
-                          duration_t
-                          time_slot_duration_t = defaults::time_slot_duration,
-                          size_t
-                          number_of_time_slots = defaults::number_of_time_slots
-        );
+        explicit strategy(time_t begin_time_t = defaults::begin_time,
+                          duration_t time_slot_duration_t = defaults::time_slot_duration,
+                          size_t number_of_time_slots = defaults::number_of_time_slots);
+
         strategy(const time_slots_state::data_t &time_slots,
                  const activity_list::data_t &activities);
+
         strategy(const strategy &other);
 
         auto operator=(const strategy &other) -> strategy &;
@@ -60,6 +66,8 @@ namespace stg {
 
         static auto from_file(const std::string &path) noexcept(false) -> std::unique_ptr<strategy>;
         void write_to_file(const std::string &path) const noexcept(false);
+
+        void import_events(const std::vector<event> &events, bool override);
 
 #pragma mark - Collections
 
@@ -119,6 +127,9 @@ namespace stg {
 
         void copy_session(session_index_t session_index, time_slot_index_t begin_index);
 
+        void copy_slots(time_slot_index_t from_index, time_slot_index_t till_index,
+                        time_slot_index_t destination_index);
+
 #pragma mark - History
 
         void commit_to_history();
@@ -130,6 +141,7 @@ namespace stg {
 
         auto has_activities_undo() -> bool;
         auto has_activities_redo() -> bool;
+
     private:
         activity_list _activities;
         time_slots_state _time_slots;

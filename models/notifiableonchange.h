@@ -20,10 +20,8 @@ namespace stg {
             on_change_callbacks.push_back(callback);
         }
 
-        template<class Listener,
-                typename Method = std::function<void(Listener *)>>
-        void add_on_change_callback(Listener *listener,
-                                    const Method &method) const {
+        template<class Listener, typename Method = std::function<void(Listener *)>>
+        void add_on_change_callback(Listener *listener, const Method &method) const {
             add_on_change_callback(std::bind(method, listener));
         }
 

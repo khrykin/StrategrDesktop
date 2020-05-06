@@ -54,7 +54,6 @@ private:
 
     /// Holds opened file's path
     QString filepath;
-
     QWidget *window;
 
     static constexpr auto searchPattern = "Strategy files (*.stg)";

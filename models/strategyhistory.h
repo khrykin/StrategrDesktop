@@ -18,7 +18,7 @@ namespace stg {
             activity_list::data_t activities;
             time_slots_state::data_t time_slots;
 
-            friend bool operator==(const entry &lhs, const entry &rhs) {
+            friend auto operator==(const entry &lhs, const entry &rhs) -> bool {
                 auto activities_are_equal = std::equal(lhs.activities.begin(),
                                                        lhs.activities.end(),
                                                        rhs.activities.begin(),

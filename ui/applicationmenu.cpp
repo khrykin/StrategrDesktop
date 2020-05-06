@@ -141,13 +141,14 @@ void ApplicationMenu::setupFileMenu() {
                         &MainWindow::saveCurrentStrategyAsDefault,
                         QKeySequence(Qt::CTRL + Qt::Key_D));
 
-    addExportToCalendarAction();
+    fileMenu->addSeparator();
+
     addImportFromCalendarAction();
+    addExportToCalendarAction();
 }
 
 void ApplicationMenu::addExportToCalendarAction() {
 #ifdef Q_OS_MAC
-    fileMenu->addSeparator();
     fileMenu->addAction(tr("Export To Calendar"), [this]() {
         auto optionsWasSet = !QSettings().value("calendarExportOptions").isNull();
         auto initialOptions = optionsWasSet
@@ -183,8 +184,6 @@ void ApplicationMenu::addImportFromCalendarAction() {
         auto initialCalendarIdentifiersWasSet = !QSettings().value("importCalendarsIdentifiers").isNull();
         if (initialCalendarIdentifiersWasSet) {
             auto qInitialCalendarIdentifiers = QSettings().value("importCalendarsIdentifiers").toString().split(";");
-
-            qDebug() << "qInitialCalendarIdentifiers: " << qInitialCalendarIdentifiers << "\n";
 
             initialCalendarIdentifiers = std::make_unique<std::vector<std::string>>(
                     !qInitialCalendarIdentifiers.isEmpty()
@@ -247,7 +246,7 @@ void ApplicationMenu::updateRecentFilesActions() {
     }
 
     for (auto i = 0; i < numRecentFiles; ++i) {
-        QString text = recentFileNames[i];
+        auto text = recentFileNames[i];
         recentFileActions[i]->setText(text);
         recentFileActions[i]->setData(recentPaths[i]);
         recentFileActions[i]->setVisible(true);

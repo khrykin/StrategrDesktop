@@ -112,13 +112,8 @@ namespace stg {
             search(search_query);
     }
 
-    activity_list::activity_list(const std::vector<std::shared_ptr<activity>> &from_vector) {
-        std::transform(from_vector.begin(),
-                       from_vector.end(),
-                       std::back_inserter(_data),
-                       [](auto &activity) {
-                           return activity;
-                       });
+    activity_list::activity_list(const data_t &from_vector) {
+        _data = from_vector;
 
         if (!search_query.empty())
             search(search_query);
@@ -145,11 +140,8 @@ namespace stg {
     }
 
     auto activity_list::index_of(const activity &activity) const -> std::optional<index_t> {
-        auto it = std::find_if(_data.begin(),
-                               _data.end(),
-                               [&](auto &a) {
-                                   return *a == activity;
-                               });
+        auto it = std::find_if(_data.begin(), _data.end(),
+                               [&](auto &a) { return *a == activity; });
 
         if (it == _data.end()) {
             return std::nullopt;
@@ -174,12 +166,12 @@ namespace stg {
         query = text::utf8_fold_case(query);
 
         data_t results;
-        std::copy_if(begin(), end(),
-                     std::back_inserter(results),
-                     [&query](auto activity) {
-                         auto name = text::utf8_fold_case(activity->name());
-                         return name.find(query) != std::string::npos;
-                     });
+        std::for_each(begin(), end(), [&query, &results](auto &activity) {
+            auto name = text::utf8_fold_case(activity->name());
+
+            if (name.find(query) != std::string::npos)
+                results.push_back(activity);
+        });
 
         auto was_updated = old_query.empty() || search_results != results;
 
@@ -188,7 +180,7 @@ namespace stg {
         return was_updated;
     }
 
-    auto activity_list::filtered() const -> const stg::activity_list::data_t & {
+    auto activity_list::filtered() const -> const data_t & {
         if (search_query.empty())
             return _data;
 
@@ -201,10 +193,8 @@ namespace stg {
     }
 
     auto activity_list::index_in_filtered(index_t activity_index) const -> std::optional<index_t> {
-        auto activity = _data[activity_index];
-        auto it = std::find(filtered().begin(),
-                            filtered().end(),
-                            activity);
+        const auto &activity = _data[activity_index];
+        auto it = std::find(filtered().begin(), filtered().end(), activity);
 
         if (it == filtered().end())
             return std::nullopt;

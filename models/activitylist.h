@@ -30,7 +30,7 @@ namespace stg {
         using const_iterator = std::vector<activity>::const_iterator;
 
         explicit activity_list(const std::vector<activity> &from_vector = {});
-        explicit activity_list(const std::vector<std::shared_ptr<activity>> &from_vector);
+        explicit activity_list(const data_t &from_vector);
 
         auto operator[](activity_index_t item_index) const -> const activity &;
         auto at(activity_index_t item_index) const -> activity *;
@@ -39,7 +39,7 @@ namespace stg {
         auto index_of(const activity &activity) const -> std::optional<index_t>;
 
         auto search(std::string query) const -> bool;
-        auto filtered() const -> const activity_list::data_t &;
+        auto filtered() const -> const data_t &;
         auto index_from_filtered(index_t index_in_filtered) const -> std::optional<index_t>;
         auto index_in_filtered(index_t activity_index) const -> std::optional<index_t>;
 
@@ -50,7 +50,7 @@ namespace stg {
         friend strategy;
 
         mutable std::string search_query;
-        mutable activity_list::data_t search_results;
+        mutable data_t search_results;
 
         void silently_add(const activity &activity) noexcept(false);
         void add(const activity &activity) noexcept(false);

@@ -3,39 +3,37 @@
 //
 
 #import <CoreGraphics/CGColor.h>
-#include <iostream>
+#include <cmath>
 
 #include "color.h"
 
 namespace stg {
     auto color::to_cg_color() const -> struct CGColor * {
-        auto *color_space = CGColorSpaceCreateDeviceRGB();
-        auto *cg_color = CGColorCreate(color_space, components().data());
-        CGColorSpaceRelease(color_space);
+        auto *cg_color = CGColorCreateGenericRGB(red_component(),
+                                                 green_component(),
+                                                 blue_component(),
+                                                 alpha_component());
+
         CFAutorelease(cg_color);
 
         return cg_color;
     }
 
     auto color::from_cg_color(CGColor *cg_color) -> color {
-        auto color_space_model = CGColorSpaceGetModel(CGColorGetColorSpace(cg_color));
+        auto *color_space_model = CGColorSpaceCreateDeviceRGB();
+        auto *rgb_cg_color = CGColorCreateCopyByMatchingToColorSpace(color_space_model,
+                                                                     kCGRenderingIntentDefault,
+                                                                     cg_color,
+                                                                     NULL);
+        CGColorSpaceRelease(color_space_model);
+        CFAutorelease(rgb_cg_color);
 
         const auto *components = CGColorGetComponents(cg_color);
-        if (color_space_model == kCGColorSpaceModelRGB) {
-            return color(static_cast<uint8_t>(255u * components[0]),
-                         static_cast<uint8_t>(255u * components[1]),
-                         static_cast<uint8_t>(255u * components[2]),
-                         static_cast<uint8_t>(255u * components[3]));
+        return color(static_cast<uint8_t>(std::round(255u * components[0])),
+                     static_cast<uint8_t>(std::round(255u * components[1])),
+                     static_cast<uint8_t>(std::round(255u * components[2])),
+                     static_cast<uint8_t>(std::round(255u * components[3])));
 
-        } else if (color_space_model == kCGColorSpaceModelMonochrome) {
-            return color(static_cast<uint8_t>(255u * components[0]),
-                         static_cast<uint8_t>(255u * components[0]),
-                         static_cast<uint8_t>(255u * components[0]));
-        } else {
-            std::cout << "stg::color Warning: Can't convert from CGColor: unsupported color space\n";
-
-            return color();
-        }
     }
 
 }

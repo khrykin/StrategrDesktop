@@ -6,7 +6,7 @@
 
 #import "SGCalendarManager.h"
 
-#if !TARGET_OS_IOS
+#if TARGET_OS_MAC
 
 #import <AppKit/AppKit.h>
 
@@ -35,7 +35,7 @@
     if ([matchedCalendars count] != 0) {
         calendar = matchedCalendars[0];
 
-#if !TARGET_OS_IOS
+#if TARGET_OS_MAC
         if (color) {
             NSColor *nsColor = [NSColor colorWithCGColor:color];
             if (![calendar.color isEqual:nsColor]) {
@@ -258,6 +258,7 @@
 
         for (NSString *calendarIdentifier in calendarsIdentifiers) {
             EKCalendar *calendar = [self.store calendarWithIdentifier:calendarIdentifier];
+
             if (calendar)
                 [calendars addObject:calendar];
         }

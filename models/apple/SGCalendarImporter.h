@@ -5,7 +5,6 @@
 #ifndef STRATEGR_SGCALENDARIMPORTER_H
 #define STRATEGR_SGCALENDARIMPORTER_H
 
-
 #include <Foundation/Foundation.h>
 #include <EventKit/EventKit.h>
 
@@ -25,18 +24,9 @@ NS_SWIFT_NAME(CalendarImporterSettings)
 
 @end
 
-NS_SWIFT_NAME(CalendarExporterDelegate)
-@protocol SGCalendarImporterDelegate
-
-@optional
-- (void)calendarManagerProgressChanged:(double)doubleValue;
-
-@end
-
 NS_SWIFT_NAME(CalendarImporter)
 @interface SGCalendarImporter : NSObject
 
-@property(nonatomic, weak) id <SGCalendarImporterDelegate> delegate;
 @property(nonatomic, strong) SGCalendarImporterSettings *settings;
 
 - (instancetype)initWithStrategyPtr:(void *)strategyPtr

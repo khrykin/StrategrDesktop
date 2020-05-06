@@ -4,16 +4,16 @@
 
 #import "SGCalendarExporter.h"
 #import "SGCalendarManager.h"
-#import "NSColor+HexString.h"
 
 #include "strategy.h"
 
 @implementation SGCalendarExporterSettings
 @end
 
-@interface SGCalendarExporter ()
+@interface SGCalendarExporter () {
+    stg::strategy *strategy;
+}
 
-@property(nonatomic) stg::strategy *strategy;
 @property(nonatomic, strong) EKEventStore *eventStore;
 @property(nonatomic, strong) SGCalendarManager *calendarManager;
 
@@ -25,7 +25,7 @@
                          eventStore:(EKEventStore *)store
                            settings:(SGCalendarExporterSettings *)settings {
     if (self = [super init]) {
-        self.strategy = reinterpret_cast<stg::strategy *>(strategyPtr);
+        strategy = reinterpret_cast<stg::strategy *>(strategyPtr);
         self.eventStore = store;
         self.settings = settings;
 
@@ -41,8 +41,7 @@
         NSDate *date = self.settings.date;
         SGCalendarExportOptions optionsMask = self.settings.optionsMask;
 
-        auto &strategy = *self.strategy;
-        auto nonEmptySessions = strategy.sessions().get_non_empty();
+        auto nonEmptySessions = strategy->sessions().get_non_empty();
         auto numberOfEvents = static_cast<unsigned int>(nonEmptySessions.size());
 
         if ((optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite) {
@@ -92,8 +91,6 @@
 //        }
 
     NSString *calendarTitle = self.settings.calendarName;
-
-    NSLog(@"Export with calendar title: %@", calendarTitle);
 
     if (!calendarTitle) {
         calendarTitle = [NSString stringWithUTF8String:session.activity->name().c_str()];

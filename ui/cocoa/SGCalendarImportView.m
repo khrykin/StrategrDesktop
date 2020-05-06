@@ -47,6 +47,7 @@
 @property(nonatomic, weak) NSTableView *tableView;
 @property(nonatomic, weak) NSTableColumn *checkmarksColumn;
 @property(nonatomic, weak) NSTableColumn *calendarsColumn;
+@property(nonatomic, weak) NSButton *overrideCheckbox;
 
 @end
 
@@ -109,12 +110,10 @@
     NSButton *overrideCheckbox = [NSButton checkboxWithTitle:@"Override current strategy"
                                                       target:self
                                                       action:nil];
-    [self.bottomView addArrangedSubview:overrideCheckbox];
 
-    NSButton *changeDurationCheckbox = [NSButton checkboxWithTitle:@"Change slot duration if necessary"
-                                                            target:self
-                                                            action:nil];
-    [self.bottomView addArrangedSubview:changeDurationCheckbox];
+    self.overrideCheckbox = overrideCheckbox;
+
+    [self.bottomView addArrangedSubview:overrideCheckbox];
 }
 
 - (void)checkBoxClicked:(SGColoredCheckBoxView *)checkBoxView {
@@ -292,6 +291,19 @@
         NSButton *checkbox = [self checkboxAtIndex:i];
         checkbox.state = headerCell.checkbox.state;
     }
+}
+
+- (void)setOptionsMask:(SGCalendarImportOptions)optionsMask {
+    self.overrideCheckbox.state = (optionsMask & SGCalendarImportOptionsOverwrite) == SGCalendarImportOptionsOverwrite;
+}
+
+- (SGCalendarImportOptions)optionsMask {
+    SGCalendarImportOptions optionsMask = 0;
+
+    if (self.overrideCheckbox.state == NSControlStateValueOn)
+        optionsMask |= SGCalendarImportOptionsOverwrite;
+
+    return optionsMask;
 }
 
 @end

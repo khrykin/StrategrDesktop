@@ -64,10 +64,7 @@ namespace stg {
             begin_time = json[keys::start_time];
 
         if (!json[keys::slots].is_null()) {
-            for (auto it = json[keys::slots].begin();
-                 it != json[keys::slots].end();
-                 ++it) {
-
+            for (auto it = json[keys::slots].begin(); it != json[keys::slots].end(); ++it) {
                 auto slot_index = it - json[keys::slots].begin();
                 auto time_slot_begin_time = static_cast<time_slot::time_t>(begin_time +
                                                                            slot_index * time_slot_duration);
@@ -95,15 +92,15 @@ namespace stg {
     }
 
     auto json::parse_activities(const nlohmann::json &json) -> activity_list::data_t {
-        activity_list::data_t activities_vector;
+        activity_list::data_t activities;
 
         if (!json[keys::activities].is_null()) {
             for (const auto &activity_json : json[keys::activities]) {
                 auto activity = std::make_shared<stg::activity>(activity::from_json(activity_json));
-                activities_vector.emplace_back(activity);
+                activities.emplace_back(activity);
             }
         }
 
-        return activities_vector;
+        return activities;
     }
 }

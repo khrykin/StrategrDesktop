@@ -103,6 +103,7 @@ MacOSCalendarExporter::showExportOptionsWindow(Options initialOptions, const std
                 date = optionsView.date;
                 if (optionsView.calendarName)
                     calendarName = optionsView.calendarName.UTF8String;
+
             }
 
             break;
@@ -124,7 +125,7 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
             = [[SGCalendarImportViewController alloc] init];
     SGCalendarImportView *optionsView = [[SGCalendarImportView alloc] init];
     optionsWindowViewController.view = optionsView;
-//    optionsView.optionsMask = static_cast<SGCalendarExportOptions>(initialOptions);
+    optionsView.optionsMask = static_cast<SGCalendarImportOptions>(initialOptions);
 
     NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
 
@@ -166,7 +167,7 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
             if (response == NSModalResponseOK) {
                 NSLog(@"Selected Calendars: %@", optionsView.selectedCalendarsIdentifiers);
 
-//                optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
+                optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
                 date = optionsView.date;
                 if (optionsView.selectedCalendarsIdentifiers) {
                     outputCalendarsIdentifiers = std::make_unique<std::vector<std::string>>();
@@ -201,9 +202,8 @@ void MacOSCalendarExporter::importStrategy(stg::strategy &strategy,
     }
 
     [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
-        if (!store) {
+        if (!store)
             return showAccessDeniedAlert();
-        }
 
         SGCalendarImporterSettings *settings = [[SGCalendarImporterSettings alloc] init];
         settings.optionsMask = static_cast<SGCalendarImportOptions>(options);

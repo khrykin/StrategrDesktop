@@ -167,13 +167,15 @@
             ? @"YES"
             : @"NO";
 
-    return [NSString stringWithFormat:@"SGCalendarExportOptionsView(overwriteIsOn=%@, notificationsIsOn=%@, specificCalendarIsOn=%@, date=%@)",
+    return [NSString stringWithFormat:@"SGCalendarExportOptionsView(overwriteIsOn=%@, "
+                                      "notificationsIsOn=%@, "
+                                      "specificCalendarIsOn=%@, "
+                                      "date=%@)",
                                       overwriteIsOn,
                                       notificationsIsOn,
                                       specificCalendarIsOn,
                                       self.date.description];
 }
-
 
 @end
 
