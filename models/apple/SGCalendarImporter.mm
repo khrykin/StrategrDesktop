@@ -44,7 +44,7 @@
     return self;
 }
 
-- (void)import:(void (^)())completionHandler {
+- (void)import {
     NSArray<EKEvent *> *ekEvents = [self.calendarManager eventsWithDate:self.settings.date
                                                    calendarsIdentifiers:self.settings.calendarsIdentifiers];
     std::vector<stg::strategy::event> events;
@@ -65,8 +65,6 @@
 
     auto overwrite = (self.settings.optionsMask & SGCalendarImportOptionsOverwrite) == SGCalendarImportOptionsOverwrite;
     strategy->import_events(events, overwrite);
-
-    completionHandler();
 }
 
 @end

@@ -206,11 +206,19 @@
 
 - (void)setCalendarSelectedAtIndex:(NSUInteger)calendarIndex selected:(BOOL)wantToSelect {
     EKCalendar *calendar = self.calendars[calendarIndex];
-    BOOL calendarAlreadySelected = [self isCalendarSelected:calendar];
-
-    if (!_selectedCalendarsIdentifiers)
+    if (!_selectedCalendarsIdentifiers) {
         _selectedCalendarsIdentifiers = [[NSMutableArray alloc] init];
+        if (!wantToSelect) {
+            // Everything was selected and now we've deselected something, so
+            // we need to populate array because it was null to be able to remove
+            // deselected item below
+            for (EKCalendar *cal in self.calendars) {
+                [_selectedCalendarsIdentifiers addObject:cal.calendarIdentifier];
+            }
+        }
+    }
 
+    BOOL calendarAlreadySelected = [self isCalendarSelected:calendar];
     if (wantToSelect && !calendarAlreadySelected) {
         [self.selectedCalendarsIdentifiers addObject:calendar.calendarIdentifier];
     } else if (calendarAlreadySelected) {

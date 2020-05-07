@@ -89,4 +89,8 @@ namespace stg {
 
         return result;
     }
+
+    auto time_utils::epoch_minutes(minutes minutes_in_today) -> minutes {
+        return 0;
+    }
 };

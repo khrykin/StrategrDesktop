@@ -25,6 +25,7 @@ namespace stg {
         auto current_day_duration() -> duration;
         auto current_minutes() -> minutes;
         auto current_seconds() -> seconds;
+        auto epoch_minutes(minutes minutes_in_today) -> minutes;
 
         auto string_from_seconds(minutes total_seconds) -> std::string;
         auto human_string_from_minutes(minutes minutes) -> std::string;

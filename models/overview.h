@@ -9,7 +9,7 @@
 #include <cmath>
 #include <optional>
 
-#include "activity.h"
+#include "color.h"
 
 namespace stg {
     class strategy;
@@ -20,7 +20,7 @@ namespace stg {
             int origin_x = 0;
             int width = 0;
 
-            activity::color_t color;
+            stg::color color;
         };
 
         struct viewport_marker {
@@ -40,7 +40,7 @@ namespace stg {
                                             float slotboard_height,
                                             float viewport_top_offset);
 
-        int current_time_position();;
+        int current_time_position();
 
     private:
         const strategy &strategy;

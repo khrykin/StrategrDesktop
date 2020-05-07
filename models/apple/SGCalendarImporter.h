@@ -33,7 +33,7 @@ NS_SWIFT_NAME(CalendarImporter)
                          eventStore:(EKEventStore *)store
                            settings:(SGCalendarImporterSettings *)settings;
 
-- (void)import:(void (^)())completionHandler;
+- (void)import;
 
 @end
 

@@ -66,11 +66,11 @@ void ActivityWidget::drawBorder(QPainter &painter) const {
 void ActivityWidget::drawSelection(QPainter &painter) const {
     using namespace ColorUtils;
 
-    auto selectionColor = overlayWithAlpha(QColorFromStdString(activity()->color()),
+    auto selectionColor = overlayWithAlpha(activity()->color(),
                                            0.05 * shadesAlphaFactor(0));
 
 
-    auto highlightColor = overlayWithAlpha(QColorFromStdString(activity()->color()),
+    auto highlightColor = overlayWithAlpha(activity()->color(),
                                            0.1 * shadesAlphaFactor(0));
 
     painter.setBrush(_isSelected ? selectionColor : highlightColor);
@@ -84,7 +84,7 @@ void ActivityWidget::updateUI() {
     using namespace ColorUtils;
     label->setText(QString::fromStdString(activity()->name()));
     label->setDynamicColor([this]() {
-        return safeForegroundColor(QColorFromStdString(activity()->color()));
+        return safeForegroundColor(activity()->color());
     });
 }
 

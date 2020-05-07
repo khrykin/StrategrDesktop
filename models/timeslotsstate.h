@@ -14,7 +14,6 @@
 
 namespace stg {
     class strategy;
-    class sessions_calculator;
     class drag_operation;
     class resize_operation;
 
@@ -41,7 +40,6 @@ namespace stg {
         auto times() const -> std::vector<time_t>;
     private:
         friend strategy;
-        friend sessions_calculator;
         friend drag_operation;
         friend resize_operation;
 

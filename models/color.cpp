@@ -46,7 +46,7 @@ namespace stg {
             std::stringstream stream;
             stream << std::hex
                    << std::setw(2)
-                   << std::left
+                   << std::right
                    << std::setfill('0')
                    << (unsigned) value;
 
@@ -83,7 +83,6 @@ namespace stg {
                             color_string[1],
                             color_string[2],
                             color_string[2]};
-
 
         if (color_string.length() == 4)
             color_string = {color_string[0],
@@ -304,7 +303,7 @@ namespace stg {
           << "rgba(" << (int) red()
           << ", " << (int) green()
           << ", " << (int) blue()
-          << "," << (int) alpha() << ") "
+          << ", " << (int) alpha() << ") "
           << "hslb(" << hue() * 360
           << "°, " << saturation()
           << ", " << lightness()

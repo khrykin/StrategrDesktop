@@ -144,7 +144,10 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
         for (auto &identifier: *initialCalendarsIdentifiers) {
             [nsCalendarsIdentifiers addObject:[NSString stringWithUTF8String:identifier.c_str()]];
         }
+
     }
+
+    NSLog(@"initialCalendarsIdentifiers: %@", nsCalendarsIdentifiers);
 
     [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
         if (!store) {
@@ -167,6 +170,8 @@ MacOSCalendarExporter::showImportOptionsWindow(MacOSCalendarExporter::Options in
             if (response == NSModalResponseOK) {
                 optionsMask = reinterpret_cast<Options>(optionsView.optionsMask);
                 date = optionsView.date;
+
+                NSLog(@"optionsView.selectedCalendarsIdentifiers: %@", optionsView.selectedCalendarsIdentifiers);
 
                 if (optionsView.selectedCalendarsIdentifiers) {
                     outputCalendarsIdentifiers = std::make_unique<std::vector<std::string>>();
@@ -212,8 +217,6 @@ void MacOSCalendarExporter::importStrategy(stg::strategy &strategy,
         SGCalendarImporter *calendarImporter = [[SGCalendarImporter alloc] initWithStrategyPtr:(void *) &strategy
                                                                                     eventStore:store
                                                                                       settings:settings];
-        [calendarImporter import:^{
-            std::cout << "strategy imported \n";
-        }];
+        [calendarImporter import];
     }];
 }
