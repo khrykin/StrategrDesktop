@@ -12,22 +12,22 @@ namespace ApplicationSettings {
     const auto windowMinimumHeight = 200;
     const auto windowInitialWidth = 350;
 
+    const auto sessionFontSize = 14;
+
     const auto defaultSlotHeight = 35;
     const auto defaultActivityItemHeight = 40;
     const auto defaultPadding = 8;
 
-    const auto sessionFontSize = 14;
+    const auto currentSessionHeight = 38;
+    const auto overviewHeight = 8;
 
     const auto currentTimeTimerSecondsInterval = 1;
     const auto notifierTimerMillisecondsInterval = 15 * 1000;
     const auto currentSessionShowDelay = 500;
 
     const auto rowBorderColor = "#ccc";
+    const auto currentTimeMarkerColor = "#ff725c";
 
-    const auto currentSessionHeight = 38;
-    const auto overviewHeight = 8;
-
-    const auto currentTimeMarkerColor = "#FF725C";
     const auto fontResourcePath = "FontAwesome";
 
 #if defined(Q_OS_WIN32) && !defined(Q_OS_WIN64)

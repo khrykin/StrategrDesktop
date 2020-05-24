@@ -273,8 +273,7 @@ namespace stg {
         current_drag_operation = std::make_shared<drag_operation>(&_time_slots, initial_indices);
     }
 
-    auto strategy::global_slot_indices_from_session(const session &session) const
-    -> std::vector<time_slot_index_t> {
+    auto strategy::global_slot_indices_from_session(const session &session) const -> std::vector<time_slot_index_t> {
         drag_operation::indices_vector initial_indices;
         std::transform(session.time_slots.begin(),
                        session.time_slots.end(),

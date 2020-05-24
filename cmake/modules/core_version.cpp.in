@@ -1,0 +1,9 @@
+//
+// Created by Dmitry Khrykin on 17/05/2020.
+//
+
+#include "version.h"
+
+namespace stg {
+    const char *library_version_string = "@VERSION_SHORT@";
+}

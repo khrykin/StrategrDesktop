@@ -32,8 +32,11 @@ namespace stg {
                 decltype(std::declval<T>().alpha())> : std::true_type {
         };
 
-        explicit color(uint32_t data = 0xff000000);
+        static auto clear_color() -> color;
+        static auto black_color() -> color;
+        static auto white_color() -> color;
 
+        explicit color(uint32_t data = 0u);
         color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
 
         color(const char *str);
@@ -54,10 +57,6 @@ namespace stg {
         operator T() const {
             return T(red(), green(), blue(), alpha());
         }
-
-        static auto clear_color() -> color;
-        static auto black_color() -> color;
-        static auto white_color() -> color;
 
         auto red() const -> uint8_t;
         auto green() const -> uint8_t;

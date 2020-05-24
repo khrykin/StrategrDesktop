@@ -40,7 +40,6 @@ namespace stg {
         };
 
         auto get_non_empty() const -> std::vector<session>;
-
         auto get_bounds_for(index_t session_index) const -> bounds;
 
         auto session_index_for_time_slot_index(index_t time_slot_index) const -> stg::sessions_list::index_t;
@@ -52,7 +51,6 @@ namespace stg {
         auto duration() const -> time_slot::duration_t;
 
         auto overview() const -> std::vector<overview_item>;
-
 
         auto class_print_name() const -> std::string override;
 

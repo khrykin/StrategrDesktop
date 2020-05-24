@@ -210,8 +210,8 @@
         _selectedCalendarsIdentifiers = [[NSMutableArray alloc] init];
         if (!wantToSelect) {
             // Everything was selected and now we've deselected something, so
-            // we need to populate array because it was null to be able to remove
-            // deselected item below
+            // we need to populate array (it is null if everything is selected)
+            // to be able to remove deselected item below
             for (EKCalendar *cal in self.calendars) {
                 [_selectedCalendarsIdentifiers addObject:cal.calendarIdentifier];
             }
@@ -224,6 +224,19 @@
     } else if (calendarAlreadySelected) {
         [self.selectedCalendarsIdentifiers removeObject:calendar.calendarIdentifier];
     }
+}
+
+- (void)setOptionsMask:(SGCalendarImportOptions)optionsMask {
+    self.overrideCheckbox.state = (optionsMask & SGCalendarImportOptionsOverwrite) == SGCalendarImportOptionsOverwrite;
+}
+
+- (SGCalendarImportOptions)optionsMask {
+    SGCalendarImportOptions optionsMask = 0;
+
+    if (self.overrideCheckbox.state == NSControlStateValueOn)
+        optionsMask |= SGCalendarImportOptionsOverwrite;
+
+    return optionsMask;
 }
 
 @end
@@ -299,19 +312,6 @@
         NSButton *checkbox = [self checkboxAtIndex:i];
         checkbox.state = headerCell.checkbox.state;
     }
-}
-
-- (void)setOptionsMask:(SGCalendarImportOptions)optionsMask {
-    self.overrideCheckbox.state = (optionsMask & SGCalendarImportOptionsOverwrite) == SGCalendarImportOptionsOverwrite;
-}
-
-- (SGCalendarImportOptions)optionsMask {
-    SGCalendarImportOptions optionsMask = 0;
-
-    if (self.overrideCheckbox.state == NSControlStateValueOn)
-        optionsMask |= SGCalendarImportOptionsOverwrite;
-
-    return optionsMask;
 }
 
 @end

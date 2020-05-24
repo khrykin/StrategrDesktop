@@ -20,9 +20,9 @@
 
 namespace stg {
     struct mouse_parameters {
-        int stretch_zone_size = 5;
-        int direction_change_resolution = 2;
-        int autoscroll_zone_size = 40;
+        stg::float_t stretch_zone_size = 5;
+        stg::float_t direction_change_resolution = 2;
+        stg::float_t autoscroll_zone_size = 40;
     };
 
     class mouse_handler {
@@ -43,10 +43,10 @@ namespace stg {
         };
 
         struct range {
-            int top = 0;
-            int bottom = 0;
+            stg::float_t top = 0;
+            stg::float_t bottom = 0;
 
-            bool contains(int coord);
+            bool contains(stg::float_t coord);
 
             friend std::ostream &operator<<(std::ostream &os, const range &range);
         };

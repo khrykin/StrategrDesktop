@@ -117,11 +117,11 @@ void SlotsMouseHandler::stopAutoScroll() {
 }
 
 stg::rect SlotsMouseHandler::viewportRect() {
-    return stg::rect{0,
-                     slotBoardScrollArea()->verticalScrollBar()->value()
-                     - slotBoard()->slotsLayout()->contentsMargins().top(),
-                     slotBoardScrollArea()->viewport()->width(),
-                     slotBoardScrollArea()->viewport()->height()};
+    return {0,
+            slotBoardScrollArea()->verticalScrollBar()->value()
+            - slotBoard()->slotsLayout()->contentsMargins().top(),
+            slotBoardScrollArea()->viewport()->width(),
+            slotBoardScrollArea()->viewport()->height()};
 }
 
 void SlotsMouseHandler::updateResizeBoundary(int sessionBeforeBoundaryIndex, int slotBeforeBoundaryIndex) {
@@ -158,7 +158,7 @@ void SlotsMouseHandler::updateCursor(stg::mouse_handler::cursor new_cursor) {
 void SlotsMouseHandler::showContextMenu(const stg::point &position,
                                         int slotIndex,
                                         int /*sessionIndex*/) {
-    auto &currentSlot = strategy().time_slots()[slotIndex];
+    const auto &currentSlot = strategy().time_slots()[slotIndex];
 
     QMenu menu(slotsWidget);
     menu.addAction(slotsWidget->setActivityAction);
@@ -201,7 +201,7 @@ void SlotsMouseHandler::selectSessionsAtIndices(const std::vector<int> &sessionI
 
 SessionWidget
 *SlotsMouseHandler::sessionWidgetAtIndex(int sessionIndex) {
-    auto sessionWidget = slotsWidget
+    auto *sessionWidget = slotsWidget
             ->slotsLayout
             ->itemAt(sessionIndex)
             ->widget();

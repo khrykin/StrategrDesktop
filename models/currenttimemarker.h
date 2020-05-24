@@ -18,14 +18,14 @@ namespace stg {
         auto is_hidden() const -> bool;
 
         auto rect_in_parent(const rect &parent_rect,
-                            int marker_radius = 0) const -> rect;
+                            stg::float_t marker_radius = 0) const -> rect;
 
         auto scroll_offset(const rect &slots_rect,
-                           int viewport_height) const -> int;
+                           stg::float_t viewport_height) const -> stg::float_t;
     private:
         const strategy &strategy;
 
-        auto top_offset_in(int total_height) const -> int;
+        auto top_offset_in(stg::float_t total_height) const -> stg::float_t;
         auto relative_position() const -> float;
     };
 }

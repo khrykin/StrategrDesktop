@@ -10,6 +10,7 @@
 #include <optional>
 
 #include "color.h"
+#include "geometry.h"
 
 namespace stg {
     class strategy;
@@ -17,34 +18,30 @@ namespace stg {
     class overview {
     public:
         struct overview_item {
-            int origin_x = 0;
-            int width = 0;
+            stg::float_t origin_x = 0;
+            stg::float_t width = 0;
 
             stg::color color;
         };
 
         struct viewport_marker {
-            int origin_x = 0;
-            int width = 0;
+            stg::float_t origin_x = 0;
+            stg::float_t width = 0;
         };
 
-        explicit overview(const strategy &strategy, float width);
-        explicit overview(const strategy &strategy, int width);
+        explicit overview(const strategy &strategy, stg::float_t width);
 
-        std::vector<overview_item> elements();
+        auto elements() -> std::vector<overview_item>;
 
-        viewport_marker viewport_marker_for(int viewport_height,
-                                            int slotboard_height,
-                                            int viewport_top_offset);
-        viewport_marker viewport_marker_for(float viewport_height,
-                                            float slotboard_height,
-                                            float viewport_top_offset);
+        auto viewport_marker_for(stg::float_t viewport_height,
+                                 stg::float_t slotboard_height,
+                                 stg::float_t viewport_top_offset) const -> viewport_marker;
 
-        int current_time_position();
+        auto current_time_position() -> stg::float_t;
 
     private:
         const strategy &strategy;
-        float width = 0.0;
+        stg::float_t width = 0.0;
     };
 
 }

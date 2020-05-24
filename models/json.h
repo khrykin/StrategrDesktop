@@ -24,6 +24,7 @@ namespace stg {
             static constexpr auto start_time = "startTime";
             static constexpr auto activities = "activities";
             static constexpr auto slots = "slots";
+            static constexpr auto version = "version";
         };
     private:
         activity_list activities;

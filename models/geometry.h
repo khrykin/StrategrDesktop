@@ -10,6 +10,8 @@
 #include <utility>
 
 namespace stg {
+    using float_t = float;
+
     template<typename T, typename = int, typename = int>
     struct is_cg_point_like : std::false_type {
     };
@@ -53,21 +55,21 @@ namespace stg {
     struct point {
         static const point zero;
 
-        int x = 0;
-        int y = 0;
+        float_t x = 0;
+        float_t y = 0;
 
-        constexpr explicit point(int x = 0, int y = 0) : x(x), y(y) {}
+        constexpr explicit point(float_t x = 0, float_t y = 0) : x(x), y(y) {}
 
         template<typename T, std::enable_if_t<is_qpoint_like<T>::value, int> = 0>
         point(const T &point) {
-            x = point.x();
-            y = point.y();
+            x = (float_t) point.x();
+            y = (float_t) point.y();
         }
 
         template<typename T, std::enable_if_t<is_cg_point_like<T>::value, int> = 0>
         point(const T &point) {
-            x = static_cast<int>(point.x);
-            y = static_cast<int>(point.y);
+            x = (float_t) point.x;
+            y = (float_t) point.y;
         }
 
         template<typename T, std::enable_if_t<is_qpoint_like<T>::value, int> = 0>
@@ -77,8 +79,8 @@ namespace stg {
 
         template<typename T, std::enable_if_t<is_cg_point_like<T>::value, int> = 0>
         operator T() const {
-            return {static_cast<double>(x),
-                    static_cast<double>(y)};
+            return {(double) x,
+                    (double) y};
         }
 
         auto operator+(const point &other) const -> point {
@@ -100,10 +102,20 @@ namespace stg {
     struct rect {
         static const rect zero;
 
-        int left = 0;
-        int top = 0;
-        int width = 0;
-        int height = 0;
+        stg::float_t left = 0;
+        stg::float_t top = 0;
+        stg::float_t width = 0;
+        stg::float_t height = 0;
+
+        constexpr rect(std::initializer_list<stg::float_t> l = {}) noexcept {
+            if (l.size() == 4) {
+                const auto *it = l.begin();
+                left = *it++;
+                top = *it++;
+                width = *it++;
+                height = *it;
+            }
+        }
 
         constexpr rect(std::initializer_list<int> l = {}) noexcept {
             if (l.size() == 4) {
@@ -111,24 +123,24 @@ namespace stg {
                 left = *it++;
                 top = *it++;
                 width = *it++;
-                height = *it++;
+                height = *it;
             }
         }
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
         rect(const T &rect) {
-            left = rect.x();
-            top = rect.y();
-            width = rect.width();
-            height = rect.height();
+            left = (float_t) rect.x();
+            top = (float_t) rect.y();
+            width = (float_t) rect.width();
+            height = (float_t) rect.height();
         }
 
         template<typename T, std::enable_if_t<is_cg_rect_like<T>::value, int> = 0>
         rect(const T &rect) {
-            left = static_cast<int>(rect.origin.x);
-            top = static_cast<int>(rect.origin.y);
-            width = static_cast<int>(rect.size.width);
-            height = static_cast<int>(rect.size.height);
+            left = (float_t) rect.origin.x;
+            top = (float_t) rect.origin.y;
+            width = (float_t) rect.size.width;
+            height = (float_t) rect.size.height;
         }
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
@@ -138,10 +150,10 @@ namespace stg {
 
         template<typename T, std::enable_if_t<is_cg_rect_like<T>::value, int> = 0>
         operator T() const {
-            return {static_cast<float>(left),
-                    static_cast<float>(top), {
-                            static_cast<float>(width),
-                            static_cast<float>(height)
+            return {(float_t) left,
+                    (float_t) top, {
+                            (float_t) width,
+                            (float_t) height
                     }};
         }
 

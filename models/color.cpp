@@ -55,13 +55,13 @@ namespace stg {
 
         std::string result = "#";
 
-        if (alpha() < 255)
-            result += component_string(alpha());
-
         result = result
                  + component_string(red())
                  + component_string(green())
                  + component_string(blue());
+
+        if (alpha() < 255u)
+            result += component_string(alpha());
 
         return result;
     }
@@ -98,7 +98,7 @@ namespace stg {
             color_string += "0";
 
         if (color_string.length() == 6)
-            color_string = "ff" + color_string;
+            color_string = color_string + "ff";
 
         std::stringstream stream;
         stream << std::hex << color_string;
@@ -107,19 +107,19 @@ namespace stg {
         return result;
     }
 
-    auto color::alpha() const -> uint8_t {
+    auto color::red() const -> uint8_t {
         return static_cast<uint8_t>(data >> 24u) & 255u;
     }
 
-    auto color::red() const -> uint8_t {
+    auto color::green() const -> uint8_t {
         return static_cast<uint8_t>(data >> 16u) & 255u;
     }
 
-    auto color::green() const -> uint8_t {
+    auto color::blue() const -> uint8_t {
         return static_cast<uint8_t>(data >> 8u) & 255u;
     }
 
-    auto color::blue() const -> uint8_t {
+    auto color::alpha() const -> uint8_t {
         return data & 255u;
     }
 
@@ -139,19 +139,19 @@ namespace stg {
         return static_cast<float>(alpha()) / 255u;
     }
 
-    void color::set_alpha(uint8_t value) {
+    void color::set_red(uint8_t value) {
         data = (data & 0x00'ff'ff'ffu) | static_cast<uint32_t>(value << 24u);
     }
 
-    void color::set_red(uint8_t value) {
+    void color::set_green(uint8_t value) {
         data = (data & 0xff'00'ff'ffu) | static_cast<uint32_t>(value << 16u);
     }
 
-    void color::set_green(uint8_t value) {
+    void color::set_blue(uint8_t value) {
         data = (data & 0xff'ff'00'ffu) | static_cast<uint32_t>(value << 8u);
     }
 
-    void color::set_blue(uint8_t value) {
+    void color::set_alpha(uint8_t value) {
         data = (data & 0xff'ff'ff'00u) | static_cast<uint32_t>(value);
     }
 
@@ -208,7 +208,6 @@ namespace stg {
         auto x_max = std::max({red_component(),
                                green_component(),
                                blue_component()});
-
         auto x_min = std::min({red_component(),
                                green_component(),
                                blue_component()});
@@ -291,10 +290,10 @@ namespace stg {
 
     void color::set_rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
         data = 0u;
-        data = data | static_cast<uint32_t>(alpha << 24u);
-        data = data | static_cast<uint32_t>(red << 16u);
-        data = data | static_cast<uint32_t>(green << 8u);
-        data = data | static_cast<uint32_t>(blue);
+        data = data | static_cast<uint32_t>(red << 24u);
+        data = data | static_cast<uint32_t>(green << 16u);
+        data = data | static_cast<uint32_t>(blue << 8u);
+        data = data | static_cast<uint32_t>(alpha);
     }
 
     auto color::info() const -> std::string {
@@ -349,7 +348,7 @@ namespace stg {
     }
 
     auto color::black_color() -> color {
-        return color(0xff'00'00'00u);
+        return color(0x00'00'00'ffu);
     }
 
     auto color::white_color() -> color {

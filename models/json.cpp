@@ -6,6 +6,7 @@
 
 #include "json.h"
 #include "strategy.h"
+#include "version.h"
 
 namespace stg {
     auto json::serialize(const strategy &strategy) -> std::string {
@@ -34,6 +35,8 @@ namespace stg {
 
                            return nlohmann::json();
                        });
+
+        json[keys::version] = library_version_string;
 
         return json.dump();
     }

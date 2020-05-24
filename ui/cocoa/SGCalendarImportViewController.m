@@ -16,4 +16,12 @@
     [self.view.window close];
 }
 
+- (BOOL)windowShouldClose:(NSWindow *)sender {
+    if ([sender isEqual:self.view.window]) {
+        [[NSApplication sharedApplication] stopModal];
+    }
+
+    return YES;
+}
+
 @end

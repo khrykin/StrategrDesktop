@@ -234,8 +234,8 @@ stg::mouse_handler::get_session_index(index_t slot_index) {
 
 stg::mouse_handler::range stg::mouse_handler::get_session_range(index_t session_index) {
     const auto &session = strategy.sessions()[session_index];
-    auto top = static_cast<int>(strategy.sessions().relative_begin_time(session) * px_in_time());
-    auto height = static_cast<int>(session.duration() * px_in_time());
+    auto top = strategy.sessions().relative_begin_time(session) * px_in_time();
+    auto height = session.duration() * px_in_time();
 
     return range{top, top + height};
 }
@@ -410,7 +410,7 @@ namespace stg {
         return os;
     }
 
-    bool stg::mouse_handler::range::contains(int coord) {
+    bool stg::mouse_handler::range::contains(stg::float_t coord) {
         return coord >= top && coord <= bottom;
     }
 

@@ -20,10 +20,12 @@ string(REGEX REPLACE "^v" "" VERSION "${VERSION}")
 
 set(VERSION_SHORT "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-set(version_file "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
+set(VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/version.cpp")
+set(CORE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/core_version.cpp")
 
-file(REMOVE ${version_file})
+file(REMOVE ${VERSION_FILE})
+file(REMOVE ${CORE_VERSION_FILE})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/version.cpp.in
-        ${version_file})
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/version.cpp.in ${VERSION_FILE})
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/core_version.cpp.in ${CORE_VERSION_FILE})
 

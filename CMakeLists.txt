@@ -50,6 +50,8 @@ if (APPLE)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
+        models/version.h
+        ${CORE_VERSION_FILE}
         models/activity.cpp
         models/activity.h
         models/strategy.cpp
@@ -194,7 +196,7 @@ set(UI
         ui/iconwidget.h)
 
 set(UTILITY
-        ${version_file}
+        ${VERSION_FILE}
         utility/filesystemiomanager.cpp
         utility/filesystemiomanager.h
         utility/applicationsettings.h
