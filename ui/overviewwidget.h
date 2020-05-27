@@ -11,24 +11,30 @@
 #include "strategy.h"
 #include "colorprovider.h"
 
+class SlotboardScrollArea;
+class SlotBoardWidget;
+
 class OverviewWidget : public QWidget, public ColorProvider {
 Q_OBJECT
 public:
     explicit OverviewWidget(stg::strategy &strategy,
-                            QScrollArea *scrollArea,
+                            SlotboardScrollArea *scrollArea,
                             QWidget *parent = nullptr);
 
     void reloadStrategy();
 
 private:
     stg::strategy &strategy;
-    QScrollArea *scrollArea;
+    SlotboardScrollArea *scrollArea;
 
     void paintEvent(QPaintEvent *) override;
     void drawElements(QPainter &painter, stg::overview &overview) const;
     void drawViewportMarker(QPainter &painter, stg::overview &overview) const;
     void drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) const;
     void drawBorders(QPainter &painter) const;
+
+    stg::overview::viewport_marker makeViewportMarker() const;
+    SlotBoardWidget *slotboardWidget() const;
 
     void mouseMoveEvent(QMouseEvent *) override;
     void mouseReleaseEvent(QMouseEvent *) override;

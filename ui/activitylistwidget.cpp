@@ -4,8 +4,6 @@
 #include <QPainter>
 #include <QStyle>
 #include <QStyleOption>
-#include <QVBoxLayout>
-#include <QLineEdit>
 #include <QScrollArea>
 #include <QScrollBar>
 
@@ -13,6 +11,7 @@
 #include "activitylistwidget.h"
 #include "activitywidget.h"
 #include "mainscene.h"
+#include "mainwindow.h"
 #include "slotboardwidget.h"
 #include "searchboxwidget.h"
 
@@ -25,6 +24,9 @@ ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
+
+    auto toolbarHeight = MainWindow::toolbarHeightOf(this->window());
+    setContentsMargins(0, toolbarHeight, 0, 0);
 
     setupNavbar();
     layoutChildWidgets();
@@ -217,6 +219,8 @@ void ActivityListWidget::showNewActivityMenu() {
                          newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);
 
+    center.setY(center.y() + MainWindow::toolbarHeightOf(this->window()));
+
     newActivityMenu->focus();
     newActivityMenu->exec(center);
 }
@@ -277,7 +281,7 @@ void ActivityListWidget::updateUI() {
 }
 
 bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
-    auto keyEvent = dynamic_cast<QKeyEvent *> (event);
+    auto *keyEvent = dynamic_cast<QKeyEvent *> (event);
     auto isKeyPressEvent = keyEvent &&
                            (keyEvent->type() == QEvent::ShortcutOverride
                             || keyEvent->type() == QEvent::KeyPress);

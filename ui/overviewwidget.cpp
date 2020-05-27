@@ -10,9 +10,11 @@
 #include "colorutils.h"
 #include "applicationsettings.h"
 #include "overview.h"
+#include "slotboardscrollarea.h"
+#include "slotboardwidget.h"
 
 OverviewWidget::OverviewWidget(stg::strategy &strategy,
-                               QScrollArea *scrollArea,
+                               SlotboardScrollArea *scrollArea,
                                QWidget *parent) :
         strategy(strategy), QWidget(parent), scrollArea(scrollArea) {
     setFixedHeight(ApplicationSettings::overviewHeight);
@@ -50,9 +52,6 @@ void OverviewWidget::drawBorders(QPainter &painter) const {
 }
 
 void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) const {
-    auto currentTimeMarkerPadding = 1;
-    auto currentTimeMarkerRadius = height() - 2 * currentTimeMarkerPadding;
-
     painter.setBrush(QBrush(ApplicationSettings::currentTimeMarkerColor));
     painter.setPen(Qt::NoPen);
 
@@ -65,9 +64,7 @@ void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &ove
 }
 
 void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overview) const {
-    auto viewportMarker = overview.viewport_marker_for(scrollArea->viewport()->height(),
-                                                       scrollArea->widget()->height(),
-                                                       scrollArea->verticalScrollBar()->value());
+    auto viewportMarker = this->makeViewportMarker();
 
     auto blackColor = QColor(Qt::black);
     blackColor.setAlphaF(0.5);
@@ -106,12 +103,26 @@ void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) co
 }
 
 void OverviewWidget::mouseReleaseEvent(QMouseEvent *event) {
-    auto position = static_cast<float>(event->pos().x()) / static_cast<float>(width());
-    int newScrollOffset = static_cast<int>(position * static_cast<float>(scrollArea->widget()->height()))
-                          - scrollArea->viewport()->height() / 2;
-    scrollArea->verticalScrollBar()->setValue(newScrollOffset);
+    auto percentage = (float) event->pos().x() / (float) width();
+    auto viewportRect = scrollArea->viewportRect();
+    auto relativeDistance = percentage * slotboardWidget()->slotsWidget()->height();
+    auto topOffset = slotboardWidget()->slotsLayout()->contentsMargins().top();
+
+    int newScrollOffset = relativeDistance - viewportRect.height() / 2 + topOffset;
+
+    scrollArea->setScrollOffset(newScrollOffset);
 }
 
 void OverviewWidget::mouseMoveEvent(QMouseEvent *event) {
     mouseReleaseEvent(event);
+}
+
+stg::overview::viewport_marker OverviewWidget::makeViewportMarker() const {
+    auto overview = stg::overview(strategy, width());
+    return overview.viewport_marker_for(slotboardWidget()->slotsWidget()->viewportRect(),
+                                        slotboardWidget()->slotsWidget()->contentsRect());
+}
+
+SlotBoardWidget *OverviewWidget::slotboardWidget() const {
+    return qobject_cast<SlotBoardWidget *>(scrollArea->widget());
 }

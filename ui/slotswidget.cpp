@@ -224,6 +224,10 @@ int SlotsWidget::slotBeforeBoundaryIndex() const {
     return _slotBeforeBoundaryIndex;
 }
 
+QRect SlotsWidget::viewportRect() const {
+    return mouseHandler->viewportRect();
+}
+
 
 
 

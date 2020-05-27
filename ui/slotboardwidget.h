@@ -15,6 +15,7 @@
 class MainWindow;
 class SlotBoardCirclesWidget;
 class QTimer;
+class SlotboardScrollArea;
 
 class SlotBoardWidget :
         public QWidget,
@@ -57,7 +58,7 @@ private:
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
 
-    QScrollArea *parentScrollArea();
+    SlotboardScrollArea *parentScrollArea();
     void setupCurrentTimeTimer();
     void timerCallback();
     void updateSlotsLayout() const;

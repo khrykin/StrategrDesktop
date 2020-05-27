@@ -73,7 +73,6 @@ private:
     ActivityWidget *makeNewItemAtIndex(int index) override;
     void reconnectItemAtIndex(int itemIndex, ActivityWidget *item);
 
-
     void scrollUpItemIntoViewAtIndex(int index);
     void scrollDownItemIntoViewAtIndex(int index);
 };

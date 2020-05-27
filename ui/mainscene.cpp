@@ -26,7 +26,7 @@ void MainScene::showActivities() {
     slideToWidget(activitiesWidget);
 
 #ifdef Q_OS_MAC
-    MacOSWindow::pageChange(qobject_cast<MainWindow *>(window()), 1);
+    MacOSWindow::pageDidChanged(qobject_cast<MainWindow *>(window()), 1);
 #endif
 }
 
@@ -35,7 +35,7 @@ void MainScene::showSessions() {
     slideToWidget(sessionsMainWidget);
 
 #ifdef Q_OS_MAC
-    MacOSWindow::pageChange(qobject_cast<MainWindow *>(window()), 0);
+    MacOSWindow::pageDidChanged(qobject_cast<MainWindow *>(window()), 0);
 #endif
 }
 

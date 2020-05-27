@@ -17,6 +17,7 @@
 #include "currenttimemarker.h"
 #include "slotboardcircleswidget.h"
 #include "slotsmousehandler.h"
+#include "slotboardscrollarea.h"
 
 SlotBoardWidget::SlotBoardWidget(stg::strategy &strategy, QWidget *parent)
         : strategy(strategy), QWidget(parent) {
@@ -51,8 +52,7 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
             this,
             &SlotBoardWidget::handleTimeSlotsChange);
 
-    slotRuler = new SlotRuler(makeLabels(),
-                              _slotsWidget->slotHeight(), this);
+    slotRuler = new SlotRuler(makeLabels(), _slotsWidget->slotHeight(), this);
 
     _slotsLayout = new QVBoxLayout();
     _slotsLayout->setSpacing(0);
@@ -64,11 +64,9 @@ void SlotBoardWidget::layoutChildWidgets(QHBoxLayout *mainLayout) {
     mainLayout->addWidget(slotRuler);
     mainLayout->addLayout(_slotsLayout);
 
-    circlesWidget = new SlotBoardCirclesWidget(
-            std::bind(&SlotsWidget::slotHeight, _slotsWidget),
-            std::bind(&SlotsWidget::geometry, _slotsWidget),
-            this
-    );
+    circlesWidget = new SlotBoardCirclesWidget(std::bind(&SlotsWidget::slotHeight, _slotsWidget),
+                                               std::bind(&SlotsWidget::geometry, _slotsWidget),
+                                               this);
 
     connect(_slotsWidget,
             &SlotsWidget::resizeBoundaryChanged,
@@ -111,7 +109,6 @@ QVector<TimeLabel> SlotBoardWidget::makeLabels() {
     QVector<TimeLabel> labels;
 
     for (auto &time : strategy.time_slots().times()) {
-        auto minutes = time % 60;
         auto labelText = QStringForMinutes(time);
         auto label = TimeLabel{labelText, time};
 
@@ -146,11 +143,11 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
 void SlotBoardWidget::focusOnCurrentTime() {
     auto topOffset = stg::current_time_marker(strategy)
             .scroll_offset(_slotsWidget->geometry(),
-                           parentWidget()->contentsRect().height());
+                           parentScrollArea()->viewportRect());
 
-    auto scrollBar = parentScrollArea()->verticalScrollBar();
+    auto *scrollBar = parentScrollArea()->verticalScrollBar();
 
-    auto animation = new QPropertyAnimation(scrollBar, "value");
+    auto *animation = new QPropertyAnimation(scrollBar, "value");
     animation->setDuration(200);
     animation->setStartValue(scrollBar->value());
     animation->setEndValue(topOffset);
@@ -159,8 +156,8 @@ void SlotBoardWidget::focusOnCurrentTime() {
     animation->start();
 }
 
-QScrollArea *SlotBoardWidget::parentScrollArea() {
-    return qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
+SlotboardScrollArea *SlotBoardWidget::parentScrollArea() {
+    return dynamic_cast<SlotboardScrollArea *>(parentWidget()->parentWidget());
 }
 
 void SlotBoardWidget::handleTimeSlotsChange() {
@@ -186,6 +183,7 @@ void SlotBoardWidget::timerCallback() {
 
 void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
     updateCurrentTimeMarker();
+    updateSlotsLayout();
 
     circlesWidget->setGeometry(QRect(0, 0, width(), height()));
 }
@@ -297,4 +295,5 @@ void SlotBoardWidget::drawDraggedSession(int sessionIndex, int firstSlotIndex) {
         draggedSessionWidget->setGeometry(bigRect);
     }
 }
+
 

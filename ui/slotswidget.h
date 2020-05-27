@@ -44,6 +44,8 @@ public:
     int slotBeforeBoundaryIndex() const;
 
     const stg::selection &selection();
+
+    QRect viewportRect() const;
 signals:
     void sessionsChanged();
     void resizeBoundaryChanged(int, int);

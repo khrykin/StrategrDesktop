@@ -11,6 +11,6 @@
 @class TAAdaptiveSpaceItem;
 @interface TAAdaptiveSpaceItemView : NSView
 
-@property(assign) TAAdaptiveSpaceItem *adaptiveSpaceItem;
+@property(weak) TAAdaptiveSpaceItem *adaptiveSpaceItem;
 
 @end

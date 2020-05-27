@@ -23,6 +23,7 @@ class QScrollArea;
 class SlotBoardWidget;
 class OverviewWidget;
 class QTimer;
+class SlotboardScrollArea;
 
 class SessionsMainWidget : public QWidget, public ColorProvider {
 Q_OBJECT
@@ -36,7 +37,7 @@ public:
     void clearSelection();
     void reloadStrategy();
 
-    QScrollArea *slotBoardScrollArea() const;
+    SlotboardScrollArea *slotBoardScrollArea() const;
 private:
     stg::strategy &strategy;
     stg::notifier notifier{strategy};
@@ -45,11 +46,13 @@ private:
 
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
-    QScrollArea *_slotBoardScrollArea = nullptr;
+    SlotboardScrollArea *_slotBoardScrollArea = nullptr;
     SlotBoardWidget *slotBoard = nullptr;
     OverviewWidget *overviewWidget = nullptr;
 
     QTimer *notifierTimer = nullptr;
+
+    int toolbarHeight();
 
     void layoutChildWidgets();
     void updateTimerDependants();
@@ -57,6 +60,8 @@ private:
     void updateOverviewWidget() const;
 
     void resizeEvent(QResizeEvent *) override;
+
+    bool eventFilter(QObject *object, QEvent *event) override;
 };
 
 

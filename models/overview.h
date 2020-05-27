@@ -33,9 +33,7 @@ namespace stg {
 
         auto elements() -> std::vector<overview_item>;
 
-        auto viewport_marker_for(stg::float_t viewport_height,
-                                 stg::float_t slotboard_height,
-                                 stg::float_t viewport_top_offset) const -> viewport_marker;
+        auto viewport_marker_for(rect viewport_rect, rect slotboard_rect) const -> viewport_marker;
 
         auto current_time_position() -> stg::float_t;
 

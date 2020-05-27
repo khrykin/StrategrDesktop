@@ -24,6 +24,8 @@ class SlotsMouseHandler :
 Q_OBJECT
 public:
     explicit SlotsMouseHandler(SlotsWidget *slotsWidget);
+
+    stg::rect viewportRect();
 signals:
     void resizeBoundaryChanged(int sessionBeforeBoundaryIndex,
                                int slotBeforeBoundaryIndex);
@@ -43,14 +45,11 @@ private:
     int slotHeight();
 
     QTimer *autoscrollAnimation = nullptr;
-    int draggedSessionIndex = -1;
-    stg::rect draggedSessionRect = stg::rect::zero;
 
     SessionWidget *sessionWidgetAtIndex(int sessionIndex);
     SlotBoardWidget *slotBoard();
-    QScrollArea *slotBoardScrollArea();
+    SlotboardScrollArea *slotBoardScrollArea();
     QScrollBar *verticalScrollBar();
-    stg::rect viewportRect();
 
     void selectSessionsAtIndices(const std::vector<int> &sessionIndices);
 
@@ -72,4 +71,5 @@ private:
     void leaveEvent(QEvent *event) override;
     void showEvent(QShowEvent *event) override;
 };
+
 #endif //STRATEGR_SLOTSMOUSEHANDLER_H

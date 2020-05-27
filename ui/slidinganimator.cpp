@@ -206,8 +206,16 @@ void SlidingAnimator::updateWidgetGeometryOnStubResize() {
 }
 
 void SlidingAnimator::prepareOperation() {
-    _widgetParentLayout =
-            qobject_cast<QBoxLayout *>(widget->parentWidget()->layout());
+    auto *layout = dynamic_cast<QBoxLayout *>(widget->parentWidget()->layout());
+
+    // NB! Unsafe code
+    int i = 0;
+    while (layout->indexOf(widget) < 0) {
+        layout = dynamic_cast<QBoxLayout *>(layout->children()[i]);
+        i++;
+    }
+
+    _widgetParentLayout = layout;
 
     setWidgetMaximumSize();
     initialWidgetSize = widgetSize();
@@ -239,10 +247,11 @@ void SlidingAnimator::show() {
     operation = Operation::Show;
     prepareOperation();
 
-    connect(timeLine, &QTimeLine::valueChanged, this,
-            &SlidingAnimator::showFrame);
+    connect(timeLine, &QTimeLine::valueChanged,
+            this, &SlidingAnimator::showFrame);
 
-    connect(timeLine, &QTimeLine::finished, this, &SlidingAnimator::showFinished);
+    connect(timeLine, &QTimeLine::finished,
+            this, &SlidingAnimator::showFinished);
 
     timeLine->start();
 }

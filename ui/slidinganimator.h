@@ -34,10 +34,8 @@ public:
         Options() {};
     };
 
-    static void hideWidget(QWidget *widget,
-                           const Options &options = Options());
-    static void showWidget(QWidget *widget,
-                           const Options &options = Options());
+    static void hideWidget(QWidget *widget, const Options &options = Options());
+    static void showWidget(QWidget *widget, const Options &options = Options());
 
 private:
     class ResizeAwareWidget;
@@ -72,8 +70,7 @@ private:
     int initialWidgetSize;
     int indexInParentLayout;
 
-    explicit SlidingAnimator(QWidget *widget = nullptr,
-                             const Options &options = Options());
+    explicit SlidingAnimator(QWidget *widget = nullptr, const Options &options = Options());
 
     WidgetSizeSetterPointer fixedSizeSetter();
     WidgetSizeSetterPointer maximumSizeSetter();

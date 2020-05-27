@@ -2,13 +2,9 @@
 // Created by Dmitry Khrykin on 2019-07-26.
 //
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "modernize-use-nullptr"
-#pragma ide diagnostic ignored "hicpp-use-auto"
-
 #import <AppKit/AppKit.h>
 
-#import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
+#import "cocoa/SGToolbar.h"
 
 #include <QtMac>
 
@@ -16,250 +12,38 @@
 #include "mainwindow.h"
 #include "mainscene.h"
 
-const NSString *ToolbarItemActivitiesIdentifier = @"Activities";
-const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
-const NSString *ToolbarItemNewActivityIdentifier = @"New";
-const NSString *ToolbarItemActivitiesTitleIdentifier = @"Title:Activities";
-const NSString *ToolbarItemBackButtonIdentifier = @"Back";
-const NSString *ToolbarItemSettingsIdentifier = @"Settings";
-const NSString *TAAdaptiveSpaceItemIdentifier = @"TAAdaptiveSpaceItem";
-
-
-const NSArray *sessionsPage = @[ToolbarItemActivitiesIdentifier,
-                                NSToolbarFlexibleSpaceItemIdentifier,
-                                ToolbarItemStrategyTitleIdentifier,
-                                TAAdaptiveSpaceItemIdentifier];
-
-const NSArray *activitiesPage = @[ToolbarItemNewActivityIdentifier,
-                                  NSToolbarFlexibleSpaceItemIdentifier,
-                                  ToolbarItemActivitiesTitleIdentifier,
-                                  TAAdaptiveSpaceItemIdentifier,
-                                  ToolbarItemBackButtonIdentifier];
-
-const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
-
 NSWindow *NSWindowFromQWindow(const MainWindow *window) {
     auto *nsView = reinterpret_cast<NSView *>(window->winId());
     return nsView.window;
 }
 
-@interface Toolbar : NSToolbar
-@property(retain) id retainedDelegate;
-@end
-
-@implementation Toolbar
-- (void)setDelegate:(id)delegate {
-    [super setDelegate:delegate];
-    self.retainedDelegate = delegate;
-}
-
-- (void)dealloc {
-    [self.retainedDelegate release];
-    [super dealloc];
-}
-@end
-
-@interface ToolbarDelegate : NSObject <NSToolbarDelegate>
-
-@property(readonly) unsigned int currentPage;
-@property MainWindow *qWindow;
-@property(assign) NSToolbar *toolbar;
-
-- (void)setPage:(unsigned int)index;
-@end
-
-@implementation ToolbarDelegate
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar
-     itemForItemIdentifier:(NSString *)itemIdentifier
- willBeInsertedIntoToolbar:(BOOL)flag {
-    NSToolbarItem *item = [[[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier] autorelease];
-
-    if ([itemIdentifier isEqual:TAAdaptiveSpaceItemIdentifier]) {
-        return [[[TAAdaptiveSpaceItem alloc]
-                initWithItemIdentifier:(NSString *) TAAdaptiveSpaceItemIdentifier] autorelease];
-    }
-
-    if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier] ||
-        [itemIdentifier isEqual:ToolbarItemStrategyTitleIdentifier]) {
-        NSTextField *textField = [self makeTextFieldForItemIdentifier:itemIdentifier];
-        item.view = textField;
-
-        return item;
-    }
-
-    if ([itemIdentifier isEqual:ToolbarItemBackButtonIdentifier]) {
-        NSSegmentedControl *segmentedControl = [self makeBackButton];
-        item.view = segmentedControl;
-
-        return item;
-    }
-
-
-    item.view = [self makeButtonForItemIdentifier:itemIdentifier];
-    item.target = self;
-    item.action = [self getActionSelectorForItemIdentifier:itemIdentifier];
-
-    return item;
-}
-
-- (NSSegmentedControl *)makeBackButton {
-    NSArray<NSImage *> *images = @[[NSImage imageNamed:NSImageNameGoBackTemplate]];
-
-    NSSegmentedControl *segmentedControl
-            = [NSSegmentedControl segmentedControlWithImages:images
-                                                trackingMode:NSSegmentSwitchTrackingMomentary
-                                                      target:self
-                                                      action:@selector(openSessions:)];
-
-    segmentedControl.segmentStyle = NSSegmentStyleSeparated;
-    return segmentedControl;
-}
-
-- (NSTextField *)makeTextFieldForItemIdentifier:(NSString *)itemIdentifier {
-    NSTextField *textField = [NSTextField labelWithString:@""];
-    [textField setFont:[NSFont boldSystemFontOfSize:13]];
-
-    if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier]) {
-        textField.stringValue = @"Activities";
-    } else {
-        // qtWindowTitle includes "[*]" at the end.
-        // see QWidget::windowModified()
-
-        NSString *qtWindowTitle = _qWindow->windowTitle().toNSString();
-        NSError *error = nil;
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"\\[\\*\\]$"
-                                                                               options:NSRegularExpressionCaseInsensitive
-                                                                                 error:&error];
-
-        NSString *windowTitle = [regex stringByReplacingMatchesInString:qtWindowTitle
-                                                                options:0
-                                                                  range:NSMakeRange(0, [qtWindowTitle length])
-                                                           withTemplate:@""];
-
-        textField.stringValue = windowTitle;
-    }
-
-    textField.editable = NO;
-    textField.selectable = NO;
-    textField.textColor = [NSColor secondaryLabelColor];
-
-    textField.cell.truncatesLastVisibleLine = YES;
-    textField.cell.lineBreakMode = NSLineBreakByTruncatingMiddle;
-
-    [textField setContentCompressionResistancePriority:0.1
-                                        forOrientation:NSLayoutConstraintOrientationHorizontal];
-
-    return textField;
-}
-
-- (NSButton *)makeButtonForItemIdentifier:(NSString *)itemIdentifier {
-    NSButton *btn = [NSButton buttonWithTitle:itemIdentifier
-                                       target:self
-                                       action:@selector(openActivities:)];
-    [btn setBezelStyle:NSBezelStyleTexturedRounded];
-
-    if ([itemIdentifier isEqual:ToolbarItemSettingsIdentifier]) {
-        btn.image = [NSImage imageNamed:NSImageNameActionTemplate];
-    } else if ([itemIdentifier isEqual:ToolbarItemNewActivityIdentifier]) {
-        btn.image = [NSImage imageNamed:NSImageNameAddTemplate];
-    } else if ([itemIdentifier isEqual:ToolbarItemActivitiesIdentifier]) {
-        btn.image = [NSImage imageNamed:NSImageNameListViewTemplate];
-    }
-
-    return btn;
-}
-
-- (SEL)getActionSelectorForItemIdentifier:(NSString *)itemIdentifier {
-    SEL action;
-    if ([itemIdentifier isEqual:ToolbarItemActivitiesIdentifier]) {
-        action = @selector(openActivities:);
-    } else if ([itemIdentifier isEqual:ToolbarItemSettingsIdentifier]) {
-        action = @selector(openSettings:);
-    } else if ([itemIdentifier isEqual:ToolbarItemBackButtonIdentifier]) {
-        action = @selector(openSessions:);
-    } else if ([itemIdentifier isEqual:ToolbarItemNewActivityIdentifier]) {
-        action = @selector(openNewActivityMenu:);
-    }
-
-    return action;
-}
-
-- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
-    return @[];
-}
-
-- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
-    return [self toolbarDefaultItemIdentifiers:toolbar];
-}
-
-- (NSArray *)toolbarSelectableItemIdentifiers:
-        (NSToolbar *)toolbar {
-    return [self toolbarDefaultItemIdentifiers:toolbar];
-}
-
-- (void)openActivities:(id)sender {
-    _qWindow->scene()->showActivities();
-}
-
-- (void)openSettings:(id)sender {
-    _qWindow->scene()->showStrategySettings();
-}
-
-- (void)openSessions:(id)sender {
-    _qWindow->scene()->showSessions();
-}
-
-- (void)openNewActivityMenu:(id)sender {
-    _qWindow->scene()->showNewActivityMenu();
-}
-
-- (void)setPage:(unsigned int)index {
-    _currentPage = index;
-
-    for (NSToolbarItem *_ in _toolbar.items) {
-        [_toolbar removeItemAtIndex:0];
-    }
-
-    for (NSString *itemIdentifier in toolbarPages[index]) {
-        [_toolbar insertItemWithItemIdentifier:itemIdentifier atIndex:0];
-    }
-
-    for (NSToolbarItem *item in _toolbar.items) {
-        if ([item.itemIdentifier isEqualToString:(NSString *) TAAdaptiveSpaceItemIdentifier]) {
-            TAAdaptiveSpaceItem *adaptiveSpaceItem = (TAAdaptiveSpaceItem *) item;
-            [adaptiveSpaceItem updateWidth];
-        }
-    }
-}
-
-@end
-
 void MacOSWindow::setup(MainWindow *window) {
     @autoreleasepool {
         NSWindow *nsWindow = NSWindowFromQWindow(window);
         nsWindow.titleVisibility = NSWindowTitleHidden;
-
+        nsWindow.styleMask |= NSWindowStyleMaskFullSizeContentView;
         [nsWindow.contentView setWantsLayer:YES];
 
         // Generate unique identifier to ensure that every window
         // has it's own toolbar
         NSString *toolbarIdentifier = makeToolbarIdentifier(window);
 
-        Toolbar *toolbar = [[[Toolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
+        SGToolbar *toolbar = [[[SGToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
         toolbar.allowsUserCustomization = NO;
         toolbar.displayMode = NSToolbarDisplayModeIconOnly;
+        toolbar->qWindow = window;
 
-        ToolbarDelegate *toolbarDelegate = [[[ToolbarDelegate alloc] init] autorelease];
-        toolbarDelegate.toolbar = toolbar;
-        toolbarDelegate.qWindow = window;
-
-        toolbar.delegate = toolbarDelegate;
         nsWindow.toolbar = toolbar;
-        [toolbarDelegate setPage:0];
+        [toolbar setPage:0];
 
         auto path = window->fsIOManager.fileInfo().filePath();
         [nsWindow setRepresentedFilename:path.toNSString()];
     }
+}
+
+double MacOSWindow::toolbarHeight(MainWindow *window) {
+    NSWindow *nativeWindow = NSWindowFromQWindow(window);
+    return nativeWindow.frame.size.height - nativeWindow.contentLayoutRect.size.height;
 }
 
 NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
@@ -267,19 +51,14 @@ NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
     return QString::number(integerPointer).toNSString();
 }
 
-void MacOSWindow::pageChange(MainWindow *window, int pageIndex) {
-    @autoreleasepool {
-        auto *toolbarDelegate = (ToolbarDelegate *) NSWindowFromQWindow(window).toolbar.delegate;
-        [toolbarDelegate setPage:(unsigned int) pageIndex];
-    }
+void MacOSWindow::pageDidChanged(MainWindow *window, int pageIndex) {
+    auto *toolbar = (SGToolbar *) NSWindowFromQWindow(window).toolbar;
+    [toolbar setPage:(unsigned int) pageIndex];
 }
 
 void MacOSWindow::updateWindowTitle(MainWindow *window) {
-    @autoreleasepool {
-        NSWindow *nativeWindow = NSWindowFromQWindow(window);
-        auto *toolbarDelegate = (ToolbarDelegate *) nativeWindow.toolbar.delegate;
-        [toolbarDelegate setPage:toolbarDelegate.currentPage];
-    }
+    auto *toolbar = (SGToolbar *) NSWindowFromQWindow(window).toolbar;
+    [toolbar setPage:toolbar.currentPage];
 }
 
 QPixmap MacOSWindow::resizeCursor() {
@@ -307,18 +86,11 @@ QPixmap MacOSWindow::openHandCursor() {
 }
 
 QRect MacOSWindow::adjustedGeometry(MainWindow *window) {
-    // What is 16? I've no idea...
-    auto yDifference = 16;
-    // What is 22? God only knows.
-    auto heightDifference = 22;
-
+    // NB! This method now does nothing. May be removed.
     auto qRect = QRect(window->geometry().x(),
-                       window->geometry().y() - yDifference,
+                       window->geometry().y(),
                        window->geometry().width(),
-                       window->geometry().height() - heightDifference);
+                       window->geometry().height());
 
     return qRect;
 }
-
-
-#pragma clang diagnostic pop

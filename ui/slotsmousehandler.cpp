@@ -15,6 +15,7 @@
 #include "macoswindow.h"
 #include "sessionsmainwidget.h"
 #include "slotboardwidget.h"
+#include "slotboardscrollarea.h"
 
 SlotsMouseHandler::SlotsMouseHandler(SlotsWidget *slotsWidget)
         : QFrame(nullptr),
@@ -47,7 +48,7 @@ SlotBoardWidget *SlotsMouseHandler::slotBoard() {
     return qobject_cast<SlotBoardWidget *>(slotsWidget->parent());
 }
 
-QScrollArea *SlotsMouseHandler::slotBoardScrollArea() {
+SlotboardScrollArea *SlotsMouseHandler::slotBoardScrollArea() {
     return qobject_cast<SessionsMainWidget *>(slotsWidget
                                                       ->parent() // layout
                                                       ->parent() // slotboard
@@ -103,7 +104,7 @@ void SlotsMouseHandler::startAutoScroll(stg::mouse_handler::scroll_direction dir
                         ? verticalScrollBar()->value() + pixelsInSecond * frameDuration / 1000
                         : verticalScrollBar()->value() - pixelsInSecond * frameDuration / 1000;
 
-        verticalScrollBar()->setValue(newValue);
+        slotBoardScrollArea()->setScrollOffset(newValue);
         handler.auto_scroll_frame(mapFromGlobal(QCursor::pos()));
     });
 
@@ -117,11 +118,8 @@ void SlotsMouseHandler::stopAutoScroll() {
 }
 
 stg::rect SlotsMouseHandler::viewportRect() {
-    return {0,
-            slotBoardScrollArea()->verticalScrollBar()->value()
-            - slotBoard()->slotsLayout()->contentsMargins().top(),
-            slotBoardScrollArea()->viewport()->width(),
-            slotBoardScrollArea()->viewport()->height()};
+    return slotBoardScrollArea()->viewportRectRelativeToContent()
+            .translated(0, -slotBoard()->slotsLayout()->contentsMargins().top());
 }
 
 void SlotsMouseHandler::updateResizeBoundary(int sessionBeforeBoundaryIndex, int slotBeforeBoundaryIndex) {
@@ -216,3 +214,4 @@ stg::strategy &SlotsMouseHandler::strategy() {
 void SlotsMouseHandler::showEvent(QShowEvent *event) {
     setFocus();
 }
+

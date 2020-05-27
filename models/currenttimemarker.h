@@ -21,7 +21,7 @@ namespace stg {
                             stg::float_t marker_radius = 0) const -> rect;
 
         auto scroll_offset(const rect &slots_rect,
-                           stg::float_t viewport_height) const -> stg::float_t;
+                           rect viewport_rect) const -> stg::float_t;
     private:
         const strategy &strategy;
 

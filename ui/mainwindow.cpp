@@ -205,11 +205,24 @@ void MainWindow::teardown() {
 
 MainWindow *MainWindow::createLastOpened() {
     auto fsIOManager = FileSystemIOManager(nullptr);
-    auto window = new MainWindow(fsIOManager);
+    auto *window = new MainWindow(fsIOManager);
 
     return window;
 }
 
 void MainWindow::reloadStrategy() {
     scene()->reloadStrategy();
+}
+
+int MainWindow::toolbarHeight() {
+#ifdef Q_OS_MAC
+    return (int) MacOSWindow::toolbarHeight(this);
+#else
+    return 0;
+#endif
+}
+
+int MainWindow::toolbarHeightOf(QWidget *window) {
+    auto *mainWindow = dynamic_cast<MainWindow *>(window);
+    return mainWindow ? mainWindow->toolbarHeight() : 0;
 }

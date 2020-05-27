@@ -13,12 +13,14 @@
 #include "currentsessionwidget.h"
 #include "slotboardwidget.h"
 #include "notifierbackend.h"
+#include "mainwindow.h"
+#include "slotboardscrollarea.h"
 
 SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
                                        QWidget *parent)
         : strategy(strategy), QWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setContentsMargins(0, toolbarHeight(), 0, 0);
     mainLayout->setSpacing(0);
 
     setLayout(mainLayout);
@@ -70,7 +72,7 @@ void SessionsMainWidget::layoutChildWidgets() {
             this,
             &SessionsMainWidget::focusOnCurrentTime);
 
-    _slotBoardScrollArea = new QScrollArea();
+    _slotBoardScrollArea = new SlotboardScrollArea(this);
     _slotBoardScrollArea->setWidgetResizable(true);
     _slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
 
@@ -87,12 +89,26 @@ void SessionsMainWidget::layoutChildWidgets() {
             &SessionsMainWidget::updateOverviewWidget);
 
     _slotBoardScrollArea->setWidget(slotBoard);
+
     overviewWidget = new OverviewWidget(strategy, _slotBoardScrollArea);
 
-    layout()->addWidget(strategySettingsWidget);
-    layout()->addWidget(overviewWidget);
-    layout()->addWidget(currentSessionWidget);
-    layout()->addWidget(_slotBoardScrollArea);
+    auto *topHangingWidget = new QWidget();
+    topHangingWidget->setObjectName("topHangingWidget");
+    topHangingWidget->installEventFilter(this);
+
+    auto *secondaryLayout = new QVBoxLayout();
+    secondaryLayout->setSpacing(0);
+    secondaryLayout->setContentsMargins(0, 0, 0, 0);
+
+    topHangingWidget->setLayout(secondaryLayout);
+
+    secondaryLayout->addWidget(strategySettingsWidget);
+    secondaryLayout->addWidget(overviewWidget);
+    secondaryLayout->addWidget(currentSessionWidget);
+
+    auto *mainLayout = qobject_cast<QVBoxLayout *>(layout());
+    mainLayout->addWidget(topHangingWidget);
+    mainLayout->addStretch();
 
     slotBoard->updateCurrentTimeMarker();
 }
@@ -129,8 +145,25 @@ void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
 }
 
 void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
+    _slotBoardScrollArea->setGeometry(contentsRect());
 }
 
-QScrollArea *SessionsMainWidget::slotBoardScrollArea() const {
+SlotboardScrollArea * SessionsMainWidget::slotBoardScrollArea() const {
     return _slotBoardScrollArea;
 }
+
+bool SessionsMainWidget::eventFilter(QObject *object, QEvent *event) {
+    if (object->objectName() == "topHangingWidget"
+        && event->type() == QEvent::Resize) {
+        auto *resizeEvent = dynamic_cast<QResizeEvent *>(event);
+        auto newTopOffset = toolbarHeight() + resizeEvent->size().height();
+        _slotBoardScrollArea->setViewportTopOffset(newTopOffset);
+    }
+
+    return false;
+}
+
+int SessionsMainWidget::toolbarHeight() {
+    return MainWindow::toolbarHeightOf(this->window());
+}
+

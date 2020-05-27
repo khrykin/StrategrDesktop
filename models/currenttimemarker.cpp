@@ -40,14 +40,14 @@ auto stg::current_time_marker::rect_in_parent(const rect &parent_rect,
 }
 
 auto stg::current_time_marker::scroll_offset(const rect &slots_rect,
-                                             stg::float_t viewport_height) const -> stg::float_t {
+                                             rect viewport_rect) const -> stg::float_t {
     auto rect = rect_in_parent(slots_rect);
-    auto top_offset = rect.top - viewport_height / 2;
+    auto top_offset = rect.top - viewport_rect.height / 2 - viewport_rect.top;
 
     if (top_offset < 0) {
         top_offset = 0;
-    } else if (top_offset > slots_rect.height - viewport_height) {
-        top_offset = slots_rect.height - viewport_height;
+    } else if (top_offset > slots_rect.height - viewport_rect.height) {
+        top_offset = slots_rect.height - viewport_rect.height;
     }
 
     return top_offset;

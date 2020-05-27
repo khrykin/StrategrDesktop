@@ -14,8 +14,9 @@ class MainWindow;
 class MacOSWindow {
 public:
     static void setup(MainWindow *window);
+    static double toolbarHeight(MainWindow *window);
 
-    static void pageChange(MainWindow *window, int pageIndex);
+    static void pageDidChanged(MainWindow *window, int pageIndex);
     static void updateWindowTitle(MainWindow *window);
 
     static QRect adjustedGeometry(MainWindow *window);

@@ -36,11 +36,21 @@ namespace stg {
 
     }
 
-    auto overview::viewport_marker_for(stg::float_t viewport_height,
-                                       stg::float_t slotboard_height,
-                                       stg::float_t viewport_top_offset) const -> viewport_marker {
-        auto marker_origin_x = std::round(viewport_top_offset / slotboard_height * width);
-        auto marker_width = std::round(viewport_height / slotboard_height * width);
+    auto overview::viewport_marker_for(rect viewport_rect, rect slotboard_rect) const -> viewport_marker {
+        auto relative_top = viewport_rect.top - slotboard_rect.top;
+        auto relative_bottom = slotboard_rect.top + slotboard_rect.height - viewport_rect.top - viewport_rect.height;
+        auto marker_origin_x = std::round((float) relative_top / slotboard_rect.height * width);
+        auto width_in_viewport = viewport_rect.height;
+
+        auto viewport_end = viewport_rect.top + viewport_rect.height;
+        auto slotboard_end = slotboard_rect.top + slotboard_rect.height;
+
+        if (relative_top < 0)
+            width_in_viewport = viewport_rect.height + relative_top;
+        else if (relative_bottom < 0)
+            width_in_viewport = viewport_rect.height + relative_bottom;
+
+        auto marker_width = std::round((float) width_in_viewport / slotboard_rect.height * width);
 
         return viewport_marker{marker_origin_x, marker_width};
     }
