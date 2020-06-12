@@ -127,7 +127,8 @@ namespace stg {
 
         void copy_session(session_index_t session_index, time_slot_index_t begin_index);
 
-        void copy_slots(time_slot_index_t from_index, time_slot_index_t till_index,
+        void copy_slots(time_slot_index_t from_index,
+                        time_slot_index_t till_index,
                         time_slot_index_t destination_index);
 
 #pragma mark - History

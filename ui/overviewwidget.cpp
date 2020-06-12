@@ -119,8 +119,8 @@ void OverviewWidget::mouseMoveEvent(QMouseEvent *event) {
 
 stg::overview::viewport_marker OverviewWidget::makeViewportMarker() const {
     auto overview = stg::overview(strategy, width());
-    return overview.viewport_marker_for(slotboardWidget()->slotsWidget()->viewportRect(),
-                                        slotboardWidget()->slotsWidget()->contentsRect());
+    return overview.viewport_marker_for(
+            slotboardWidget()->slotsWidget()->contentsRect(), slotboardWidget()->slotsWidget()->viewportRect());
 }
 
 SlotBoardWidget *OverviewWidget::slotboardWidget() const {

@@ -12,20 +12,21 @@ namespace stg {
     class strategy;
     class current_time_marker {
     public:
-        explicit current_time_marker(const strategy &strategy);
+        gfloat marker_radius;
+
+        explicit current_time_marker(const stg::strategy &strategy, gfloat marker_radius);
 
         auto is_visible() const -> bool;
         auto is_hidden() const -> bool;
 
-        auto rect_in_parent(const rect &parent_rect,
-                            stg::float_t marker_radius = 0) const -> rect;
+        auto rect_in_parent(const rect &slotboard_rect) const -> rect;
 
         auto scroll_offset(const rect &slots_rect,
-                           rect viewport_rect) const -> stg::float_t;
+                           rect viewport_rect) const -> stg::gfloat;
     private:
         const strategy &strategy;
 
-        auto top_offset_in(stg::float_t total_height) const -> stg::float_t;
+        auto top_offset_in_slots(stg::gfloat total_height) const -> stg::gfloat;
         auto relative_position() const -> float;
     };
 }

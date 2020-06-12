@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SGColoredCheckBoxView : NSView <CALayerDelegate>
 
+@property(nonatomic) NSInteger calendarIndex;
 @property(nonatomic, strong) NSColor *color;
 @property(nonatomic) NSControlStateValue state;
 @property(weak) id target;

@@ -10,7 +10,7 @@
 #include <utility>
 
 namespace stg {
-    using float_t = float;
+    using gfloat = float;
 
     template<typename T, typename = int, typename = int>
     struct is_cg_point_like : std::false_type {
@@ -55,21 +55,21 @@ namespace stg {
     struct point {
         static const point zero;
 
-        float_t x = 0;
-        float_t y = 0;
+        gfloat x = 0;
+        gfloat y = 0;
 
-        constexpr explicit point(float_t x = 0, float_t y = 0) : x(x), y(y) {}
+        constexpr explicit point(gfloat x = 0, gfloat y = 0) : x(x), y(y) {}
 
         template<typename T, std::enable_if_t<is_qpoint_like<T>::value, int> = 0>
         point(const T &point) {
-            x = (float_t) point.x();
-            y = (float_t) point.y();
+            x = (gfloat) point.x();
+            y = (gfloat) point.y();
         }
 
         template<typename T, std::enable_if_t<is_cg_point_like<T>::value, int> = 0>
         point(const T &point) {
-            x = (float_t) point.x;
-            y = (float_t) point.y;
+            x = (gfloat) point.x;
+            y = (gfloat) point.y;
         }
 
         template<typename T, std::enable_if_t<is_qpoint_like<T>::value, int> = 0>
@@ -102,12 +102,12 @@ namespace stg {
     struct rect {
         static const rect zero;
 
-        stg::float_t left = 0;
-        stg::float_t top = 0;
-        stg::float_t width = 0;
-        stg::float_t height = 0;
+        stg::gfloat left = 0;
+        stg::gfloat top = 0;
+        stg::gfloat width = 0;
+        stg::gfloat height = 0;
 
-        constexpr rect(std::initializer_list<stg::float_t> l = {}) noexcept {
+        constexpr rect(std::initializer_list<stg::gfloat> l = {}) noexcept {
             if (l.size() == 4) {
                 const auto *it = l.begin();
                 left = *it++;
@@ -129,18 +129,18 @@ namespace stg {
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
         rect(const T &rect) {
-            left = (float_t) rect.x();
-            top = (float_t) rect.y();
-            width = (float_t) rect.width();
-            height = (float_t) rect.height();
+            left = (gfloat) rect.x();
+            top = (gfloat) rect.y();
+            width = (gfloat) rect.width();
+            height = (gfloat) rect.height();
         }
 
         template<typename T, std::enable_if_t<is_cg_rect_like<T>::value, int> = 0>
         rect(const T &rect) {
-            left = (float_t) rect.origin.x;
-            top = (float_t) rect.origin.y;
-            width = (float_t) rect.size.width;
-            height = (float_t) rect.size.height;
+            left = (gfloat) rect.origin.x;
+            top = (gfloat) rect.origin.y;
+            width = (gfloat) rect.size.width;
+            height = (gfloat) rect.size.height;
         }
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
@@ -150,10 +150,10 @@ namespace stg {
 
         template<typename T, std::enable_if_t<is_cg_rect_like<T>::value, int> = 0>
         operator T() const {
-            return {(float_t) left,
-                    (float_t) top, {
-                            (float_t) width,
-                            (float_t) height
+            return {(gfloat) left,
+                    (gfloat) top, {
+                            (gfloat) width,
+                            (gfloat) height
                     }};
         }
 

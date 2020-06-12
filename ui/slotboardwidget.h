@@ -58,7 +58,7 @@ private:
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
 
-    SlotboardScrollArea *parentScrollArea();
+    SlotboardScrollArea *scrollArea();
     void setupCurrentTimeTimer();
     void timerCallback();
     void updateSlotsLayout() const;

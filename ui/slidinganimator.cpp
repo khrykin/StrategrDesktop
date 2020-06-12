@@ -1,7 +1,10 @@
-#include "slidinganimator.h"
+#include <iostream>
+
 #include <QLayout>
 #include <QVariant>
 #include <QtDebug>
+
+#include "slidinganimator.h"
 
 QVector<QWidget *> SlidingAnimator::widgetsInOperation = QVector<QWidget *>();
 
@@ -123,6 +126,7 @@ int SlidingAnimator::widgetSize() { return (widget->*sizeGetter<QWidget>())(); }
 
 QTimeLine *SlidingAnimator::makeTimeLine() {
     auto *timeLine = new QTimeLine(duration, this);
+    std::cout << "updateInterval: " << updateInterval << "\n";
     timeLine->setUpdateInterval(updateInterval);
     timeLine->setCurveShape(curveShape);
     return timeLine;
@@ -288,9 +292,7 @@ void SlidingAnimator::hide() {
     operation = Operation::Hide;
     prepareOperation();
 
-    connect(timeLine, &QTimeLine::valueChanged, this,
-            &SlidingAnimator::hideFrame);
-
+    connect(timeLine, &QTimeLine::valueChanged, this, &SlidingAnimator::hideFrame);
     connect(timeLine, &QTimeLine::finished, this, &SlidingAnimator::hideFinished);
 
     timeLine->start();
@@ -303,7 +305,7 @@ void SlidingAnimator::hideWidget(QWidget *widget, const Options &options) {
             options.onFinishedCallback();
         }
 
-        delete animator;
+        animator->deleteLater();
     });
 
     animator->hide();
@@ -316,7 +318,7 @@ void SlidingAnimator::showWidget(QWidget *widget, const Options &options) {
             options.onFinishedCallback();
         }
 
-        delete animator;
+        animator->deleteLater();
     });
 
     animator->show();

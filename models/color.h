@@ -11,7 +11,9 @@
 #include <ostream>
 
 #if __APPLE__
-struct CGColor;
+
+#import <CoreGraphics/CGColor.h>
+
 #endif
 
 namespace stg {
@@ -100,8 +102,10 @@ namespace stg {
         auto to_hex_string() const -> std::string;
 
 #if __APPLE__
-        auto to_cg_color() const -> CGColor *;
-        static auto from_cg_color(CGColor *cg_color) -> color;
+
+        color(CGColorRef cg_color);
+        operator CGColorRef() const;
+
 #endif
 
     private:

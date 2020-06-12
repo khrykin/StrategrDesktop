@@ -10,15 +10,13 @@
 
 #import "SGCalendarImportExportView.h"
 #import "SGCalendarImporter.h"
+#import "SGCalendarImportViewModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SGCalendarImportView : SGCalendarImportExportView <NSTableViewDataSource, NSTableViewDelegate>
+@interface SGCalendarImportView : SGCalendarImportExportView <NSTableViewDataSource, NSTableViewDelegate, SGCalendarImportViewModelDelegate>
 
-@property(nonatomic) SGCalendarImportOptions optionsMask;
-@property(nonatomic, strong) NSArray<EKCalendar *> *calendars;
-@property(nonatomic, strong) NSMutableArray<NSString *> *_Nullable selectedCalendarsIdentifiers;
-@property(readonly) NSDate *date;
+@property(nonatomic, readonly) SGCalendarImportViewModel *viewModel;
 
 @end
 

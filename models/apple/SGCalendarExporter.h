@@ -22,7 +22,7 @@ NS_SWIFT_NAME(CalendarExporterSettings)
 
 @property(nonatomic) SGCalendarExportOptions optionsMask;
 @property(nonatomic, strong) NSString *_Nullable calendarName;
-@property(nonatomic, strong) NSDate *date;
+@property(nonatomic, strong) NSDate *_Nullable date;
 
 @end
 
@@ -38,13 +38,15 @@ NS_SWIFT_NAME(CalendarExporter)
 @interface SGCalendarExporter : NSObject
 
 @property(nonatomic, weak) id <SGCalendarExporterDelegate> delegate;
-@property(nonatomic, strong) SGCalendarExporterSettings *settings;
+@property(nonatomic, readonly) NSDate *date;
 
-- (instancetype)initWithStrategyPtr:(void *)strategyPtr
-                         eventStore:(EKEventStore *)store
-                           settings:(SGCalendarExporterSettings *)settings;
++ (void)exportFromStrategyPtr:(void *)strategyPtr
+                         date:(NSDate *_Nullable)date
+                     delegate:(nullable id <SGCalendarExporterDelegate>)delegate
+            completionHandler:(nullable void (^)(BOOL exported))completionHandler;
 
-- (void)export:(void (^)())completionHandler;
++ (void)saveDefaultSettings:(SGCalendarExporterSettings *)settings;
++ (SGCalendarExporterSettings *)defaultSettings;
 
 @end
 

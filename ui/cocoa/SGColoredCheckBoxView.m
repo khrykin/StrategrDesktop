@@ -191,10 +191,9 @@
 - (void)mouseDown:(NSEvent *)event {
     self.state = !self.state;
 
-    [NSApplication.sharedApplication
-            sendAction:self.action
-                    to:self.target
-                  from:self];
+    [NSApplication.sharedApplication sendAction:self.action
+                                             to:self.target
+                                           from:self];
 }
 
 - (void)setColor:(NSColor *)color {

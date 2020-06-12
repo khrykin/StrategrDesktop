@@ -123,10 +123,9 @@ void SlotBoardWidget::clearSelection() {
 }
 
 void SlotBoardWidget::updateCurrentTimeMarker() {
-    auto currentTimeMarker = stg::current_time_marker(strategy);
+    auto currentTimeMarker = stg::current_time_marker(strategy, CurrentTimeMarkerWidget::markerSize);
 
-    auto parentRect = _slotsWidget->geometry();
-    auto rect = currentTimeMarker.rect_in_parent(parentRect, CurrentTimeMarkerWidget::markerSize);
+    auto rect = QRect(currentTimeMarker.rect_in_parent(_slotsWidget->geometry())).translated(0, 1);
 
     currentTimeMarkerWidget->setGeometry(rect);
 
@@ -141,11 +140,18 @@ void SlotBoardWidget::updateCurrentTimeMarker() {
 }
 
 void SlotBoardWidget::focusOnCurrentTime() {
-    auto topOffset = stg::current_time_marker(strategy)
-            .scroll_offset(_slotsWidget->geometry(),
-                           parentScrollArea()->viewportRect());
+    auto slotsRect = QRect(0,
+                           slotsLayout()->contentsMargins().top(),
+                           slotsWidget()->width(),
+                           slotsWidget()->height());
 
-    auto *scrollBar = parentScrollArea()->verticalScrollBar();
+    auto topOffset = stg::current_time_marker(strategy, 5)
+            .scroll_offset(slotsRect,
+                           scrollArea()->viewportRect());
+
+    topOffset++;
+
+    auto *scrollBar = scrollArea()->verticalScrollBar();
 
     auto *animation = new QPropertyAnimation(scrollBar, "value");
     animation->setDuration(200);
@@ -156,7 +162,7 @@ void SlotBoardWidget::focusOnCurrentTime() {
     animation->start();
 }
 
-SlotboardScrollArea *SlotBoardWidget::parentScrollArea() {
+SlotboardScrollArea *SlotBoardWidget::scrollArea() {
     return dynamic_cast<SlotboardScrollArea *>(parentWidget()->parentWidget());
 }
 

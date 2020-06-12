@@ -46,7 +46,13 @@ if (APPLE)
             models/apple/SGCalendarManager.h
             models/apple/SGCalendarExporter.h
             models/apple/SGCalendarExporter.mm
-            models/color.mm models/apple/SGCalendarImporter.mm models/apple/SGCalendarImporter.h)
+            models/apple/SGCalendarImporter.mm
+            models/apple/SGCalendarImporter.h
+            models/apple/SGCalendarImportViewModel.h
+            models/apple/SGCalendarImportViewModel.m
+            models/apple/SGCalendarExportViewModel.h
+            models/apple/SGCalendarExportViewModel.m
+            models/color.mm)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}

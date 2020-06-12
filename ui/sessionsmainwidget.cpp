@@ -148,13 +148,12 @@ void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
     _slotBoardScrollArea->setGeometry(contentsRect());
 }
 
-SlotboardScrollArea * SessionsMainWidget::slotBoardScrollArea() const {
+SlotboardScrollArea *SessionsMainWidget::slotBoardScrollArea() const {
     return _slotBoardScrollArea;
 }
 
 bool SessionsMainWidget::eventFilter(QObject *object, QEvent *event) {
-    if (object->objectName() == "topHangingWidget"
-        && event->type() == QEvent::Resize) {
+    if (object->objectName() == "topHangingWidget" && event->type() == QEvent::Resize) {
         auto *resizeEvent = dynamic_cast<QResizeEvent *>(event);
         auto newTopOffset = toolbarHeight() + resizeEvent->size().height();
         _slotBoardScrollArea->setViewportTopOffset(newTopOffset);

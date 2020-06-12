@@ -64,10 +64,7 @@ namespace stg {
 
         explicit notifier(const strategy &strategy);
 
-        void start_watching();
-        void stop_watching();
         void schedule();
-
         void send_now_if_needed(seconds polling_seconds_interval);
 
         auto scheduled_notifications() const -> const std::vector<stg::notification> &;
@@ -76,13 +73,14 @@ namespace stg {
         static const seconds prepare_seconds_interval = 5 * 60;
         static const seconds immediate_seconds_interval = 20;
     private:
-        static void remove_stale(std::vector<notification> &notifications);
+        static void remove_stale_from(std::vector<notification> &notifications);
 
         const strategy &strategy;
         seconds last_poll_time = 0;
         bool is_watching = false;
 
         std::vector<stg::notification> _scheduled_notifications;
+        std::vector<stg::notification> _upcoming_notifications;
     };
 }
 

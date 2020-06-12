@@ -13,59 +13,30 @@
 
 namespace stg {
     notifier::notifier(const stg::strategy &strategy) : strategy(strategy) {
-        strategy.add_on_change_callback(this,
-                                        &stg::notifier::schedule);
-
-        schedule();
-    }
-
-    void notifier::start_watching() {
-        is_watching = true;
-
-        // schedule();
-    }
-
-    void notifier::stop_watching() {
-        is_watching = false;
-
-        // teardown();
+        strategy.add_on_change_callback(this, &stg::notifier::schedule);
     }
 
     void notifier::schedule() {
-//    std::cout << "scheduled notifications: \n";
-
         std::vector<notification> notifications;
         for (auto it = strategy.sessions().begin(); it != strategy.sessions().end(); ++it) {
             const auto &session = *it;
             auto next_it = std::next(it);
 
             if (session.activity) {
-                notifications.emplace_back(session,
-                                           notification::type::prepare_start);
-                notifications.emplace_back(session,
-                                           notification::type::start);
+                notifications.emplace_back(session, notification::type::prepare_start);
+                notifications.emplace_back(session, notification::type::start);
 
                 if (next_it != strategy.sessions().end() && !next_it->activity) {
-                    notifications.emplace_back(session,
-                                               notification::type::prepare_end);
-                    notifications.emplace_back(session,
-                                               notification::type::end);
+                    notifications.emplace_back(session, notification::type::prepare_end);
+                    notifications.emplace_back(session, notification::type::end);
                 }
             }
 
             if (next_it == strategy.sessions().end()) {
-                notifications.emplace_back(session,
-                                           notification::type::prepare_strategy_end);
-                notifications.emplace_back(session,
-                                           notification::type::strategy_end);
+                notifications.emplace_back(session, notification::type::prepare_strategy_end);
+                notifications.emplace_back(session, notification::type::strategy_end);
             }
         }
-
-        remove_stale(notifications);
-
-//    for (auto &n : notifications) {
-//        std::cout << n << "\n";
-//    }
 
         if (on_delete_notifications)
             on_delete_notifications(scheduled_identifiers());
@@ -74,9 +45,12 @@ namespace stg {
 
         if (on_schedule_notifications)
             on_schedule_notifications(_scheduled_notifications);
+
+        remove_stale_from(notifications);
+        _upcoming_notifications = notifications;
     }
 
-    void notifier::remove_stale(std::vector<notification> &notifications) {
+    void notifier::remove_stale_from(std::vector<notification> &notifications) {
         auto current_seconds = stg::time_utils::current_seconds();
         notifications.erase(std::remove_if(notifications.begin(),
                                            notifications.end(),
@@ -119,11 +93,14 @@ namespace stg {
     }
 
     void notifier::send_now_if_needed(seconds polling_seconds_interval) {
-//    std::cout << "send notification, if needed => \n";
+        if (_scheduled_notifications.empty()) {
+            schedule();
+        }
+
         auto current_time = time_utils::current_seconds();
 
         if (last_poll_time && current_time - last_poll_time > 4 * polling_seconds_interval) {
-//        std::cout << "system time changed\n";
+            std::cout << "system time has changed, notifications rescheduled.\n";
 
             // If time difference between two calls of this function was too big,
             // this probably means that the system time had changed, we need to reschedule.
@@ -132,8 +109,8 @@ namespace stg {
 
         last_poll_time = current_time;
 
-        if (_scheduled_notifications.empty() ||
-            current_time < _scheduled_notifications.front().delivery_time)
+        if (_upcoming_notifications.empty() ||
+            current_time < _upcoming_notifications.front().delivery_time)
             return;
 
 //    std::cout << "current_time: " << current_time << "\n";
@@ -142,9 +119,9 @@ namespace stg {
         // We have to send only last notification for which delivery time is less than the current.
         // The first is guaranteed to be so, we need to check the others:
 
-        auto next_notification_it = _scheduled_notifications.begin();
-        for (auto it = std::next(_scheduled_notifications.begin());
-             it != _scheduled_notifications.end();
+        auto next_notification_it = _upcoming_notifications.begin();
+        for (auto it = std::next(_upcoming_notifications.begin());
+             it != _upcoming_notifications.end();
              ++it) {
             auto &notification = *it;
 
@@ -162,8 +139,8 @@ namespace stg {
 //    std::cout << "notification sent: " << next_notification << "\n";
 
         // Remove sent and stale notifications
-        _scheduled_notifications.erase(_scheduled_notifications.begin(),
-                                       std::next(next_notification_it));
+        _upcoming_notifications.erase(_upcoming_notifications.begin(),
+                                      std::next(next_notification_it));
     }
 
     auto notification::make_title(const session &session, type type) -> std::string {
@@ -200,20 +177,20 @@ namespace stg {
     }
 
     auto notification::make_sub_title(const session &session, type type) -> std::string {
+        const auto minutes_interval = notifier::prepare_seconds_interval / 60;
+        const auto time_string = time_utils::human_string_from_minutes(minutes_interval);
+
         switch (type) {
             case type::prepare_start:
-                return "Coming up in "
-                       + time_utils::human_string_from_minutes(notifier::prepare_seconds_interval / 60);
+                return "Coming up in " + time_string;
             case type::start:
                 return "Starts right now";
             case type::prepare_end:
-                return "Ends in "
-                       + time_utils::human_string_from_minutes(notifier::prepare_seconds_interval / 60);
+                return "Ends in " + time_string;
             case type::end:
                 return "Ends right now";
             case type::prepare_strategy_end:
-                return "Strategy ends in "
-                       + time_utils::human_string_from_minutes(notifier::prepare_seconds_interval / 60);
+                return "Strategy ends in " + time_string;
             case type::strategy_end:
                 return "Strategy ends right now";
             default:

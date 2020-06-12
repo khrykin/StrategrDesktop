@@ -410,7 +410,7 @@ namespace stg {
         return os;
     }
 
-    bool stg::mouse_handler::range::contains(stg::float_t coord) {
+    bool stg::mouse_handler::range::contains(stg::gfloat coord) {
         return coord >= top && coord <= bottom;
     }
 

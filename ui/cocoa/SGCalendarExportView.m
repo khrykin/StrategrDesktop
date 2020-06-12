@@ -17,6 +17,15 @@
 
 @implementation SGCalendarExportView
 
+- (instancetype)init {
+    self.viewModel = [[SGCalendarExportViewModel alloc] init];
+    self.viewModel.delegate = self;
+
+    self = [super init];
+
+    return self;
+}
+
 - (void)setup {
     [super setup];
 
@@ -32,38 +41,39 @@
     [checksView setHuggingPriority:NSLayoutPriorityDefaultHigh
                     forOrientation:NSLayoutConstraintOrientationVertical];
 
-    NSButton *overwriteCheckbox = [NSButton buttonWithTitle:@"Overwrite previous events"
-                                                     target:nil
-                                                     action:nil];
+    NSButton *overwriteCheckbox = [NSButton buttonWithTitle:SGCalendarExportViewModelTitleOverwrite
+                                                     target:self
+                                                     action:@selector(checkboxClicked:)];
 
-    overwriteCheckbox.state = NSControlStateValueOn;
+    overwriteCheckbox.state = self.viewModel.overwriteIsOn;
     [overwriteCheckbox setButtonType:NSButtonTypeSwitch];
     [checksView addArrangedSubview:overwriteCheckbox];
     self.overwriteCheckbox = overwriteCheckbox;
 
-    NSButton *notificationsCheckbox = [NSButton buttonWithTitle:@"Include notifications"
-                                                         target:nil
-                                                         action:nil];
+    NSButton *notificationsCheckbox = [NSButton buttonWithTitle:SGCalendarExportViewModelTitleIncludeNotifications
+                                                         target:self
+                                                         action:@selector(checkboxClicked:)];
 
-    notificationsCheckbox.state = NSControlStateValueOn;
+    notificationsCheckbox.state = self.viewModel.includeNotificationsIsOn;
     [notificationsCheckbox setButtonType:NSButtonTypeSwitch];
     [checksView addArrangedSubview:notificationsCheckbox];
     self.notificationsCheckbox = notificationsCheckbox;
 
-    NSButton *specificCalendarCheckbox = [NSButton buttonWithTitle:@"Export to the specific calendar"
+    NSButton *specificCalendarCheckbox = [NSButton buttonWithTitle:SGCalendarExportViewModelTitleUseSpecificCalendar
                                                             target:self
-                                                            action:@selector(specificCalendarCheckboxClilcked:)];
+                                                            action:@selector(checkboxClicked:)];
 
-    specificCalendarCheckbox.state = NSControlStateValueOff;
+    specificCalendarCheckbox.state = self.viewModel.useSpecificCalendarIsOn;
     [specificCalendarCheckbox setButtonType:NSButtonTypeSwitch];
     [checksView addArrangedSubview:specificCalendarCheckbox];
     self.specificCalendarCheckbox = specificCalendarCheckbox;
 
-    NSTextField *calendarNameTextField = [NSTextField textFieldWithString:@"Strategr"];
+    NSTextField *calendarNameTextField = [NSTextField textFieldWithString:self.viewModel.settings.calendarName];
     calendarNameTextField.bezeled = YES;
     calendarNameTextField.bezelStyle = NSTextFieldRoundedBezel;
     calendarNameTextField.placeholderString = @"Calendar Name";
-    calendarNameTextField.hidden = YES;
+    calendarNameTextField.target = self;
+    calendarNameTextField.action = @selector(calendarNameChanged:);
 
     [checksView addArrangedSubview:calendarNameTextField];
     self.calendarNameTextField = calendarNameTextField;
@@ -75,106 +85,54 @@
     datePicker.datePickerStyle = NSDatePickerStyleClockAndCalendar;
     datePicker.datePickerElements = NSDatePickerElementFlagYearMonth |
                                     NSDatePickerElementFlagYearMonthDay;
-    datePicker.dateValue = [NSDate date];
+    datePicker.dateValue = self.viewModel.settings.date;
+    datePicker.target = self;
+    datePicker.action = @selector(dateChanged:);
 
     self.datePicker = datePicker;
 
     [self.leftView addArrangedSubview:datePicker];
+
+    [self setCalendarNameEditorVisible:self.viewModel.useSpecificCalendarIsOn];
 }
 
-- (void)setOptionsMask:(SGCalendarExportOptions)optionsMask {
-    self.overwriteCheckbox.state =
-            (optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite;
-
-    self.notificationsCheckbox.state =
-            (optionsMask & SGCalendarExportOptionsIncludeNotifications) == SGCalendarExportOptionsIncludeNotifications;
-
-    BOOL specificCalendarOptionIsOn =
-            (optionsMask & SGCalendarExportOptionsUseSpecificCalendar) == SGCalendarExportOptionsUseSpecificCalendar;
-
-    self.specificCalendarCheckbox.state = specificCalendarOptionIsOn;
-    self.calendarNameTextField.hidden = !specificCalendarOptionIsOn;
-}
-
-- (SGCalendarExportOptions)optionsMask {
-    SGCalendarExportOptions mask = (SGCalendarExportOptions) 0;
-
-    if (self.overwriteCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsOverwrite;
-    }
-
-    if (self.notificationsCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsIncludeNotifications;
-    }
-
-    if (self.specificCalendarCheckbox.state == NSControlStateValueOn) {
-        mask = mask | SGCalendarExportOptionsUseSpecificCalendar;
-    }
-
-    return mask;
-}
-
-- (void)specificCalendarCheckboxClilcked:(NSButton *)target {
-    NSString *title = target.title;
-
-    switch (target.state) {
-        case NSControlStateValueOn:
-            self.calendarNameTextField.hidden = NO;
-            target.title = [title stringByAppendingString:@":"];
-            break;
-
-        case NSControlStateValueOff:
-            self.calendarNameTextField.hidden = YES;
-            target.title = [title stringByReplacingOccurrencesOfString:@":" withString:@""];
-
-            break;
-        default:
-            break;
+- (void)checkboxClicked:(NSButton *)target {
+    if (target == self.overwriteCheckbox) {
+        [self.viewModel didToggleOverwrite];
+    } else if (target == self.notificationsCheckbox) {
+        [self.viewModel didToggleIncludeNotifications];
+    } else if (target == self.specificCalendarCheckbox) {
+        [self.viewModel didToggleSpecificCalendar];
     }
 }
 
-- (NSDate *)date {
-    return self.datePicker.dateValue;
+- (void)dateChanged:(NSDatePicker *)datePicker {
+    [self.viewModel didChangeDate:datePicker.dateValue];
 }
 
-- (NSString *)calendarName {
-    switch (self.specificCalendarCheckbox.state) {
-        case NSControlStateValueOn:
-            return self.calendarNameTextField.stringValue;
-        default:
-            return nil;
+- (void)calendarNameChanged:(NSTextField *)textField {
+    [self.viewModel didChangeCalendarName:textField.stringValue];
+}
+
+- (void)setCalendarNameEditorVisible:(BOOL)isVisible {
+    NSString *checkboxTitle = self.specificCalendarCheckbox.title;
+
+    if (isVisible) {
+        self.calendarNameTextField.hidden = NO;
+        self.specificCalendarCheckbox.title = [checkboxTitle stringByAppendingString:@":"];
+    } else {
+        self.calendarNameTextField.hidden = YES;
+        self.specificCalendarCheckbox.title = [checkboxTitle stringByReplacingOccurrencesOfString:@":"
+                                                                                       withString:@""];
     }
 }
 
-- (void)setCalendarName:(NSString *)calendarName {
-    self.calendarNameTextField.stringValue = calendarName;
-}
+@end
 
-- (NSString *)description {
-    NSString *overwriteIsOn =
-            (self.optionsMask & SGCalendarExportOptionsOverwrite) == SGCalendarExportOptionsOverwrite
-            ? @"YES"
-            : @"NO";
-    NSString *notificationsIsOn =
-            (self.optionsMask & SGCalendarExportOptionsIncludeNotifications) ==
-            SGCalendarExportOptionsIncludeNotifications
-            ? @"YES"
-            : @"NO";
+@implementation SGCalendarExportView (SGCalendarExportViewModelDelegate)
 
-    NSString *specificCalendarIsOn =
-            (self.optionsMask & SGCalendarExportOptionsUseSpecificCalendar) ==
-            SGCalendarExportOptionsUseSpecificCalendar
-            ? @"YES"
-            : @"NO";
-
-    return [NSString stringWithFormat:@"SGCalendarExportOptionsView(overwriteIsOn=%@, "
-                                      "notificationsIsOn=%@, "
-                                      "specificCalendarIsOn=%@, "
-                                      "date=%@)",
-                                      overwriteIsOn,
-                                      notificationsIsOn,
-                                      specificCalendarIsOn,
-                                      self.date.description];
+- (void)viewModel:(SGCalendarExportViewModel *)viewModel wantChangeSpecificCalendarEditorVisibility:(BOOL)isVisible {
+    [self setCalendarNameEditorVisible:isVisible];
 }
 
 @end

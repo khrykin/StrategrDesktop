@@ -30,7 +30,6 @@ public:
 signals:
     void clicked();
 
-public slots:
 private:
     // Qt's isVisible() could be glitchy for some reason,
     // so we dont't rely on it and use this flag
@@ -40,6 +39,7 @@ private:
 
     stg::strategy &strategy;
     stg::session previousSession;
+    std::optional<stg::session> activeSession;
 
     ColoredLabel *activityLabel = nullptr;
     ColoredLabel *startTimeLabel = nullptr;

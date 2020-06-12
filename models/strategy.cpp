@@ -8,20 +8,14 @@
 #include "time_utils.h"
 
 namespace stg {
-    strategy::strategy(time_t begin_time,
-                       duration_t time_slot_duration,
-                       size_t number_of_time_slots)
-            : _time_slots(time_slots_state(begin_time,
-                                           time_slot_duration,
-                                           number_of_time_slots)),
-
+    strategy::strategy(time_t begin_time, duration_t time_slot_duration, size_t number_of_time_slots)
+            : _time_slots(time_slots_state(begin_time, time_slot_duration, number_of_time_slots)),
               history(make_history_entry()) {
         time_slots_changed();
         setup_time_slots_callback();
     }
 
-    strategy::strategy(const time_slots_state::data_t &time_slots,
-                       const activity_list::data_t &activities) :
+    strategy::strategy(const time_slots_state::data_t &time_slots, const activity_list::data_t &activities) :
             _time_slots(time_slots),
             _activities(activities),
             history(make_history_entry()) {
@@ -79,8 +73,7 @@ namespace stg {
         commit_to_history();
     }
 
-    void strategy::silently_edit_activity(activity_index_t activity_index,
-                                          const activity &new_activity) {
+    void strategy::silently_edit_activity(activity_index_t activity_index, const activity &new_activity) {
         auto *const old_activity = _activities.at(activity_index);
         _activities.silently_edit_at_index(activity_index, new_activity);
 
@@ -90,8 +83,7 @@ namespace stg {
         commit_to_history();
     }
 
-    void strategy::edit_activity(activity_index_t activity_index,
-                                 const activity &new_activity) {
+    void strategy::edit_activity(activity_index_t activity_index, const activity &new_activity) {
         auto *old_activity = _activities.at(activity_index);
         _activities.edit_at_index(activity_index, new_activity);
 
@@ -166,16 +158,14 @@ namespace stg {
         commit_to_history();
     }
 
-    void strategy::fill_time_slots_shifting(time_slot_index_t from_index,
-                                            time_slot_index_t till_index) {
+    void strategy::fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index) {
         assert(current_resize_operation && "fill_time_slots must be called between "
                                            "begin_resizing() and end_resizing() calls");
 
         current_resize_operation->fill_slots_shifting(from_index, till_index);
     }
 
-    void strategy::fill_time_slots(time_slot_index_t from_index,
-                                   time_slot_index_t till_index) {
+    void strategy::fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index) {
         assert(current_resize_operation && "fill_time_slots must be called between "
                                            "begin_resizing() and end_resizing() calls");
 
@@ -266,7 +256,7 @@ namespace stg {
         return new_session_index;
     }
 
-    void stg::strategy::begin_dragging(session_index_t session_index) {
+    void strategy::begin_dragging(session_index_t session_index) {
         const auto &session = sessions()[session_index];
         auto initial_indices = global_slot_indices_from_session(session);
 
@@ -286,9 +276,7 @@ namespace stg {
     }
 
     void strategy::end_dragging() {
-        if (!current_drag_operation) {
-            return;
-        }
+        assert(current_drag_operation && "end_dragging must be called after begin_dragging()");
 
         if (current_drag_operation->state_changed()) {
             commit_to_history();
@@ -309,9 +297,7 @@ namespace stg {
     }
 
     void strategy::end_resizing() {
-        if (!current_resize_operation) {
-            return;
-        }
+        assert(current_resize_operation && "end_resizing must be called after begin_resizing()");
 
         if (current_resize_operation->state_changed()) {
             commit_to_history();
@@ -320,8 +306,7 @@ namespace stg {
         current_resize_operation.reset();
     }
 
-    void strategy::copy_session(session_index_t session_index,
-                                time_slot_index_t begin_index) {
+    void strategy::copy_session(session_index_t session_index, time_slot_index_t begin_index) {
         const auto &session = sessions()[session_index];
         if (!session.activity) {
             return;

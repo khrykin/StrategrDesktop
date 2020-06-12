@@ -20,9 +20,9 @@
 
 namespace stg {
     struct mouse_parameters {
-        stg::float_t stretch_zone_size = 5;
-        stg::float_t direction_change_resolution = 2;
-        stg::float_t autoscroll_zone_size = 40;
+        stg::gfloat stretch_zone_size = 5;
+        stg::gfloat direction_change_resolution = 2;
+        stg::gfloat autoscroll_zone_size = 40;
     };
 
     class mouse_handler {
@@ -43,13 +43,15 @@ namespace stg {
         };
 
         struct range {
-            stg::float_t top = 0;
-            stg::float_t bottom = 0;
+            stg::gfloat top = 0;
+            stg::gfloat bottom = 0;
 
-            bool contains(stg::float_t coord);
+            bool contains(stg::gfloat coord);
 
             friend std::ostream &operator<<(std::ostream &os, const range &range);
         };
+
+        mouse_parameters settings;
 
         std::function<void(cursor)> on_cursor_change = nullptr;
         std::function<void()> on_open_activities = nullptr;
@@ -128,8 +130,6 @@ namespace stg {
 
         stg::strategy &strategy;
         stg::selection &selection;
-
-        mouse_parameters settings;
 
         std::unique_ptr<operation> current_operaion;
 

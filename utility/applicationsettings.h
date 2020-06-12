@@ -23,7 +23,7 @@ namespace ApplicationSettings {
 
     const auto currentTimeTimerSecondsInterval = 1;
     const auto notifierTimerMillisecondsInterval = 15 * 1000;
-    const auto currentSessionShowDelay = 500;
+    const auto currentSessionShowDelay = 150;
 
     const auto rowBorderColor = "#ccc";
     const auto currentTimeMarkerColor = "#ff725c";

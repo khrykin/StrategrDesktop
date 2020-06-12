@@ -10,6 +10,10 @@
 
 #import <AppKit/AppKit.h>
 
+#else
+
+#import <UIKit/UIKit.h>
+
 #endif
 
 @implementation SGCalendarManager
@@ -174,13 +178,24 @@
     return calendar;
 }
 
-+ (void)launchCalendarApp {
++ (void)launchCalendarAppWithDate:(NSDate *_Nullable)date {
+
 #if !TARGET_OS_IOS
-    [[NSWorkspace sharedWorkspace] launchApplication:@"/Applications/Calendar.app"];
+    NSURL *iCalURL = [[NSURL alloc] initWithString:@"ical://"];
+
+    [[NSWorkspace sharedWorkspace] openURL:iCalURL];
     NSArray *apps = [NSRunningApplication
             runningApplicationsWithBundleIdentifier:@"com.apple.iCal"];
     [(NSRunningApplication *) apps[0]
             activateWithOptions:NSApplicationActivateAllWindows];
+#else
+    NSString *iCalURLString = [NSString stringWithFormat:@"calshow:%ld", (NSInteger) date.timeIntervalSinceReferenceDate];
+    NSURL *iCalURL = [[NSURL alloc] initWithString:iCalURLString];
+
+    [[UIApplication sharedApplication] openURL:iCalURL
+                                       options:@{}
+                             completionHandler:nil];
+
 #endif
 };
 

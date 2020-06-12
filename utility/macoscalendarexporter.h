@@ -13,52 +13,8 @@
 
 class MacOSCalendarExporter {
 public:
-    enum class Response {
-        Cancel = 0,
-        Perform = 1
-    };
-
-    using Options = unsigned;
-    using Option = const unsigned;
-
-    struct ExportOptionsWindowResult {
-        Response response;
-        Options options = 0;
-        time_t dateTimestamp = 0;
-        std::string calendarName;
-    };
-
-    struct ImportOptionsWindowResult {
-        Response response;
-        Options options = 0;
-        time_t dateTimestamp = 0;
-        std::unique_ptr<std::vector<std::string>> calendarsIdentifiers;
-    };
-
-    static Option OverridePreviousEvents = 1u << 0u;
-    static Option IncludeNotifications = 1u << 1u;
-    static Option ExportToSpecificCalendar = 1u << 2u;
-
-    static const Options defaultOptions = OverridePreviousEvents |
-                                          IncludeNotifications;
-
-    static ExportOptionsWindowResult showExportOptionsWindow(Options initialOptions = defaultOptions,
-                                                             const std::string &initialCalendarName = "");
-
-
-    static ImportOptionsWindowResult showImportOptionsWindow(Options initialOptions = defaultOptions,
-                                                             std::unique_ptr<std::vector<std::string>> initialCalendarsIdentifiers = nullptr);
-
-    static void exportStrategy(const stg::strategy &strategy,
-                               Options options,
-                               time_t dateSecsFromEpoch,
-                               const std::string &calendarTitle = nullptr);
-
-
-    static void importStrategy(stg::strategy &strategy,
-                               Options options,
-                               time_t dateSecsFromEpoch,
-                               std::unique_ptr<std::vector<std::string>> initialCalendarsIdentifiers = nullptr);
+    static void exportStrategy(const stg::strategy &strategy);
+    static void importStrategy(stg::strategy &strategy);
 private:
     static void showAccessDeniedAlert();
 };

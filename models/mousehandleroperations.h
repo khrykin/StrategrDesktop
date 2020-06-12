@@ -75,31 +75,18 @@ struct stg::mouse_handler::copy_drag_operation : public operation {
     }
 
 private:
-    point previous_position;
     point initial_position;
-
-    index_t previous_slot_index = -1;
     index_t dragged_session_index = -1;
-    index_t handle_slot_index = -1;
-
     int global_distance = 0;
-
-    int current_session_height = 0;
 
     void init(const mouse_event &event) override {
         handler.selection.deselect_all();
 
         dragged_session_index = handler.current_session_index;
-        previous_position = event.position;
         initial_position = event.position;
 
         auto &session = strategy.sessions()[handler.current_session_index];
         auto &current_time_slot = strategy.time_slots()[handler.current_slot_index];
-
-        handle_slot_index = static_cast<index_t>(std::distance(session.time_slots.begin(),
-                                          std::find(session.time_slots.begin(),
-                                                    session.time_slots.end(),
-                                                    current_time_slot)));
 
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
@@ -132,8 +119,6 @@ private:
 
         global_distance = new_global_distance;
 
-        previous_position = event.position;
-
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
     }
@@ -148,13 +133,6 @@ private:
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(-1, -1);
     };
-
-    int get_delta(int prev_pos, int current_pos) {
-        auto slot_height = handler.get_slot_height();
-        auto closest_slot_boundary = std::round(prev_pos / slot_height) * slot_height;
-
-        return std::abs(static_cast<int>(current_pos - closest_slot_boundary));
-    }
 
     index_t get_first_slot_index() {
         auto &current_session = strategy.sessions()[dragged_session_index];

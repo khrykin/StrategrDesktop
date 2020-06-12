@@ -18,28 +18,28 @@ namespace stg {
     class overview {
     public:
         struct overview_item {
-            stg::float_t origin_x = 0;
-            stg::float_t width = 0;
+            stg::gfloat origin_x = 0;
+            stg::gfloat width = 0;
 
             stg::color color;
         };
 
         struct viewport_marker {
-            stg::float_t origin_x = 0;
-            stg::float_t width = 0;
+            stg::gfloat origin_x = 0;
+            stg::gfloat width = 0;
         };
 
-        explicit overview(const strategy &strategy, stg::float_t width);
+        explicit overview(const strategy &strategy, stg::gfloat width);
 
         auto elements() -> std::vector<overview_item>;
 
-        auto viewport_marker_for(rect viewport_rect, rect slotboard_rect) const -> viewport_marker;
+        auto viewport_marker_for(rect slots_bounds, rect viewport_rect_in_slots) const -> viewport_marker;
 
-        auto current_time_position() -> stg::float_t;
+        auto current_time_position() -> stg::gfloat;
 
     private:
         const strategy &strategy;
-        stg::float_t width = 0.0;
+        stg::gfloat width = 0.0;
     };
 
 }

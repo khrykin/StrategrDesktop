@@ -43,6 +43,8 @@
 
 @interface SGCalendarImportView ()
 
+@property(nonatomic, readwrite) SGCalendarImportViewModel *viewModel;
+
 @property(nonatomic, weak) NSDatePicker *datePicker;
 @property(nonatomic, weak) NSTableView *tableView;
 @property(nonatomic, weak) NSTableColumn *checkmarksColumn;
@@ -52,6 +54,15 @@
 @end
 
 @implementation SGCalendarImportView
+
+- (instancetype)initWithFrame:(NSRect)frame {
+    if (self = [super initWithFrame:frame]) {
+        self.viewModel = [[SGCalendarImportViewModel alloc] init];
+        self.viewModel.delegate = self;
+    }
+
+    return self;
+}
 
 - (void)setup {
     [super setup];
@@ -64,6 +75,8 @@
     datePicker.datePickerElements = NSDatePickerElementFlagYearMonth |
                                     NSDatePickerElementFlagYearMonthDay;
     datePicker.dateValue = [NSDate date];
+    datePicker.target = self;
+    datePicker.action = @selector(datePickerChanged:);
 
     self.datePicker = datePicker;
 
@@ -107,76 +120,34 @@
             [datePicker.topAnchor constraintEqualToAnchor:scrollView.topAnchor]
     ]];
 
-    NSButton *overrideCheckbox = [NSButton checkboxWithTitle:@"Override current strategy"
+    NSButton *overrideCheckbox = [NSButton checkboxWithTitle:SGCalendarImportViewModelTitleOverwrite
                                                       target:self
-                                                      action:nil];
+                                                      action:@selector(overwriteCheckboxClicked:)];
+
+    overrideCheckbox.state = (self.viewModel.settings.optionsMask & SGCalendarImportOptionsOverwrite) ==
+                             SGCalendarImportOptionsOverwrite;
 
     self.overrideCheckbox = overrideCheckbox;
 
     [self.bottomView addArrangedSubview:overrideCheckbox];
 }
 
-- (void)checkBoxClicked:(SGColoredCheckBoxView *)checkBoxView {
-    NSInteger calendarIndex = [self.tableView rowForView:checkBoxView];
+- (void)overwriteCheckboxClicked:(NSButton *)checkbox {
+    [self.viewModel didToggleOverwrite];
+}
 
-    [self setCalendarSelectedAtIndex:(NSUInteger) calendarIndex
-                            selected:(BOOL) checkBoxView.state];
+- (void)datePickerChanged:(NSDatePicker *)datePicker {
+    [self.viewModel didChangeDate:datePicker.dateValue];
+}
 
-    self.headerCheckbox.state = NSControlStateValueMixed;
+- (void)calendarCheckboxClicked:(SGColoredCheckBoxView *)checkBoxView {
+    [self.viewModel didToggleCalendarAt:checkBoxView.calendarIndex];
+
+    EKCalendar *calendar = self.viewModel.calendars[(NSUInteger) checkBoxView.calendarIndex];
+    checkBoxView.state = [self.viewModel isCalendarSelected:calendar];
+
+    self.headerCheckbox.state = self.viewModel.selectedAllCheckboxState;
     [self.tableView.headerView setNeedsDisplay:YES];
-}
-
-- (void)setCalendars:(NSArray<EKCalendar *> *)calendars {
-    _calendars = calendars;
-
-    [self.tableView reloadData];
-}
-
-- (NSDate *)date {
-    return self.datePicker.dateValue;
-}
-
-- (void)setSelectedCalendarsIdentifiers:(NSMutableArray<NSString *> *_Nullable)selectedCalendarsIdentifiers {
-    if (selectedCalendarsIdentifiers)
-        _selectedCalendarsIdentifiers = selectedCalendarsIdentifiers;
-    else
-        _selectedCalendarsIdentifiers = nil;
-
-    [self updateCheckBoxes];
-}
-
-- (void)updateCheckBoxes {
-    BOOL everythingIsSelected = NO;
-    BOOL nothingIsSelected = NO;
-
-    BOOL everythingIsSelectedSet = NO;
-    BOOL nothingIsSelectedSet = NO;
-
-    for (NSUInteger calendarIndex = 0; calendarIndex < self.tableView.numberOfRows; calendarIndex++) {
-        EKCalendar *calendar = self.calendars[calendarIndex];
-        NSButton *checkbox = [self checkboxAtIndex:calendarIndex];
-
-        BOOL isSelected = [self isCalendarSelected:calendar];
-        checkbox.state = isSelected ? NSControlStateValueOn : NSControlStateValueOff;
-
-        if (!everythingIsSelectedSet) {
-            everythingIsSelected = isSelected;
-            everythingIsSelectedSet = !isSelected;
-        }
-
-        if (!nothingIsSelectedSet) {
-            nothingIsSelected = !isSelected;
-            nothingIsSelectedSet = isSelected;
-        }
-    }
-
-    if (everythingIsSelected) {
-        self.headerCheckbox.state = NSControlStateValueOn;
-    } else if (nothingIsSelected) {
-        self.headerCheckbox.state = NSControlStateValueOff;
-    } else {
-        self.headerCheckbox.state = NSControlStateValueMixed;
-    }
 }
 
 - (NSButtonCell *)headerCheckbox {
@@ -184,67 +155,12 @@
     return headerCell.checkbox;
 }
 
-- (NSButton *)checkboxAtIndex:(NSUInteger)index {
-    return [self.tableView viewAtColumn:0 row:index makeIfNecessary:NO];
-}
-
-- (BOOL)isCalendarSelected:(EKCalendar *)calendar {
-    if (self.selectedCalendarsIdentifiers == nil) {
-        return YES;
-    }
-
-    NSPredicate *sameIdentifierPredicate
-            = [NSPredicate predicateWithBlock:^BOOL(NSString *calendarIdentifier, NSDictionary *_) {
-                return [calendarIdentifier isEqualToString:calendar.calendarIdentifier];
-            }];
-
-    NSArray<NSString *> *filtered
-            = [self.selectedCalendarsIdentifiers filteredArrayUsingPredicate:sameIdentifierPredicate];
-
-    return filtered.count != 0;
-}
-
-- (void)setCalendarSelectedAtIndex:(NSUInteger)calendarIndex selected:(BOOL)wantToSelect {
-    EKCalendar *calendar = self.calendars[calendarIndex];
-    if (!_selectedCalendarsIdentifiers) {
-        _selectedCalendarsIdentifiers = [[NSMutableArray alloc] init];
-        if (!wantToSelect) {
-            // Everything was selected and now we've deselected something, so
-            // we need to populate array (it is null if everything is selected)
-            // to be able to remove deselected item below
-            for (EKCalendar *cal in self.calendars) {
-                [_selectedCalendarsIdentifiers addObject:cal.calendarIdentifier];
-            }
-        }
-    }
-
-    BOOL calendarAlreadySelected = [self isCalendarSelected:calendar];
-    if (wantToSelect && !calendarAlreadySelected) {
-        [self.selectedCalendarsIdentifiers addObject:calendar.calendarIdentifier];
-    } else if (calendarAlreadySelected) {
-        [self.selectedCalendarsIdentifiers removeObject:calendar.calendarIdentifier];
-    }
-}
-
-- (void)setOptionsMask:(SGCalendarImportOptions)optionsMask {
-    self.overrideCheckbox.state = (optionsMask & SGCalendarImportOptionsOverwrite) == SGCalendarImportOptionsOverwrite;
-}
-
-- (SGCalendarImportOptions)optionsMask {
-    SGCalendarImportOptions optionsMask = 0;
-
-    if (self.overrideCheckbox.state == NSControlStateValueOn)
-        optionsMask |= SGCalendarImportOptionsOverwrite;
-
-    return optionsMask;
-}
-
 @end
 
 @implementation SGCalendarImportView (NSTableViewDataSource)
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    return self.calendars ? self.calendars.count : 0;
+    return self.viewModel.calendars ? self.viewModel.calendars.count : 0;
 }
 
 - (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
@@ -258,7 +174,7 @@
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
     NSTableCellView *cell = [[NSTableCellView alloc] init];
 
-    EKCalendar *calendar = self.calendars[(NSUInteger) row];
+    EKCalendar *calendar = self.viewModel.calendars[(NSUInteger) row];
     NSTextField *textField = [NSTextField textFieldWithString:calendar.title];
 
     if (tableColumn == self.calendarsColumn) {
@@ -271,12 +187,12 @@
 
         [cell addSubview:textField];
     } else if (tableColumn == self.checkmarksColumn) {
-        SGColoredCheckBoxView *checkbox = [[SGColoredCheckBoxView alloc]
-                initWithTarget:self
-                        action:@selector(checkBoxClicked:)];
+        SGColoredCheckBoxView *checkbox = [[SGColoredCheckBoxView alloc] initWithTarget:self
+                                                                                 action:@selector(calendarCheckboxClicked:)];
 
+        checkbox.calendarIndex = row;
         checkbox.color = calendar.color;
-        checkbox.state = [self isCalendarSelected:calendar]
+        checkbox.state = [self.viewModel isCalendarSelected:calendar]
                          ? NSControlStateValueOn
                          : NSControlStateValueOff;
 
@@ -295,23 +211,21 @@
         return;
     }
 
-    SGCheckboxHeaderCell *headerCell = [tableColumn headerCell];
-    if (headerCell.checkbox.state == NSControlStateValueMixed) {
-        headerCell.checkbox.state = NSControlStateValueOn;
-    }
+    [self.viewModel didToggleSelectedAll];
 
-    headerCell.checkbox.state = !headerCell.checkbox.state;
+    self.headerCheckbox.state = self.viewModel.selectedAllCheckboxState;
 
-    if (headerCell.checkbox.state == NSControlStateValueOn) {
-        _selectedCalendarsIdentifiers = nil;
-    } else {
-        _selectedCalendarsIdentifiers = [[NSMutableArray alloc] init];
-    }
+    [self.tableView reloadData];
+}
 
-    for (NSUInteger i = 0; i < tableView.numberOfRows; i++) {
-        NSButton *checkbox = [self checkboxAtIndex:i];
-        checkbox.state = headerCell.checkbox.state;
-    }
+@end
+
+@implementation SGCalendarImportView (SGCalendarImportViewModelDelegate)
+
+- (void)viewModel:(SGCalendarImportViewModel *)viewModel didChangeCalendars:(NSArray<EKCalendar *> *)calendars {
+    self.headerCheckbox.state = self.viewModel.selectedAllCheckboxState;
+
+    [self.tableView reloadData];
 }
 
 @end

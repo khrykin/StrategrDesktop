@@ -2,16 +2,13 @@
 // Created by Dmitry Khrykin on 2019-08-17.
 //
 
-#ifndef STRATEGR_SGCALENDARMANAGER_H
-#define STRATEGR_SGCALENDARMANAGER_H
-
-
 #import <Foundation/Foundation.h>
 #import <EventKit/EventKit.h>
 #import <CoreGraphics/CGColor.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(CalendarManager)
 @interface SGCalendarManager : NSObject
 
 @property(strong) EKEventStore *store;
@@ -36,12 +33,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray<EKEvent *> *)eventsWithDate:(NSDate *)date
                   calendarsIdentifiers:(NSArray<NSString *> *_Nullable)calendarsIdentifiers;
 
-+ (void)launchCalendarApp;
++ (void)launchCalendarAppWithDate:(NSDate *_Nullable)date;
 
 + (void)requestCalendarAccess:(void (^)(EKEventStore *store))completionHandler;
 
 @end
 
 NS_ASSUME_NONNULL_END
-
-#endif //STRATEGR_SGCALENDARMANAGER_H

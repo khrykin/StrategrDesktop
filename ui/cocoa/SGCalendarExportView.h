@@ -7,16 +7,14 @@
 
 #import "SGCalendarExporter.h"
 #import "SGCalendarImportExportView.h"
+#import "SGCalendarExportViewModel.h"
+
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SGCalendarExportView : SGCalendarImportExportView
+@interface SGCalendarExportView : SGCalendarImportExportView <SGCalendarExportViewModelDelegate>
 
-@property(nonatomic, readonly) NSDate *date;
-@property(nonatomic, weak) NSString *_Nullable calendarName;
-@property(nonatomic) SGCalendarExportOptions optionsMask;
-
-- (NSString *)description;
+@property(nonatomic) SGCalendarExportViewModel *viewModel;
 
 @end
 

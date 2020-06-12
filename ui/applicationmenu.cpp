@@ -57,15 +57,11 @@ void ApplicationMenu::setupEditMenu() {
     addMenu(editMenu);
 
     editMenu->addAction(tr("Undo"),
-                        [=]() {
-                            window->strategy.undo();
-                        },
+                        [=]() { window->strategy.undo(); },
                         QKeySequence(Qt::CTRL + Qt::Key_Z));
 
     editMenu->addAction(tr("Redo"),
-                        [=]() {
-                            window->strategy.redo();
-                        },
+                        [=]() { window->strategy.redo(); },
                         QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 
     editMenu->addSeparator();
@@ -152,24 +148,7 @@ void ApplicationMenu::setupFileMenu() {
 void ApplicationMenu::addExportToCalendarAction() {
 #ifdef Q_OS_MAC
     fileMenu->addAction(tr("Export To Calendar"), [this]() {
-        auto optionsWasSet = !Application::currentSettings().value("calendarExportOptions").isNull();
-        auto initialOptions = optionsWasSet
-                              ? Application::currentSettings().value("calendarExportOptions").toUInt()
-                              : MacOSCalendarExporter::defaultOptions;
-
-        auto initialCalendarTitle = Application::currentSettings().value(
-                "exportCalendarTitle").toString().toStdString();
-
-        auto[result, options, date, calendarTitle] = MacOSCalendarExporter::showExportOptionsWindow(initialOptions,
-                                                                                                    initialCalendarTitle);
-        if (result == MacOSCalendarExporter::Response::Perform) {
-            Application::currentSettings().setValue("calendarExportOptions", options);
-
-            if (!calendarTitle.empty())
-                Application::currentSettings().setValue("exportCalendarTitle", QString::fromStdString(calendarTitle));
-
-            MacOSCalendarExporter::exportStrategy(window->strategy, options, date, calendarTitle);
-        }
+        MacOSCalendarExporter::exportStrategy(window->strategy);
     });
 #endif
 }
@@ -177,42 +156,7 @@ void ApplicationMenu::addExportToCalendarAction() {
 void ApplicationMenu::addImportFromCalendarAction() {
 #ifdef Q_OS_MAC
     fileMenu->addAction(tr("Import From Calendar"), [this]() {
-        auto optionsWasSet = !Application::currentSettings().value("calendarImportOptions").isNull();
-        auto initialOptions = optionsWasSet
-                              ? Application::currentSettings().value("calendarImportOptions").toUInt()
-                              : MacOSCalendarExporter::defaultOptions;
-
-        std::unique_ptr<std::vector<std::string>> initialCalendarIdentifiers = nullptr;
-
-        auto initialCalendarIdentifiersWasSet = !Application::currentSettings().value(
-                "importCalendarsIdentifiers").isNull();
-        if (initialCalendarIdentifiersWasSet) {
-            auto qInitialCalendarIdentifiers = Application::currentSettings().value(
-                    "importCalendarsIdentifiers").toString().split(";");
-
-            initialCalendarIdentifiers = std::make_unique<std::vector<std::string>>(
-                    !qInitialCalendarIdentifiers.isEmpty()
-                    ? QStringListToStdVector(qInitialCalendarIdentifiers)
-                    : std::vector<std::string>()
-            );
-        }
-
-        auto[result, options, date, calendarsIdentifiers] = MacOSCalendarExporter::showImportOptionsWindow(
-                initialOptions,
-                std::move(initialCalendarIdentifiers));
-
-        if (result == MacOSCalendarExporter::Response::Perform) {
-            Application::currentSettings().setValue("calendarImportOptions", options);
-
-            if (calendarsIdentifiers) {
-                auto qCalendarsIdentifiers = QStringListFromStdVector(*calendarsIdentifiers);
-                Application::currentSettings().setValue("importCalendarsIdentifiers", qCalendarsIdentifiers.join(";"));
-            } else {
-                Application::currentSettings().remove("importCalendarsIdentifiers");
-            }
-
-            MacOSCalendarExporter::importStrategy(window->strategy, options, date, std::move(calendarsIdentifiers));
-        }
+        MacOSCalendarExporter::importStrategy(window->strategy);
     });
 #endif
 }
