@@ -66,8 +66,7 @@ namespace stg {
 
         history_state history = history_state();
 
-        auto silently_drag(const indices_range &range_to_drag,
-                           int distance) -> indices_vector;
+        auto silently_drag(const indices_range &range_to_drag, int distance) -> indices_vector;
 
         void restore_cache(const indices_range &restore_cache_range,
                            const indices_cache &cache,
@@ -77,6 +76,18 @@ namespace stg {
                         index_t destination_index,
                         int distance) const -> ranges_tuple;
 
+        auto make_cache(indices_range cache_indices) const -> indices_cache;
+
+        void apply_movements_to_history(const movements_state &movements);
+
+        void validate_drag(const indices_vector &new_dragged_indices);
+
+        auto find_session_range_for(index_t time_slot_index) -> indices_range;
+        auto find_avaliable_movement_index(indices_range session_range,
+                                           index_t target_index) -> index_t;
+
+        auto get_initial(index_t index) -> index_t;
+
         static auto get_new_dragging_indices(const indices_range &dragging_indices,
                                              index_t destination_index,
                                              int distance) -> indices_range;
@@ -84,18 +95,6 @@ namespace stg {
         static auto get_cache_range(const indices_range &dragging_indices,
                                     index_t destination_index,
                                     int distance) -> indices_range;
-
-        auto make_cache(indices_range cache_indices) const -> indices_cache;
-
-        void apply_movements_to_history(const movements_state &movements);
-
-        void invalidate_drag(const indices_vector &new_dragged_indices);
-
-        auto find_session_range_for(index_t time_slot_index) -> indices_range;
-        auto find_avaliable_movement_index(indices_range session_range,
-                                           index_t target_index) -> index_t;
-
-        auto get_initial(index_t index) -> index_t;
 
         static void print_history(const std::string &name,
                                   const history_state &history_state);

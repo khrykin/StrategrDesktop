@@ -5,46 +5,34 @@
 #include "session.h"
 #include "applicationsettings.h"
 #include "colorprovider.h"
+#include "dataproviderwidget.h"
 
 #include <QMap>
 #include <QWidget>
 
-class QTimeLine;
-
-class SessionWidget : public QWidget, public ColorProvider {
-Q_OBJECT
-
+class SessionWidget : public DataProviderWidget, public ColorProvider {
 public:
     static QColor borderColor();
-    explicit SessionWidget(stg::session activitySession,
-                           QWidget *parent = nullptr);
+    explicit SessionWidget(const stg::session &session, QWidget *parent);
 
-    bool isSelected() const;
     void setIsSelected(bool isSelected);
-
-    void setActivitySession(const stg::session &newActivitySession);
-    void setSlotHeight(int slotHeight);
-
-    void setSelectBorder(bool isBorderSelected);
-    void setDimmed(bool dimmed);
-    bool drawsBorders() const;
+    void setIsBorderSelected(bool isBorderSelected);
+    void setSession(const stg::session &newSession);
     void setDrawsBorders(bool drawsBorders);
 private:
-    int slotHeight = ApplicationSettings::defaultSlotHeight;
     bool _isSelected = false;
-    bool isBorderSelected = false;
-    bool dimmed = false;
+    bool _isBorderSelected = false;
     bool _drawsBorders = true;
 
-    stg::session activitySession;
-    stg::session previousActivitySession = stg::session();
+    stg::session session;
+    stg::session previousSession = stg::session();
 
     stg::strategy::duration_t previousDuration = 0;
     stg::strategy::time_t previousEndTime = 0;
 
-
-    void updateUI();
+    void reloadSession();
     int expectedHeight();
+    int topMargin();
 
     QColor selectedBackgroundColor() const;
     QColor sessionColor() const;

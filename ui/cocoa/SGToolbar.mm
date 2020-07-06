@@ -30,15 +30,9 @@ const NSArray *activitiesPage = @[ToolbarItemNewActivityIdentifier,
 
 const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 
-
-@interface SGToolbar ()
-
-@end
-
 @implementation SGToolbar
 - (instancetype)initWithIdentifier:(NSToolbarIdentifier)identifier {
     if (self = [super initWithIdentifier:identifier]) {
-
         self.delegate = self;
     }
 
@@ -172,7 +166,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 }
 
 - (void)openActivities:(id)sender {
-    qWindow->scene()->showActivities();
+    qWindow->scene()->actionCenter().show_activities();
 }
 
 - (void)openSettings:(id)sender {
@@ -180,7 +174,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 }
 
 - (void)openSessions:(id)sender {
-    qWindow->scene()->showSessions();
+    qWindow->scene()->actionCenter().show_sessions();
 }
 
 - (void)openNewActivityMenu:(id)sender {

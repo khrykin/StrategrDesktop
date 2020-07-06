@@ -4,9 +4,9 @@
 #include <functional>
 #include <memory>
 #include <optional>
-#include <string>
 #include <vector>
 
+#include "stgstring.h"
 #include "notifiableonchange.h"
 #include "activity.h"
 #include "activitylist.h"
@@ -19,8 +19,9 @@
 namespace stg {
     class strategy : public notifiable_on_change {
     public:
-        using duration_t = time_slot::duration_t;
-        using time_t = time_slot::time_t;
+        using duration_t = time_slot::minutes;
+        using time_t = time_slot::minutes;
+        using seconds = unsigned;
         using time_slot_index_t = time_slots_state::index_t;
         using session_index_t = sessions_list::index_t;
         using size_t = time_slots_state::size_t;
@@ -87,13 +88,13 @@ namespace stg {
         void set_end_time(time_t end_time);
 
         auto number_of_time_slots() const -> size_t;
-
         auto duration() const -> duration_t;
 
 #pragma mark - Real-Time Properties
 
         auto active_session() const -> const session *;
         auto upcoming_session() const -> const session *;
+        auto progress() const -> float;
 
 #pragma mark - Operations On Activities
 
@@ -149,8 +150,8 @@ namespace stg {
         sessions_list _sessions;
         strategy_history history;
 
-        std::shared_ptr<drag_operation> current_drag_operation = nullptr;
-        std::shared_ptr<resize_operation> current_resize_operation = nullptr;
+        std::unique_ptr<drag_operation> current_drag_operation = nullptr;
+        std::unique_ptr<resize_operation> current_resize_operation = nullptr;
 
         void time_slots_changed();
         void setup_time_slots_callback();

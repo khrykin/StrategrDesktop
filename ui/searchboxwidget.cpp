@@ -15,6 +15,7 @@
 
 SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
         : QWidget(parent) {
+    using namespace ApplicationSettings;
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setFocusPolicy(Qt::ClickFocus);
@@ -27,36 +28,38 @@ SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
                             "border: transparent;"
                             "background: transparent;"
                             "}");
-    lineEdit->setAlignment(Qt::AlignCenter);
+    lineEdit->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     lineEdit->setPlaceholderText(placeholder);
     lineEdit->installEventFilter(this);
 
     reloadPalette();
 
-    connect(lineEdit,
-            &QLineEdit::textEdited,
-            this,
-            &SearchBoxWidget::textEdited);
+    connect(lineEdit, &QLineEdit::textEdited,
+            this, &SearchBoxWidget::textEdited);
 
     auto *layout = new QHBoxLayout(this);
 
     layout->addWidget(lineEdit);
-    layout->setContentsMargins(iconRect().width() + 3 * ApplicationSettings::defaultPadding,
-                               ApplicationSettings::defaultPadding,
-                               iconRect().width() + 3 * ApplicationSettings::defaultPadding,
-                               ApplicationSettings::defaultPadding);
+    layout->setContentsMargins(2 * defaultPadding + iconRect().width(),
+                               5,
+                               defaultPadding,
+                               5);
+
+    setContentsMargins(defaultPadding,
+                       defaultPadding,
+                       defaultPadding,
+                       defaultPadding);
 
     cancelAction = new QAction("Cancel", this);
     cancelAction->setShortcut(QKeySequence(Qt::Key_Escape));
-    connect(cancelAction, &QAction::triggered,
-            [this]() {
-                if (!lineEdit->text().isEmpty()) {
-                    lineEdit->setText("");
-                    emit textEdited("");
-                }
+    connect(cancelAction, &QAction::triggered, [this]() {
+        if (!lineEdit->text().isEmpty()) {
+            lineEdit->setText("");
+            emit textEdited("");
+        }
 
-                lineEdit->clearFocus();
-            });
+        lineEdit->clearFocus();
+    });
 
     addAction(cancelAction);
 }
@@ -77,39 +80,31 @@ void SearchBoxWidget::setText(const QString &string) {
 
 void SearchBoxWidget::paintEvent(QPaintEvent *event) {
     auto painter = QPainter(this);
-    painter.setFont(iconFont());
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.setPen(Qt::NoPen);
+    painter.setBrush(panelColor());
+
+    painter.drawRoundedRect(contentsRect(), 8, 8);
 
     auto iconHeight = iconRect().height();
 
-    painter.setPen(textColorJustLighter());
+    painter.setFont(iconFont());
+    painter.setPen(secondaryTextColor());
     painter.drawText(2 * ApplicationSettings::defaultPadding,
                      lineEdit->geometry().bottomLeft().y()
                      - lineEdit->height() / 2
-                     + iconHeight / 2 - 1, iconText);
-
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(borderColor());
-    auto borderRect = QRect(8,
-                            height() - 1,
-                            width() - 2 * ApplicationSettings::defaultPadding,
-                            1);
-    painter.drawRect(borderRect);
+                     + iconHeight / 2 - 1, searchIconText());
 }
 
 QRect SearchBoxWidget::iconRect() const {
     auto metrics = QFontMetrics(iconFont());
-    auto iconRect = metrics.boundingRect(iconText);
+    auto iconRect = metrics.boundingRect(searchIconText());
     return iconRect;
 }
 
-QFont SearchBoxWidget::iconFont() const {
-    QFont iconFont;
-    iconFont.setFamily(ApplicationSettings::fontResourcePath);
-    return iconFont;
-}
-
 bool SearchBoxWidget::eventFilter(QObject *object, QEvent *event) {
-    if (object == this && event->type() == QEvent::ApplicationPaletteChange) {
+    if (event->type() == QEvent::ApplicationPaletteChange) {
         reloadPalette();
     } else if (object == lineEdit) {
         if (event->type() == QEvent::FocusIn) {

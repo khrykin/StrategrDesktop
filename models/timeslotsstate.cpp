@@ -3,16 +3,17 @@
 //
 
 #include <algorithm>
+#include <numeric>
 #include <cassert>
 
 #include "timeslotsstate.h"
 
 namespace stg {
-    auto time_slots_state::begin_time() const -> time_t {
+    auto time_slots_state::begin_time() const -> minutes {
         return _begin_time;
     }
 
-    void time_slots_state::set_begin_time(time_t begin_time) {
+    void time_slots_state::set_begin_time(minutes begin_time) {
         if (begin_time == _begin_time)
             return;
 
@@ -57,11 +58,11 @@ namespace stg {
         }
     }
 
-    auto time_slots_state::slot_duration() const -> duration_t {
+    auto time_slots_state::slot_duration() const -> minutes {
         return _slot_duration;
     }
 
-    void time_slots_state::set_slot_duration(duration_t slot_duration) {
+    void time_slots_state::set_slot_duration(minutes slot_duration) {
         if (slot_duration == _slot_duration)
             return;
 
@@ -102,8 +103,8 @@ namespace stg {
         on_change_event();
     }
 
-    time_slots_state::time_slots_state(time_t start_time,
-                                       duration_t slot_duration,
+    time_slots_state::time_slots_state(minutes start_time,
+                                       minutes slot_duration,
                                        size_t number_of_slots)
             : _begin_time(start_time),
               _slot_duration(slot_duration) {
@@ -117,7 +118,7 @@ namespace stg {
         reset_times();
     }
 
-    void time_slots_state::set_end_time(time_t end_time) {
+    void time_slots_state::set_end_time(minutes end_time) {
         if (end_time == this->end_time())
             return;
 
@@ -134,7 +135,7 @@ namespace stg {
         set_number_of_slots(number_of_slots);
     }
 
-    auto time_slots_state::end_time() const -> time_t {
+    auto time_slots_state::end_time() const -> minutes {
         return last().end_time();
     }
 
@@ -280,7 +281,7 @@ namespace stg {
         return "time_slots_state";
     }
 
-    void time_slots_state::populate(time_t start_time, size_t number_of_slots) {
+    void time_slots_state::populate(minutes start_time, size_t number_of_slots) {
         for (auto slot_index = 0; slot_index < number_of_slots; ++slot_index) {
             auto begin_time = make_slot_begin_time(start_time, slot_index);
 
@@ -289,19 +290,15 @@ namespace stg {
         }
     }
 
-    auto time_slots_state::make_slot_begin_time(time_t global_begin_time,
-                                                index_t slot_index) const -> time_t {
+    auto time_slots_state::make_slot_begin_time(minutes global_begin_time,
+                                                index_t slot_index) const -> minutes {
         return global_begin_time + slot_index * _slot_duration;
     }
 
-    auto time_slots_state::has_activity(const activity *activity) -> bool {
-        return find_slot_with_activity(activity) != _data.end();
-    }
-
-    auto time_slots_state::find_slot_with_activity(const activity *activity) -> iterator {
+    auto time_slots_state::has_activity(const activity *activity) const -> bool {
         return std::find_if(_data.begin(), _data.end(), [activity](const auto &time_slot) {
             return time_slot.activity == activity;
-        });
+        }) != _data.end();
     }
 
     void time_slots_state::remove_activity(activity *activity) {
@@ -408,17 +405,17 @@ namespace stg {
         reset_times();
     }
 
-    auto time_slots_state::times() const -> std::vector<time_t> {
+    auto time_slots_state::make_ruler_times() const -> std::vector<std::time_t> {
         if (empty())
             return {};
 
-        std::vector<time_t> result;
+        std::vector<std::time_t> result;
 
         for (const auto &slot : _data) {
-            result.push_back(slot.begin_time);
+            result.push_back(slot.calendar_begin_time());
         }
 
-        result.push_back(_data.back().end_time());
+        result.push_back(_data.back().calendar_end_time());
 
         return result;
     }
@@ -432,8 +429,8 @@ namespace stg {
             index = size() - 1;
     }
 
-    auto time_slots_state::first_activity_in_time_window(time_t begin_time,
-                                                         time_t end_time) const -> activity * {
+    auto time_slots_state::first_activity_in_time_window(minutes begin_time,
+                                                         minutes end_time) const -> activity * {
         assert(end_time >= begin_time && "end_time must be greater than begin_time");
 
         auto range = end_time - begin_time;
@@ -454,23 +451,20 @@ namespace stg {
         return it != _data.end() ? it->activity : nullptr;
     }
 
-    auto time_slots_state::slots_in_time_window(time_slots_state::time_t begin_time,
-                                                time_slots_state::time_t end_time,
-                                                bool round = false) -> std::vector<time_slot *> {
+    auto time_slots_state::slots_in_time_window(minutes begin_time,
+                                                minutes end_time) -> std::vector<time_slot *> {
         assert(end_time >= begin_time && "end_time must be greater than begin_time");
 
         std::vector<time_slot *> result;
 
         for (auto &slot : _data) {
-            if (slot.begin_time >= begin_time && slot.end_time() <= end_time) {
-                result.push_back(&slot);
-            } else if (round
-                       && begin_time >= slot.begin_time && begin_time <= slot.end_time()
-                       && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration()) {
-                result.push_back(&slot);
-            } else if (round
-                       && end_time >= slot.begin_time && end_time <= slot.end_time()
-                       && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration()) {
+            auto fits_inside = slot.begin_time >= begin_time && slot.end_time() <= end_time;
+            auto overlaps_with_beginning = begin_time >= slot.begin_time && begin_time <= slot.end_time()
+                                           && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration();
+            auto overlaps_with_end = end_time >= slot.begin_time && end_time <= slot.end_time()
+                                     && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration();
+
+            if (fits_inside || overlaps_with_end || overlaps_with_beginning) {
                 result.push_back(&slot);
             }
 
@@ -482,5 +476,52 @@ namespace stg {
         }
 
         return result;
+    }
+
+    void time_slots_state::on_change_event() const {
+        if (_ruler_times.empty() && !on_ruler_change) {
+            notifiable_on_change::on_change_event();
+
+            return;
+        }
+
+        auto new_calendar_times = make_ruler_times();
+        bool times_changed = new_calendar_times != _ruler_times;
+
+        if (times_changed) {
+            _ruler_times = new_calendar_times;
+        }
+
+        notifiable_on_change::on_change_event();
+
+        if (times_changed && on_ruler_change)
+            on_ruler_change();
+    }
+
+    auto time_slots_state::ruler_times() const -> const std::vector<std::time_t> & {
+        if (_ruler_times.empty()) {
+            _ruler_times = make_ruler_times();
+        }
+
+        return _ruler_times;
+    }
+
+    void time_slots_state::add_on_ruler_change_callback(const std::function<void()> &callback) const {
+        auto old_on_ruler_change = on_ruler_change;
+
+        on_ruler_change = [=] {
+            if (old_on_ruler_change)
+                old_on_ruler_change();
+
+            callback();
+        };
+    }
+
+    auto time_slots_state::duration_for_activity(const activity *activity) const -> minutes {
+        return std::accumulate(_data.begin(), _data.end(), 0, [activity](minutes duration,
+                                                                         const time_slot &time_slot) {
+            auto duration_in_slot = time_slot.activity == activity ? time_slot.duration : 0;
+            return duration + duration_in_slot;
+        });
     }
 }

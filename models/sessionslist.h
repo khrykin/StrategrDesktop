@@ -16,11 +16,11 @@
 #include "activity.h"
 
 namespace stg {
-    using activity_sessions_list_base = private_list<session>;
+    using sessions_list_base = private_list<session>;
     class strategy;
 
     class sessions_list :
-            public activity_sessions_list_base,
+            public sessions_list_base,
             public notifiable_on_change,
             public streamable_list<sessions_list> {
     public:
@@ -47,15 +47,14 @@ namespace stg {
         auto session_after(const session &activity_session) const -> const session *;
         auto session_before(const session &activity_session) const -> const session *;
 
-        auto relative_begin_time(const session &session) const -> time_slot::time_t;
-        auto duration() const -> time_slot::duration_t;
+        auto relative_begin_time(const session &session) const -> time_slot::minutes;
+        auto duration() const -> time_slot::minutes;
 
         auto overview() const -> std::vector<overview_item>;
 
         auto class_print_name() const -> std::string override;
-
     private:
-        using activity_sessions_list_base::activity_sessions_list_base;
+        using sessions_list_base::sessions_list_base;
 
         void recalculate(const time_slots_state &time_slots);
 

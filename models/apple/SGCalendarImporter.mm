@@ -69,7 +69,7 @@ NSString *const SGCalendarImporterKeyCalendarsIdentifiers = @"importCalendarsIde
         CGColorRef color = ekEvent.calendar.CGColor;
 #endif
 
-        auto event = stg::strategy::event{ekEvent.calendar.title.UTF8String,
+        auto event = stg::strategy::event{stg::to_string(ekEvent.calendar.title),
                                           color,
                                           beginTime,
                                           endTime};

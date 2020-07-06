@@ -56,20 +56,19 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 void ApplicationMenu::setupEditMenu() {
     addMenu(editMenu);
 
-    editMenu->addAction(tr("Undo"),
-                        [=]() { window->strategy.undo(); },
-                        QKeySequence(Qt::CTRL + Qt::Key_Z));
+    addAction(editMenu,
+              actionCenter().undo,
+              QKeySequence(Qt::CTRL + Qt::Key_Z));
 
-    editMenu->addAction(tr("Redo"),
-                        [=]() { window->strategy.redo(); },
-                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+    addAction(editMenu,
+              actionCenter().redo,
+              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
 
     editMenu->addSeparator();
 
-    editMenu->addAction(tr("Reorder Activities By Usage"),
-                        window->scene(),
-                        &MainScene::reorderActivitiesByUsage,
-                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+    addAction(editMenu,
+              actionCenter().reorder_activities_by_usage,
+              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
 
 }
 
@@ -78,17 +77,15 @@ void ApplicationMenu::setupViewMenu() {
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction(tr("Activities"),
-                        window->scene(),
-                        &MainScene::showActivities,
-                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
+    addAction(viewMenu,
+              actionCenter().show_activities,
+              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
 
     viewMenu->addSeparator();
 
-    viewMenu->addAction(tr("Go to Current Time"),
-                        window->scene(),
-                        &MainScene::focusOnCurrentTime,
-                        QKeySequence(Qt::CTRL + Qt::Key_Slash));
+    addAction(viewMenu,
+              actionCenter().go_to_current_time,
+              QKeySequence(Qt::CTRL + Qt::Key_Slash));
 }
 
 void ApplicationMenu::setupFileMenu() {
@@ -221,4 +218,16 @@ void ApplicationMenu::createRecentFilesActions() {
 
         recentFileActions.append(action);
     }
+}
+
+MainScene *ApplicationMenu::mainScene() {
+    return window->scene();
+}
+
+stg::action_center &ApplicationMenu::actionCenter() {
+    return mainScene()->actionCenter();
+}
+
+QAction *ApplicationMenu::addAction(QMenu *menu, const stg::action &action, const QKeySequence &shortcut) {
+    return menu->addAction(QString::fromStdString(action.name), action, shortcut);
 }

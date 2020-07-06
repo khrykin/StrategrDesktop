@@ -94,3 +94,10 @@ QRect MacOSWindow::adjustedGeometry(MainWindow *window) {
 
     return qRect;
 }
+
+bool MacOSWindow::hasSFSymbol() {
+    if (@available(macOS 10.15, *))
+        return true;
+
+    return false;
+}

@@ -16,6 +16,7 @@
 #endif
 
 QStringList Application::openedFiles = QStringList();
+
 bool Application::updateMenuAdded = false;
 
 AboutWindow *Application::aboutWindow = nullptr;
@@ -32,15 +33,12 @@ QSettings &Application::currentSettings() {
 
 Application::Application(int &argc, char **argv)
         : QApplication(argc, argv) {
-    currentSettings().setProperty("lastLaunchedVersion",
-                                  ApplicationSettings::version);
+    currentSettings().setProperty("lastLaunchedVersion", ApplicationSettings::version);
 
     setupFonts();
 
 #ifdef Q_OS_MAC
-
     setupCocoaDelegate();
-
 #endif
 
     if (argc == 2) {
@@ -53,9 +51,7 @@ Application::Application(int &argc, char **argv)
 
     if (!launchedByOpenEvent) {
 #ifdef Q_OS_MAC
-
         QTimer::singleShot(100, [=]() {
-
 #endif
 
             if (!launchedByOpenEvent) {
@@ -64,16 +60,12 @@ Application::Application(int &argc, char **argv)
             }
 
 #ifdef Q_OS_MAC
-
         });
-
 #endif
 
 #ifdef Q_OS_WIN
-
         win_sparkle_set_appcast_url(ApplicationSettings::appcastURL);
         win_sparkle_init();
-
 #endif
     }
 }
@@ -82,14 +74,11 @@ Application::~Application() {
     delete Application::trayIcon;
 
 #ifdef Q_OS_MAC
-
     releaseCocoaDelegate();
-
 #endif
+
 #ifdef Q_OS_WIN
-
     win_sparkle_cleanup();
-
 #endif
 }
 
@@ -117,13 +106,11 @@ void Application::setupFonts() {
         qWarning() << "Ionicons cannot be loaded!";
 
 #ifdef Q_OS_WIN
-
     if (QFontDatabase().families().contains("Segoe UI")) {
         auto font = QFont("Segoe UI");
         font.setPixelSize(12);
         setFont(font);
     }
-
 #endif
 }
 
@@ -131,9 +118,7 @@ void Application::registerOpenedFile(const QString &filePath) {
     openedFiles.append(filePath);
 
 #ifdef Q_OS_MAC
-
     registerCocoaRecentFile(filePath);
-
 #endif
 }
 
@@ -147,9 +132,7 @@ bool Application::fileIsOpened(const QString &filePath) {
 
 void Application::clearRecentFiles() {
 #ifdef Q_OS_MAC
-
     Application::clearCocoaRecentFiles();
-
 #endif
 }
 

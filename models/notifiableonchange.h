@@ -28,7 +28,7 @@ namespace stg {
     protected:
         mutable std::vector<callback_t> on_change_callbacks = {};
 
-        virtual void on_change_event() {
+        virtual void on_change_event() const {
             for (const auto &callback: on_change_callbacks) {
                 callback();
             }

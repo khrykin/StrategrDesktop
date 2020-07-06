@@ -7,7 +7,10 @@
 #include <QMenuBar>
 #include <QMenu>
 
+#include "actioncenter.h"
+
 class MainWindow;
+class MainScene;
 
 class ApplicationMenu : public QMenuBar {
 Q_OBJECT
@@ -35,6 +38,11 @@ private:
     void createRecentFilesActions();
     void addExportToCalendarAction();
     void addImportFromCalendarAction();
+
+    MainScene *mainScene();
+    stg::action_center &actionCenter();
+
+    QAction *addAction(QMenu *menu, const stg::action &action, const QKeySequence &shortcut = 0);
 };
 
 

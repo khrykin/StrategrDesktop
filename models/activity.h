@@ -1,10 +1,10 @@
 #ifndef STRATEGR_ACTIVITY_H
 #define STRATEGR_ACTIVITY_H
 
-#include <string>
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <utility>
+#include <string>
 
 #include "color.h"
 

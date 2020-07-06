@@ -24,7 +24,7 @@ namespace stg {
         // 1. Drag selected slots to their new positions, switching the nearby slots;
         auto new_dragged_indices = silently_drag(range_to_drag, distance);
         // 2. Try to restore nearby sessions' initial positions.
-        invalidate_drag(new_dragged_indices);
+        validate_drag(new_dragged_indices);
 
         return new_dragged_indices;
     }
@@ -133,8 +133,8 @@ namespace stg {
         return cache;
     }
 
-    void stg::drag_operation::invalidate_drag(const indices_vector &dragged_indices) {
-        if (dragged_indices.empty()) {
+    void stg::drag_operation::validate_drag(const indices_vector &new_dragged_indices) {
+        if (new_dragged_indices.empty()) {
             return;
         }
 
@@ -144,9 +144,9 @@ namespace stg {
             auto cant_move_count = 0;
 
             for (auto const&[current_index, past_indices] : history) {
-                auto slot_is_dragged = std::find(dragged_indices.begin(),
-                                                 dragged_indices.end(),
-                                                 current_index) != dragged_indices.end();
+                auto slot_is_dragged = std::find(new_dragged_indices.begin(),
+                                                 new_dragged_indices.end(),
+                                                 current_index) != new_dragged_indices.end();
 
                 auto slot_is_empty = time_slots->at(current_index).activity == strategy::no_activity;
 

@@ -29,7 +29,6 @@ MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
         : QMainWindow(parent),
           fsIOManager(std::move(existingFsIOManager)),
           strategy(fsIOManager.openLastOrDefault()) {
-
     fsIOManager.setWindow(this);
     setup();
 }
@@ -210,10 +209,6 @@ MainWindow *MainWindow::createLastOpened() {
     return window;
 }
 
-void MainWindow::reloadStrategy() {
-    scene()->reloadStrategy();
-}
-
 int MainWindow::toolbarHeight() {
 #ifdef Q_OS_MAC
     return (int) MacOSWindow::toolbarHeight(this);
@@ -222,7 +217,6 @@ int MainWindow::toolbarHeight() {
 #endif
 }
 
-int MainWindow::toolbarHeightOf(QWidget *window) {
-    auto *mainWindow = dynamic_cast<MainWindow *>(window);
-    return mainWindow ? mainWindow->toolbarHeight() : 0;
+void MainWindow::reloadStrategy() {
+    scene()->reloadStrategy();
 }

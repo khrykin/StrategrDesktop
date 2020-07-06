@@ -52,7 +52,8 @@ if (APPLE)
             models/apple/SGCalendarImportViewModel.m
             models/apple/SGCalendarExportViewModel.h
             models/apple/SGCalendarExportViewModel.m
-            models/color.mm)
+            models/color.mm
+            models/stgstring.mm)
 endif ()
 
 set(MODELS ${MODELS_PLATFORM_FILES}
@@ -104,7 +105,14 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/color.cpp
         models/color.h
         models/theme.cpp
-        models/theme.h)
+        models/theme.h
+        models/timer.cpp
+        models/timer.h
+        models/action.hpp
+        models/actioncenter.cpp
+        models/actioncenter.h
+        models/stgstring.cpp
+        models/stgstring.h)
 
 set(MODELS_TESTS
         models/tests/activity_tests.cpp
@@ -129,8 +137,6 @@ set(UI
         ui/mainscene.h
         third-party/slidingstackedwidget.cpp
         third-party/slidingstackedwidget.h
-        third-party/stacklayout.cpp
-        third-party/stacklayout.h
         ui/sessionsmainwidget.cpp
         ui/sessionsmainwidget.h
         ui/activitylistwidget.cpp
@@ -149,8 +155,6 @@ set(UI
         ui/slotruler.h
         ui/sessionwidget.cpp
         ui/sessionwidget.h
-        ui/slotsmousehandler.cpp
-        ui/slotsmousehandler.h
         ui/selectionwidget.cpp
         ui/selectionwidget.h
         ui/navbar.cpp
@@ -196,10 +200,10 @@ set(UI
         ui/searchboxwidget.h
         ui/dynamicpalette.cpp
         ui/dynamicpalette.h
-        ui/slotboardcircleswidget.cpp
-        ui/slotboardcircleswidget.h
         ui/iconwidget.cpp
-        ui/iconwidget.h ui/slotboardscrollarea.cpp ui/slotboardscrollarea.h)
+        ui/iconwidget.h
+        ui/slotboardscrollarea.cpp
+        ui/slotboardscrollarea.h ui/dataproviderwidget.cpp ui/dataproviderwidget.h)
 
 set(UTILITY
         ${VERSION_FILE}
@@ -211,7 +215,8 @@ set(UTILITY
         utility/notifierbackend.h
         utility/notifierbackend.cpp
         utility/fontutils.cpp
-        utility/fontutils.h)
+        utility/fontutils.h
+        utility/timerbackend.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp

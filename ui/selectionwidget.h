@@ -8,24 +8,16 @@
 #include <QWidget>
 
 #include "applicationsettings.h"
-#include "strategy.h"
+#include "dataproviderwidget.h"
 #include "colorprovider.h"
 #include "selection.h"
 
-class SelectionWidget : public QWidget, public ColorProvider {
-Q_OBJECT
+class SelectionWidget : public DataProviderWidget,
+                        public ColorProvider {
 public:
-    stg::selection selection;
-
-    explicit SelectionWidget(stg::strategy &strategy,
-                             int slotHeight,
-                             QWidget *parent = nullptr);
+    explicit SelectionWidget(QWidget *parent);
 
 private:
-    stg::strategy &strategy;
-
-    int slotHeight = ApplicationSettings::defaultSlotHeight;
-
     void drawSelectionForItem(const stg::grouped_selection_element &selectionItem,
                               QPainter &painter);
 

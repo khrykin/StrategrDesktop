@@ -5,7 +5,7 @@
 #include <QScrollArea>
 #include <QPropertyAnimation>
 
-#include "strategy.h"
+#include "dataproviderwidget.h"
 #include "currenttimemarkerwidget.h"
 #include "slotswidget.h"
 #include "slotruler.h"
@@ -13,60 +13,29 @@
 #include "colorprovider.h"
 
 class MainWindow;
-class SlotBoardCirclesWidget;
-class QTimer;
 class SlotboardScrollArea;
 
-class SlotBoardWidget :
-        public QWidget,
-        public ColorProvider {
-Q_OBJECT
+class SlotBoardWidget : public DataProviderWidget,
+                        public ColorProvider {
 public:
-    explicit SlotBoardWidget(stg::strategy &strategy,
-                             QWidget *parent = nullptr);
+    explicit SlotBoardWidget(QWidget *parent);
 
     void reloadStrategy();
-    void updateCurrentTimeMarker();
-
-    void clearSelection();
-    void focusOnCurrentTime();
-
-    QVBoxLayout *slotsLayout() const;
-    SlotsWidget *slotsWidget() const;
-
-signals:
-    void timerTick();
-    void timeSlotsChange();
 private:
-    stg::strategy &strategy;
-
-    SlotsWidget *_slotsWidget = nullptr;
-    SlotBoardCirclesWidget *circlesWidget = nullptr;
+    SlotsWidget *slotsWidget = nullptr;
     SessionWidget *draggedSessionWidget = nullptr;
-
+    CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
     SlotRuler *slotRuler = nullptr;
-    QVBoxLayout *_slotsLayout = nullptr;
 
     QPropertyAnimation *draggedSessionAnimation = nullptr;
-    QTimer *currentTimeTimer = nullptr;
-    CurrentTimeMarkerWidget *currentTimeMarkerWidget = nullptr;
-
-    QVector<TimeLabel> makeLabels();
-
-    void handleTimeSlotsChange();
-    void updateUI();
 
     void layoutChildWidgets(QHBoxLayout *mainLayout);
 
-    SlotboardScrollArea *scrollArea();
-    void setupCurrentTimeTimer();
-    void timerCallback();
-    void updateSlotsLayout() const;
     void drawDraggedSession(int, int);
+    void updateCurrentTimeMarker();
 
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-
 };
 
 #endif // SLOTBOARD_H

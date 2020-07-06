@@ -16,8 +16,14 @@ namespace stg {
         strategy.add_on_change_callback(this, &stg::notifier::schedule);
     }
 
+    notifier::~notifier() {
+        if (timer)
+            stop_polling();
+    }
+
     void notifier::schedule() {
         std::vector<notification> notifications;
+
         for (auto it = strategy.sessions().begin(); it != strategy.sessions().end(); ++it) {
             const auto &session = *it;
             auto next_it = std::next(it);
@@ -93,6 +99,8 @@ namespace stg {
     }
 
     void notifier::send_now_if_needed(seconds polling_seconds_interval) {
+        std::cout << "notifier::send_now_if_needed, polling_seconds_interval: " << polling_seconds_interval << ".\n";
+
         if (_scheduled_notifications.empty()) {
             schedule();
         }
@@ -133,14 +141,24 @@ namespace stg {
 
         auto &next_notification = *next_notification_it;
 
-        if (on_send_notiifcation)
-            on_send_notiifcation(next_notification);
+        if (on_send_notification)
+            on_send_notification(next_notification);
 
 //    std::cout << "notification sent: " << next_notification << "\n";
 
         // Remove sent and stale notifications
         _upcoming_notifications.erase(_upcoming_notifications.begin(),
                                       std::next(next_notification_it));
+    }
+
+    void notifier::start_polling(timer::seconds interval) {
+        timer = stg::timer::schedule(interval, true, [=] {
+            send_now_if_needed(interval);
+        });
+    }
+
+    void notifier::stop_polling() {
+        timer = nullptr;
     }
 
     auto notification::make_title(const session &session, type type) -> std::string {

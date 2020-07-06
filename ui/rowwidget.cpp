@@ -10,7 +10,7 @@
 #include "applicationsettings.h"
 
 void RowWidget::paintEvent(QPaintEvent *event) {
-    QWidget::paintEvent(event);
+    using namespace ApplicationSettings;
 
     auto painter = QPainter(this);
 
@@ -20,7 +20,7 @@ void RowWidget::paintEvent(QPaintEvent *event) {
     painter.drawRect(QRect(0, 0, width(), height()));
 
     painter.setBrush(_borderColor());
-    auto borderRect = QRect(0, height() - 1, width(), 1);
+    auto borderRect = QRect(defaultPadding, height() - 1, width() - defaultPadding, 1);
     painter.drawRect(borderRect);
 }
 

@@ -9,7 +9,7 @@
 
 class MainWindow;
 @interface SGToolbar : NSToolbar <NSToolbarDelegate> {
-@package
+@public
     MainWindow *qWindow;
 }
 

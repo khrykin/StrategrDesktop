@@ -8,14 +8,16 @@
 #include <QWidget>
 
 #include "colorprovider.h"
+#include "cursorprovider.h"
 
 class QLineEdit;
 
-class SearchBoxWidget : public QWidget, public ColorProvider {
+class SearchBoxWidget : public QWidget,
+                        private ColorProvider,
+                        private CursorProvider {
 Q_OBJECT
 public:
-    explicit SearchBoxWidget(const QString &placeholder,
-                             QWidget *parent = nullptr);
+    explicit SearchBoxWidget(const QString &placeholder, QWidget *parent = nullptr);
 
     QString text();
     void setText(const QString &string);
@@ -32,13 +34,11 @@ protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
     QLineEdit *lineEdit;
-    QString iconText = u8"\uf002";
 
     QAction *cancelAction = nullptr;
     QAction *selectUpAction = nullptr;
     QAction *selectDownAction = nullptr;
 
-    QFont iconFont() const;
     QRect iconRect() const;
 
     void reloadPalette() const;

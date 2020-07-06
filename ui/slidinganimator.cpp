@@ -35,7 +35,7 @@ void SlidingAnimator::setInitialWidgetPosition() {
         widget->setGeometry(stub->geometry());
     } else if (operation == Operation::Show) {
         // Enforce initial size on the widget for showAskToSave operation_type.
-        // Otherwise it will resize along is the stub, which is not what we want.
+        // Otherwise it will resize along with the stub, which is not what we want.
 
         auto geometry = widget->geometry();
         auto origin = makePointByTranslation(geometry.topLeft(), initialWidgetSize);
@@ -126,7 +126,6 @@ int SlidingAnimator::widgetSize() { return (widget->*sizeGetter<QWidget>())(); }
 
 QTimeLine *SlidingAnimator::makeTimeLine() {
     auto *timeLine = new QTimeLine(duration, this);
-    std::cout << "updateInterval: " << updateInterval << "\n";
     timeLine->setUpdateInterval(updateInterval);
     timeLine->setCurveShape(curveShape);
     return timeLine;
@@ -211,13 +210,6 @@ void SlidingAnimator::updateWidgetGeometryOnStubResize() {
 
 void SlidingAnimator::prepareOperation() {
     auto *layout = dynamic_cast<QBoxLayout *>(widget->parentWidget()->layout());
-
-    // NB! Unsafe code
-    int i = 0;
-    while (layout->indexOf(widget) < 0) {
-        layout = dynamic_cast<QBoxLayout *>(layout->children()[i]);
-        i++;
-    }
 
     _widgetParentLayout = layout;
 

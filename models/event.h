@@ -35,7 +35,7 @@ namespace stg {
         }
 
         auto has_only(key_modifiers mod) const -> bool;
-        auto with(key_modifiers mod) const -> bool;
+        auto has(key_modifiers mod) const -> bool;
 
         key_modifiers modifiers = 0;
     };

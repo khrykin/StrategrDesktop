@@ -1,4 +1,4 @@
-//
+
 // Created by Dmitry Khrykin on 2020-01-29.
 //
 
@@ -17,8 +17,12 @@
 #include "strategy.h"
 #include "event.h"
 #include "selection.h"
+#include "timer.h"
+#include "action.hpp"
 
 namespace stg {
+    class action_center;
+
     struct mouse_parameters {
         stg::gfloat stretch_zone_size = 5;
         stg::gfloat direction_change_resolution = 2;
@@ -46,35 +50,43 @@ namespace stg {
             stg::gfloat top = 0;
             stg::gfloat bottom = 0;
 
-            bool contains(stg::gfloat coord);
+            auto contains(stg::gfloat coord) -> bool;
 
-            friend std::ostream &operator<<(std::ostream &os, const range &range);
+            friend auto operator<<(std::ostream &os, const range &range) -> std::ostream &;
+        };
+
+        struct resize_boundary_configuration {
+            static constexpr index_t none = -2;
+            index_t slot_index = resize_boundary_configuration::none;
+            index_t session_index = resize_boundary_configuration::none;
+        };
+
+        struct context_menu_configuration {
+            point position;
+            index_t slot_index;
+            index_t session_index;
+            std::vector<const stg::action *> actions;
         };
 
         mouse_parameters settings;
+        stg::action_center *action_center = nullptr;
 
         std::function<void(cursor)> on_cursor_change = nullptr;
-        std::function<void()> on_open_activities = nullptr;
-        std::function<void(const point &)> on_show_context_menu = nullptr;
         std::function<void(const std::vector<index_t> &)> on_select_sessions = nullptr;
-        std::function<void(index_t session_before_boundary_index,
-                           index_t slot_before_boundary_index)> on_resize_boundary_change = nullptr;
-        std::function<void(scroll_direction)> on_start_auto_scroll = nullptr;
-        std::function<void()> on_stop_auto_scroll = nullptr;
-        std::function<void(const point &,
-                           index_t current_slot_index,
-                           index_t current_session_index)> on_context_menu_event = nullptr;
-
+        std::function<void()> on_resize_boundary_change = nullptr;
+        std::function<point(gfloat scroll_offset_increment)> on_auto_scroll_frame = nullptr;
         std::function<void(index_t session_index, index_t first_slot_index)> on_draw_dragged_session = nullptr;
+        std::function<void(const context_menu_configuration &)> on_show_context_menu = nullptr;
 
         explicit mouse_handler(stg::strategy &strategy,
                                stg::selection &selection,
-                               std::function<int()> slot_height_getter = nullptr,
-                               std::function<rect()> bounds_getter = nullptr,
+                               std::function<gfloat()> slot_height_getter = nullptr,
                                std::function<rect()> viewport_getter = nullptr,
                                const mouse_parameters &settings = mouse_parameters());
 
         ~mouse_handler();
+
+        auto resize_boundary() const -> const resize_boundary_configuration &;
 
         // Note: all event positions must be in slotboard view's coordinate space
         void mouse_press(const mouse_event &event);
@@ -83,8 +95,6 @@ namespace stg {
 
         void key_down(const event &event);
         void key_up(const event &event);
-
-        void auto_scroll_frame(const point &new_mouse_position);
     private:
         enum class mouse_zone {
             out_of_bounds,
@@ -122,16 +132,15 @@ namespace stg {
         struct copy_drag_operation;
         friend struct copy_drag_operation;
 
-        // Slotboard view bounds relative to scroll view content
-        std::function<rect()> get_bounds = nullptr;
-        // Scroll view viewport bounds relative to slotboard
+        // Scroll view viewport frame relative to slotboard
         std::function<rect()> get_viewport = nullptr;
-        std::function<int()> get_slot_height = nullptr;
+        std::function<gfloat()> get_slot_height = nullptr;
 
         stg::strategy &strategy;
         stg::selection &selection;
 
         std::unique_ptr<operation> current_operaion;
+        std::unique_ptr<timer> autoscroll_timer = nullptr;
 
         cursor current_cursor = cursor::pointer;
         mouse_zone current_mouse_zone = mouse_zone::out_of_bounds;
@@ -142,33 +151,41 @@ namespace stg {
         index_t current_slot_index = -1;
         index_t current_session_index = -1;
 
-        bool autoscroll_is_on = false;
+        resize_boundary_configuration _resize_boundary;
 
-        float px_in_time();
+        auto px_in_time() -> float;
 
         template<class Type>
-        std::unique_ptr<Type> make_operation() {
+        auto make_operation() -> std::unique_ptr<Type> {
             return std::make_unique<Type>(this);
         }
 
         void handle_autoscroll(const stg::mouse_event &event);
 
-        index_t get_slot_index(const mouse_event &event);
-        index_t get_session_index(index_t slot_index);
-        range get_session_range(index_t session_index);
-        direction get_direction(int delta);
-        cursor get_cursor(event::key_modifiers modifiers);
+        auto get_slot_index(const mouse_event &event) -> index_t;
+        auto get_session_index(index_t slot_index) -> index_t;
+        auto get_session_range(index_t session_index) -> range;
+        auto get_direction(int delta) const -> direction;
+        auto get_cursor(event::key_modifiers modifiers) -> cursor;
 
-        stg::mouse_handler::mouse_zone get_mouse_zone(int session_index, const point &mouse_pos);
-        std::unique_ptr<operation> get_operation(event::key_modifiers modifiers);
+        auto get_mouse_zone(int session_index, const point &mouse_pos) -> mouse_zone;
+        auto get_operation(event::key_modifiers modifiers) -> std::unique_ptr<operation>;
 
         void update_cursor(event::key_modifiers modifiers);
         void update_direction(const mouse_event &event);
 
-        friend std::ostream &operator<<(std::ostream &os, operation_type op);
-        friend std::ostream &operator<<(std::ostream &os, direction direction);
-        friend std::ostream &operator<<(std::ostream &os, scroll_direction direction);
-        friend std::ostream &operator<<(std::ostream &os, mouse_zone zone);
+        void start_autoscroll(scroll_direction direction);
+        void stop_autoscroll();
+        void auto_scroll_frame(const point &new_mouse_position);
+
+        void show_context_menu(const mouse_event &event);
+
+        auto context_actions() -> std::vector<const stg::action *>;
+
+        friend auto operator<<(std::ostream &os, operation_type op) -> std::ostream &;
+        friend auto operator<<(std::ostream &os, direction direction) -> std::ostream &;
+        friend auto operator<<(std::ostream &os, scroll_direction direction) -> std::ostream &;
+        friend auto operator<<(std::ostream &os, mouse_zone zone) -> std::ostream &;
     };
 }
 

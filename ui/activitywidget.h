@@ -12,12 +12,12 @@
 #include "activityeditormenu.h"
 #include "colorprovider.h"
 #include "coloredlabel.h"
+#include "dataproviderwidget.h"
 
-class ActivityWidget : public QWidget, public ColorProvider {
+class ActivityWidget : public DataProviderWidget, public ColorProvider {
 Q_OBJECT
 public:
-    explicit ActivityWidget(stg::activity *activity,
-                            QWidget *parent = nullptr);
+    explicit ActivityWidget(stg::activity *activity, QWidget *parent);
 
     stg::activity *activity() const;
     void setActivity(stg::activity *activity);
@@ -36,14 +36,20 @@ signals:
     void activityEdited(const stg::activity &activity);
     void activityDeleted();
 private:
+    static constexpr int circleSize = 10;
+
     stg::activity *_activity;
 
-    ColoredLabel *label = nullptr;
+    ColoredLabel *titleLabel = nullptr;
+    ColoredLabel *durationLabel = nullptr;
+
     ActivityEditorMenu *editorMenu = nullptr;
 
     bool _isSelected = false;
     bool isClicked = false;
     bool _drawsBorder = true;
+    bool activityIsUsed = strategy().time_slots().has_activity(activity());
+    int duration = strategy().time_slots().duration_for_activity(activity());
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

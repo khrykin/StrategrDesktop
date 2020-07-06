@@ -19,15 +19,13 @@ namespace stg {
         auto is_visible() const -> bool;
         auto is_hidden() const -> bool;
 
-        auto rect_in_parent(const rect &slotboard_rect) const -> rect;
+        auto rect_in_slots_rect(const rect &slotboard_rect) const -> rect;
 
-        auto scroll_offset(const rect &slots_rect,
-                           rect viewport_rect) const -> stg::gfloat;
+        auto scroll_offset(const rect &slots_rect, rect viewport_rect) const -> stg::gfloat;
     private:
         const strategy &strategy;
 
         auto top_offset_in_slots(stg::gfloat total_height) const -> stg::gfloat;
-        auto relative_position() const -> float;
     };
 }
 

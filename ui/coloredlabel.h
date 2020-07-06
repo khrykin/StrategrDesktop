@@ -9,7 +9,6 @@
 #include <QLabel>
 
 class ColoredLabel : public QWidget {
-Q_OBJECT
 public:
     std::function<void(QPainter *, const QString &)> customRenderer = nullptr;
 

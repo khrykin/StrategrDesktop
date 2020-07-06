@@ -49,7 +49,9 @@ namespace stg {
             auto time_slots = parse_time_slots(json, activities);
 
             return std::make_unique<strategy>(time_slots, activities);
-        } catch (...) {
+        } catch (const std::exception &exception) {
+            std::cerr << "Error while reading from JSON: " << exception.what() << "\n";
+
             return nullptr;
         }
     }
@@ -69,8 +71,8 @@ namespace stg {
         if (!json[keys::slots].is_null()) {
             for (auto it = json[keys::slots].begin(); it != json[keys::slots].end(); ++it) {
                 auto slot_index = it - json[keys::slots].begin();
-                auto time_slot_begin_time = static_cast<time_slot::time_t>(begin_time +
-                                                                           slot_index * time_slot_duration);
+                auto time_slot_begin_time = static_cast<time_slot::minutes>(begin_time +
+                                                                            slot_index * time_slot_duration);
 
                 auto time_slot = stg::time_slot(time_slot_begin_time,
                                                 time_slot_duration);

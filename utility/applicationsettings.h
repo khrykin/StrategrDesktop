@@ -22,8 +22,8 @@ namespace ApplicationSettings {
     const auto overviewHeight = 8;
 
     const auto currentTimeTimerSecondsInterval = 1;
-    const auto notifierTimerMillisecondsInterval = 15 * 1000;
-    const auto currentSessionShowDelay = 150;
+    const auto notifierTimerSecondsInterval = 15;
+    const auto currentSessionShowDelay = 200;
 
     const auto rowBorderColor = "#ccc";
     const auto currentTimeMarkerColor = "#ff725c";

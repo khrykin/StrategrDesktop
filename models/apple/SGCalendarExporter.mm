@@ -102,18 +102,16 @@ NSString *const SGCalendarExporterKeyCalendarName = @"exportCalendarName";
     NSString *calendarName = self.usingSpecificCalendar ? self.settings.calendarName : nil;
 
     if (!calendarName) {
-        calendarName = [NSString stringWithUTF8String:session.activity->name().c_str()];
-        color = session.activity->color();//.to_cg_color();
+        calendarName = stg::to_nsstring(session.activity->name());
+        color = session.activity->color();
     }
 
     EKCalendar *calendar = [self.calendarManager findOrCreateCalendarWithTitle:calendarName
                                                                       andColor:color];
 
-    NSString *eventTitle = [NSString stringWithUTF8String:session.activity->name().c_str()];
-
     [self.calendarManager createEventForCalendar:calendar
                                             date:date
-                                           title:eventTitle
+                                           title:stg::to_nsstring(session.activity->name())
                                     beginMinutes:session.begin_time()
                                  durationMinutes:session.duration()
                             includeNotifications:includeNotifications];

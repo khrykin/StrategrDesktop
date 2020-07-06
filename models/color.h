@@ -102,10 +102,8 @@ namespace stg {
         auto to_hex_string() const -> std::string;
 
 #if __APPLE__
-
         color(CGColorRef cg_color);
         operator CGColorRef() const;
-
 #endif
 
     private:

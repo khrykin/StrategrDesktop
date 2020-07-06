@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-#include "strategy.h"
 #include "navbar.h"
 #include "activityeditormenu.h"
 #include "third-party/slidingstackedwidget.h"
@@ -11,6 +10,7 @@
 #include "reactivelist.hpp"
 #include "colorprovider.h"
 #include "coloredlabel.h"
+#include "dataproviderwidget.h"
 
 class SearchBoxWidget;
 class MainScene;
@@ -18,24 +18,19 @@ class QVBoxLayout;
 class QLineEdit;
 class QScrollArea;
 
-class ActivityListWidget : public QWidget,
+class ActivityListWidget : public DataProviderWidget,
                            public ReactiveList<ActivityWidget>,
                            public ColorProvider {
 Q_OBJECT
 public:
-    explicit ActivityListWidget(stg::strategy &strategy,
-                                QWidget *parent = nullptr);
+    explicit ActivityListWidget(QWidget *parent);
 
     void reloadStrategy();
     void showNewActivityMenu();
-signals:
-    void wantToGetBack();
 protected:
     void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *object, QEvent *event) override;
 private:
-    stg::strategy &strategy;
-
     SearchBoxWidget *searchBox = nullptr;
     QScrollArea *scrollArea = nullptr;
     QWidget *listWidget = nullptr;
@@ -44,8 +39,6 @@ private:
     ColoredLabel *emptyListNotice = nullptr;
 
     QAction *getBackAction = nullptr;
-
-    MainScene *mainScene();
 
     int selectedActivityIndex = -1;
 

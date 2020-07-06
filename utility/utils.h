@@ -15,16 +15,10 @@
 
 #include "geometry.h"
 
-/* time_utils */
-
-QString humanTimeForMinutes(int mins);
-
 int QTimeToMinutes(const QTime &time);
-
 QTime QTimeFromMinutes(int minutes);
 QString QStringForMinutes(int minutes);
-
-int currentSeconds();
+QString QStringForCalendarTime(time_t time);
 
 /* Widgets */
 template<class T>
@@ -47,14 +41,6 @@ double devicePixelRatio();
 /* Strings */
 namespace StringUtils {
     QString toSentenceCase(QString string);
-
 }
-
-std::vector<std::string> QStringListToStdVector(const QStringList &list);
-QStringList QStringListFromStdVector(const std::vector<std::string> &vector);
-
-/* Multithreading */
-
-void dispatchToMainThread(const std::function<void()> &callback);
 
 #endif // UTILS_H

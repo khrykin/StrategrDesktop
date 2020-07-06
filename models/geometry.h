@@ -117,15 +117,15 @@ namespace stg {
             }
         }
 
-        constexpr rect(std::initializer_list<int> l = {}) noexcept {
-            if (l.size() == 4) {
-                const auto *it = l.begin();
-                left = *it++;
-                top = *it++;
-                width = *it++;
-                height = *it;
-            }
-        }
+//        constexpr rect(std::initializer_list<int> l = {}) noexcept {
+//            if (l.size() == 4) {
+//                const auto *it = l.begin();
+//                left = *it++;
+//                top = *it++;
+//                width = *it++;
+//                height = *it;
+//            }
+//        }
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
         rect(const T &rect) {

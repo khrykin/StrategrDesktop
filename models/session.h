@@ -13,36 +13,34 @@ namespace stg {
 
     struct session {
         using length_t = int;
-        using time_t = time_slot::time_t;
-        using duration_t = time_slot::duration_t;
+        using minutes = time_slot::minutes;
 
         std::vector<time_slot> time_slots{};
         activity *activity = time_slot::no_activity;
 
-        length_t length() const;
-        time_t begin_time() const;
-        time_t end_time() const;
-        duration_t duration() const;
+        auto length() const -> length_t;
+        auto begin_time() const -> minutes;
+        auto end_time() const -> minutes;
+        auto duration() const -> minutes;
 
-        double progress() const;
+        auto progress() const -> double;
 
-        bool is_current() const;
-        bool is_past() const;
-        bool is_future() const;
+        auto is_current() const -> bool;
+        auto is_past() const -> bool;
+        auto is_future() const -> bool;
 
-        bool empty() const;
+        auto empty() const -> bool;
 
-        duration_t passed_minutes() const;
-        duration_t left_minutes() const;
+        auto passed_minutes() const -> minutes;
+        auto left_minutes() const -> minutes;
 
-        friend bool operator==(const session &lhs,
-                               const session &rhs);
+        friend auto operator==(const session &lhs, const session &rhs) -> bool;
+        friend auto operator!=(const session &lhs, const session &rhs) -> bool;
+        friend auto operator<<(std::ostream &os, const session &session) -> std::ostream &;
 
-        friend bool operator!=(const session &lhs,
-                               const session &rhs);
-
-        friend std::ostream &operator<<(std::ostream &os,
-                                        const session &session);
+    private:
+        auto current_seconds() const -> unsigned;
+        auto current_minutes() const -> unsigned;
     };
 
 };

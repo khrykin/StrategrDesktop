@@ -4,9 +4,10 @@
 
 #include "slotboardscrollarea.h"
 
+#include <iostream>
+
 #include <QScrollBar>
 #include <QDebug>
-#include <QEvent>
 #include <QResizeEvent>
 
 void SlotboardScrollArea::setViewportTopOffset(int top) {

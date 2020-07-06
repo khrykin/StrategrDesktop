@@ -26,7 +26,6 @@ public:
 
     static MainWindow *createLastOpened();
     static void openNewWindow();
-    static int toolbarHeightOf(QWidget *window);
 
     ~MainWindow() override;
 
@@ -56,8 +55,9 @@ private:
 
     MainScene *_scene = nullptr;
     ApplicationMenu *_menu = nullptr;
+
     FileSystemIOManager fsIOManager = FileSystemIOManager(this);
-    
+
     stg::strategy strategy;
 
     bool alreadyTornDown = false;

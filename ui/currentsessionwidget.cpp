@@ -7,13 +7,13 @@
 #include "currentsessionwidget.h"
 #include "slidinganimator.h"
 #include "utils.h"
-#include "applicationsettings.h"
 #include "fontutils.h"
+#include "applicationsettings.h"
+#include "time_utils.h"
 
 #include "coloredlabel.h"
 
-CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *parent)
-        : strategy(strategy), QWidget(parent) {
+CurrentSessionWidget::CurrentSessionWidget(QWidget *parent) : DataProviderWidget(parent) {
     setMouseTracking(true);
 
     setFixedHeight(ApplicationSettings::currentSessionHeight);
@@ -47,9 +47,8 @@ CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *par
     activityLabel->setFontHeight(ApplicationSettings::sessionFontSize - 1);
     activityLabel->setContentsMargins(0, 0, 0, 3);
     activityLabel->customRenderer = [&](QPainter *painter, const QString &) {
-        if (!activeSession) {
+        if (!activeSession)
             return;
-        }
 
         FontUtils::drawSessionTitle(*activeSession,
                                     *painter,
@@ -111,6 +110,10 @@ CurrentSessionWidget::CurrentSessionWidget(stg::strategy &strategy, QWidget *par
 void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
     auto painter = QPainter(this);
 
+    painter.setPen(Qt::red);
+    painter.setBrush(Qt::blue);
+    painter.drawRect(contentsRect());
+
     auto backgroundRect = QRect(QPoint(0, 0), geometry().size());
 
     auto progressRect = QRect(backgroundRect.x(),
@@ -149,19 +152,13 @@ void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
     }
 
     painter.setBrush(hardBorderColor());
-    painter.drawRect(QRect(0,
-                           height() - 1,
-                           width(),
-                           1));
+    painter.drawRect(QRect(0, height() - 1, width(), 1));
 
     auto topBorderColor = QColor(Qt::white);
     topBorderColor.setAlphaF(0.4 * ColorUtils::shadesAlphaFactor(10, 0.1));
 
     painter.setBrush(topBorderColor);
-    painter.drawRect(QRect(0,
-                           0,
-                           width(),
-                           1));
+    painter.drawRect(QRect(0, 0, width(), 1));
 }
 
 void CurrentSessionWidget::mousePressEvent(QMouseEvent *) {
@@ -182,12 +179,13 @@ void CurrentSessionWidget::leaveEvent(QEvent *) {
 
 void CurrentSessionWidget::mouseReleaseEvent(QMouseEvent *) {
     isClicked = false;
-    emit clicked();
     update();
+
+    actionCenter().go_to_current_time();
 }
 
 void CurrentSessionWidget::reloadStrategy() {
-    updateUIWithSession(strategy.active_session());
+    updateUIWithSession(strategy().active_session());
 }
 
 void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
@@ -195,11 +193,8 @@ void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedC
     options.onFinishedCallback = onFinishedCallback;
     options.duration = ApplicationSettings::currentSessionShowDelay;
 
-    isVisible = false;
+    SlidingAnimator::hideWidget(this, options);
 
-    QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
-        SlidingAnimator::hideWidget(this, options);
-    });
 }
 
 void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
@@ -207,34 +202,18 @@ void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedC
     options.onFinishedCallback = onFinishedCallback;
     options.duration = ApplicationSettings::currentSessionShowDelay;
 
-    isVisible = true;
-
-    QTimer::singleShot(ApplicationSettings::currentSessionShowDelay, [=]() {
-        if (strategy.active_session()) {
-            SlidingAnimator::showWidget(this, options);
-        } else {
-            isVisible = false;
-        }
-    });
+    SlidingAnimator::showWidget(this, options);
 }
 
 void CurrentSessionWidget::updateUIWithSession(const stg::session *activeSession) {
-    if (!activeSession) {
-        if (isVisible) {
-            isVisible = false;
-            slideAndHide();
-        }
-
-        return;
-    }
-
     auto startTimeText = QStringForMinutes(activeSession->begin_time());
     auto endTimeText = QStringForMinutes(activeSession->end_time());
 
     auto activityText = makeActivitySessionTitle();
 
-    auto passedTimeText = humanTimeForMinutes(activeSession->passed_minutes());
-    auto leftTimeText = humanTimeForMinutes(activeSession->left_minutes());
+    using namespace stg::time_utils;
+    auto passedTimeText = QString::fromStdString(human_string_from_minutes(activeSession->passed_minutes()));
+    auto leftTimeText = QString::fromStdString(human_string_from_minutes(activeSession->left_minutes()));
 
     startTimeLabel->setText(startTimeText);
     endTimeLabel->setText(endTimeText);
@@ -247,9 +226,9 @@ void CurrentSessionWidget::updateUIWithSession(const stg::session *activeSession
     setProgress(activeSession->progress());
 }
 
-QString CurrentSessionWidget::makeActivitySessionTitle() const {
-    const auto *activitySession = strategy.active_session();
-    return humanTimeForMinutes(activitySession->duration())
+QString CurrentSessionWidget::makeActivitySessionTitle() {
+    const auto *activitySession = strategy().active_session();
+    return QString::fromStdString(stg::time_utils::human_string_from_minutes(activitySession->duration()))
            + " "
            + "<font color=\""
            + QString::fromStdString(activitySession->activity->color())
@@ -267,16 +246,11 @@ void CurrentSessionWidget::setProgress(double value) {
 
 void CurrentSessionWidget::reloadSessionIfNeeded() {
     activeSession = std::nullopt;
-    if (strategy.active_session())
-        activeSession = *strategy.active_session();
+    if (strategy().active_session())
+        activeSession = *strategy().active_session();
 
     if (activeSession) {
-        updateUIWithSession(strategy.active_session());
-        if (!isVisible)
-            slideAndShow();
-    } else {
-        if (isVisible)
-            slideAndHide();
+        updateUIWithSession(strategy().active_session());
     }
 }
 

@@ -13,14 +13,15 @@
 #include "applicationsettings.h"
 #include "mainwindow.h"
 #include "mainscene.h"
+#include "time_utils.h"
 
-ActivityWidget::ActivityWidget(stg::activity *activity,
-                               QWidget *parent)
-        : QWidget(parent), _activity(activity) {
+ActivityWidget::ActivityWidget(stg::activity *activity, QWidget *parent)
+        : DataProviderWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
 
     setLayout(new QHBoxLayout());
-    layout()->setContentsMargins(16, 0, 16, 0);
+    layout()->setContentsMargins(4 * ApplicationSettings::defaultPadding + circleSize, 0,
+                                 2 * ApplicationSettings::defaultPadding, 0);
     layout()->setSpacing(0);
 
     layoutChildWidgets();
@@ -29,17 +30,25 @@ ActivityWidget::ActivityWidget(stg::activity *activity,
 }
 
 void ActivityWidget::layoutChildWidgets() {
-    label = new ColoredLabel();
-    label->setAlignment(Qt::AlignCenter);
-    label->setBold(true);
-    label->setFontHeight(ApplicationSettings::sessionFontSize);
-    label->setElideMode(Qt::ElideMiddle);
+    titleLabel = new ColoredLabel();
+    titleLabel->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    titleLabel->setFontHeight(14);
+    titleLabel->setElideMode(Qt::ElideMiddle);
+    titleLabel->setDynamicColor(textColor);
 
-    layout()->addWidget(label);
+    durationLabel = new ColoredLabel();
+    durationLabel->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+    durationLabel->setFontHeight(13);
+    durationLabel->setDynamicColor(secondaryTextColor);
+    durationLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    layout()->addWidget(titleLabel);
+    layout()->addWidget(durationLabel);
 }
 
 void ActivityWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
     painter.setPen(Qt::NoPen);
     painter.setBrush(baseColor());
@@ -51,13 +60,28 @@ void ActivityWidget::paintEvent(QPaintEvent *) {
     } else if (_drawsBorder) {
         drawBorder(painter);
     }
+
+    auto circleRect = QRect(0, 0, circleSize, circleSize);
+    circleRect.moveCenter(QPoint(2 * ApplicationSettings::defaultPadding + circleRect.width() / 2,
+                                 contentsRect().center().y()));
+
+
+    if (activityIsUsed) {
+        painter.setBrush(QColor(activity()->color()));
+        painter.setPen(Qt::NoPen);
+    } else {
+        painter.setPen(QPen(QColor(activity()->color()), 1.5));
+        painter.setBrush(Qt::NoBrush);
+    }
+
+    painter.drawEllipse(circleRect);
 }
 
 void ActivityWidget::drawBorder(QPainter &painter) const {
     painter.setBrush(borderColor());
-    auto borderRect = QRect(8,
+    auto borderRect = QRect(4 * ApplicationSettings::defaultPadding + circleSize,
                             height() - 1,
-                            width() - 2 * ApplicationSettings::defaultPadding,
+                            width() - 4 * ApplicationSettings::defaultPadding - circleSize,
                             1);
 
     painter.drawRect(borderRect);
@@ -68,7 +92,6 @@ void ActivityWidget::drawSelection(QPainter &painter) const {
 
     auto selectionColor = overlayWithAlpha(activity()->color(),
                                            0.05 * shadesAlphaFactor(0));
-
 
     auto highlightColor = overlayWithAlpha(activity()->color(),
                                            0.1 * shadesAlphaFactor(0));
@@ -82,10 +105,15 @@ void ActivityWidget::drawSelection(QPainter &painter) const {
 
 void ActivityWidget::updateUI() {
     using namespace ColorUtils;
-    label->setText(QString::fromStdString(activity()->name()));
-    label->setDynamicColor([this]() {
-        return safeForegroundColor(activity()->color());
-    });
+    using namespace stg::time_utils;
+
+    activityIsUsed = strategy().time_slots().has_activity(activity());
+    titleLabel->setText(activity()->name().c_str());
+
+    durationLabel->setText(human_string_from_minutes(duration).c_str());
+    durationLabel->setDynamicColor(activityIsUsed ? secondaryTextColor : tertiaryTextColor);
+
+    update();
 }
 
 stg::activity *ActivityWidget::activity() const {
@@ -93,10 +121,19 @@ stg::activity *ActivityWidget::activity() const {
 }
 
 void ActivityWidget::setActivity(stg::activity *activity) {
-    if (activity != _activity) {
-        _activity = activity;
+    bool newActivityIsUsed = strategy().time_slots().has_activity(activity);
+    auto newDuration = strategy().time_slots().duration_for_activity(activity);
+
+    bool activityChanged = activity != _activity;
+    bool activityIsUsedChanged = newActivityIsUsed != activityIsUsed;
+    bool durationChanged = newDuration != duration;
+
+    _activity = activity;
+    activityIsUsed = newActivityIsUsed;
+    duration = newDuration;
+
+    if (activityChanged || activityIsUsedChanged || durationChanged)
         updateUI();
-    }
 }
 
 void ActivityWidget::mousePressEvent(QMouseEvent *event) {
@@ -122,9 +159,6 @@ void ActivityWidget::contextMenuEvent(QContextMenuEvent *event) {
 }
 
 void ActivityWidget::showContextMenu(const QPoint &position) {
-//    isClicked = true;
-//    update();
-
     auto newEditorMenu = new ActivityEditorMenu(*activity(), this);
     delete editorMenu;
     editorMenu = newEditorMenu;
@@ -187,7 +221,7 @@ void ActivityWidget::choose(QMouseEvent *event) {
 
     if (!isClicked) {
         isClicked = true;
-        update();
+        updateUI();
     }
 
     if (mainScene->selection().empty()) {
@@ -197,6 +231,6 @@ void ActivityWidget::choose(QMouseEvent *event) {
         emit selected();
         emit unhovered();
         isClicked = false;
-        update();
+        updateUI();
     }
 }

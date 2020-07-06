@@ -3,6 +3,10 @@
 //
 
 #include "cursorprovider.h"
+#include "applicationsettings.h"
+
+#include <iostream>
+#include <QFont>
 
 #ifdef Q_OS_MAC
 
@@ -47,4 +51,15 @@ QCursor CursorProvider::openHandCursor() {
 
 QCursor CursorProvider::dragCopyCursor() {
     return QCursor(Qt::DragCopyCursor);
+}
+
+QFont CursorProvider::iconFont() {
+    QFont iconFont;
+    iconFont.setFamily(ApplicationSettings::fontResourcePath);
+
+    return iconFont;
+}
+
+QString CursorProvider::searchIconText() {
+    return u8"\uf002";
 }

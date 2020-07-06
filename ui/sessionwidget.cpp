@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include <QLayout>
 #include <QPaintEvent>
 #include <QPainter>
@@ -10,19 +8,70 @@
 #include <QStaticText>
 
 #include "sessionwidget.h"
-#include "utils.h"
-#include "strategy.h"
 #include "colorutils.h"
 #include "fontutils.h"
 #include "application.h"
 #include "applicationsettings.h"
 #include "theme.h"
 
-SessionWidget::SessionWidget(stg::session activitySession, QWidget *parent)
-        : activitySession(std::move(activitySession)), QWidget(parent) {
+SessionWidget::SessionWidget(const stg::session &session, QWidget *parent)
+        : session(session), DataProviderWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
-    updateUI();
+    reloadSession();
+}
+
+void SessionWidget::setSession(const stg::session &newSession) {
+    if (newSession == session)
+        return;
+
+    session = newSession;
+    reloadSession();
+}
+
+
+void SessionWidget::setIsBorderSelected(bool isBorderSelected) {
+    if (_isBorderSelected == isBorderSelected)
+        return;
+
+    _isBorderSelected = isBorderSelected;
+    update();
+}
+
+int SessionWidget::expectedHeight() {
+    return (int) session.length() * slotHeight();
+}
+
+void SessionWidget::setDrawsBorders(bool drawsBorders) {
+    if (_drawsBorders == drawsBorders)
+        return;
+
+    _drawsBorders = drawsBorders;
+    update();
+}
+
+void SessionWidget::reloadSession() {
+    auto heightChanged = height() != expectedHeight();
+    auto durationChanged = previousDuration != session.duration();
+    auto activityChanged = previousSession.activity != session.activity;
+    auto endTimeChanged = previousEndTime != session.end_time();
+
+    if (!activityChanged &&
+        !durationChanged &&
+        !heightChanged &&
+        !endTimeChanged) {
+        return;
+    }
+
+    if (heightChanged) {
+        setFixedHeight(expectedHeight());
+    } else {
+        update();
+    }
+
+    previousSession = session;
+    previousDuration = session.duration();
+    previousEndTime = session.end_time();
 }
 
 void SessionWidget::paintEvent(QPaintEvent *) {
@@ -38,28 +87,26 @@ void SessionWidget::paintEvent(QPaintEvent *) {
     if (_drawsBorders)
         drawRulers(painter);
 
-    if (activitySession.activity) {
+    if (session.activity)
         drawLabel(painter);
-    }
 }
 
 void SessionWidget::drawRulers(QPainter &painter) {
-    QColor rulerColor = activitySession.activity
-                        ? QColor(Application::theme().session_ruler_color(activitySession, isSelected()))
+    QColor rulerColor = session.activity
+                        ? QColor(Application::theme().session_ruler_color(session, _isSelected))
                         : borderColor();
 
     painter.setBrush(rulerColor);
 
-    for (const auto &timeSlot : activitySession.time_slots) {
-        auto timeSlotIndex = static_cast<int>(&timeSlot - &activitySession.time_slots[0]);
+    for (const auto &timeSlot : session.time_slots) {
+        auto timeSlotIndex = static_cast<int>(&timeSlot - &session.time_slots[0]);
 
-        if (timeSlotIndex == activitySession.length() - 1) {
-            break;
-        }
+        if (timeSlotIndex == 0)
+            continue;
 
-        auto thickness = timeSlot.end_time() % 60 == 0 ? 2 : 1;
+        auto thickness = timeSlot.begin_time % 60 == 0 ? 2 : 1;
         auto rulerRect = QRect(0,
-                               slotHeight * (timeSlotIndex + 1) - thickness,
+                               slotHeight() * (timeSlotIndex),
                                width(),
                                thickness);
 
@@ -68,108 +115,64 @@ void SessionWidget::drawRulers(QPainter &painter) {
 }
 
 void SessionWidget::drawBackground(QPainter &painter) {
-    if (!activitySession.activity) {
+    if (!session.activity) {
         return;
     }
 
     QColor color = Application::theme()
-            .session_background_color(activitySession, isSelected());
+            .session_background_color(session, _isSelected);
 
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(color);
 
-    auto lastTimeSlot = activitySession.time_slots.back();
-    auto bottomMargin = lastTimeSlot.end_time() % 60 == 0 || isBorderSelected ? 1 : 0;
-    auto backgroundRect = QRect(0, 2, width(), height() - 5 - bottomMargin);
+    auto backgroundRect = QRect(0, 2 + topMargin(), width(), height() - 4 - topMargin());
 
     painter.drawRoundedRect(backgroundRect, 4, 4);
 }
 
 QColor SessionWidget::selectedBackgroundColor() const {
-    return activitySession.activity->color();
+    return session.activity->color();
 }
 
 QColor SessionWidget::sessionColor() const {
-    auto color = activitySession.activity
-                 ? QColor(activitySession.activity->color())
+    auto color = session.activity
+                 ? QColor(session.activity->color())
                  : QColor();
     return color;
 }
 
 
 void SessionWidget::drawBorder(QPainter &painter) {
-    auto thickBorder = activitySession.time_slots.back().end_time() % 60 == 0 ||
-                       isBorderSelected;
+    auto thickBorder = session.time_slots.front().begin_time % 60 == 0 ||
+                       _isBorderSelected;
 
     auto borderThickness = thickBorder ? 2 : 1;
 
-    auto borderRect = QRect(0,
-                            height() - borderThickness,
-                            width(),
-                            borderThickness);
+    auto borderRect = QRectF(0,
+                             0,
+                             width(),
+                             borderThickness);
 
-    painter.setBrush(isBorderSelected ? controlColor() : borderColor());
+    painter.setBrush(_isBorderSelected ? controlColor() : borderColor());
     painter.drawRect(borderRect);
 }
 
 QColor SessionWidget::borderColor() {
-    return ColorUtils::overlayWithAlpha(
-            QColor(ApplicationSettings::rowBorderColor),
-            0.35,
-            QApplication::palette().color(QPalette::Base));
-}
-
-bool SessionWidget::isSelected() const {
-    return _isSelected;
+    return ColorUtils::overlayWithAlpha(QColor(ApplicationSettings::rowBorderColor),
+                                        0.35 * ColorUtils::shadesAlphaFactor(12),
+                                        QApplication::palette().color(QPalette::Base));
 }
 
 void SessionWidget::setIsSelected(bool isSelected) {
+    if (_isSelected == isSelected)
+        return;
+
     _isSelected = isSelected;
 
-    if (!isSelected) {
-        isBorderSelected = false;
-    }
+    if (!isSelected)
+        _isBorderSelected = false;
 
     update();
-}
-
-void SessionWidget::updateUI() {
-    auto heightChanged = height() != expectedHeight();
-    auto durationChanged
-            = previousDuration != activitySession.duration();
-    auto activityChanged
-            = previousActivitySession.activity != activitySession.activity;
-    auto endTimeChanged = previousEndTime != activitySession.end_time();
-
-    if (!activityChanged
-        && !durationChanged
-        && !heightChanged
-        && !endTimeChanged) {
-        return;
-    }
-
-    if (heightChanged) {
-        setFixedHeight(expectedHeight());
-    } else {
-        update();
-    }
-
-    previousActivitySession = activitySession;
-    previousDuration = activitySession.duration();
-    previousEndTime = activitySession.end_time();
-}
-
-void SessionWidget::setActivitySession(const stg::session &newActivitySession) {
-    activitySession = newActivitySession;
-    updateUI();
-}
-
-void SessionWidget::setSlotHeight(int newSlotHeight) {
-    slotHeight = newSlotHeight;
-}
-
-int SessionWidget::expectedHeight() {
-    return static_cast<int>(activitySession.length()) * slotHeight;
 }
 
 void SessionWidget::drawLabel(QPainter &painter) {
@@ -182,16 +185,14 @@ void SessionWidget::drawLabel(QPainter &painter) {
     painter.setFont(font);
 
     auto textRect = QRect(defaultPadding,
-                          defaultPadding,
+                          defaultPadding + topMargin(),
                           width() - 2 * defaultPadding,
-                          height() - 2 * defaultPadding);
+                          height() - 2 * defaultPadding - topMargin());
 
-    auto durationColor = Application::theme()
-            .session_duration_color(activitySession, isSelected());
-    auto titleColor = Application::theme()
-            .session_title_color(activitySession, isSelected());
+    auto durationColor = Application::theme().session_duration_color(session, _isSelected);
+    auto titleColor = Application::theme().session_title_color(session, _isSelected);
 
-    FontUtils::drawSessionTitle(activitySession,
+    FontUtils::drawSessionTitle(session,
                                 painter,
                                 textRect,
                                 durationColor,
@@ -200,22 +201,6 @@ void SessionWidget::drawLabel(QPainter &painter) {
     painter.setPen(Qt::NoPen);
 }
 
-void SessionWidget::setSelectBorder(bool newIsBorderSelected) {
-    isBorderSelected = newIsBorderSelected;
-
-    update();
-}
-
-void SessionWidget::setDimmed(bool dimmed) {
-    this->dimmed = dimmed;
-    update();
-}
-
-bool SessionWidget::drawsBorders() const {
-    return _drawsBorders;
-}
-
-void SessionWidget::setDrawsBorders(bool drawsBorders) {
-    _drawsBorders = drawsBorders;
-    update();
+int SessionWidget::topMargin() {
+    return session.time_slots.front().begin_time % 60 == 0 || _isBorderSelected ? 2 : 1;
 }

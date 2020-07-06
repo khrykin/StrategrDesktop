@@ -15,7 +15,7 @@ namespace stg {
         return static_cast<seconds>(std::chrono::duration_cast<std::chrono::seconds>(duration).count());
     }
 
-    auto time_utils::start_of_a_day_from_timestamp(timestamp timestamp) -> time_utils::timestamp {
+    auto time_utils::start_of_a_day_from_timestamp(time_t timestamp) -> time_t {
         auto day_components = *day_components_from_timestamp(&timestamp);
 
         day_components.tm_hour = 0;
@@ -29,19 +29,15 @@ namespace stg {
 
     auto time_utils::current_day_duration() -> duration {
         using namespace std::chrono;
-
         auto clock_now = system_clock::now();
-        auto current_timestamp = system_clock::to_time_t(clock_now);
-
-        auto start_of_a_day_timestamp = start_of_a_day_from_timestamp(current_timestamp);
-        auto clock_start_of_today = system_clock::from_time_t(start_of_a_day_timestamp);
+        auto clock_start_of_today = system_clock::from_time_t(today_timestamp());
 
         return clock_now - clock_start_of_today;
     }
 
     auto time_utils::human_string_from_minutes(minutes minutes) -> std::string {
         if (minutes < 1) {
-            return "Less than 1 min";
+            return "0 min";
         }
 
         unsigned int hours = minutes / 60;
@@ -90,7 +86,16 @@ namespace stg {
         return result;
     }
 
-    auto time_utils::epoch_minutes(minutes minutes_in_today) -> minutes {
-        return 0;
+    auto time_utils::calendar_time_from_minutes(minutes minutes_in_today) -> time_t {
+        return today_timestamp() + minutes_in_today * 60;
+    }
+
+    auto time_utils::today_timestamp() -> time_t {
+        using namespace std::chrono;
+
+        auto clock_now = system_clock::now();
+        auto current_timestamp = system_clock::to_time_t(clock_now);
+
+        return start_of_a_day_from_timestamp(current_timestamp);
     }
 };

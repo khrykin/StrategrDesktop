@@ -17,8 +17,9 @@ namespace stg {
     using grouped_selection_element = std::vector<index_t>;
     using grouped_selection = std::vector<grouped_selection_element>;
 
-    struct selection : public std::vector<index_t>,
-                       public notifiable_on_change {
+    class selection : public std::vector<index_t>,
+                      public notifiable_on_change {
+    public:
         explicit selection(const stg::strategy &strategy);
 
         void set_selected_at(index_t slot_index, bool is_selected);
@@ -46,11 +47,12 @@ namespace stg {
 
         const grouped_selection &grouped() const;
 
-        void on_change_event() override;
     private:
         const stg::strategy &strategy;
 
         grouped_selection _grouped;
+
+        void make_safe(int &index);
 
         std::function<void(int)> get_slot_height;
 

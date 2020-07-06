@@ -13,16 +13,10 @@
 #include "slotboardscrollarea.h"
 #include "slotboardwidget.h"
 
-OverviewWidget::OverviewWidget(stg::strategy &strategy,
-                               SlotboardScrollArea *scrollArea,
-                               QWidget *parent) :
-        strategy(strategy), QWidget(parent), scrollArea(scrollArea) {
+OverviewWidget::OverviewWidget(QWidget *parent) : DataProviderWidget(parent) {
     setFixedHeight(ApplicationSettings::overviewHeight);
 
-    connect(scrollArea->verticalScrollBar(),
-            &QScrollBar::valueChanged, [this](int value) {
-                update();
-            });
+    strategy().sessions().add_on_change_callback([this] { update(); });
 }
 
 void OverviewWidget::reloadStrategy() {
@@ -34,7 +28,7 @@ void OverviewWidget::paintEvent(QPaintEvent *) {
 
     painter.fillRect(0, 0, width(), height(), windowColor());
 
-    auto overview = stg::overview(strategy, width());
+    auto overview = stg::overview(strategy(), width());
 
     drawElements(painter, overview);
     drawViewportMarker(painter, overview);
@@ -43,7 +37,7 @@ void OverviewWidget::paintEvent(QPaintEvent *) {
     drawBorders(painter);
 }
 
-void OverviewWidget::drawBorders(QPainter &painter) const {
+void OverviewWidget::drawBorders(QPainter &painter) {
     auto borderColor = QColor(Qt::black);
     borderColor.setAlphaF(0.1);
 
@@ -51,7 +45,7 @@ void OverviewWidget::drawBorders(QPainter &painter) const {
     painter.fillRect(0, height() - 1, width(), 1, borderColor);
 }
 
-void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) const {
+void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) {
     painter.setBrush(QBrush(ApplicationSettings::currentTimeMarkerColor));
     painter.setPen(Qt::NoPen);
 
@@ -63,8 +57,8 @@ void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &ove
     painter.fillRect(overview.current_time_position() + 2, 0, 1, height(), borderColor);
 }
 
-void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overview) const {
-    auto viewportMarker = this->makeViewportMarker();
+void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overview) {
+    auto viewportMarker = makeViewportMarker();
 
     auto blackColor = QColor(Qt::black);
     blackColor.setAlphaF(0.5);
@@ -92,7 +86,7 @@ void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overvi
     painter.fillPath(viewportMarkerPath, blackColor);
 }
 
-void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) const {
+void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) {
     for (auto &item : overview.elements()) {
         auto color = ColorUtils::QColorFromStdString(item.color);
         if (color.valueF() < 0.2)
@@ -103,26 +97,22 @@ void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) co
 }
 
 void OverviewWidget::mouseReleaseEvent(QMouseEvent *event) {
-    auto percentage = (float) event->pos().x() / (float) width();
-    auto viewportRect = scrollArea->viewportRect();
-    auto relativeDistance = percentage * slotboardWidget()->slotsWidget()->height();
-    auto topOffset = slotboardWidget()->slotsLayout()->contentsMargins().top();
+    auto overview = stg::overview(strategy(), width());
+    auto slotsRect = slotsWidget()->contentsRect();
+    auto viewportRect = slotboardScrollArea()->viewportRectRelativeToContent();
+    auto newScrollOffset = overview.scroll_offset_for(event->pos(), slotsRect, viewportRect);
 
-    int newScrollOffset = relativeDistance - viewportRect.height() / 2 + topOffset;
-
-    scrollArea->setScrollOffset(newScrollOffset);
+    slotboardScrollArea()->setScrollOffset(newScrollOffset);
 }
 
 void OverviewWidget::mouseMoveEvent(QMouseEvent *event) {
     mouseReleaseEvent(event);
 }
 
-stg::overview::viewport_marker OverviewWidget::makeViewportMarker() const {
-    auto overview = stg::overview(strategy, width());
-    return overview.viewport_marker_for(
-            slotboardWidget()->slotsWidget()->contentsRect(), slotboardWidget()->slotsWidget()->viewportRect());
-}
+stg::overview::viewport_marker OverviewWidget::makeViewportMarker() {
+    auto overview = stg::overview(strategy(), width());
+    auto slotsRect = slotsWidget()->contentsRect();
+    auto viewportRect = slotboardScrollArea()->viewportRectRelativeToContent();
 
-SlotBoardWidget *OverviewWidget::slotboardWidget() const {
-    return qobject_cast<SlotBoardWidget *>(scrollArea->widget());
+    return overview.viewport_marker_for(slotsRect, viewportRect);
 }

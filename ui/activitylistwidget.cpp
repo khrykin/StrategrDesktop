@@ -15,18 +15,14 @@
 #include "slotboardwidget.h"
 #include "searchboxwidget.h"
 
-ActivityListWidget::ActivityListWidget(stg::strategy &strategy,
-                                       QWidget *parent)
-        : strategy(strategy), QWidget(parent) {
-    strategy.activities()
-            .add_on_change_callback(this, &ActivityListWidget::updateUI);
+ActivityListWidget::ActivityListWidget(QWidget *parent) : DataProviderWidget(parent) {
+    strategy().activities().add_on_change_callback(this, &ActivityListWidget::updateUI);
 
     setLayout(new QVBoxLayout());
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    auto toolbarHeight = MainWindow::toolbarHeightOf(this->window());
-    setContentsMargins(0, toolbarHeight, 0, 0);
+    setContentsMargins(0, toolbarHeight(), 0, 0);
 
     setupNavbar();
     layoutChildWidgets();
@@ -116,7 +112,7 @@ void ActivityListWidget::layoutChildWidgets() {
     connect(newActivityMenu,
             &ActivityEditorMenu::submitActivity,
             [&](const stg::activity &activity) {
-                strategy.add_activity(activity);
+                strategy().add_activity(activity);
             });
 }
 
@@ -158,33 +154,26 @@ void ActivityListWidget::paintEvent(QPaintEvent *) {
     painter.drawRect(QRect(0, 0, width(), height()));
 }
 
-MainScene *ActivityListWidget::mainScene() {
-    return qobject_cast<MainScene *>(parentWidget());
-}
-
 void ActivityListWidget::getBack() {
-    emit wantToGetBack();
+    actionCenter().show_sessions();
 }
 
 void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
                                               ActivityWidget *item) {
     item->disconnect();
 
-    auto activityIndex = *strategy.activities().index_from_filtered(itemIndex);
+    auto activityIndex = *strategy().activities().index_from_filtered(itemIndex);
 
     connect(item, &ActivityWidget::selected, [=] {
-        strategy.place_activity(activityIndex, mainScene()->selection());
-        mainScene()->selection().deselect_all();
-
-        getBack();
+        actionCenter().place_activity_in_selection(activityIndex);
     });
 
     connect(item, &ActivityWidget::activityDeleted, [=] {
-        strategy.delete_activity(activityIndex);
+        strategy().delete_activity(activityIndex);
     });
 
     connect(item, &ActivityWidget::activityEdited, [=](const stg::activity &newActivity) {
-        strategy.edit_activity(activityIndex, newActivity);
+        strategy().edit_activity(activityIndex, newActivity);
     });
 
     connect(item, &ActivityWidget::hovered, [=] {
@@ -199,7 +188,7 @@ void ActivityListWidget::reconnectItemAtIndex(int itemIndex,
 
 void ActivityListWidget::performSearch() {
     auto searchQuery = searchBox->text().toStdString();
-    auto needsToUpdateList = strategy.activities().search(searchQuery);
+    auto needsToUpdateList = strategy().activities().search(searchQuery);
 
     if (needsToUpdateList) {
         updateList();
@@ -219,7 +208,7 @@ void ActivityListWidget::showNewActivityMenu() {
                          newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);
 
-    center.setY(center.y() + MainWindow::toolbarHeightOf(this->window()));
+    center.setY(center.y() + toolbarHeight());
 
     newActivityMenu->focus();
     newActivityMenu->exec(center);
@@ -230,7 +219,7 @@ void ActivityListWidget::reloadStrategy() {
 }
 
 int ActivityListWidget::numberOfItems() {
-    return strategy.activities().filtered().size();
+    return strategy().activities().filtered().size();
 }
 
 QVBoxLayout *ActivityListWidget::listLayout() {
@@ -238,16 +227,16 @@ QVBoxLayout *ActivityListWidget::listLayout() {
 }
 
 void ActivityListWidget::reuseItemAtIndex(int index, ActivityWidget *itemWidget) {
-    auto activity = strategy.activities().filtered().at(index).get();
+    auto activity = strategy().activities().filtered().at(index).get();
 
     itemWidget->setActivity(activity);
     reconnectItemAtIndex(index, itemWidget);
 }
 
 ActivityWidget *ActivityListWidget::makeNewItemAtIndex(int index) {
-    auto activity = strategy.activities().filtered().at(index).get();
+    auto activity = strategy().activities().filtered().at(index).get();
 
-    auto itemWidget = new ActivityWidget(activity);
+    auto itemWidget = new ActivityWidget(activity, this);
     reconnectItemAtIndex(index, itemWidget);
     return itemWidget;
 }
@@ -269,7 +258,7 @@ void ActivityListWidget::removeBorderBeforeIndex(int index) {
 void ActivityListWidget::updateUI() {
     updateList();
 
-    if (strategy.activities().empty()) {
+    if (strategy().activities().empty()) {
         scrollArea->hide();
         searchBox->hide();
         emptyListNotice->show();
@@ -283,12 +272,10 @@ void ActivityListWidget::updateUI() {
 bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
     auto *keyEvent = dynamic_cast<QKeyEvent *> (event);
     auto isKeyPressEvent = keyEvent &&
-                           (keyEvent->type() == QEvent::ShortcutOverride
-                            || keyEvent->type() == QEvent::KeyPress);
+                           (keyEvent->type() == QEvent::ShortcutOverride ||
+                            keyEvent->type() == QEvent::KeyPress);
 
     if (object == this && isKeyPressEvent) {
-//        if (mainScene()->selection().empty())
-//            return false;
         if (keyEvent->key() == Qt::Key_Down) {
             selectDown();
             return true;

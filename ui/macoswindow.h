@@ -24,6 +24,8 @@ public:
     static QPixmap resizeCursor();
     static QPixmap closedHandCursor();
     static QPixmap openHandCursor();
+
+    static bool hasSFSymbol();
 private:
     static NSString *makeToolbarIdentifier(const MainWindow *window);
 };

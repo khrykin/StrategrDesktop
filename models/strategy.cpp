@@ -31,7 +31,7 @@ namespace stg {
         setup_time_slots_callback();
     }
 
-    strategy &stg::strategy::operator=(const strategy &other) {
+    auto stg::strategy::operator=(const strategy &other) -> strategy & {
         _time_slots.reset_with(other.time_slots().data());
         _time_slots.on_change_event();
 
@@ -85,10 +85,12 @@ namespace stg {
 
     void strategy::edit_activity(activity_index_t activity_index, const activity &new_activity) {
         auto *old_activity = _activities.at(activity_index);
-        _activities.edit_at_index(activity_index, new_activity);
+        _activities.silently_edit_at_index(activity_index, new_activity);
 
         auto *updated_activity = _activities.at(activity_index);
         _time_slots.edit_activity(old_activity, updated_activity);
+
+        _activities.on_change_event();
 
         commit_to_history();
     }
@@ -213,10 +215,10 @@ namespace stg {
 
     void strategy::apply_history_entry(const std::optional<strategy_history::entry> &history_entry) {
         _activities.reset_with(history_entry->activities);
-        _activities.on_change_event();
-
         _time_slots.reset_with(history_entry->time_slots);
+
         _time_slots.on_change_event();
+        _activities.on_change_event();
     }
 
     auto strategy::time_slots() const -> const time_slots_state & {
@@ -247,7 +249,7 @@ namespace stg {
 
         auto new_indexes = current_drag_operation->record_drag(session.time_slots, distance);
 
-        time_slots_changed();
+        time_slots().on_change_event();
 
         auto new_session_index = new_indexes.empty()
                                  ? session_index
@@ -260,7 +262,7 @@ namespace stg {
         const auto &session = sessions()[session_index];
         auto initial_indices = global_slot_indices_from_session(session);
 
-        current_drag_operation = std::make_shared<drag_operation>(&_time_slots, initial_indices);
+        current_drag_operation = std::make_unique<drag_operation>(&_time_slots, initial_indices);
     }
 
     auto strategy::global_slot_indices_from_session(const session &session) const -> std::vector<time_slot_index_t> {
@@ -293,7 +295,7 @@ namespace stg {
     }
 
     void strategy::begin_resizing() {
-        current_resize_operation = std::make_shared<resize_operation>(&_time_slots);
+        current_resize_operation = std::make_unique<resize_operation>(&_time_slots);
     }
 
     void strategy::end_resizing() {
@@ -353,7 +355,7 @@ namespace stg {
     }
 
     auto strategy::active_session() const -> const session * {
-        const auto *current_session = this->get_current_session();
+        const auto *current_session = get_current_session();
         if (!current_session || !current_session->activity) {
             return nullptr;
         }
@@ -362,7 +364,7 @@ namespace stg {
     }
 
     auto strategy::upcoming_session() const -> const session * {
-        const auto *current_session = this->get_current_session();
+        const auto *current_session = get_current_session();
 
         if (!current_session) {
             // we're out of strategy's time bounds.
@@ -472,7 +474,8 @@ namespace stg {
         return history.has_next_state();
     }
 
-    void strategy::copy_slots(time_slot_index_t from_index, time_slot_index_t till_index,
+    void strategy::copy_slots(time_slot_index_t from_index,
+                              time_slot_index_t till_index,
                               time_slot_index_t destination_index) {
         _time_slots.copy_slots(from_index, till_index, destination_index);
 
@@ -494,10 +497,8 @@ namespace stg {
 
             auto proposed_activity = stg::activity(event.name, event.color);
 
-            const auto round_boundaries = true;
             auto slots_for_event = _time_slots.slots_in_time_window(event.begin_time,
-                                                                    event.end_time,
-                                                                    round_boundaries);
+                                                                    event.end_time);
 
             auto activity_index = activities().index_of(proposed_activity);
             if (!activity_index) {
@@ -516,5 +517,24 @@ namespace stg {
         commit_to_history();
 
         std::cout << "]\n";
+    }
+
+    auto strategy::progress() const -> float {
+        auto current_secs = time_utils::current_seconds();
+        auto begin_secs = begin_time() * 60;
+
+        if (end_time() > 24 * 60 && current_secs < begin_secs)
+            current_secs += 24 * 3600;
+
+        auto elapsed_secs = current_secs - begin_secs;
+        auto duration_secs = duration() * 60;
+
+        if (elapsed_secs < 0)
+            elapsed_secs = 0;
+
+        if (elapsed_secs > duration_secs)
+            elapsed_secs = duration_secs;
+
+        return (float) elapsed_secs / (float) duration_secs;
     }
 }

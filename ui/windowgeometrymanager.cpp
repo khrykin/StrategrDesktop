@@ -58,17 +58,20 @@ void WindowGeometryManager::resetSavedGeometry() {
 QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
     using namespace ApplicationSettings;
 
-    const auto availableSize = avaliableDesktopSize(window);
+    const auto desktopGeometry = avaliableGeometry(window);
 
-    const auto windowInitialHeight = availableSize.height();
-    const auto windowInitialLeft = (availableSize.width() - windowInitialWidth) / 2;
-
-    return {windowInitialLeft, 0, windowInitialWidth, windowInitialHeight};
-
+    const auto titlebarHeight = 30;
+    const auto windowInitialHeight = desktopGeometry.height() - titlebarHeight;
+    const auto windowInitialLeft = (desktopGeometry.width() - windowInitialWidth) / 2;
+ 
+    return {windowInitialLeft,
+            titlebarHeight,
+            windowInitialWidth,
+            windowInitialHeight};
 }
 
-QSize WindowGeometryManager::avaliableDesktopSize(QWidget *widget) {
-    return QDesktopWidget().availableGeometry(widget).size();
+QRect WindowGeometryManager::avaliableGeometry(QWidget *widget) {
+    return QDesktopWidget().availableGeometry(widget);
 }
 
 int WindowGeometryManager::minLeft() {

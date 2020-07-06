@@ -6,6 +6,7 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QScrollBar>
 
 #include "sessionsmainwidget.h"
 #include "overviewwidget.h"
@@ -16,9 +17,7 @@
 #include "mainwindow.h"
 #include "slotboardscrollarea.h"
 
-SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
-                                       QWidget *parent)
-        : strategy(strategy), QWidget(parent) {
+SessionsMainWidget::SessionsMainWidget(QWidget *parent) : DataProviderWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, toolbarHeight(), 0, 0);
     mainLayout->setSpacing(0);
@@ -27,26 +26,38 @@ SessionsMainWidget::SessionsMainWidget(stg::strategy &strategy,
 
     layoutChildWidgets();
 
-    notifier.on_send_notiifcation = [this](const stg::notification &notification) {
-        std::cout << "send notification: " << notification << "\n";
-        notifierBackend.sendMessage(
-                QString::fromStdString(notification.title),
-                QString::fromStdString(notification.message));
+    notifier.on_send_notification = [this](const stg::notification &notification) {
+        std::cout << "want to sent notification: " << notification << "\n";
+        notifierBackend.sendMessage(notification.title.c_str(),
+                                    notification.message.c_str());
     };
 
-    notifierTimer = new QTimer(this);
-    notifierTimer->setInterval(ApplicationSettings::notifierTimerMillisecondsInterval);
-    connect(notifierTimer,
-            &QTimer::timeout,
-            std::bind(&stg::notifier::send_now_if_needed,
-                      &notifier,
-                      ApplicationSettings::notifierTimerMillisecondsInterval / 1000));
+    notifier.start_polling(ApplicationSettings::notifierTimerSecondsInterval);
 
-    notifierTimer->start();
-
-    strategy.time_slots().add_on_change_callback([this] {
+    strategy().time_slots().add_on_ruler_change_callback([this] {
         strategySettingsWidget->reloadStrategy();
     });
+
+    actionCenter().on_toggle_current_session = [this](bool currentSessionIsShown) {
+        std::cout << "on_toggle_current_session: " << currentSessionIsShown << "\n";
+
+        if (currentSessionIsShown) {
+            currentSessionWidget->slideAndShow();
+        } else {
+            currentSessionWidget->slideAndHide();
+        }
+    };
+
+    actionCenter().on_reload_current_session = [this]() {
+        currentSessionWidget->reloadSessionIfNeeded();
+    };
+
+    currentSessionWidget->setVisible(actionCenter().current_session_is_shown());
+    currentSessionWidget->reloadSessionIfNeeded();
+}
+
+SlotboardScrollArea *SessionsMainWidget::slotboardScrollArea() const {
+    return _slotBoardScrollArea;
 }
 
 void SessionsMainWidget::toggleStrategySettingsOpen() {
@@ -57,64 +68,33 @@ void SessionsMainWidget::toggleStrategySettingsOpen() {
     }
 }
 
-void SessionsMainWidget::focusOnCurrentTime() {
-    slotBoard->focusOnCurrentTime();
-}
-
 void SessionsMainWidget::layoutChildWidgets() {
-    strategySettingsWidget = new StrategySettingsWidget(strategy);
-
-    currentSessionWidget = new CurrentSessionWidget(strategy);
-    currentSessionWidget->hide();
-
-    connect(currentSessionWidget,
-            &CurrentSessionWidget::clicked,
-            this,
-            &SessionsMainWidget::focusOnCurrentTime);
+    slotBoard = new SlotBoardWidget(this);
 
     _slotBoardScrollArea = new SlotboardScrollArea(this);
     _slotBoardScrollArea->setWidgetResizable(true);
     _slotBoardScrollArea->setFrameShape(QFrame::NoFrame);
-
-    slotBoard = new SlotBoardWidget(strategy);
-
-    connect(slotBoard,
-            &SlotBoardWidget::timerTick,
-            this,
-            &SessionsMainWidget::updateTimerDependants);
-
-    connect(slotBoard,
-            &SlotBoardWidget::timeSlotsChange,
-            this,
-            &SessionsMainWidget::updateOverviewWidget);
-
     _slotBoardScrollArea->setWidget(slotBoard);
 
-    overviewWidget = new OverviewWidget(strategy, _slotBoardScrollArea);
+    strategySettingsWidget = new StrategySettingsWidget(this);
+    strategySettingsWidget->hide();
 
-    auto *topHangingWidget = new QWidget();
-    topHangingWidget->setObjectName("topHangingWidget");
-    topHangingWidget->installEventFilter(this);
+    overviewWidget = new OverviewWidget(this);
+    currentSessionWidget = new CurrentSessionWidget(this);
 
-    auto *secondaryLayout = new QVBoxLayout();
-    secondaryLayout->setSpacing(0);
-    secondaryLayout->setContentsMargins(0, 0, 0, 0);
+    auto *scrollAreaWindowWidget = new QWidget(this);
+    scrollAreaWindowWidget->setObjectName("scrollAreaWindowWidget");
+    scrollAreaWindowWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    scrollAreaWindowWidget->installEventFilter(this);
 
-    topHangingWidget->setLayout(secondaryLayout);
+    connect(slotboardScrollArea()->verticalScrollBar(),
+            &QScrollBar::valueChanged,
+            [this](int value) { overviewWidget->update(); });
 
-    secondaryLayout->addWidget(strategySettingsWidget);
-    secondaryLayout->addWidget(overviewWidget);
-    secondaryLayout->addWidget(currentSessionWidget);
-
-    auto *mainLayout = qobject_cast<QVBoxLayout *>(layout());
-    mainLayout->addWidget(topHangingWidget);
-    mainLayout->addStretch();
-
-    slotBoard->updateCurrentTimeMarker();
-}
-
-void SessionsMainWidget::updateOverviewWidget() const {
-    overviewWidget->update();
+    layout()->addWidget(strategySettingsWidget);
+    layout()->addWidget(overviewWidget);
+    layout()->addWidget(currentSessionWidget);
+    layout()->addWidget(scrollAreaWindowWidget);
 }
 
 void SessionsMainWidget::reloadStrategy() {
@@ -124,16 +104,6 @@ void SessionsMainWidget::reloadStrategy() {
     currentSessionWidget->reloadStrategy();
 
     notifier.schedule();
-}
-
-void SessionsMainWidget::clearSelection() {
-    slotBoard->clearSelection();
-}
-
-void SessionsMainWidget::updateTimerDependants() {
-    overviewWidget->update();
-    if (!strategy.is_dragging() && !strategy.is_resizing())
-        currentSessionWidget->reloadSessionIfNeeded();
 }
 
 void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
@@ -148,21 +118,11 @@ void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
     _slotBoardScrollArea->setGeometry(contentsRect());
 }
 
-SlotboardScrollArea *SessionsMainWidget::slotBoardScrollArea() const {
-    return _slotBoardScrollArea;
-}
-
 bool SessionsMainWidget::eventFilter(QObject *object, QEvent *event) {
-    if (object->objectName() == "topHangingWidget" && event->type() == QEvent::Resize) {
-        auto *resizeEvent = dynamic_cast<QResizeEvent *>(event);
-        auto newTopOffset = toolbarHeight() + resizeEvent->size().height();
-        _slotBoardScrollArea->setViewportTopOffset(newTopOffset);
+    if (object->objectName() == "scrollAreaWindowWidget" && event->type() == QEvent::Resize) {
+        auto *scrollAreaWindowWidget = qobject_cast<QWidget *>(object);
+        _slotBoardScrollArea->setViewportTopOffset(scrollAreaWindowWidget->geometry().top());
     }
 
     return false;
 }
-
-int SessionsMainWidget::toolbarHeight() {
-    return MainWindow::toolbarHeightOf(this->window());
-}
-

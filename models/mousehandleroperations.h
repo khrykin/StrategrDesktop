@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "mousehandler.h"
+#include "actioncenter.h"
 
 struct stg::mouse_handler::operation {
     enum class state {
@@ -93,7 +94,7 @@ private:
     };
 
     void change(const mouse_event &event) override {
-        if (!event.with(mouse_event::alt_key)) {
+        if (!event.has(mouse_event::alt_key)) {
             dragged_session_index = -1;
             stop(event);
             handler.current_operaion = handler.make_operation<none_operation>();
@@ -134,12 +135,12 @@ private:
             handler.on_draw_dragged_session(-1, -1);
     };
 
-    index_t get_first_slot_index() {
+    auto get_first_slot_index() -> index_t {
         auto &current_session = strategy.sessions()[dragged_session_index];
 
         auto first_slot_index = *strategy.time_slots().index_of(current_session.time_slots.front()) +
                                 global_distance;
-        auto last_slot_index = first_slot_index + current_session.length();
+        auto last_slot_index = first_slot_index + current_session.length() - 1;
 
         if (first_slot_index < 0) {
             first_slot_index = 0;
@@ -201,7 +202,7 @@ private:
     };
 
     void change(const mouse_event &event) override {
-        if (event.with(mouse_event::alt_key)) {
+        if (event.has(mouse_event::alt_key)) {
             switch_to_copy(event);
             return;
         }
@@ -252,7 +253,6 @@ private:
 
 struct stg::mouse_handler::resize_operation : public operation {
     using operation::operation;
-    static constexpr auto nothing_selected_index = -2;
 
     operation_type type() override {
         return resize;
@@ -264,7 +264,6 @@ private:
     index_t handle_index = -1;
     index_t boundary_slot_index = -1;
 
-    point initial_position;
     mouse_zone initial_mouse_zone = mouse_zone::out_of_bounds;
 
     void init(const mouse_event &event) override {
@@ -272,7 +271,6 @@ private:
 
         handle_index = handler.current_slot_index;
         initial_mouse_zone = handler.current_mouse_zone;
-        initial_position = event.position;
 
         select_sessions(event, handle_index, initial_mouse_zone);
 
@@ -283,7 +281,7 @@ private:
         if (finished)
             return;
 
-        auto boundary_delta = get_boundary_delta(initial_position.y, event.position.y);
+        auto boundary_delta = get_boundary_delta(event.position.y);
         if (boundary_delta < handler.get_slot_height() / 2) {
             return;
         }
@@ -293,7 +291,7 @@ private:
             return;
         }
 
-        if (event.with(event::shift_key)) {
+        if (event.has(event::shift_key)) {
             strategy.fill_time_slots_shifting(source_slot_index, handler.current_slot_index);
         } else {
             strategy.fill_time_slots(source_slot_index, handler.current_slot_index);
@@ -304,7 +302,6 @@ private:
                               : mouse_zone::stretch_top;
 
         handle_index = handler.current_slot_index;
-        initial_position = event.position;
         initial_mouse_zone = new_mouse_zone;
 
         select_sessions(event, handle_index, initial_mouse_zone);
@@ -314,9 +311,10 @@ private:
         if (handler.on_select_sessions)
             handler.on_select_sessions({});
 
+        handler._resize_boundary = resize_boundary_configuration();
+
         if (handler.on_resize_boundary_change)
-            handler.on_resize_boundary_change(nothing_selected_index,
-                                              nothing_selected_index);
+            handler.on_resize_boundary_change();
 
         strategy.end_resizing();
         finished = true;
@@ -336,20 +334,18 @@ private:
         }
     }
 
-    int get_boundary_delta(int prev_pos, int current_pos) {
+    gfloat get_boundary_delta(gfloat current_pos) {
         auto boundary_pos = get_boundary_position();
         auto delta = static_cast<int>(current_pos - boundary_pos);
 
         return std::abs(delta);
     }
 
-    int get_boundary_position() const {
-        return handler.get_slot_height() * (boundary_slot_index + 1);
+    gfloat get_boundary_position() const {
+        return handler.get_slot_height() / 2 + handler.get_slot_height() * ((gfloat) boundary_slot_index + 1);
     }
 
-    void select_sessions(const mouse_event &event,
-                         index_t source_index,
-                         enum mouse_zone mouse_zone) {
+    void select_sessions(const mouse_event &event, index_t source_index, enum mouse_zone mouse_zone) {
         auto first_selection_index = strategy.sessions()
                 .session_index_for_time_slot_index(source_index);
 
@@ -391,7 +387,7 @@ private:
         if (handler.on_select_sessions) {
             auto selected = get_selected(first_selection_index, second_selection_index);
 
-            if (event.with(event::shift_key)) {
+            if (event.has(event::shift_key)) {
                 if (mouse_zone == mouse_zone::stretch_top) {
                     if (handler.current_direction == direction::down)
                         selected.erase(selected.begin());
@@ -412,8 +408,11 @@ private:
             handler.on_select_sessions(selected);
         }
 
+        handler._resize_boundary.slot_index = boundary_slot_index;
+        handler._resize_boundary.session_index = first_session_index;
+
         if (handler.on_resize_boundary_change)
-            handler.on_resize_boundary_change(first_session_index, boundary_slot_index);
+            handler.on_resize_boundary_change();
     }
 
     std::vector<index_t> get_selected(index_t first_selection_index, index_t second_selection_index) const {
@@ -458,10 +457,13 @@ private:
         initial_event = std::make_unique<mouse_event>(event);
         initial_slot_index = handler.current_slot_index;
 
-        if (current_slot_is_selected() && !event.with(event::ctrl_key)) {
+        if (current_slot_is_selected() && !event.has(event::ctrl_key)) {
             handler.selection.set_is_clicked(true);
             return;
         }
+
+        if (!is_safe(handler.current_slot_index))
+            return;
 
         handler.selection.toggle_at(handler.current_slot_index);
     };
@@ -471,26 +473,34 @@ private:
             return;
         }
 
+        if (!is_safe(handler.current_slot_index))
+            return;
+
         handler.selection.fill(initial_slot_index, handler.current_slot_index);
     };
 
     void teardown(const mouse_event &event) override {
+        std::cout << "event: " << event << "\n";
+
         if (handler.selection.is_clicked()) {
             handler.selection.set_is_clicked(false);
 
-            if (initial_event->with(stg::event::left_key)) {
-                if (handler.on_open_activities)
-                    handler.on_open_activities();
+            if (initial_event->has(stg::event::left_key)) {
+                if (handler.action_center)
+                    handler.action_center->show_activities();
 
-            } else if (initial_event->with(stg::event::right_key)) {
-                if (handler.on_show_context_menu)
-                    handler.on_show_context_menu(event.position);
+            } else if (initial_event->has(stg::event::right_key)) {
+                handler.show_context_menu(event);
             }
         }
     };
 
     bool current_slot_is_selected() {
         return handler.selection.has_selected(handler.current_slot_index);
+    }
+
+    bool is_safe(int slot_index) {
+        return slot_index >= 0 && slot_index < strategy.number_of_time_slots();
     }
 };
 

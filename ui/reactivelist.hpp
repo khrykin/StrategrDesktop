@@ -17,7 +17,7 @@ protected:
     virtual void reuseItemAtIndex(int index, ItemWidget *itemWidget) = 0;
     virtual ItemWidget *makeNewItemAtIndex(int index) = 0;
 
-    void updateList() {
+    virtual void updateList() {
         if (!lastLayoutItem() || !lastLayoutItem()->spacerItem()) {
             listLayout()->addStretch();
         }
@@ -47,7 +47,7 @@ private:
                 auto spacer = listLayout()->takeAt(index + 1);
                 listLayout()->addItem(spacer);
             } else {
-                itemWidget = qobject_cast<ItemWidget *>(currentItem->widget());
+                itemWidget = dynamic_cast<ItemWidget *>(currentItem->widget());
                 reuseItemAtIndex(index, itemWidget);
             }
         }

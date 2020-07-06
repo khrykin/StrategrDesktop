@@ -18,7 +18,7 @@ auto stg::event::has_only(stg::event::key_modifiers mod) const -> bool {
     return modifiers == mod;
 }
 
-auto stg::event::with(stg::event::key_modifiers mod) const -> bool {
+auto stg::event::has(stg::event::key_modifiers mod) const -> bool {
     return (modifiers & mod) == mod;
 }
 
@@ -26,15 +26,16 @@ auto stg::operator<<(std::ostream &os, const stg::mouse_event &e) -> std::ostrea
     os << "mouse_event {\n";
     os << "  position: [" << e.position.x << ", " << e.position.y << "]\n";
     os << "  modifiers: [";
-    if (e.with(mouse_event::left_key)) {
+
+    if (e.has(mouse_event::left_key))
         os << " left_key ";
-    }
-    if (e.with(mouse_event::right_key)) {
+
+    if (e.has(mouse_event::right_key))
         os << " right_key ";
-    }
-    if (e.with(mouse_event::ctrl_key)) {
+
+    if (e.has(mouse_event::ctrl_key))
         os << " ctrl_key ";
-    }
+
     os << "]\n";
     os << "}\n";
 

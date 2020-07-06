@@ -1,19 +1,15 @@
-#include <functional>
-
 #include <QPainter>
 #include <QStyleOption>
 #include <QKeyEvent>
 
 #include "strategysettingswidget.h"
 #include "abstractspinboxdecorator.h"
-#include "mainwindow.h"
 #include "slidinganimator.h"
 #include "utils.h"
 #include "colorutils.h"
 #include "rowwidget.h"
 
-StrategySettingsWidget::StrategySettingsWidget(stg::strategy &strategy, QWidget *parent)
-        : strategy(strategy), QWidget(parent) {
+StrategySettingsWidget::StrategySettingsWidget(QWidget *parent) : DataProviderWidget(parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     createLayout();
@@ -23,8 +19,9 @@ StrategySettingsWidget::StrategySettingsWidget(stg::strategy &strategy, QWidget 
     createStartTimeForm();
     createEndTimeForm();
 
-    hide();
     updateUI();
+
+    setMinimumHeight(sizeHint().height());
 }
 
 void StrategySettingsWidget::reloadStrategy() {
@@ -45,7 +42,6 @@ void StrategySettingsWidget::createHeader() {
     auto *label = new ColoredLabel(tr("Settings"));
     label->setStyleSheet("text-transform: uppercase;");
     label->setDynamicColor(&ColorProvider::secondaryTextColor);
-
     label->setBold(true);
 
     auto *closeButton = new QPushButton(tr("Done"));
@@ -83,10 +79,11 @@ void StrategySettingsWidget::createSlotDurationForm() {
     formWidget->layout()->addWidget(makeFormLabel("Slot Duration"));
     formWidget->layout()->addWidget(slotDurationEditDecorator);
 
-    connect(slotDurationEdit, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(slotDurationEdit,
+            QOverload<int>::of(&QSpinBox::valueChanged),
             [this](int value) {
                 auto slotDuration = slotDurationEdit->value();
-                strategy.set_time_slot_duration(slotDuration);
+                strategy().set_time_slot_duration(slotDuration);
                 reloadStrategy();
             });
 
@@ -111,7 +108,7 @@ void StrategySettingsWidget::createStartTimeForm() {
     connect(beginTimeEdit, &QTimeEdit::timeChanged,
             [this](const QTime &) {
                 auto beginTime = QTimeToMinutes(beginTimeEdit->time());
-                strategy.set_begin_time(beginTime);
+                strategy().set_begin_time(beginTime);
                 reloadStrategy();
             });
 
@@ -120,10 +117,10 @@ void StrategySettingsWidget::createStartTimeForm() {
 
 void StrategySettingsWidget::createEndTimeForm() {
     auto *formWidget = makeFormRowWidget();
-
     formWidget->setBorderColor([] {
         auto textColor = ColorProvider::textColor();
         textColor.setAlphaF(0.05);
+
         return textColor;
     });
 
@@ -143,20 +140,20 @@ void StrategySettingsWidget::createEndTimeForm() {
 
     connect(endTimeEdit, &QTimeEdit::timeChanged, this, [this] {
         auto endTime = QTimeToMinutes(endTimeEdit->time());
-        strategy.set_end_time(endTime);
+        strategy().set_end_time(endTime);
         reloadStrategy();
     });
 }
 
 QColor StrategySettingsWidget::labelColor() const {
-    return ColorUtils::overlayWithAlpha(
-            palette().color(QPalette::Text),
-            0.75 * ColorUtils::shadesAlphaFactor(0),
-            palette().color(QPalette::Base));
+    return ColorUtils::overlayWithAlpha(palette().color(QPalette::Text),
+                                        0.75 * ColorUtils::shadesAlphaFactor(0),
+                                        palette().color(QPalette::Base));
 }
 
 RowWidget *StrategySettingsWidget::makeFormRowWidget() {
     auto *formRowWidget = new RowWidget(this);
+    formRowWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     auto *formLayout = new QHBoxLayout();
     formLayout->setSpacing(5);
@@ -185,29 +182,24 @@ ColoredLabel *StrategySettingsWidget::makeFormLabel(const QString &text) {
 }
 
 void StrategySettingsWidget::updateUI() {
-    auto slotDuration = strategy.time_slot_duration();
-    auto beginTime = QTimeFromMinutes(strategy.begin_time());
-    auto endTime = QTimeFromMinutes(strategy.end_time());
+    auto slotDuration = strategy().time_slot_duration();
+    auto beginTime = QTimeFromMinutes(strategy().begin_time());
+    auto endTime = QTimeFromMinutes(strategy().end_time());
 
-    if (slotDuration != slotDurationEdit->value()) {
+    if (slotDuration != slotDurationEdit->value())
         slotDurationEdit->setValue(slotDuration);
-    }
 
-    if (beginTime != beginTimeEdit->time()) {
+    if (beginTime != beginTimeEdit->time())
         beginTimeEdit->setTime(beginTime);
-    }
 
-    if (endTime != endTimeEdit->time()) {
+    if (endTime != endTimeEdit->time())
         endTimeEdit->setTime(endTime);
-    }
 
-    if (beginTimeEdit->minuteStepSize != strategy.time_slot_duration()) {
-        beginTimeEdit->minuteStepSize = strategy.time_slot_duration();
-    }
+    if (beginTimeEdit->minuteStepSize != strategy().time_slot_duration())
+        beginTimeEdit->minuteStepSize = strategy().time_slot_duration();
 
-    if (endTimeEdit->minuteStepSize != strategy.time_slot_duration()) {
-        endTimeEdit->minuteStepSize = strategy.time_slot_duration();
-    }
+    if (endTimeEdit->minuteStepSize != strategy().time_slot_duration())
+        endTimeEdit->minuteStepSize = strategy().time_slot_duration();
 }
 
 void StrategySettingsWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {

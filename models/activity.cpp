@@ -83,7 +83,7 @@ namespace stg {
     }
 
     auto activity::from_json(const nlohmann::json &j) -> activity {
-        auto name = j[keys::name];
+        auto name = std::string(j[keys::name]);
 
         stg::color color = activity::default_color;
         if (j.count(keys::color) && !j[keys::color].is_null()) {

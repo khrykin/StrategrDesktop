@@ -7,16 +7,15 @@
 #include <QLabel>
 #include <QWidget>
 
-#include "strategy.h"
+#include "dataproviderwidget.h"
 #include "colorprovider.h"
 
 class ColoredLabel;
-class CurrentSessionWidget :
-        public QWidget,
-        public ColorProvider {
+class CurrentSessionWidget : public DataProviderWidget,
+                             public ColorProvider {
 Q_OBJECT
 public:
-    explicit CurrentSessionWidget(stg::strategy &strategy, QWidget *parent = nullptr);
+    explicit CurrentSessionWidget(QWidget *parent);
 
     double progress() const;
     void setProgress(double progress);
@@ -27,18 +26,9 @@ public:
 
     void reloadSessionIfNeeded();
 
-signals:
-    void clicked();
-
 private:
-    // Qt's isVisible() could be glitchy for some reason,
-    // so we dont't rely on it and use this flag
-    bool isVisible = false;
-
     double _progress = 0.0;
 
-    stg::strategy &strategy;
-    stg::session previousSession;
     std::optional<stg::session> activeSession;
 
     ColoredLabel *activityLabel = nullptr;
@@ -58,7 +48,7 @@ private:
     void leaveEvent(QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 
-    QString makeActivitySessionTitle() const;
+    QString makeActivitySessionTitle();
 };
 
 #endif // CURRENTACTIVITYWIDGET_H

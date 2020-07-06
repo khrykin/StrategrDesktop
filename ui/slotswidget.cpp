@@ -9,135 +9,145 @@
 #include "mainwindow.h"
 #include "mainscene.h"
 #include "utils.h"
-#include "slotsmousehandler.h"
-#include "third-party/stacklayout.h"
 
-SlotsWidget::SlotsWidget(stg::strategy &strategy, QWidget *parent)
-        : strategy(strategy),
-          QWidget(parent) {
-    strategy.sessions()
-            .add_on_change_callback(this, &SlotsWidget::updateUI);
+SlotsWidget::SlotsWidget(QWidget *parent) : DataProviderWidget(parent) {
+    setMouseTracking(true);
 
-    setLayout(new StackLayout());
-    layout()->setSpacing(0);
-    layout()->setContentsMargins(0, 0, 0, 0);
+    strategy().sessions().add_on_change_callback([this] { reloadStrategy(); });
+
+    setContentsMargins(0, 0, ApplicationSettings::defaultPadding, 0);
 
     layoutChildWidgets();
-
     setupActions();
+    reloadStrategy();
 
-    updateList();
+    mouseHandler().on_select_sessions = [this](const auto &sessionIndices) {
+        for (auto sessionIndex = 0; sessionIndex < strategy().sessions().size(); sessionIndex++) {
+            auto *sessionWidget = dynamic_cast<SessionWidget *>(slotsLayout->itemAt(sessionIndex)->widget());
+
+            if (!sessionWidget)
+                continue;
+
+            auto isSelected = std::find(sessionIndices.begin(),
+                                        sessionIndices.end(),
+                                        sessionIndex) != sessionIndices.end();
+            sessionWidget->setIsSelected(isSelected);
+            sessionWidget->setIsBorderSelected(false);
+        }
+    };
+
+    mouseHandler().on_resize_boundary_change = [this]() {
+        auto boundarySessionIndex = mouseHandler().resize_boundary().session_index;
+        for (auto sessionIndex = 0; sessionIndex < strategy().sessions().size(); sessionIndex++) {
+            auto *sessionWidget = dynamic_cast<SessionWidget *>(slotsLayout->itemAt(sessionIndex)->widget());
+
+            if (!sessionWidget)
+                continue;
+
+            auto isBorderSelected = boundarySessionIndex + 1 == sessionIndex;
+            sessionWidget->setIsBorderSelected(isBorderSelected);
+        }
+
+        update();
+    };
+
+    mouseHandler().on_cursor_change = [this](auto cursor) {
+        switch (cursor) {
+            case stg::mouse_handler::cursor::pointer:
+                unsetCursor();
+                break;
+            case stg::mouse_handler::cursor::resize:
+                setCursor(resizeVerticalCursor());
+                break;
+            case stg::mouse_handler::cursor::closed_hand:
+                setCursor(closedHandCursor());
+                break;
+            case stg::mouse_handler::cursor::open_hand:
+                setCursor(openHandCursor());
+                break;
+            case stg::mouse_handler::cursor::drag_copy:
+                setCursor(dragCopyCursor());
+                break;
+        }
+    };
+
+    mouseHandler().on_auto_scroll_frame = [this](stg::gfloat offsetIncrement) {
+        auto newOffset = slotboardScrollArea()->verticalScrollBar()->value() + (int) offsetIncrement;
+        slotboardScrollArea()->setScrollOffset(newOffset);
+
+        return mapFromGlobal(QCursor::pos());
+    };
+
+    mouseHandler().on_show_context_menu = [this](const auto &menu_configuration) {
+        auto menu = QMenu(this);
+        for (auto &action : menu_configuration.actions) {
+            if (action->type == stg::action::separator) {
+                menu.addSeparator();
+                continue;
+            }
+
+            auto *qAction = menu.addAction(QString::fromStdString(action->name), *action);
+            qAction->setEnabled(action->is_enabled());
+        }
+
+        menu.exec(mapToGlobal(menu_configuration.position));
+    };
 }
 
 void SlotsWidget::layoutChildWidgets() {
     slotsLayout = new QVBoxLayout();
     slotsLayout->setSpacing(0);
+    updateSlotsLayoutContentMargins();
 
-    auto *slotsWidget = new QWidget();
+    slotsWidget = new QWidget(this);
+    slotsWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+    slotsWidget->setContentsMargins(0, 0, 0, 0);
     slotsWidget->setLayout(slotsLayout);
 
-    selectionWidget = new SelectionWidget(strategy, _slotHeight, nullptr);
-    selectionWidget->selection.add_on_change_callback(this, &SlotsWidget::onSelectionChange);
-
-    mouseHandler = new SlotsMouseHandler(this);
-    connect(mouseHandler,
-            &SlotsMouseHandler::resizeBoundaryChanged,
-            this,
-            &SlotsWidget::updateResizeBoundary);
-
-    connect(mouseHandler,
-            &SlotsMouseHandler::drawDraggedSession,
-            this,
-            &SlotsWidget::drawDraggedSession);
-
-    layout()->addWidget(slotsWidget);
-    layout()->addWidget(selectionWidget);
-    layout()->addWidget(mouseHandler);
-
-    updateContentsMargins();
+    selectionWidget = new SelectionWidget(this);
 }
 
 void SlotsWidget::setupActions() {
     setActivityAction = new QAction(tr("Set Activity"), this);
     setActivityAction->setShortcut(QKeySequence(Qt::Key_Return));
 
-    connect(setActivityAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::openActivitiesWindow);
+    connect(setActivityAction, &QAction::triggered, actionCenter().show_activities);
     addAction(setActivityAction);
 
-    deleteActivityAction = new QAction(tr("Delete"), this);
+    deleteActivityAction = new QAction(QString::fromStdString(actionCenter().empty_selection.name), this);
+
     QList<QKeySequence> deleteShortcuts;
     deleteShortcuts << QKeySequence(Qt::Key_Delete)
                     << QKeySequence(Qt::Key_Backspace);
+
     deleteActivityAction->setShortcuts(deleteShortcuts);
-    connect(deleteActivityAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::deleteActivityInSelection);
+
+    connect(deleteActivityAction, &QAction::triggered, actionCenter().empty_selection);
     addAction(deleteActivityAction);
 
-    clearSelectionAction = new QAction(tr("Deselect"), this);
+    clearSelectionAction = new QAction(actionCenter().deselect.name.c_str(), this);
     clearSelectionAction->setShortcut(QKeySequence(Qt::Key_Escape));
-    connect(clearSelectionAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::deselectAllSlots);
+    connect(clearSelectionAction, &QAction::triggered, actionCenter().deselect);
     addAction(clearSelectionAction);
 
-    selectAllAction = new QAction(tr("Select All"), this);
+    selectAllAction = new QAction(actionCenter().select_all.name.c_str(), this);
     selectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
-    connect(selectAllAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::selectAllSlots);
+    connect(selectAllAction, &QAction::triggered, actionCenter().select_all);
     addAction(selectAllAction);
 
-    shiftSlotsBelowAction = new QAction(tr("Make Room"), this);
+    shiftSlotsBelowAction = new QAction(actionCenter().make_room.name.c_str(), this);
     shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
-    connect(shiftSlotsBelowAction,
-            &QAction::triggered,
-            this,
-            &SlotsWidget::shiftAllSlotsBelow);
-
-    shiftSlotsBelowAction->setEnabled(false);
+    connect(shiftSlotsBelowAction, &QAction::triggered, actionCenter().make_room);
     addAction(shiftSlotsBelowAction);
 }
 
-int SlotsWidget::slotHeight() const { return _slotHeight; }
-
-void SlotsWidget::openActivitiesWindow() {
-    mainScene()->showActivities();
-}
-
-void SlotsWidget::deleteActivityInSelection() {
-    strategy.make_empty_at(selectionWidget->selection);
-    selectionWidget->selection.deselect_all();
-}
-
-void SlotsWidget::deselectAllSlots() {
-    selectionWidget->selection.deselect_all();
-}
-
-void SlotsWidget::selectAllSlots() {
-    selectionWidget->selection.select_all();
-}
-
 void SlotsWidget::reloadStrategy() {
+    updateSlotsLayoutContentMargins();
     updateList();
 }
 
-MainScene *SlotsWidget::mainScene() {
-    return findParentWidget<MainScene>(this);
-}
-
-const stg::selection &SlotsWidget::selection() {
-    return selectionWidget->selection;
-}
-
 int SlotsWidget::numberOfItems() {
-    return strategy.sessions().size();
+    return strategy().sessions().size();
 }
 
 QVBoxLayout *SlotsWidget::listLayout() {
@@ -145,88 +155,74 @@ QVBoxLayout *SlotsWidget::listLayout() {
 }
 
 void SlotsWidget::reuseItemAtIndex(int index, SessionWidget *itemWidget) {
-    const auto session = strategy.sessions()[index];
-    itemWidget->setActivitySession(session);
+    const auto session = strategy().sessions()[index];
+    itemWidget->setSession(session);
+    itemWidget->setIsBorderSelected(mouseHandler().resize_boundary().session_index + 1 == index);
+    itemWidget->setIsSelected(false);
 }
 
 SessionWidget *SlotsWidget::makeNewItemAtIndex(int index) {
-    const auto session = strategy.sessions()[index];
-    auto itemWidget = new SessionWidget(session);
-    itemWidget->setSlotHeight(slotHeight());
-
+    const auto session = strategy().sessions()[index];
+    auto *itemWidget = new SessionWidget(session, this);
     return itemWidget;
 }
 
-void SlotsWidget::updateUI() {
-    emit sessionsChanged();
-
-    updateContentsMargins();
-    updateList();
+void SlotsWidget::mouseMoveEvent(QMouseEvent *event) {
+    mouseHandler().mouse_move(event);
 }
 
-void SlotsWidget::onSelectionChange() {
-    auto isEnabled = selectionWidget->selection.is_continuous()
-                     && selectionWidget->selection.only_non_empty_selected();
-
-
-    shiftSlotsBelowAction->setEnabled(isEnabled);
+void SlotsWidget::mousePressEvent(QMouseEvent *event) {
+    mouseHandler().mouse_press(event);
 }
 
-void SlotsWidget::shiftAllSlotsBelow() {
-    if (!selectionWidget->selection.is_continuous()) {
-        return;
-    }
+void SlotsWidget::mouseReleaseEvent(QMouseEvent *event) {
+    mouseHandler().mouse_release(event);
+}
 
-    auto bottomTimeSlotIndex = selectionWidget->selection.front();
-    strategy.shift_below_time_slot(bottomTimeSlotIndex,
-                                   selectionWidget->selection.size());
+void SlotsWidget::keyPressEvent(QKeyEvent *event) {
+    mouseHandler().key_down(event);
+}
 
-    selectionWidget->selection.deselect_all();
+void SlotsWidget::keyReleaseEvent(QKeyEvent *event) {
+    mouseHandler().key_up(event);
 }
 
 void SlotsWidget::paintEvent(QPaintEvent *event) {
     using namespace ApplicationSettings;
-
-    QStyleOption opt;
-    opt.init(this);
     QPainter painter(this);
-    style()->drawPrimitive(QStyle::PE_Widget, &opt, &painter, this);
+
+    auto isResizeBoundary = mouseHandler().resize_boundary().slot_index == strategy().number_of_time_slots() - 1;
+    auto borderColor = isResizeBoundary ? controlColor() : ColorProvider::borderColor();
+    auto thickness = isResizeBoundary ? 2 : topLineThickness();
 
     painter.setPen(Qt::NoPen);
-
-    auto borderColor = _slotBeforeBoundaryIndex == -1
-                       ? controlColor()
-                       : ColorProvider::borderColor();
-
     painter.setBrush(borderColor);
 
-    auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
-    auto borderRect = QRect(0, 0, width() - ApplicationSettings::defaultPadding, thickness);
+    auto borderRect = QRect(0,
+                            slotHeight() / 2 + strategy().number_of_time_slots() * slotHeight(),
+                            width() - ApplicationSettings::defaultPadding,
+                            thickness);
 
     painter.drawRect(borderRect);
 }
 
-void SlotsWidget::updateContentsMargins() {
-    auto thickness = strategy.begin_time() % 60 == 0 ? 2 : 1;
-    slotsLayout->setContentsMargins(0, thickness, ApplicationSettings::defaultPadding, 0);
-    selectionWidget->setContentsMargins(0, thickness, ApplicationSettings::defaultPadding, 0);
+int SlotsWidget::topLineThickness() {
+    return strategy().end_time() % 60 == 0 ? 2 : 1;
 }
 
-void SlotsWidget::updateResizeBoundary(int sessionBeforeBoundaryIndex,
-                                       int slotBeforeBoundaryIndex) {
-    this->_slotBeforeBoundaryIndex = slotBeforeBoundaryIndex;
-    update();
-
-    emit resizeBoundaryChanged(sessionBeforeBoundaryIndex, slotBeforeBoundaryIndex);
+void SlotsWidget::updateSlotsLayoutContentMargins() {
+    slotsLayout->setContentsMargins(0, slotHeight() / 2, 0, 0);
 }
 
-int SlotsWidget::slotBeforeBoundaryIndex() const {
-    return _slotBeforeBoundaryIndex;
+void SlotsWidget::resizeEvent(QResizeEvent *event) {
+    slotsWidget->setGeometry(contentsRect());
+    selectionWidget->setGeometry(contentsRect());
 }
 
-QRect SlotsWidget::viewportRect() const {
-    return mouseHandler->viewportRect();
+void SlotsWidget::enterEvent(QEvent *event) {
+    setFocus();
 }
+
 
 
 

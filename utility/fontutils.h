@@ -13,6 +13,7 @@
 #include "applicationsettings.h"
 #include "utils.h"
 #include "colorutils.h"
+#include "time_utils.h"
 
 namespace FontUtils {
     inline void
@@ -23,7 +24,7 @@ namespace FontUtils {
                      QColor titleColor = QColor(255, 255, 255, 0)) {
 
         auto name = QString::fromStdString(session.activity->name());
-        auto duration = humanTimeForMinutes(session.duration());
+        auto duration = QString::fromStdString(stg::time_utils::human_string_from_minutes(session.duration()));
 
         auto textComponents = QStringList{duration, name};
         auto head = textComponents.first() + " ";

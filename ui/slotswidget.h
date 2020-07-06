@@ -8,24 +8,23 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "dataproviderwidget.h"
 #include "sessionwidget.h"
-#include "strategy.h"
 #include "slotruler.h"
 #include "applicationsettings.h"
 #include "selectionwidget.h"
 #include "reactivelist.hpp"
 #include "selection.h"
 #include "colorprovider.h"
+#include "cursorprovider.h"
 
-class SlotsMouseHandler;
-class MainScene;
-class SlotsWidget : public QWidget,
+class SlotsWidget : public DataProviderWidget,
                     public ReactiveList<SessionWidget>,
-                    public ColorProvider {
+                    private CursorProvider,
+                    private ColorProvider {
 Q_OBJECT
 public:
-    explicit SlotsWidget(stg::strategy &strategy,
-                         QWidget *parent = nullptr);
+    explicit SlotsWidget(QWidget *parent = nullptr);
 
     QAction *setActivityAction = nullptr;
     QAction *deleteActivityAction = nullptr;
@@ -33,61 +32,32 @@ public:
     QAction *shiftSlotsBelowAction = nullptr;
     QAction *selectAllAction = nullptr;
 
-    QAction *copyAction = nullptr;
-    QAction *pasteAction = nullptr;
-
-    int slotHeight() const;
-
     void reloadStrategy();
-    void deselectAllSlots();
-
-    int slotBeforeBoundaryIndex() const;
-
-    const stg::selection &selection();
-
-    QRect viewportRect() const;
-signals:
-    void sessionsChanged();
-    void resizeBoundaryChanged(int, int);
-    void drawDraggedSession(int, int);
-
 private:
-    friend SlotsMouseHandler;
-    stg::strategy &strategy;
-
     QVBoxLayout *slotsLayout = nullptr;
+    QWidget *slotsWidget = nullptr;
     SelectionWidget *selectionWidget = nullptr;
 
-    SlotsMouseHandler *mouseHandler = nullptr;
-
-    int _slotHeight = ApplicationSettings::defaultSlotHeight;
-    int _slotBeforeBoundaryIndex = -2;
-
-    void openActivitiesWindow();
-    void deleteActivityInSelection();
-    void selectAllSlots();
-    void shiftAllSlotsBelow();
-
     void setupActions();
-
     void layoutChildWidgets();
 
-    void updateUI();
-    void updateContentsMargins();
-    void updateResizeBoundary(int sessionBeforeBoundaryIndex,
-                              int slotBeforeBoundaryIndex);
-
-    void onSelectionChange();
-
-    MainScene *mainScene();
+    int topLineThickness();
+    void updateSlotsLayoutContentMargins();
 
     // ReactiveList
-
     int numberOfItems() override;
-    QVBoxLayout *listLayout() override;;
+    QVBoxLayout *listLayout() override;
     void reuseItemAtIndex(int index, SessionWidget *itemWidget) override;
     SessionWidget *makeNewItemAtIndex(int index) override;
 
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+
+    void enterEvent(QEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 };
 

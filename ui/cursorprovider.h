@@ -8,11 +8,13 @@
 #include <QCursor>
 
 class CursorProvider {
-public:
-    QCursor resizeVerticalCursor();
-    QCursor closedHandCursor();
-    QCursor openHandCursor();
-    QCursor dragCopyCursor();
+protected:
+    static QCursor resizeVerticalCursor();
+    static QCursor closedHandCursor();
+    static QCursor openHandCursor();
+    static QCursor dragCopyCursor();
+    static QFont iconFont();
+    static QString searchIconText();
 };
 
 

@@ -232,8 +232,7 @@ void ActivityEditorMenu::saveAndClose() {
     }
 
     try {
-        emit submitActivity(stg::activity(lineEdit->text().toStdString(),
-                                          currentColor.name().toStdString()));
+        emit submitActivity(stg::activity(lineEdit->text().toStdString(), currentColor));
         close();
         reset();
     } catch (const std::exception &e) {

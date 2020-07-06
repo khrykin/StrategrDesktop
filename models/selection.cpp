@@ -7,9 +7,13 @@
 #include "selection.h"
 
 stg::selection::selection(const stg::strategy &strategy)
-        : strategy(strategy) {}
+        : strategy(strategy) {
+    add_on_change_callback([this] { reload(); });
+}
 
 void stg::selection::set_selected_at(index_t slot_index, bool is_selected) {
+    make_safe(slot_index);
+
     auto found_it = std::find(begin(), end(), slot_index);
     auto already_selected = found_it != end();
 
@@ -34,6 +38,8 @@ void stg::selection::reset_with(std::vector<index_t> slot_indices) {
 
 
 void stg::selection::toggle_at(index_t slot_index) {
+    make_safe(slot_index);
+
     auto found_it = std::find(begin(), end(), slot_index);
     auto already_selected = found_it != end();
 
@@ -63,14 +69,11 @@ void stg::selection::select_all() {
 }
 
 void stg::selection::fill(index_t from_index, index_t to_index) {
+    make_safe(from_index);
+    make_safe(to_index);
+
     if (from_index > to_index) {
         std::swap(from_index, to_index);
-    }
-
-    if (from_index <= 0) {
-        from_index = 0;
-    } else if (to_index >= strategy.number_of_time_slots()) {
-        from_index = strategy.number_of_time_slots() - 1;
     }
 
     for (auto i = from_index; i <= to_index; i++) {
@@ -127,8 +130,6 @@ void stg::selection::reload() {
     }
 
     _grouped = new_grouped;
-
-    notifiable_on_change::on_change_event();
 }
 
 bool stg::selection::is_clicked() const {
@@ -139,10 +140,6 @@ void stg::selection::set_is_clicked(bool is_clicked) {
     _is_clicked = is_clicked;
 
     on_change_event();
-}
-
-void stg::selection::on_change_event() {
-    reload();
 }
 
 const stg::grouped_selection &stg::selection::grouped() const {
@@ -156,6 +153,14 @@ bool stg::selection::is_all_selected() const {
 bool stg::selection::is_boundary(stg::index_t slot_index) const {
     return (!has_selected(slot_index - 1) && has_selected(slot_index))
            || (has_selected(slot_index - 1) && !has_selected(slot_index));
+}
+
+void stg::selection::make_safe(int &index) {
+    if (index < 0) {
+        index = 0;
+    } else if (index > strategy.number_of_time_slots() - 1) {
+        index = strategy.number_of_time_slots() - 1;
+    }
 }
 
 

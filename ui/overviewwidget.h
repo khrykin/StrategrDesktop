@@ -7,34 +7,28 @@
 
 #include <QWidget>
 #include <QScrollArea>
-#include <models/overview.h>
+
+#include "overview.h"
+#include "dataproviderwidget.h"
 #include "strategy.h"
 #include "colorprovider.h"
 
-class SlotboardScrollArea;
-class SlotBoardWidget;
-
-class OverviewWidget : public QWidget, public ColorProvider {
+class OverviewWidget : public DataProviderWidget,
+                       public ColorProvider {
 Q_OBJECT
 public:
-    explicit OverviewWidget(stg::strategy &strategy,
-                            SlotboardScrollArea *scrollArea,
-                            QWidget *parent = nullptr);
+    explicit OverviewWidget(QWidget *parent);
 
     void reloadStrategy();
 
 private:
-    stg::strategy &strategy;
-    SlotboardScrollArea *scrollArea;
-
     void paintEvent(QPaintEvent *) override;
-    void drawElements(QPainter &painter, stg::overview &overview) const;
-    void drawViewportMarker(QPainter &painter, stg::overview &overview) const;
-    void drawCurrentTimeMarker(QPainter &painter, stg::overview &overview) const;
-    void drawBorders(QPainter &painter) const;
+    void drawElements(QPainter &painter, stg::overview &overview);
+    void drawViewportMarker(QPainter &painter, stg::overview &overview);
+    void drawCurrentTimeMarker(QPainter &painter, stg::overview &overview);
+    void drawBorders(QPainter &painter);
 
-    stg::overview::viewport_marker makeViewportMarker() const;
-    SlotBoardWidget *slotboardWidget() const;
+    stg::overview::viewport_marker makeViewportMarker();
 
     void mouseMoveEvent(QMouseEvent *) override;
     void mouseReleaseEvent(QMouseEvent *) override;

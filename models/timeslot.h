@@ -6,38 +6,33 @@
 #define MODELS_TIMESLOT_H
 
 #include <iostream>
+#include <ctime>
 
 namespace stg {
     struct activity;
 
     struct time_slot {
         using minutes = unsigned;
-        using time_t = minutes;
-        using duration_t = minutes;
 
         static constexpr auto no_activity = nullptr;
 
-        time_t begin_time = 0;
-        duration_t duration = 0;
+        minutes begin_time = 0;
+        minutes duration = 0;
 
         stg::activity *activity = no_activity;
 
-        time_slot(time_t begin_time,
-                  duration_t duration,
-                  stg::activity *activity = no_activity) :
-                begin_time(begin_time),
-                duration(duration),
-                activity(activity) {}
+        time_slot(minutes begin_time, minutes duration, stg::activity *activity = no_activity);
 
-        time_t end_time() const;
+        auto end_time() const -> minutes;
 
-        bool empty() const;
+        auto calendar_begin_time() const -> std::time_t;
+        auto calendar_end_time() const -> std::time_t;
 
-        friend std::ostream &operator<<(std::ostream &os,
-                                        const time_slot &slot);
+        auto empty() const -> bool;
 
-        friend bool operator==(const time_slot &lhs, const time_slot &rhs);
-        friend bool operator!=(const time_slot &lhs, const time_slot &rhs);
+        friend auto operator==(const time_slot &lhs, const time_slot &rhs) -> bool;
+        friend auto operator!=(const time_slot &lhs, const time_slot &rhs) -> bool;
+        friend auto operator<<(std::ostream &os, const time_slot &slot) -> std::ostream &;
     private:
         struct keys {
             static constexpr auto begin_time = "start_time";

@@ -10,6 +10,7 @@
 #include <ostream>
 
 #include "strategy.h"
+#include "timer.h"
 
 namespace stg {
     class strategy;
@@ -60,12 +61,15 @@ namespace stg {
 
         scheduler_t on_schedule_notifications = nullptr;
         resetter_t on_delete_notifications = nullptr;
-        sender_t on_send_notiifcation = nullptr;
+        sender_t on_send_notification = nullptr;
 
         explicit notifier(const strategy &strategy);
+        ~notifier();
 
         void schedule();
-        void send_now_if_needed(seconds polling_seconds_interval);
+
+        void start_polling(timer::seconds interval);
+        void stop_polling();
 
         auto scheduled_notifications() const -> const std::vector<stg::notification> &;
         auto scheduled_identifiers() const -> std::vector<std::string>;
@@ -73,6 +77,8 @@ namespace stg {
         static const seconds prepare_seconds_interval = 5 * 60;
         static const seconds immediate_seconds_interval = 20;
     private:
+        std::unique_ptr<stg::timer> timer = nullptr;
+
         static void remove_stale_from(std::vector<notification> &notifications);
 
         const strategy &strategy;
@@ -81,6 +87,8 @@ namespace stg {
 
         std::vector<stg::notification> _scheduled_notifications;
         std::vector<stg::notification> _upcoming_notifications;
+
+        void send_now_if_needed(seconds polling_seconds_interval);
     };
 }
 

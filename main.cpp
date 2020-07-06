@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "application.h"
+#include "timerbackend.h"
 
 void setupCredentials() {
     QCoreApplication::setOrganizationName("Dmitry Khrykin");
@@ -9,6 +10,7 @@ void setupCredentials() {
 
 int main(int argc, char *argv[]) {
     setupCredentials();
+    setupTimerBackend();
 
     Application::setAttribute(Qt::AA_EnableHighDpiScaling);
     Application::setAttribute(Qt::AA_UseHighDpiPixmaps);

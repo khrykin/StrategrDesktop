@@ -22,7 +22,7 @@ public:
 
 private:
     static QRect defaultInitialRect(QWidget *window);
-    static QSize avaliableDesktopSize(QWidget *widget);
+    static QRect avaliableGeometry(QWidget *widget);
 
     static constexpr auto windowGeometrySetting = "windowGeometry";
     static constexpr auto defaultAdjustFactor = 30;

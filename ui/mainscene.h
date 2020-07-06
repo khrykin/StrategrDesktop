@@ -7,33 +7,41 @@
 
 #include "third-party/slidingstackedwidget.h"
 #include "strategy.h"
+#include "applicationsettings.h"
 
 #include "sessionsmainwidget.h"
 #include "activitylistwidget.h"
+#include "mousehandler.h"
+#include "actioncenter.h"
+#include "slotboardscrollarea.h"
+#include "slotswidget.h"
 
 class MainScene : public SlidingStackedWidget {
-Q_OBJECT
 public:
-    explicit MainScene(stg::strategy &strategy,
-                       QWidget *parent = nullptr);
+    explicit MainScene(stg::strategy &strategy, QWidget *parent = nullptr);
 
-    void showActivities();
-    void showSessions();
+    stg::strategy &strategy();
+    stg::selection &selection();
+    stg::mouse_handler &mouseHandler();
+    stg::action_center &actionCenter();
 
-    void focusOnCurrentTime();
+    SlotboardScrollArea *scrollboardScrollArea();
+    SlotsWidget *slotsWidget();
 
     void showStrategySettings();
     void showNewActivityMenu();
 
-    stg::selection &selection();
-
-    void clearSelection();
     void reloadStrategy();
-
-    void reorderActivitiesByUsage();
-
 private:
-    stg::strategy &strategy;
+    stg::strategy &_strategy;
+    stg::selection _selection = stg::selection(_strategy);
+    stg::mouse_handler _mouse_handler = stg::mouse_handler(_strategy,
+                                                           _selection,
+                                                           [] { return ApplicationSettings::defaultSlotHeight; },
+                                                           [this] { return scrollboardScrollArea()->viewportRectRelativeToContent(); });
+
+    stg::action_center _action_center = stg::action_center(_strategy, _mouse_handler, _selection);
+
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
 };

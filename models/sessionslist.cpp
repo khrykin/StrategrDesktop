@@ -101,7 +101,7 @@ namespace stg {
         return result;
     }
 
-    auto sessions_list::duration() const -> time_slot::duration_t {
+    auto sessions_list::duration() const -> time_slot::minutes {
         if (_data.empty()) return 0;
         return _data.back().end_time() - _data.front().begin_time();;
     }
@@ -116,7 +116,7 @@ namespace stg {
         return result;
     }
 
-    auto sessions_list::relative_begin_time(const session &session) const -> time_slot::time_t {
+    auto sessions_list::relative_begin_time(const session &session) const -> time_slot::minutes {
         return session.begin_time() - _data.front().begin_time();
     }
 
