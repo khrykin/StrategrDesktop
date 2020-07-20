@@ -8,6 +8,8 @@ ASC_USERNAME="$APPLE_ID_EMAIL"
 ASC_PASSWORD="$APPLE_NOTARIZATION_PASSWORD"
 
 BUNDLE_ID="com.khrykin.strategr.macos"
+
+# Path to .app application bundle
 BUNDLE_PKG="$1"
 
 # create temporary files

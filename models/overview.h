@@ -29,7 +29,7 @@ namespace stg {
             gfloat width = 0;
         };
 
-        explicit overview(const strategy &strategy, gfloat width);
+        explicit overview(const strategy &strategy, std::function<stg::gfloat()> width_getter);
 
         auto elements() -> std::vector<overview_item>;
 
@@ -43,7 +43,9 @@ namespace stg {
 
     private:
         const strategy &strategy;
-        stg::gfloat width = 0.0;
+        std::function<gfloat()> width_getter;
+
+        gfloat width() const;
     };
 
 }

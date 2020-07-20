@@ -6,8 +6,9 @@
 #include "strategy.h"
 
 namespace stg {
-    overview::overview(const stg::strategy &strategy, gfloat width)
-            : strategy(strategy), width(width) {
+    overview::overview(const stg::strategy &strategy, std::function<gfloat()> width_getter)
+            : strategy(strategy),
+              width_getter(std::move(width_getter)) {
     }
 
     auto overview::elements() -> std::vector<overview::overview_item> {
@@ -16,8 +17,8 @@ namespace stg {
 
         auto prev_origin_x = 0;
         for (auto &item : activity_sessions.overview()) {
-            auto current_width = std::round(item.duration_percentage * width);
-            auto origin_x = std::round(item.begin_percentage * width);
+            auto current_width = std::round(item.duration_percentage * width());
+            auto origin_x = std::round(item.begin_percentage * width());
 
             if (origin_x != prev_origin_x) {
                 current_width += origin_x - prev_origin_x;
@@ -42,7 +43,7 @@ namespace stg {
 
         auto relative_top = viewport_rect.top;
         auto relative_bottom = slots_bounds.height - viewport_rect.top - viewport_rect.height;
-        auto marker_origin_x = std::round((float) relative_top / slots_bounds.height * width);
+        auto marker_origin_x = std::round((float) relative_top / slots_bounds.height * width());
         auto width_in_viewport = viewport_rect.height;
 
         if (relative_top < 0) {
@@ -52,21 +53,25 @@ namespace stg {
             width_in_viewport = viewport_rect.height + relative_bottom;
         }
 
-        auto marker_width = std::round((float) width_in_viewport / slots_bounds.height * width);
+        auto marker_width = std::round((float) width_in_viewport / slots_bounds.height * width());
 
         return viewport_marker{marker_origin_x, marker_width};
     }
 
     auto overview::current_time_position() -> gfloat {
-        return std::round(strategy.progress() * width);
+        return std::round(strategy.progress() * width());
     }
 
     auto overview::scroll_offset_for(point mouse_position,
                                      const rect &slots_bounds,
                                      const rect &viewport_rect) const -> gfloat {
-        auto percentage = (gfloat) mouse_position.x / (gfloat) width;
+        auto percentage = (gfloat) mouse_position.x / (gfloat) width();
         auto relative_distance = percentage * slots_bounds.height;
 
         return relative_distance - viewport_rect.height / 2;
+    }
+
+    gfloat overview::width() const {
+        return width_getter();
     }
 }

@@ -86,9 +86,6 @@ private:
         dragged_session_index = handler.current_session_index;
         initial_position = event.position;
 
-        auto &session = strategy.sessions()[handler.current_session_index];
-        auto &current_time_slot = strategy.time_slots()[handler.current_slot_index];
-
         if (handler.on_draw_dragged_session)
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
     };

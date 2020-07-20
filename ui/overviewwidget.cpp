@@ -28,8 +28,6 @@ void OverviewWidget::paintEvent(QPaintEvent *) {
 
     painter.fillRect(0, 0, width(), height(), windowColor());
 
-    auto overview = stg::overview(strategy(), width());
-
     drawElements(painter, overview);
     drawViewportMarker(painter, overview);
     drawCurrentTimeMarker(painter, overview);
@@ -97,7 +95,6 @@ void OverviewWidget::drawElements(QPainter &painter, stg::overview &overview) {
 }
 
 void OverviewWidget::mouseReleaseEvent(QMouseEvent *event) {
-    auto overview = stg::overview(strategy(), width());
     auto slotsRect = slotsWidget()->contentsRect();
     auto viewportRect = slotboardScrollArea()->viewportRectRelativeToContent();
     auto newScrollOffset = overview.scroll_offset_for(event->pos(), slotsRect, viewportRect);
@@ -110,7 +107,6 @@ void OverviewWidget::mouseMoveEvent(QMouseEvent *event) {
 }
 
 stg::overview::viewport_marker OverviewWidget::makeViewportMarker() {
-    auto overview = stg::overview(strategy(), width());
     auto slotsRect = slotsWidget()->contentsRect();
     auto viewportRect = slotboardScrollArea()->viewportRectRelativeToContent();
 

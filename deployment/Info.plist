@@ -53,5 +53,17 @@
 	<string>Strategr would be able to import and export Calendar events</string>
 	<key>SUFeedURL</key>
 	<string>${APPCAST_URL}</string>
+	<key>NSUbiquitousContainers</key>
+    <dict>
+   		<key>iCloud.com.khrykin.Strategr</key>
+   		<dict>
+   			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+   			<true/>
+   			<key>NSUbiquitousContainerName</key>
+    		<string>Strategr</string>
+    		<key>NSUbiquitousContainerSupportedFolderLevels</key>
+   			<string>Any</string>
+   		</dict>
+   	</dict>
 </dict>
 </plist>

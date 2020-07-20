@@ -27,6 +27,10 @@ namespace stg {
             }
         };
 
+        strategy.time_slots().add_on_ruler_change_callback([=] {
+            timer_callback();
+        });
+
         auto timer_interval = 5;
         timer = stg::timer::schedule(timer_interval, true, timer_callback);
 

@@ -22,12 +22,14 @@ public:
     void reloadStrategy();
 
 private:
+
     void paintEvent(QPaintEvent *) override;
     void drawElements(QPainter &painter, stg::overview &overview);
     void drawViewportMarker(QPainter &painter, stg::overview &overview);
     void drawCurrentTimeMarker(QPainter &painter, stg::overview &overview);
     void drawBorders(QPainter &painter);
 
+    stg::overview overview = stg::overview(strategy(), [this] { return width(); });
     stg::overview::viewport_marker makeViewportMarker();
 
     void mouseMoveEvent(QMouseEvent *) override;

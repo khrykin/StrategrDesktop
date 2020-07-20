@@ -143,12 +143,6 @@ namespace stg {
 
         auto needs_autoscroll = needs_autoscroll_top || needs_autoscroll_bottom;
 
-        if (needs_autoscroll_top)
-            std::cout << "needs_autoscroll_top\n";
-
-        if (needs_autoscroll_bottom)
-            std::cout << " needs_autoscroll_bottom\n";
-
         if (!autoscroll_timer && needs_autoscroll) {
             auto direction = scroll_direction::down;
             if (needs_autoscroll_top) {
