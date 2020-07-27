@@ -116,14 +116,15 @@ set(CORE ${CORE_PLATFORM_FILES}
         core/persistent.cpp
         core/persistent.h)
 
-set(MODELS_TESTS
+set(CORE_TESTS
         core/tests/strategy_settings_test.cpp
         core/tests/strategy_timeslots_test.cpp
         core/tests/strategy_activities_slots_interaction_test.cpp
         core/tests/strategy_history_test.cpp
-        core/tests/json_tests.cpp)
+        core/tests/json_tests.cpp
+        core/tests/persistent_test.cpp)
 
-set(MODELS_LIBRARIES ${utf8Proc_LIBRARY_PATH})
+set(CORE_LIBRARIES ${utf8Proc_LIBRARY_PATH})
 
 set(UI
         ui/mainwindow.cpp
@@ -229,7 +230,7 @@ qt5_add_resources(RESOURCES
 
 if (APPLE)
     set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
-    set(MODELS_PLATFORM_LIBRARIES
+    set(CORE_PLATFORM_LIBRARIES
             "-framework Foundation"
             "-framework AppKit"
             "-framework EventKit")
@@ -299,14 +300,14 @@ endif ()
 
 add_executable(core_tests
         tests_main.cpp
-        ${MODELS}
-        ${MODELS_TESTS})
+        ${CORE}
+        ${CORE_TESTS})
 
 target_link_libraries(core_tests
         Catch2::Catch2
         Boost::filesystem
-        ${MODELS_LIBRARIES}
-        ${MODELS_PLATFORM_LIBRARIES})
+        ${CORE_LIBRARIES}
+        ${CORE_PLATFORM_LIBRARIES})
 
 option(COVERAGE "Generate code coverage" OFF)
 
@@ -332,8 +333,8 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 target_compile_definitions(StrategrCore PUBLIC UTF8PROC_STATIC)
 
 target_link_libraries(StrategrCore
-        ${MODELS_LIBRARIES}
-        ${MODELS_PLATFORM_LIBRARIES})
+        ${CORE_LIBRARIES}
+        ${CORE_PLATFORM_LIBRARIES})
 
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE

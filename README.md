@@ -23,7 +23,7 @@ Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
  - CMake >=3.14
  - Boost >= 1.7
  - Qt >= 5.14
- - [utf8proc](https://github.com/JuliaStrings/utf8proc) >= v2.4.0
+ - [utf8proc](https://github.com/JuliaStrings/utf8proc) >= v2.4.0 - Note that this must be built as a static library
  - [Sparkle](https://sparkle-project.org/) (macOS only)
  - [WinSparkle](https://winsparkle.org/) (Windows only)
 

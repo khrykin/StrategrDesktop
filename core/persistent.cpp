@@ -82,38 +82,15 @@ namespace stg {
 
 
     void persistent_storage::test() {
-        std::cout << "is_serializable const char *: " << is_serializable<const char *>::value << "\n";
-        std::cout << "is_serializable string: " << is_serializable<std::string>::value << "\n";
-        std::cout << "is_serializable vec<string>: " << is_serializable<std::vector<std::string>>::value << "\n";
-        std::cout << "is_serializable vec<int>: " << is_serializable<std::vector<int>>::value << "\n";
-
-        std::cout << "is_deserializable string: " << is_deserializable<std::string>::value << "\n";
-        std::cout << "is_deserializable vec<string>: " << is_deserializable<std::vector<std::string>>::value
-                  << "\n";
-        std::cout << "is_deserializable vec<int>: " << is_deserializable<std::vector<int>>::value << "\n";
-        std::cout << "is_plain? const char *: " << is_plain_type<char const *>::value << "\n";
-
+        auto *key = "stg::persistent_storage::test";
         {
-            std::vector<std::string> strs = {"One", "Two", "Three"};
-
-            set("strs", strs);
-            set("char", "Просто текст");
-            set("double", 2.03);
+            std::vector<std::string> strs = {"One", "Two"};
+            set(key, strs);
         }
 
-        auto vec = get<std::vector<std::string>>("strs");
-
-        if (!vec) {
-            std::cout << "key is empty\n";
-            return;
-        }
-
-        std::cout << "values:\n";
-
-        for (auto &str : *vec) std::cout << "\"" << str << "\"\n";
-
-        std::cout << "char: \"" << *get<std::string>("char") << "\"\n";
-        std::cout << "double: \"" << *get<double>("double") << "\"\n";
-
+        auto strs = get<std::vector<std::string>>(key);
+        std::vector<std::string> expected_strs = {"One", "Two"};
+        assert(strs && "stg::persistent_storage::get returned nullptr for test data, check backend implementation");
+        assert(*strs == expected_strs);
     }
 }
