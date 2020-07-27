@@ -16,6 +16,7 @@ Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
 - [x] macOS
 - [x] Windows
 - [ ] iOS
+- [ ] Linux
 - [ ] Android
 
 ## Contributing
