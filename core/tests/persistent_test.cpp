@@ -35,7 +35,6 @@ TEST_CASE("Persistent Storage", "[persistent]") {
             std::string test_string = "test std::string";
             stg::persistent_storage::set("std::string", test_string);
             stg::persistent_storage::set("const char *", "test const char *");
-
         }
 
         REQUIRE(*stg::persistent_storage::get<std::string>("std::string") == "test std::string");

@@ -308,7 +308,7 @@ void ActivityListWidget::selectUp() {
 
     deselectAllItems();
 
-    selectedActivityIndex = --oldSelectedIndex;
+    selectedActivityIndex = oldSelectedIndex - 1;
 
     if (selectedActivityIndex >= 0 && selectedActivityIndex < numberOfItems()) {
         setSelectedForItemAtIndex(selectedActivityIndex, true);
@@ -335,7 +335,7 @@ void ActivityListWidget::selectDown() {
 
     deselectAllItems();
 
-    selectedActivityIndex = ++oldSelectedIndex;
+    selectedActivityIndex = oldSelectedIndex + 1;
 
     if (selectedActivityIndex >= 0 && selectedActivityIndex < numberOfItems()) {
         setSelectedForItemAtIndex(selectedActivityIndex, true);
