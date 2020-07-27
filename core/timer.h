@@ -8,12 +8,6 @@
 #include <functional>
 #include <memory>
 
-#ifdef _MSC_VER
-#define STG_EXPORT __declspec( dllimport )
-#else
-#define STG_EXPORT
-#endif
-
 namespace stg {
     class timer {
     public:
