@@ -57,9 +57,11 @@ void Application::setupCocoaDelegate() {
     cocoaDelegate = [[CocoaDelegate alloc] init];
     [SUUpdater.sharedUpdater retain];
 
+#ifndef STG_UI_TEST
     if (@available(macOS 10.14, *)) {
         [UNUserNotificationCenter currentNotificationCenter].delegate = cocoaDelegate;
     }
+#endif
 }
 
 void Application::releaseCocoaDelegate() {

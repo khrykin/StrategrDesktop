@@ -16,10 +16,14 @@
 #include "applicationsettings.h"
 
 std::ostream &operator<<(std::ostream &os, const QRect &r) {
-    os << "QRect(" << r.x() << ", " << r.y() << ", " << r.width() << ", " << r.height() << ")";
-    return os;
-};
+    os << "QRect("
+       << r.x() << ", "
+       << r.y() << ", "
+       << r.width() << ", "
+       << r.height() << ")";
 
+    return os;
+}
 
 TEST_CASE("MainWindow") {
     SECTION("initial rect") {
@@ -32,19 +36,18 @@ TEST_CASE("MainWindow") {
         }
 
         SECTION("should persist it's previous rect") {
-            auto w = new MainWindow();
+            auto w = MainWindow();
             auto testRect = QRect(
-                    0,
-                    0,
+                    100,
+                    100,
                     ApplicationSettings::windowMinimumWidth,
                     ApplicationSettings::windowMinimumHeight);
 
-            w->setGeometry(testRect);
-            delete w;
+            w.setGeometry(testRect);
+            w.close();
 
-            auto w2 = new MainWindow();
-            auto lastGeometry = w2->geometry();
-            delete w2;
+            auto w2 = MainWindow();
+            auto lastGeometry = w2.geometry();
 
             REQUIRE(lastGeometry == testRect);
         }

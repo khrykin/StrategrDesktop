@@ -73,10 +73,11 @@ namespace stg {
 
         const action make_room{"Make Room",
                                [this] {
-                                   this->strategy.shift_below_time_slot(selection.front(), (stg::index_t)selection.size());
+                                   this->strategy.shift_below_time_slot(selection.front(),
+                                                                        (stg::index_t) selection.size());
                                    this->selection.deselect_all();
                                },
-                               [this] { return selection.is_continuous(); }};
+                               [this] { return selection.is_continuous() && !selection.only_empty_selected(); }};
 
         const action deselect{"Deselect", [this] { this->selection.deselect_all(); },
                               [this] { return !selection.empty(); }};

@@ -2,18 +2,19 @@
 // Created by Dmitry Khrykin on 2019-11-23.
 //
 
+#include <fstream>
+
 #include <catch2/catch.hpp>
 #include <boost/filesystem.hpp>
-#include <fstream>
 
 #include "strategy.h"
 #include "json.h"
 
-std::string readTestFile(const std::string &filename) {
+std::string read_test_file(const std::string &filename) {
     using namespace boost::filesystem;
-    const auto testFilePath = path{__FILE__}.parent_path() / path{filename};
+    const auto test_file_path = path{__FILE__}.parent_path() / path{filename};
 
-    std::ifstream t(testFilePath.string());
+    std::ifstream t(test_file_path.string());
 
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -21,8 +22,8 @@ std::string readTestFile(const std::string &filename) {
     return buffer.str();
 }
 
-void testStrategyFile(const std::string &filename) {
-    auto strategy = stg::strategy::from_json_string(readTestFile(filename));
+void test_strategy_file(const std::string &filename) {
+    auto strategy = stg::strategy::from_json_string(read_test_file(filename));
 
     REQUIRE(strategy->time_slot_duration() == 10);
     REQUIRE(strategy->begin_time() == 370);
@@ -43,10 +44,10 @@ void testStrategyFile(const std::string &filename) {
 
 TEST_CASE("JSON Parser") {
     SECTION("parse from JSON string") {
-        testStrategyFile("test.stg");
+        test_strategy_file("test.stg");
 
         SECTION("wrong activity index in slots") {
-            testStrategyFile("test_wrong_activity_index.stg");
+            test_strategy_file("test_wrong_activity_index.stg");
         }
     }
 
@@ -55,10 +56,12 @@ TEST_CASE("JSON Parser") {
         strategy.set_begin_time(100);
         strategy.set_time_slot_duration(10);
 
+        auto expected_number_of_time_slots = 5;
+        auto end_time = strategy.begin_time() + expected_number_of_time_slots * strategy.time_slot_duration();
+        strategy.set_end_time(end_time);
+
         strategy.add_activity(stg::activity("Some 1", "#ff0000"));
         strategy.add_activity(stg::activity("Some 2", "#00ff00"));
-
-        strategy.set_number_of_time_slots(5);
 
         strategy.place_activity(0, {0, 1});
         strategy.place_activity(1, {2, 3});

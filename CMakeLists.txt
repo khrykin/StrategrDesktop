@@ -112,11 +112,9 @@ set(MODELS ${MODELS_PLATFORM_FILES}
         models/actioncenter.cpp
         models/actioncenter.h
         models/stgstring.cpp
-        models/stgstring.h)
+        models/stgstring.h models/persistent.cpp models/persistent.h)
 
 set(MODELS_TESTS
-        models/tests/activity_tests.cpp
-        models/tests/strategy_activities_test.cpp
         models/tests/strategy_settings_test.cpp
         models/tests/strategy_timeslots_test.cpp
         models/tests/strategy_activities_slots_interaction_test.cpp
@@ -203,7 +201,9 @@ set(UI
         ui/iconwidget.cpp
         ui/iconwidget.h
         ui/slotboardscrollarea.cpp
-        ui/slotboardscrollarea.h ui/dataproviderwidget.cpp ui/dataproviderwidget.h)
+        ui/slotboardscrollarea.h
+        ui/dataproviderwidget.cpp
+        ui/dataproviderwidget.h)
 
 set(UTILITY
         ${VERSION_FILE}
@@ -216,7 +216,7 @@ set(UTILITY
         utility/notifierbackend.cpp
         utility/fontutils.cpp
         utility/fontutils.h
-        utility/timerbackend.h)
+        utility/backends.h)
 
 set(UI_TESTS
         ui/tests/main_window_test.cpp
@@ -295,12 +295,12 @@ if (WIN32)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
 endif ()
 
-add_executable(models_tests
+add_executable(core_tests
         tests_main.cpp
         ${MODELS}
         ${MODELS_TESTS})
 
-target_link_libraries(models_tests
+target_link_libraries(core_tests
         Catch2::Catch2
         Boost::filesystem
         ${MODELS_LIBRARIES}
@@ -310,14 +310,14 @@ option(COVERAGE "Generate code coverage" OFF)
 
 if (COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES Clang)
-        target_compile_options(models_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
-        target_link_options(models_tests PUBLIC -fprofile-instr-generate)
+        target_compile_options(core_tests PUBLIC -fprofile-instr-generate -fcoverage-mapping)
+        target_link_options(core_tests PUBLIC -fprofile-instr-generate)
         #Uncomment in case of linker errors
-        #    target_link_libraries(models_tests clang_rt.profile-x86_64)
+        #    target_link_libraries(core_tests clang_rt.profile-x86_64)
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL GNU)
-        target_compile_options(models_tests PUBLIC --coverage)
+        target_compile_options(core_tests PUBLIC --coverage)
         #Uncomment in case of linker errors
-        #target_link_libraries(models_tests gcov)
+        #target_link_libraries(core_tests gcov)
     endif ()
 endif ()
 
@@ -361,6 +361,8 @@ add_executable(ui_tests
         ${UTILITY}
         ${UI_TESTS}
         ${RESOURCES})
+
+target_compile_definitions(ui_tests PRIVATE STG_UI_TEST)
 
 target_link_libraries(ui_tests
         StrategrCore

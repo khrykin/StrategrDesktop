@@ -7,9 +7,9 @@
 
 TEST_CASE("Strategy history", "[strategy][history]") {
     auto strategy = stg::strategy();
-    auto initialActivity = stg::activity("Some 1");
+    auto initial_activity = stg::activity("Some 1");
 
-    strategy.add_activity(initialActivity);
+    strategy.add_activity(initial_activity);
 
     SECTION("activity addition") {
         strategy.add_activity(stg::activity("Some 2"));
@@ -30,24 +30,23 @@ TEST_CASE("Strategy history", "[strategy][history]") {
     }
 
     SECTION("activity editing") {
-        const auto editedActivity = stg::activity("Some 1 Edited");
-        strategy.edit_activity(0, editedActivity);
+        const auto edited_activity = stg::activity("Some 1 Edited");
+        strategy.edit_activity(0, edited_activity);
 
         SECTION("undo") {
             strategy.undo();
-            REQUIRE(strategy.activities()[0] == initialActivity);
+            REQUIRE(strategy.activities()[0] == initial_activity);
         }
 
         SECTION("redo") {
             strategy.undo();
             strategy.undo();
             strategy.redo();
-            REQUIRE(strategy.activities()[0] == initialActivity);
+            REQUIRE(strategy.activities()[0] == initial_activity);
         }
     }
 
     SECTION("activity removal") {
-        const auto editedActivity = stg::activity("Some 1 Edited");
         strategy.add_activity(stg::activity("Some 2"));
         strategy.delete_activity(0);
 
@@ -73,7 +72,7 @@ TEST_CASE("Strategy history", "[strategy][history]") {
         strategy.delete_activity(0);
 
         strategy.undo();
-        REQUIRE(strategy.activities()[0] == initialActivity);
+        REQUIRE(strategy.activities()[0] == initial_activity);
         REQUIRE(strategy.sessions()[0].length() == 2);
 
     }

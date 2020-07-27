@@ -57,8 +57,8 @@ void FileSystemIOManager::saveAs(const stg::strategy &strategy) {
 }
 
 void FileSystemIOManager::saveAsDefault(const stg::strategy &strategy) {
-    Application::currentSettings().setValue(Settings::defaultStrategyKey,
-                                            QString::fromStdString(strategy.to_json_string()));
+    strategy.save_as_default();
+
     auto msgBox = QMessageBox(window);
     msgBox.setText("Current strategy has been saved as your default.");
     msgBox.setWindowModality(Qt::WindowModal);
@@ -121,31 +121,11 @@ void FileSystemIOManager::setIsSaved(bool isSaved) {
 
 stg::strategy
 FileSystemIOManager::openDefault() {
-    if (defaultStrategyIsSet()) {
-        auto defaultStrategyString = Application::currentSettings()
-                .value(Settings::defaultStrategyKey)
-                .toString()
-                .toStdString();
-
-        auto defaultStrategy = stg::strategy::from_json_string(defaultStrategyString);
-
-        resetFilepath();
-
-        if (!defaultStrategy) {
-            return stg::strategy();
-        }
-
-        return *defaultStrategy;
-    }
-
     resetFilepath();
 
-    return stg::strategy();
+    return stg::strategy::from_default();
 }
 
-bool FileSystemIOManager::defaultStrategyIsSet() {
-    return !Application::currentSettings().value(Settings::defaultStrategyKey).isNull();
-}
 
 QFileInfo FileSystemIOManager::fileInfo() { return QFileInfo(filepath); }
 

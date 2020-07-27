@@ -50,7 +50,8 @@ namespace stg {
 
             return std::make_unique<strategy>(time_slots, activities);
         } catch (const std::exception &exception) {
-            std::cerr << "Error while reading from JSON: " << exception.what() << "\n";
+            std::cerr << "Error while reading strategy from JSON: " << exception.what() << "\n";
+            std::cerr << "JSON input was: \"" << json_string << "\"\n";
 
             return nullptr;
         }

@@ -56,6 +56,9 @@ namespace stg {
         using resetter_t = std::function<void(const std::vector<std::string> &)>;
         using sender_t = std::function<void(const notification &)>;
 
+        static constexpr seconds prepare_seconds_interval = 5 * 60;
+        static constexpr seconds immediate_seconds_interval = 20;
+
         static auto immediate_delivery_seconds(minutes minutes_time) -> seconds;
         static auto prepare_delivery_seconds(minutes minutes_time) -> seconds;
 
@@ -73,9 +76,6 @@ namespace stg {
 
         auto scheduled_notifications() const -> const std::vector<stg::notification> &;
         auto scheduled_identifiers() const -> std::vector<std::string>;
-
-        static const seconds prepare_seconds_interval = 5 * 60;
-        static const seconds immediate_seconds_interval = 20;
     private:
         std::unique_ptr<stg::timer> timer = nullptr;
 

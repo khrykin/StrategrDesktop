@@ -53,6 +53,7 @@ namespace stg {
             on_schedule_notifications(_scheduled_notifications);
 
         remove_stale_from(notifications);
+
         _upcoming_notifications = notifications;
     }
 
@@ -167,9 +168,8 @@ namespace stg {
             return "End Of A Strategy";
         }
 
-        if (!session.activity) {
+        if (!session.activity)
             throw std::invalid_argument("session must have an activity for this type of notification");
-        }
 
         return session.activity->name()
                + " ("

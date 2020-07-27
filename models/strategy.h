@@ -57,8 +57,10 @@ namespace stg {
                  const activity_list::data_t &activities);
 
         strategy(const strategy &other);
+        strategy(strategy &&other);
 
         auto operator=(const strategy &other) -> strategy &;
+        auto operator=(strategy &&other) -> strategy &;
 
 #pragma mark - Import & Export
 
@@ -67,6 +69,9 @@ namespace stg {
 
         static auto from_file(const std::string &path) noexcept(false) -> std::unique_ptr<strategy>;
         void write_to_file(const std::string &path) const noexcept(false);
+
+        void save_as_default() const;
+        static auto from_default() -> strategy;
 
         void import_events(const std::vector<event> &events, bool override);
 

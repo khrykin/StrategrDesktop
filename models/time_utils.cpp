@@ -1,7 +1,9 @@
 //
 // Created by Dmitry Khrykin on 2019-08-15.
 //
+
 #include <string>
+#include <functional>
 
 #include "time_utils.h"
 

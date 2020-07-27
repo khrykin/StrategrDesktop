@@ -12,7 +12,6 @@ public:
     static const bool WantToDiscard = false;
     static const bool WantToLeaveAsIs = true;
 
-    static bool defaultStrategyIsSet();
     static QStringList recentPaths();
     static QStringList recentFileNames();
     static void clearRecent();

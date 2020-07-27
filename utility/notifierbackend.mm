@@ -1,9 +1,12 @@
+#if !defined(STG_UI_TEST)
+
 #include <QSettings>
 
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 
 #include "notifierbackend.h"
+
 
 NotifierBackend::NotifierBackend() {
     @autoreleasepool {
@@ -29,35 +32,35 @@ NotifierBackend::NotifierBackend() {
 }
 
 void NotifierBackend::sendMessage(const QString &title, const QString &message) {
-    @autoreleasepool {
-        if (@available(macOS 10.14, *)) {
-            UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-            content.title = title.toNSString();
-            content.body = message.toNSString();
-            content.sound = [UNNotificationSound defaultSound];
+    if (@available(macOS 10.14, *)) {
+        UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+        content.title = title.toNSString();
+        content.body = message.toNSString();
+        content.sound = [UNNotificationSound defaultSound];
 
-            UNNotificationRequest *request
-                    = [UNNotificationRequest requestWithIdentifier:[NSUUID UUID].UUIDString
-                                                           content:content
-                                                           trigger:nil];
+        UNNotificationRequest *request
+                = [UNNotificationRequest requestWithIdentifier:[NSUUID UUID].UUIDString
+                                                       content:content
+                                                       trigger:nil];
 
-            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-            [center addNotificationRequest:request withCompletionHandler:^(NSError *__nullable error) {
-                if (error) {
-                    NSLog(@"Can't send notification: %@",
-                          error.localizedDescription);
-                }
-            }];
-        } else {
-            NSUserNotification *notification = [[NSUserNotification alloc] init];
-            notification.title = title.toNSString();
-            notification.informativeText = message.toNSString();
-            notification.soundName = NSUserNotificationDefaultSoundName;
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center addNotificationRequest:request withCompletionHandler:^(NSError *__nullable error) {
+            if (error) {
+                NSLog(@"Can't send notification: %@",
+                      error.localizedDescription);
+            }
+        }];
+    } else {
+        NSUserNotification *notification = [[NSUserNotification alloc] init];
+        notification.title = title.toNSString();
+        notification.informativeText = message.toNSString();
+        notification.soundName = NSUserNotificationDefaultSoundName;
 
-            NSUserNotificationCenter *userNotificationCenter =
-                    [NSUserNotificationCenter defaultUserNotificationCenter];
+        NSUserNotificationCenter *userNotificationCenter =
+                [NSUserNotificationCenter defaultUserNotificationCenter];
 
-            [userNotificationCenter deliverNotification:notification];
-        }
+        [userNotificationCenter deliverNotification:notification];
     }
 }
+
+#endif

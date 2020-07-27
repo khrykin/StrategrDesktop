@@ -32,9 +32,8 @@ namespace stg {
         current_operaion = get_operation(current_key_modifiers);
         current_operaion->start(event);
 
-        if (event.has(event::right_key)) {
+        if (event.has(event::right_key))
             show_context_menu(event);
-        }
 
         previous_position = event.position;
 
@@ -53,7 +52,6 @@ namespace stg {
         current_slot_index = get_slot_index(event);
         current_session_index = get_session_index(current_slot_index);
         current_mouse_zone = get_mouse_zone(current_session_index, event.position);
-
         current_key_modifiers = event.modifiers;
 
         if (current_operaion->type() != none) {
@@ -398,7 +396,6 @@ namespace stg {
             return {};
 
         auto actions = std::vector<const action *>();
-        const auto &current_slot = strategy.time_slots()[current_slot_index];
 
         actions.push_back(&action_center->set_activity);
         actions.push_back(&action::separator_action());

@@ -122,15 +122,13 @@ namespace stg {
         if (end_time == this->end_time())
             return;
 
-        if (end_time <= begin_time()) {
+        if (end_time <= begin_time())
             end_time += 24 * 60;
-        }
 
         auto number_of_slots = (end_time - begin_time()) / slot_duration();
-        if (number_of_slots < 1) {
+
+        if (number_of_slots < 1)
             number_of_slots = 1;
-            end_time = begin_time() + slot_duration();
-        }
 
         set_number_of_slots(number_of_slots);
     }
