@@ -23,8 +23,8 @@ if (WIN32)
 endif ()
 
 include_directories(.)
-include_directories(models)
-include_directories(models/apple)
+include_directories(core)
+include_directories(core/apple)
 
 include_directories(ui)
 include_directories(utility)
@@ -39,87 +39,89 @@ set(CMAKE_MODULE_PATH
 include(GenerateVersionFile)
 
 if (APPLE)
-    set(MODELS_PLATFORM_FILES
-            models/apple/NSColor+HexString.h
-            models/apple/NSColor+HexString.m
-            models/apple/SGCalendarManager.m
-            models/apple/SGCalendarManager.h
-            models/apple/SGCalendarExporter.h
-            models/apple/SGCalendarExporter.mm
-            models/apple/SGCalendarImporter.mm
-            models/apple/SGCalendarImporter.h
-            models/apple/SGCalendarImportViewModel.h
-            models/apple/SGCalendarImportViewModel.m
-            models/apple/SGCalendarExportViewModel.h
-            models/apple/SGCalendarExportViewModel.m
-            models/color.mm
-            models/stgstring.mm)
+    set(CORE_PLATFORM_FILES
+            core/apple/NSColor+HexString.h
+            core/apple/NSColor+HexString.m
+            core/apple/SGCalendarManager.m
+            core/apple/SGCalendarManager.h
+            core/apple/SGCalendarExporter.h
+            core/apple/SGCalendarExporter.mm
+            core/apple/SGCalendarImporter.mm
+            core/apple/SGCalendarImporter.h
+            core/apple/SGCalendarImportViewModel.h
+            core/apple/SGCalendarImportViewModel.m
+            core/apple/SGCalendarExportViewModel.h
+            core/apple/SGCalendarExportViewModel.m
+            core/color.mm
+            core/stgstring.mm)
 endif ()
 
-set(MODELS ${MODELS_PLATFORM_FILES}
-        models/version.h
+set(CORE ${CORE_PLATFORM_FILES}
+        core/version.h
         ${CORE_VERSION_FILE}
-        models/activity.cpp
-        models/activity.h
-        models/strategy.cpp
-        models/strategy.h
-        models/activityinvalidpropertyexception.cpp
-        models/activityinvalidpropertyexception.h
-        models/activitylist.cpp
-        models/activitylist.h
-        models/privatelist.h
-        models/notifiableonchange.h
-        models/timeslot.cpp
-        models/timeslot.h
-        models/timeslotsstate.cpp
-        models/timeslotsstate.h
-        models/sessionslist.cpp
-        models/sessionslist.h
-        models/streamablelist.h
-        models/strategyhistory.cpp
-        models/strategyhistory.h
-        models/session.cpp
-        models/dragoperation.cpp
-        models/dragoperation.h
-        models/resizeoperation.cpp
-        models/resizeoperation.h
-        models/overview.cpp
-        models/overview.h
-        models/time_utils.cpp
-        models/time_utils.h
-        models/json.cpp
-        models/json.h
-        models/currenttimemarker.cpp
-        models/currenttimemarker.h
-        models/geometry.h
-        models/notifier.cpp
-        models/notifier.h
-        models/utility.h
-        models/mousehandler.cpp
-        models/mousehandler.h
-        models/mousehandleroperations.h
-        models/selection.cpp
-        models/selection.h
-        models/event.cpp
-        models/event.h
-        models/color.cpp
-        models/color.h
-        models/theme.cpp
-        models/theme.h
-        models/timer.cpp
-        models/timer.h
-        models/action.hpp
-        models/actioncenter.cpp
-        models/actioncenter.h
-        models/stgstring.cpp
-        models/stgstring.h models/persistent.cpp models/persistent.h)
+        core/activity.cpp
+        core/activity.h
+        core/strategy.cpp
+        core/strategy.h
+        core/activityinvalidpropertyexception.cpp
+        core/activityinvalidpropertyexception.h
+        core/activitylist.cpp
+        core/activitylist.h
+        core/privatelist.h
+        core/notifiableonchange.h
+        core/timeslot.cpp
+        core/timeslot.h
+        core/timeslotsstate.cpp
+        core/timeslotsstate.h
+        core/sessionslist.cpp
+        core/sessionslist.h
+        core/streamablelist.h
+        core/strategyhistory.cpp
+        core/strategyhistory.h
+        core/session.cpp
+        core/dragoperation.cpp
+        core/dragoperation.h
+        core/resizeoperation.cpp
+        core/resizeoperation.h
+        core/overview.cpp
+        core/overview.h
+        core/time_utils.cpp
+        core/time_utils.h
+        core/json.cpp
+        core/json.h
+        core/currenttimemarker.cpp
+        core/currenttimemarker.h
+        core/geometry.h
+        core/notifier.cpp
+        core/notifier.h
+        core/utility.h
+        core/mousehandler.cpp
+        core/mousehandler.h
+        core/mousehandleroperations.h
+        core/selection.cpp
+        core/selection.h
+        core/event.cpp
+        core/event.h
+        core/color.cpp
+        core/color.h
+        core/theme.cpp
+        core/theme.h
+        core/timer.cpp
+        core/timer.h
+        core/action.hpp
+        core/actioncenter.cpp
+        core/actioncenter.h
+        core/stgstring.cpp
+        core/stgstring.h
+        core/persistent.cpp
+        core/persistent.h)
 
 set(MODELS_TESTS
-        models/tests/strategy_settings_test.cpp
-        models/tests/strategy_timeslots_test.cpp
-        models/tests/strategy_activities_slots_interaction_test.cpp
-        models/tests/strategy_history_test.cpp
-        models/tests/json_tests.cpp)
+        core/tests/strategy_settings_test.cpp
+        core/tests/strategy_timeslots_test.cpp
+        core/tests/strategy_activities_slots_interaction_test.cpp
+        core/tests/strategy_history_test.cpp
+        core/tests/json_tests.cpp)
 
 set(MODELS_LIBRARIES ${utf8Proc_LIBRARY_PATH})
 
@@ -323,7 +325,7 @@ endif ()
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_library(StrategrCore SHARED ${MODELS})
+add_library(StrategrCore SHARED ${CORE})
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
@@ -335,7 +337,7 @@ target_link_libraries(StrategrCore
 
 set_target_properties(StrategrCore PROPERTIES
         FRAMEWORK TRUE
-        PUBLIC_HEADER models/strategy.h
+        PUBLIC_HEADER core/strategy.h
         VERSION ${VERSION_SHORT}
         MACOSX_FRAMEWORK_LONG_VERSION_STRING ${VERSION}
         MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${VERSION_SHORT}

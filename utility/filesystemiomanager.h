@@ -5,7 +5,7 @@
 #include <QSaveFile>
 #include <QObject>
 
-#include "models/strategy.h"
+#include "core/strategy.h"
 
 class FileSystemIOManager {
 public:

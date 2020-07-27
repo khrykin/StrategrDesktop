@@ -6,7 +6,9 @@
 #define STRATEGR_SGCALENDAREXPORTPROGRESSWINDOW_H
 
 #import <AppKit/AppKit.h>
-#import <models/apple/SGCalendarExporter.h>
+
+#import "core/apple/SGCalendarExporter.h"
+
 #import "SGCalendarManager.h"
 #import "SGProgressWindow.h"
 

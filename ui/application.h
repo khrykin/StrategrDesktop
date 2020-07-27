@@ -13,7 +13,8 @@
 
 #include "aboutwindow.h"
 #include "mainwindow.h"
-#include "models/theme.h"
+
+#include "core/theme.h"
 
 #ifdef Q_OS_MAC
 Q_FORWARD_DECLARE_OBJC_CLASS(CocoaDelegate);
