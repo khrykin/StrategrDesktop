@@ -175,7 +175,6 @@ set(UI
         ui/currentsessionwidget.h
         ui/abstractspinboxdecorator.cpp
         ui/abstractspinboxdecorator.h
-        ui/timelabel.h
         ui/alert.cpp
         ui/alert.h
         ui/application.cpp

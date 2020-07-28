@@ -9,7 +9,6 @@
 #include "currenttimemarkerwidget.h"
 #include "slotswidget.h"
 #include "slotruler.h"
-#include "timelabel.h"
 #include "colorprovider.h"
 
 class MainWindow;

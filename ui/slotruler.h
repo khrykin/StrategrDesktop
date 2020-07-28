@@ -6,7 +6,6 @@
 
 #include "applicationsettings.h"
 #include "reactivelist.hpp"
-#include "timelabel.h"
 #include "coloredlabel.h"
 #include "colorprovider.h"
 #include "dataproviderwidget.h"
