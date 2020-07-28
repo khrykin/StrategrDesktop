@@ -14,8 +14,8 @@
 
 namespace stg {
     struct theme {
-        std::function<color()> get_text_color = [] { return color::black_color(); };
-        std::function<color()> get_base_color = [] { return color::white_color(); };
+        std::function<color()> get_text_color = [] { return color::black_color; };
+        std::function<color()> get_base_color = [] { return color::white_color; };
 
         auto text_color() const -> color;
         auto base_color() const -> color;

@@ -27,7 +27,7 @@ namespace stg {
         struct overview_item {
             float duration_percentage = 0.0;
             float begin_percentage = 0.0;
-            std::optional<activity::color_t> color = std::nullopt;
+            std::optional<stg::color> color = std::nullopt;
         };
 
         struct bounds {

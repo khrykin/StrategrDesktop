@@ -18,6 +18,9 @@
 
 namespace stg {
     struct color {
+
+#pragma mark - SFINAE helpers
+
         template<typename T,
                 typename = int,
                 typename = int,
@@ -34,18 +37,24 @@ namespace stg {
                 decltype(std::declval<T>().alpha())> : std::true_type {
         };
 
-        static auto clear_color() -> color;
-        static auto black_color() -> color;
-        static auto white_color() -> color;
+#pragma mark - Default Colors
 
-        explicit color(uint32_t data = 0u);
-        color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        static const color clear_color;
+        static const color black_color;
+        static const color white_color;
+
+#pragma mark - Constructors
+
+        explicit constexpr color(uint32_t data = 0u);
+        constexpr color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+
+#pragma mark - Conversion Constructors & Operators
 
         color(const char *str);
         color(const std::string &str);
 
         template<typename T, std::enable_if_t<is_qcolor_like<T>::value, int> = 0>
-        color(const T &q_color_like) {
+        constexpr color(const T &q_color_like) {
             set_rgba(q_color_like.red(),
                      q_color_like.green(),
                      q_color_like.blue(),
@@ -59,6 +68,13 @@ namespace stg {
         operator T() const {
             return T(red(), green(), blue(), alpha());
         }
+
+#if __APPLE__
+        color(CGColorRef cg_color);
+        operator CGColorRef() const;
+#endif
+
+#pragma mark - Managing RGB Components
 
         auto red() const -> uint8_t;
         auto green() const -> uint8_t;
@@ -81,6 +97,10 @@ namespace stg {
         void set_alpha_component(float value);
 
         void set_rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        auto rgb_components() const -> std::array<double, 4>;
+
+#pragma mark - Managing HSL Components
+
         void set_hsl(float hue, float saturation, float lightness);
         auto with_hsl(float hue, float saturation, float lightness) const -> color;
 
@@ -89,6 +109,8 @@ namespace stg {
         auto lightness() const -> float;
         auto brightness() const -> float;
 
+#pragma mark - Color Operations
+
         void blend_with(const color &overlay_color);
         auto blended_with(const color &overlay_color) const -> color;
         auto with_alpha_component(float value) const -> color;
@@ -96,15 +118,13 @@ namespace stg {
         void invert();
         auto inverted() -> color;
 
-        auto components() const -> std::array<double, 4>;
-        auto info() const -> std::string;
+#pragma mark - Explicit Conversions
 
         auto to_hex_string() const -> std::string;
 
-#if __APPLE__
-        color(CGColorRef cg_color);
-        operator CGColorRef() const;
-#endif
+#pragma mark - Debugging
+
+        auto info() const -> std::string;
 
     private:
         uint32_t data = 0;
@@ -117,6 +137,16 @@ namespace stg {
         friend auto operator==(const stg::color &lhs, const stg::color &rhs) -> bool;
         friend auto operator!=(const stg::color &lhs, const stg::color &rhs) -> bool;
     };
+
+    constexpr color::color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
+        set_rgba(red, green, blue, alpha);
+    }
+
+    constexpr color::color(uint32_t data) : data(data) {}
+
+    inline constexpr const color color::clear_color = color(0x00'00'00'00u);
+    inline constexpr const color color::black_color = color(0x00'00'00'ffu);
+    inline constexpr const color color::white_color = color(0xff'ff'ff'ffu);
 }
 
 #endif //STRATEGR_COLOR_H

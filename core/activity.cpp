@@ -5,8 +5,8 @@
 #include "activityinvalidpropertyexception.h"
 
 namespace stg {
-    auto activity::default_colors() -> const std::vector<stg::activity::color_info_t> & {
-        const static std::vector<activity::color_info_t> colors = {
+    auto activity::default_colors() -> const std::vector<color_info> & {
+        const static std::vector<color_info> colors = {
                 {"#FF6562", "Red"},
                 {"#FFB700", "Orange"},
                 {"#FFD600", "Yellow"},
@@ -21,58 +21,54 @@ namespace stg {
         return colors;
     };
 
-    activity::activity(name_t name, color_t color) : _color(std::move(color)) {
-        if (!is_valid(name)) {
+    activity::activity(std::string name, stg::color color) : _color(std::move(color)) {
+        if (!is_valid(name))
             throw empty_name_exception();
-        }
 
         _name = std::move(name);
     }
 
-    auto activity::is_valid(const activity::name_t &name) -> bool {
-        bool white_spaces_only = name.find_first_not_of(" \t\n\v\f\r") == std::string::npos;
-        return !white_spaces_only;
-    }
-
-    auto activity::empty_name_exception() -> activity::invalid_property_exception {
-        const auto *message = "activity name can't be empty";
-        return invalid_property_exception(message);
-    }
-
-    auto activity::name() const -> const activity::name_t & {
+    auto activity::name() const -> const std::string & {
         return _name;
     }
 
-    auto activity::color() const -> const activity::color_t & {
+    auto activity::color() const -> const stg::color & {
         return _color;
     }
 
-    auto operator==(const stg::activity &lhs, const stg::activity &rhs) -> bool {
-        return lhs.name() == rhs.name() &&
-               lhs.color() == rhs.color();
-    }
-
-    auto operator!=(const stg::activity &lhs, const stg::activity &rhs) -> bool {
-        return !(lhs == rhs);
-    }
-
-    auto operator<<(std::ostream &os,
-                    const stg::activity &activity) -> std::ostream & {
-        os << "activity("
-           << activity.name()
-           << ", "
-           << activity.color()
-           << ")";
-
-        return os;
-    }
-
-    auto activity::with_name(const name_t &name) const -> activity {
+    auto activity::with_name(const std::string &name) const -> activity {
         return activity(name, _color);
     }
 
-    auto activity::with_color(const color_t &color) const -> activity {
+    auto activity::with_color(const stg::color &color) const -> activity {
         return activity(_name, color);
+    }
+
+
+    auto activity::light_color() const -> stg::color {
+        auto clr = color();
+        clr.set_alpha_component(0.15);
+
+        return clr;
+    }
+
+    auto activity::desaturated_light_color() const -> stg::color {
+        auto clr = color();
+        clr.set_hsl(clr.hue(), 0.3, 0.75);
+        clr.set_alpha_component(0.2);
+
+        return clr;
+    }
+
+    auto activity::desaturated_dark_color() const -> stg::color {
+        auto clr = stg::color();
+
+        if (color().lightness() < 0.2)
+            clr = stg::color(0xffffffff);
+
+        clr.set_alpha_component(0.1);
+
+        return clr;
     }
 
     auto activity::to_json() const -> nlohmann::json {
@@ -91,5 +87,34 @@ namespace stg {
         }
 
         return activity{name, color};
+    }
+
+    auto activity::empty_name_exception() -> activity::invalid_property_exception {
+        const auto *message = "activity name can't be empty";
+        return invalid_property_exception(message);
+    }
+
+    auto activity::is_valid(const std::string &name) -> bool {
+        bool white_spaces_only = name.find_first_not_of(" \t\n\v\f\r") == std::string::npos;
+        return !white_spaces_only;
+    }
+
+    auto operator==(const stg::activity &lhs, const stg::activity &rhs) -> bool {
+        return lhs.name() == rhs.name() &&
+               lhs.color() == rhs.color();
+    }
+
+    auto operator!=(const stg::activity &lhs, const stg::activity &rhs) -> bool {
+        return !(lhs == rhs);
+    }
+
+    auto operator<<(std::ostream &os, const stg::activity &activity) -> std::ostream & {
+        os << "activity("
+           << activity.name()
+           << ", "
+           << activity.color()
+           << ")";
+
+        return os;
     }
 }

@@ -16,7 +16,7 @@ namespace stg {
 
     auto theme::session_background_color(const session &session, bool is_selected) const -> color {
         if (!session.activity)
-            return color::clear_color();
+            return color::clear_color;
 
         auto activity_color = session.activity->color();
 
@@ -38,7 +38,7 @@ namespace stg {
 
     auto theme::session_duration_color(const session &session, bool is_selected) const -> color {
         if (!session.activity)
-            return color::clear_color();
+            return color::clear_color;
 
         const auto activity_color = session.activity->color();
         auto default_duration_color = text_color()
@@ -57,7 +57,7 @@ namespace stg {
 
 
         if (session.activity->color().lightness() < 0.2 && is_selected) {
-            duration_color = color::white_color()
+            duration_color = color::white_color
                     .blended_with(session.activity->color().with_alpha_component(0.5));
         }
 
@@ -71,7 +71,7 @@ namespace stg {
                                                                 1 - activity_color.lightness());
 
         if (is_selected) {
-            return color::white_color();
+            return color::white_color;
         } else {
             if (activity_color.lightness() < 0.5 && is_dark_mode())
                 return lightened_activity_color;

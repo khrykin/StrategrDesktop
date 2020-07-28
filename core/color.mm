@@ -34,7 +34,7 @@ namespace stg {
 
     color::operator CGColorRef() const {
         auto *color_space = CGColorSpaceCreateWithName(cg_color_color_space_name);
-        auto *cg_color = CGColorCreate(color_space, components().data());
+        auto *cg_color = CGColorCreate(color_space, rgb_components().data());
 
         CGColorSpaceRelease(color_space);
         CFAutorelease(cg_color);
