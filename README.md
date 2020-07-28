@@ -26,6 +26,14 @@ Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
  - [utf8proc](https://github.com/JuliaStrings/utf8proc) >= v2.4.0 - Note that this must be built as a static library
  - [Sparkle](https://sparkle-project.org/) (macOS only)
  - [WinSparkle](https://winsparkle.org/) (Windows only)
+ 
+## Building 
+Given that current directory is the root of this repository, and all dependencies are avaliable for CMake, you can build Strategr like this:
+```
+mkdir build && cd build
+cmake ../
+cmake --build . --target Strategr
+```
 
 ## Contributing
 PR's or any help and suggestions are appreciated!
