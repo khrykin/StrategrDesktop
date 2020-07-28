@@ -20,6 +20,7 @@ Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
 - [ ] Android
 
 ## Build Requirements
+ - C++17-compatible C++ compliler
  - CMake >=3.14
  - Boost >= 1.7
  - Qt >= 5.14
