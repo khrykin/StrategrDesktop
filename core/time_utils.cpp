@@ -7,17 +7,40 @@
 
 #include "time_utils.h"
 
-namespace stg {
-    auto time_utils::current_minutes() -> time_utils::minutes {
-        return current_seconds() / 60;
+namespace stg::time_utils {
+
+#pragma mark - Type & Function Aliases
+
+    using day_components = std::tm;
+
+    constexpr static auto day_components_from_timestamp = std::localtime;
+    constexpr static auto timestamp_from_day_components = std::mktime;
+
+#pragma mark - Time Source
+
+    struct time_source {
+        static auto current_seconds() -> seconds;
+        static std::function<seconds()> seconds_getter;
+    };
+
+    std::function<seconds()> time_source::seconds_getter = nullptr;
+
+    void set_time_source(std::function<seconds()> fn) {
+        time_source::seconds_getter = std::move(fn);
     }
 
-    auto time_utils::current_seconds() -> time_utils::seconds {
-        auto duration = current_day_duration();
-        return static_cast<seconds>(std::chrono::duration_cast<std::chrono::seconds>(duration).count());
+    auto default_time_source() -> seconds;
+
+    auto time_source::current_seconds() -> seconds {
+        if (seconds_getter)
+            return seconds_getter();
+        else
+            return default_time_source();
     }
 
-    auto time_utils::start_of_a_day_from_timestamp(time_t timestamp) -> time_t {
+#pragma mark - Default Time Source Implementation
+
+    auto start_of_a_day_from_timestamp(time_t timestamp) -> time_t {
         auto day_components = *day_components_from_timestamp(&timestamp);
 
         day_components.tm_hour = 0;
@@ -29,15 +52,64 @@ namespace stg {
         return timestamp;
     }
 
-    auto time_utils::current_day_duration() -> duration {
+    auto today_timestamp() -> time_t {
         using namespace std::chrono;
+
+        auto clock_now = system_clock::now();
+        auto current_timestamp = system_clock::to_time_t(clock_now);
+
+        return start_of_a_day_from_timestamp(current_timestamp);
+    }
+
+    auto current_day_duration() -> duration {
+        using namespace std::chrono;
+
         auto clock_now = system_clock::now();
         auto clock_start_of_today = system_clock::from_time_t(today_timestamp());
 
         return clock_now - clock_start_of_today;
     }
 
-    auto time_utils::human_string_from_minutes(minutes minutes) -> std::string {
+    auto default_time_source() -> seconds {
+        auto duration = current_day_duration();
+        return static_cast<seconds>(std::chrono::duration_cast<std::chrono::seconds>(duration).count());
+    }
+
+#pragma mark - Getting Current Time
+
+    auto current_seconds() -> seconds {
+        return time_source::current_seconds();
+    }
+
+    auto current_minutes() -> time_utils::minutes {
+        return current_seconds() / 60;
+    }
+
+#pragma mark - Getting Calendar Time from Relative Time
+
+    auto calendar_time_from_minutes(minutes minutes_in_today) -> time_t {
+        return today_timestamp() + minutes_in_today * 60;
+    }
+
+#pragma mark - Getting String Representation of Time
+
+    auto string_from_seconds(minutes total_seconds) -> std::string {
+        auto hours = total_seconds / 3600;
+        auto minutes = (total_seconds - 3600 * hours) / 60;
+        auto seconds = total_seconds - 3600 * hours - 60 * minutes;
+
+        std::string result = std::to_string(hours) + " h";
+
+        if (minutes)
+            result += " " + std::to_string(minutes) + " m";
+
+        if (seconds)
+            result += " " + std::to_string(seconds) + "s";
+
+        return result;
+    }
+
+    auto human_string_from_minutes(minutes minutes) -> std::string {
         if (minutes < 1) {
             return "0 min";
         }
@@ -71,33 +143,4 @@ namespace stg {
 
         return result;
     }
-
-    auto time_utils::string_from_seconds(minutes total_seconds) -> std::string {
-        auto hours = total_seconds / 3600;
-        auto minutes = (total_seconds - 3600 * hours) / 60;
-        auto seconds = total_seconds - 3600 * hours - 60 * minutes;
-
-        std::string result = std::to_string(hours) + " h";
-
-        if (minutes)
-            result += " " + std::to_string(minutes) + " m";
-
-        if (seconds)
-            result += " " + std::to_string(seconds) + "s";
-
-        return result;
-    }
-
-    auto time_utils::calendar_time_from_minutes(minutes minutes_in_today) -> time_t {
-        return today_timestamp() + minutes_in_today * 60;
-    }
-
-    auto time_utils::today_timestamp() -> time_t {
-        using namespace std::chrono;
-
-        auto clock_now = system_clock::now();
-        auto current_timestamp = system_clock::to_time_t(clock_now);
-
-        return start_of_a_day_from_timestamp(current_timestamp);
-    }
-};
+}

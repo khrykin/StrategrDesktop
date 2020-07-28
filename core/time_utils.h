@@ -9,27 +9,33 @@
 #include <chrono>
 #include <iostream>
 
-namespace stg {
-    namespace time_utils {
-        using seconds = unsigned;
-        using minutes = unsigned;
+namespace stg::time_utils {
 
-        using day_components = std::tm;
-        using duration = std::chrono::duration<double>;
+#pragma mark - Type Aliases
 
-        constexpr static auto day_components_from_timestamp = std::localtime;
-        constexpr static auto timestamp_from_day_components = std::mktime;
+    using seconds = unsigned;
+    using minutes = unsigned;
+    using duration = std::chrono::duration<double>;
 
-        auto start_of_a_day_from_timestamp(time_t timestamp) -> time_t;
-        auto today_timestamp() -> time_t;
-        auto current_day_duration() -> duration;
-        auto current_minutes() -> minutes;
-        auto current_seconds() -> seconds;
-        auto calendar_time_from_minutes(minutes minutes_in_today) -> time_t;
+#pragma mark - Setting Time Source
 
-        auto string_from_seconds(minutes total_seconds) -> std::string;
-        auto human_string_from_minutes(minutes minutes) -> std::string;
-    };
+    // Time source is a function that returns current seconds since beginning of a day.
+    // Default time source uses local system time.
+    void set_time_source(std::function<seconds()> seconds_getter);
+
+#pragma mark - Getting Current Time
+
+    auto current_seconds() -> seconds;
+    auto current_minutes() -> minutes;
+
+#pragma mark - Getting Calendar Time from Relative Time
+
+    auto calendar_time_from_minutes(minutes minutes_in_today) -> time_t;
+
+#pragma mark - Getting String Representation of Time
+
+    auto string_from_seconds(minutes total_seconds) -> std::string;
+    auto human_string_from_minutes(minutes minutes) -> std::string;
 }
 
 
