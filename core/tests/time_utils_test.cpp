@@ -23,5 +23,7 @@ TEST_CASE("Time Utilities", "[time_utils]") {
 
         REQUIRE(stg::time_utils::current_seconds() == 60);
         REQUIRE(stg::time_utils::current_minutes() == 1);
+
+        stg::time_utils::set_time_source(nullptr);
     }
 }

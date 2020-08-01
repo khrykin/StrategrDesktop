@@ -8,6 +8,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <iostream>
 
 namespace stg {
@@ -29,6 +30,7 @@ namespace stg {
 
     auto serialize(const std::string &str) -> raw_buffer;
     auto serialize(const std::vector<std::string> &vec) -> raw_buffer;
+    auto serialize(const std::unordered_map<std::string, std::vector<std::string>> &dict) -> raw_buffer;
 
     template<typename T = void, typename = void>
     struct is_serializable : std::false_type {
@@ -43,26 +45,33 @@ namespace stg {
 
     template<typename POD,
             std::enable_if_t<is_plain_type<POD>::value, int> = 0>
-    auto deserialize(const uint8_t *data) -> POD {
-        return *reinterpret_cast<const POD *>(data);
+    auto deserialize(const uint8_t *&data) -> POD {
+        auto pod = *reinterpret_cast<const POD *>(data);
+        data += sizeof(POD);
+
+        return pod;
     }
 
     template<typename T,
-            std::enable_if_t<is_serializable<T>::value && !is_plain_type<T>::value, int> = 0>
-    auto deserialize(const uint8_t *data) -> T;
+            std::enable_if_t<is_serializable<T>::value &&
+                             !is_plain_type<T>::value, int> = 0>
+    auto deserialize(const uint8_t *&data) -> T;
 
     template<>
-    auto deserialize<std::string>(const uint8_t *data) -> std::string;
+    auto deserialize(const uint8_t *&data) -> std::string;
 
     template<>
-    auto deserialize<std::vector<std::string>>(const uint8_t *data) -> std::vector<std::string>;
+    auto deserialize(const uint8_t *&data) -> std::vector<std::string>;
+
+    template<>
+    auto deserialize(const uint8_t *&data) -> std::unordered_map<std::string, std::vector<std::string>>;
 
     template<typename T = void, typename = void>
     struct is_deserializable : std::false_type {
     };
 
     template<typename T>
-    struct is_deserializable<T, std::void_t<decltype(deserialize<T>(std::declval<const uint8_t *>()))>>
+    struct is_deserializable<T, std::void_t<decltype(deserialize<T>(std::declval<const uint8_t *&>()))>>
             : std::true_type {
     };
 
@@ -89,7 +98,7 @@ namespace stg {
         };
 
         struct keys {
-            static constexpr const char *default_strategy = "defaultStrategy";
+            static constexpr auto *default_strategy = "defaultStrategy";
         };
 
         static void assert_setup();
@@ -125,8 +134,8 @@ namespace stg {
         std::unique_ptr<T> object_ptr = nullptr;
         backend::get(name, [&](const void *data) {
             if (data) {
-                auto *byte_array = static_cast<const uint8_t *>(data);
-                auto object = deserialize<T>(byte_array);
+                auto *bytes_ptr = static_cast<const uint8_t *>(data);
+                auto object = deserialize<T>(bytes_ptr);
 
                 object_ptr = std::make_unique<T>(std::move(object));
             }

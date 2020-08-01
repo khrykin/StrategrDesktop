@@ -4,40 +4,39 @@
 
 #include "event.h"
 
-stg::event::event(stg::event::key_modifiers modifiers)
-        : modifiers(modifiers) {
-}
+namespace stg {
+    event::event(key_modifiers modifiers)
+            : modifiers(modifiers) {}
 
-stg::mouse_event::mouse_event(const stg::point &position,
-                              stg::event::key_modifiers modifiers)
-        : event(modifiers),
-          position(position) {
-}
+    mouse_event::mouse_event(const point &position, key_modifiers modifiers)
+            : event(modifiers),
+              position(position) {}
 
-auto stg::event::has_only(stg::event::key_modifiers mod) const -> bool {
-    return modifiers == mod;
-}
+    auto event::has_only(key_modifiers mod) const -> bool {
+        return modifiers == mod;
+    }
 
-auto stg::event::has(stg::event::key_modifiers mod) const -> bool {
-    return (modifiers & mod) == mod;
-}
+    auto event::has(key_modifiers mod) const -> bool {
+        return (modifiers & mod) == mod;
+    }
 
-auto stg::operator<<(std::ostream &os, const stg::mouse_event &e) -> std::ostream & {
-    os << "mouse_event {\n";
-    os << "  position: [" << e.position.x << ", " << e.position.y << "]\n";
-    os << "  modifiers: [";
+    auto operator<<(std::ostream &os, const mouse_event &e) -> std::ostream & {
+        os << "mouse_event {\n";
+        os << "  position: [" << e.position.x << ", " << e.position.y << "]\n";
+        os << "  modifiers: [";
 
-    if (e.has(mouse_event::left_key))
-        os << " left_key ";
+        if (e.has(mouse_event::left_key))
+            os << " left_key ";
 
-    if (e.has(mouse_event::right_key))
-        os << " right_key ";
+        if (e.has(mouse_event::right_key))
+            os << " right_key ";
 
-    if (e.has(mouse_event::ctrl_key))
-        os << " ctrl_key ";
+        if (e.has(mouse_event::ctrl_key))
+            os << " ctrl_key ";
 
-    os << "]\n";
-    os << "}\n";
+        os << "]\n";
+        os << "}\n";
 
-    return os;
+        return os;
+    }
 }

@@ -39,6 +39,8 @@ namespace stg {
     NSString *to_nsstring(const std::string &other);
 
 #endif
+
+    auto make_string_uuid() -> std::string;
 }
 
 

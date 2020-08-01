@@ -122,7 +122,7 @@ set(CORE_TESTS
         core/tests/strategy_activities_slots_interaction_test.cpp
         core/tests/strategy_history_test.cpp
         core/tests/json_tests.cpp
-        core/tests/persistent_test.cpp core/tests/time_utils_test.cpp)
+        core/tests/persistent_test.cpp core/tests/time_utils_test.cpp core/tests/notifier_immeadiate_test.cpp core/tests/notifier_scheduled_test.cpp)
 
 set(CORE_LIBRARIES ${utf8Proc_LIBRARY_PATH})
 

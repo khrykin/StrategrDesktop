@@ -57,10 +57,8 @@ namespace stg {
                  const activity_list::data_t &activities);
 
         strategy(const strategy &other);
-        strategy(strategy &&other);
 
         auto operator=(const strategy &other) -> strategy &;
-        auto operator=(strategy &&other) -> strategy &;
 
 #pragma mark - Import & Export
 

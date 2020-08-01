@@ -3,6 +3,7 @@
 //
 
 #include <catch2/catch.hpp>
+
 #include "strategy.h"
 
 TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {

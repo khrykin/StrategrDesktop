@@ -14,6 +14,7 @@ namespace stg {
 
         json[keys::slot_duration] = strategy.time_slot_duration();
         json[keys::start_time] = strategy.begin_time();
+        json[keys::version] = library_version_string;
 
         std::transform(strategy.activities().begin(),
                        strategy.activities().end(),
@@ -35,8 +36,6 @@ namespace stg {
 
                            return nlohmann::json();
                        });
-
-        json[keys::version] = library_version_string;
 
         return json.dump();
     }

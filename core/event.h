@@ -21,17 +21,14 @@ namespace stg {
 
         template<class QtLikeEvent>
         event(QtLikeEvent *evt) {
-            if ((evt->modifiers() & 0x04000000) == 0x04000000) {
+            if ((evt->modifiers() & 0x04000000) == 0x04000000)
                 modifiers |= ctrl_key;
-            }
 
-            if ((evt->modifiers() & 0x08000000) == 0x08000000) {
+            if ((evt->modifiers() & 0x08000000) == 0x08000000)
                 modifiers |= alt_key;
-            }
 
-            if ((evt->modifiers() & 0x02000000) == 0x02000000) {
+            if ((evt->modifiers() & 0x02000000) == 0x02000000)
                 modifiers |= shift_key;
-            }
         }
 
         auto has_only(key_modifiers mod) const -> bool;

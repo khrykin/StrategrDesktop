@@ -2,7 +2,6 @@
 #include <vector>
 #include <map>
 #include <fstream>
-#include <streambuf>
 
 #include "strategy.h"
 #include "json.h"
@@ -13,17 +12,22 @@ namespace stg {
 
 #pragma mark - Constructors & Operators
 
-    strategy::strategy(time_t begin_time, duration_t time_slot_duration, size_t number_of_time_slots)
+    strategy::strategy(time_t begin_time,
+                       duration_t time_slot_duration,
+                       size_t number_of_time_slots)
             : _time_slots(time_slots_state(begin_time, time_slot_duration, number_of_time_slots)),
               history(make_history_entry()) {
+
         time_slots_changed();
         setup_time_slots_callback();
     }
 
-    strategy::strategy(const time_slots_state::data_t &time_slots, const activity_list::data_t &activities) :
+    strategy::strategy(const time_slots_state::data_t &time_slots,
+                       const activity_list::data_t &activities) :
             _time_slots(time_slots),
             _activities(activities),
             history(make_history_entry()) {
+
         time_slots_changed();
         setup_time_slots_callback();
     }
@@ -33,14 +37,7 @@ namespace stg {
             _activities(other._activities.data()),
             _sessions(other.sessions().data()),
             history(make_history_entry()) {
-        setup_time_slots_callback();
-    }
 
-    strategy::strategy(strategy &&other) :
-            _time_slots(std::move(other._time_slots.data())),
-            _activities(std::move(other._activities.data())),
-            _sessions(std::move(other.sessions().data())),
-            history(make_history_entry()) {
         setup_time_slots_callback();
     }
 
@@ -54,10 +51,6 @@ namespace stg {
         history = strategy_history(make_history_entry());
 
         return *this;
-    }
-
-    auto stg::strategy::operator=(strategy &&other) -> strategy & {
-        return operator=(other);
     }
 
 #pragma mark - Import & Export
@@ -406,15 +399,15 @@ namespace stg {
     }
 
     void strategy::fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index) {
-        assert(current_resize_operation && "fill_time_slots must be called between "
-                                           "begin_resizing() and end_resizing() calls");
+        assert("fill_time_slots must be called between begin_resizing() and end_resizing() calls" &&
+               current_resize_operation);
 
         current_resize_operation->fill_slots_shifting(from_index, till_index);
     }
 
     void strategy::fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index) {
-        assert(current_resize_operation && "fill_time_slots must be called between "
-                                           "begin_resizing() and end_resizing() calls");
+        assert("fill_time_slots must be called between begin_resizing() and end_resizing() calls" &&
+               current_resize_operation);
 
         current_resize_operation->fill_slots(from_index, till_index);
     }
