@@ -3,23 +3,32 @@
         <div class="flex-grow-0 w-third w-25-l">
             <div class="pt4 pl4 pa4">
                 <h4 class="f2 dib f3-s near-black mt0 mb2 mb2-l">
-                    Export to Calendar
+                    Calendar Import & Export
                 </h4>
                 <p class="lh-title f3 fw6 i gray ma0 mb3 mb3-l">
                     Use the power of your system's calendar
                 </p>
-                <ul class="f5 dark-gray fw4 list lh-copy pl0">
-                    <li>Add appointments and notes;</li>
-                    <li>Make weekly plans;</li>
-                    <li>Sync across your devices.</li>
+                <ul class="f5 dark-gray fw5 list lh-copy pl0">
+                    <li>Add appointments and notes</li>
+                    <li>Make weekly plans</li>
+                    <li>Sync across your devices</li>
                 </ul>
             </div>
         </div>
-        <div class="flex-grow-1 cover relative"
-             style="max-width:1100px;background-position: right top;background-image:url(./assets/resources/mac_cal.png);">
-            <div class="absolute top-0 right-0 left-0 bottom-0"
-                 style="max-height: 220px; background: url(./assets/resources/mac_cal_export.png) no-repeat;background-size: auto 100%; background-position: right center;"
-                 alt="Export to Calendar Window"></div>
+        <div class="flex-grow-1 cover relative" style="max-width:1100px;background-position: right top;background-image:url(./assets/resources/mac_cal.png);">
+            <div alt="Import from Calendar Window" class="absolute right-0 left-0 bottom-0" style="max-height: 220px; background: url(./assets/resources/mac_cal_import.png) no-repeat;background-size: auto 100%; background-position: left center; top: 40%;"></div>
+            <div alt="Export to Calendar Window" class="absolute top-0 right-0 left-0 bottom-0" style="max-height: 220px; background: url(./assets/resources/mac_cal_export.png) no-repeat;background-size: auto 100%; background-position: right center;"></div>
         </div>
+    </div>
+</div>
+<div class="pt4 pl4 pa4 w-100 bg-near-white">
+    <h4 class="f2 dib f3-s near-black mt0 mb2 mb2-l">
+        Why Another Calendar-like App?
+    </h4>
+    <div class="f5 dark-gray fw4 list lh-copy measure pl0">
+        {% capture why %}
+            {% include why.md %}
+        {% endcapture %}
+        {{ why | markdownify }}
     </div>
 </div>

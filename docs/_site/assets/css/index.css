@@ -51,6 +51,12 @@ body {
   margin: 0.5em 0 0 0;
 }
 
+.hints .option {
+  font-size: smaller;
+  font-style: italic;
+  color: cyan;
+}
+
 code {
   padding: 2px 6px 0 4px;
   border-radius: 4px;
@@ -79,7 +85,7 @@ footer {
 /* Colors */
 
 .bg-promo {
-  background-color: midnightblue;
+  /* background-color: midnightblue; */
 }
 
 .cyan {
