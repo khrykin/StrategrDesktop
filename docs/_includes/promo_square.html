@@ -1,0 +1,28 @@
+<div class="bg-{{ square.bg }} fl w-100 w-50-l">
+    <div class="aspect-ratio aspect-ratio--6x4 aspect-ratio--1x1-l">
+        <div class="aspect-ratio--object flex">
+            <div class="w-50 flex flex-column">
+                <div class="flex-grow-0 pt4 pl4 pr4 pb0">
+                    <h4 class="f2 dib f3-s near-black mt0 mb2 mb2-l">
+                        {{ square.title }}
+                    </h4>
+                    <p class="lh-title f3 fw6 i {{ square.fg | default: 'white' }} ma0 mb3 mb3-l">
+                        {{ square.subtitle }}
+                    </p>
+                    <div class="hints f5 {{ square.fg | default: 'white' }} fw4 lh-title">
+                        {{ square.content | markdownify }}
+                    </div>
+                </div>
+
+                {%  if square.left_pic %}
+
+                <div class="cover promo-ss flex-grow-1"
+                     style="background-image:url({{ square.left_pic }});"></div>
+
+                {% endif %}
+            </div>
+            <div class="w-50 cover promo-ss"
+                 style="background-image:url({{ square.right_pic }});"></div>
+        </div>
+    </div>
+</div>

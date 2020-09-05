@@ -1,0 +1,101 @@
+@import url("https://rsms.me/inter/inter.css");
+html {
+  font-family: "Inter", sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  html {
+    font-family: "Inter var", sans-serif;
+  }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-width: 800px;
+}
+
+.logo img {
+  height: 64px;
+  margin-bottom: 3px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.promo-ss {
+  max-width: 412px;
+  background-repeat: no-repeat;
+}
+
+.bg-promo {
+  background-size: auto 824px;
+  background-repeat: no-repeat;
+  background-position: top right;
+}
+
+.larger {
+  font-size: x-large;
+}
+
+.lead {
+  padding-right: 350px;
+}
+
+.i em {
+  font-weight: bolder;
+}
+
+.hints p {
+  margin: 0.5em 0 0 0;
+}
+
+code {
+  padding: 2px 6px 0 4px;
+  border-radius: 4px;
+  font-size: larger;
+  border: 1px solid currentColor;
+  font-family: monospace;
+  /* background-color: rgba(255,255,255,0.5); green, blue, alpha); */
+}
+
+.export {
+  background-repeat: no-repeat;
+  background-size: auto auto;
+}
+
+.export-window {
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: auto 291px;
+}
+
+footer {
+  background-repeat: no-repeat;
+  background-size: auto 824px;
+}
+
+/* Colors */
+
+.bg-promo {
+  background-color: midnightblue;
+}
+
+.cyan {
+  color: cyan;
+}
+
+.text-grad-promo {
+  background: -webkit-linear-gradient(220deg, #5500ff, cyan);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-grad-red {
+  background: -webkit-linear-gradient(45deg, #5500ff, cyan);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

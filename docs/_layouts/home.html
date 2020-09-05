@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-5531376-7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag("js", new Date());
+        gtag("config", "UA-5531376-7");
+    </script>
+
+    <meta charset="utf-8" />
+    <meta name="description" content="Strategr - Time Management App" />
+    <meta name="author" content="Dmitry Khrykin" />
+    <meta name="viewport" content="width=775" />
+
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.10.0/css/tachyons.min.css" />
+    <link rel="stylesheet" href="./assets/css/index.css" />
+
+    <title>Strategr - Time Management App</title>
+</head>
+
+<body class="bg-near-black">
+    {% include title_header.html %}
+
+    <article class="db cf overflow-hidden">
+        {% for square in site.promo_squares %}
+        {% assign square = square %}
+        {% include promo_square.html %}
+        {% endfor %}
+    </article>
+
+    {% include export.html %}
+    {% include footer.html %}
+
+    <script src="./assets/js/index.js"></script>
+</body>
+
+</html>

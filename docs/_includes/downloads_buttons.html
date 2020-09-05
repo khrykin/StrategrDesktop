@@ -1,0 +1,47 @@
+<div class="dt">
+    <h1 class="dtc logo f3 lh-title ma0 fw5 near-white pr3">
+        <img alt="Strategr logo" src="./assets/resources/Strategr.png"/>
+        <span class="ml1">Strategr</span>
+    </h1>
+    <div class="dtc v-mid">
+        {% assign release = site.github.latest_release %}
+        <!-- {{ release.name }} -->
+
+        {% assign version = release.tag_name | remove_first:'v' %}
+
+        {% for asset in release.assets  %}
+
+            {% assign os_tag = nil %}
+            {% assign os_name = nil %}
+
+            {% if asset.name contains "dmg" %}
+                {% assign os_tag = "macOS" %}
+                {% assign os_name = "macOS" %}
+            {% endif %}
+
+            {% if asset.name contains "windows-x86" %}
+                {% assign os_tag = "win32" %}
+                {% assign os_name = "Windows (x86)" %}
+            {% endif %}
+
+            {% if asset.name contains "windows-x64" %}
+                {% assign os_tag = "win64" %}
+                {% assign os_name = "Windows (x64)" %}
+            {% endif %}
+
+            {% if os_tag %}
+                <span id="{{os_tag}}">
+                    <a class="github-button" href="{{ asset.browser_download_url }}" data-color-scheme="no-preference: dark; light: dark; dark: dark;" data-icon="octicon-cloud-download" data-size="large" aria-label="Download BlackFace for {{os_name}}">{{os_name}}
+                        <span id="tagName">v{{version}}</span>
+                    </a>
+                </span>
+            {% endif %}
+
+        {% endfor %}
+    </div>
+
+    <div class="dtc v-mid pb1">
+        <span class="white-50 ml2">•</span>
+        <a class="white-80 ml2 fw6 dim link" href="{{site.github.releases_url}}">All Releases</a>
+    </div>
+</div>
