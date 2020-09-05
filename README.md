@@ -5,7 +5,7 @@ Stategr helps you maximize your productivity, giving you the quickest and most e
 
 ### More on the [website](https://khrykin.github.io/strategr/)
 
-<img src="https://khrykin.github.io/strategr/resources/mac_main_original.png" alt="Screenshot" width="30%">  <img src="https://khrykin.github.io/strategr/resources/mac_black_main.png" alt="Screenshot" width="30%"> <img src="https://khrykin.github.io/strategr/resources/win_main.png" alt="Screenshot" width="30%">
+<img src="https://khrykin.github.io/StrategrDesktop/assets/resources/mac_main_original.png" alt="Screenshot" width="30%">  <img src="https://khrykin.github.io/StrategrDesktop/assets/resources/mac_black_main.png" alt="Screenshot" width="30%"> <img src="https://khrykin.github.io/StrategrDesktop/assets/resources/win_main.png" alt="Screenshot" width="30%">
 
 
 
