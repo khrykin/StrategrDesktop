@@ -4,7 +4,7 @@
 
 #import <AppKit/AppKit.h>
 
-#import "cocoa/SGToolbar.h"
+#import "cocoa/STGToolbar.h"
 
 #include <QtMac>
 
@@ -28,7 +28,7 @@ void MacOSWindow::setup(MainWindow *window) {
         // has it's own toolbar
         NSString *toolbarIdentifier = makeToolbarIdentifier(window);
 
-        SGToolbar *toolbar = [[[SGToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
+        STGToolbar *toolbar = [[[STGToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
         toolbar.allowsUserCustomization = NO;
         toolbar.displayMode = NSToolbarDisplayModeIconOnly;
         toolbar->qWindow = window;
@@ -52,12 +52,12 @@ NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
 }
 
 void MacOSWindow::pageDidChanged(MainWindow *window, int pageIndex) {
-    auto *toolbar = (SGToolbar *) NSWindowFromQWindow(window).toolbar;
+    auto *toolbar = (STGToolbar *) NSWindowFromQWindow(window).toolbar;
     [toolbar setPage:(unsigned int) pageIndex];
 }
 
 void MacOSWindow::updateWindowTitle(MainWindow *window) {
-    auto *toolbar = (SGToolbar *) NSWindowFromQWindow(window).toolbar;
+    auto *toolbar = (STGToolbar *) NSWindowFromQWindow(window).toolbar;
     [toolbar setPage:toolbar.currentPage];
 }
 

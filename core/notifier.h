@@ -10,46 +10,33 @@
 #include <ostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
+#include <optional>
 
 #include "strategy.h"
 #include "timer.h"
 #include "stgstring.h"
+#include "notifications.h"
+#include "time_utils.h"
 
 namespace stg {
     class strategy;
 
 #pragma mark - Notification
 
-    struct notification {
-        using seconds = unsigned int;
-        using minutes = unsigned int;
-
-        enum class type {
-            prepare_start,
-            start,
-            prepare_end,
-            end,
-            prepare_strategy_end,
-            strategy_end
-        };
-
-        notification(const session &session, type type);
-
-        type type;
-        std::string identifier = make_string_uuid();
-        std::string title;
-        std::string message;
-        seconds delivery_time;
-
-    private:
-        auto make_title(const session &session) const -> std::string;
-        auto make_sub_title(const session &session) const -> std::string;
-        auto make_delivery_time(const session &session) const -> seconds;
-
-        friend bool operator==(const notification &lhs, const notification &rhs);
-
-        friend std::ostream &operator<<(std::ostream &os, const notification &notification);
+    enum class notification_type {
+        prepare_start,
+        start,
+        prepare_end,
+        end,
+        prepare_strategy_end,
+        strategy_end
     };
+
+    auto session_notification(const session &session,
+                              notification_type type) -> user_notifications::notification;
+
+#pragma mark - Notifier
 
     // This class supports two methods for generating notifications:
     // polling (more suitable for desktop) and scheduling (more suitable for mobile).
@@ -59,14 +46,11 @@ namespace stg {
 
 #pragma mark - Notifier Type Aliases
 
-        using seconds = notification::seconds;
-        using minutes = notification::minutes;
+        using seconds = time_utils::seconds;
+        using minutes = time_utils::minutes;
+        using notifications_list = std::vector<user_notifications::notification>;
 
-        using scheduler_t = std::function<void(const std::vector<notification> &)>;
-        using resetter_t = std::function<void(const std::vector<std::string> &)>;
-        using sender_t = std::function<void(const notification &)>;
-
-        using dictionary = std::unordered_map<std::string, std::vector<std::string>>;
+        using dictionary = user_notifications::storage;
 
 #pragma mark - Getting Delivery Intervals from Current Time
 
@@ -76,54 +60,56 @@ namespace stg {
         static auto immediate_delivery_seconds(minutes minutes_time) -> seconds;
         static auto prepare_delivery_seconds(minutes minutes_time) -> seconds;
 
-#pragma mark - Callbacks
-
-        // Asks delegate to send notification immediately.
-        // Called when using polling.
-        sender_t on_send_notification = nullptr;
-
 #pragma mark - Construction
 
         explicit notifier(const strategy &strategy,
-                          std::string filename = "",
-                          scheduler_t on_schedule_notifications = nullptr,
-                          resetter_t on_delete_notifications = nullptr);
+                          std::optional<file_bookmark> file = std::nullopt);
         ~notifier();
-
-#pragma mark - Scheduling Notifications
-
-        void schedule();
-        auto scheduled_identifiers() const -> std::vector<std::string>;
 
 #pragma mark - Polling For Notifications
 
         void start_polling(timer::seconds interval);
         void stop_polling();
 
-#pragma mark - Getting & Updating Represented Filename
+#pragma mark - Manually Scheduling Notifications
 
-        auto filename() const -> const std::string &;
-        void set_filename(const std::string &filename);
+        void schedule();
+        auto scheduled_identifiers() const -> std::vector<std::string>;
+
+#pragma mark - Manually Persisting Scheduled Notifications Identifiers
+
+        void persist_scheduled_identifiers();
+
+#pragma mark - Getting & Updating Represented File Path
+
+        auto file_path() const -> const std::optional<file_bookmark> &;
+        void set_file(const std::optional<file_bookmark> &file_path);
+
+        static void note_file_removed(const file_bookmark &file_path);
+        static void note_file_moved(const file_bookmark &from, const file_bookmark &to);
+
+#pragma mark - Getting Active Files
+
+        static auto active_files() -> std::unordered_set<file_bookmark>;
+        static void reset_active_files();
 
     private:
-        static void remove_stale_from(std::vector<notification> &notifications);
+        static void remove_stale_from(notifications_list &notifications);
 
         const strategy &strategy;
-        std::string _filename;
-        std::unique_ptr<stg::timer> timer = nullptr;
+        std::optional<file_bookmark> _file;
+
+        std::shared_ptr<stg::timer> polling_timer;
+        std::shared_ptr<stg::timer> on_change_timer;
+
         seconds last_poll_time = 0;
 
-        std::vector<stg::notification> _scheduled_notifications;
-        std::vector<stg::notification> _upcoming_notifications;
+        notifications_list _scheduled_notifications;
+        notifications_list _upcoming_notifications;
 
-#pragma mark - Private callbacks
+#pragma mark - Responding To Strategy Changes
 
-        // Asks delegate to schedule notifications.
-        // Called when using scheduling method.
-        scheduler_t on_schedule_notifications = nullptr;
-        // Asks delegate to delete previously scheduled notifications with identifiers.
-        // Called when using scheduling method.
-        resetter_t on_delete_notifications = nullptr;
+        void on_sessions_change();
 
 #pragma mark - Sending Immeadiate Notification
 
@@ -131,9 +117,7 @@ namespace stg {
 
 #pragma mark - Reading & Writing to Persistent Dictionary
 
-        static auto get_notifications_dictionary() -> dictionary;
         auto persisted_notifications_identifiers() const -> std::vector<std::string>;
-        void persist_scheduled_identifiers();
     };
 }
 

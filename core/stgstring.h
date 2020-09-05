@@ -7,7 +7,11 @@
 
 #include <string>
 #include <type_traits>
-#include <utility>
+#include <locale>
+#include <string>
+#include <regex>
+#include <codecvt>
+#include <utf8proc.h>
 
 #ifdef __OBJC__
 @class NSString;
@@ -41,6 +45,28 @@ namespace stg {
 #endif
 
     auto make_string_uuid() -> std::string;
+
+    namespace string {
+        inline std::wstring wstring_from_utf8_string(const std::string &str) {
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+            return converter.from_bytes(str);
+        }
+
+        inline std::string utf8_string_from_wstring(const std::wstring &wstr) {
+            std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+            return converter.to_bytes(wstr);
+        }
+
+        inline std::string utf8_fold_case(const std::string &str) {
+            auto *lowered = (char *) utf8proc_NFKC_Casefold((utf8proc_uint8_t *) str.c_str());
+            return std::string(std::unique_ptr<char>(lowered).get());
+        }
+
+        inline void strip_bounding_whitespaces(std::string &str) {
+            str = std::regex_replace(str, std::regex("^\\s*"), "");
+            str = std::regex_replace(str, std::regex("\\s*$"), "");
+        }
+    }
 }
 
 

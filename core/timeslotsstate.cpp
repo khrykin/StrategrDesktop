@@ -457,8 +457,10 @@ namespace stg {
 
         for (auto &slot : _data) {
             auto fits_inside = slot.begin_time >= begin_time && slot.end_time() <= end_time;
+
             auto overlaps_with_beginning = begin_time >= slot.begin_time && begin_time <= slot.end_time()
                                            && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration();
+
             auto overlaps_with_end = end_time >= slot.begin_time && end_time <= slot.end_time()
                                      && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration();
 

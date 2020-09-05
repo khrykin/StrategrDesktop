@@ -117,13 +117,13 @@ namespace stg {
         void make_empty_at(const std::vector<time_slot_index_t> &time_slot_indices);
         void shift_below_time_slot(time_slot_index_t from_index, int length);
 
-        auto is_resizing() -> bool;
+        auto is_resizing() const -> bool;
         void begin_resizing();
         void fill_time_slots_shifting(time_slot_index_t from_index, time_slot_index_t till_index);
         void fill_time_slots(time_slot_index_t from_index, time_slot_index_t till_index);
         void end_resizing();
 
-        auto is_dragging() -> bool;
+        auto is_dragging() const -> bool;
         void begin_dragging(session_index_t session_index);
         auto drag_session(session_index_t session_index, int distance) -> sessions_list::index_t;
         void end_dragging();

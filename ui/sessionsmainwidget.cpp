@@ -26,12 +26,6 @@ SessionsMainWidget::SessionsMainWidget(QWidget *parent) : DataProviderWidget(par
 
     layoutChildWidgets();
 
-    notifier.on_send_notification = [this](const stg::notification &notification) {
-        std::cout << "want to sent notification: " << notification << "\n";
-        notifierBackend.sendMessage(notification.title.c_str(),
-                                    notification.message.c_str());
-    };
-
     notifier.start_polling(ApplicationSettings::notifierTimerSecondsInterval);
 
     strategy().time_slots().add_on_ruler_change_callback([this] {
@@ -39,8 +33,6 @@ SessionsMainWidget::SessionsMainWidget(QWidget *parent) : DataProviderWidget(par
     });
 
     actionCenter().on_toggle_current_session = [this](bool currentSessionIsShown) {
-        std::cout << "on_toggle_current_session: " << currentSessionIsShown << "\n";
-
         if (currentSessionIsShown) {
             currentSessionWidget->slideAndShow();
         } else {

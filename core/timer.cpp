@@ -19,18 +19,24 @@ namespace stg {
         backend::invalidator = std::move(fn);
     }
 
-    auto timer::schedule(timer::seconds duration, bool repeats, const callback_t &callback) -> std::unique_ptr<timer> {
+    auto timer::schedule(timer::seconds duration, bool repeats, const callback_t &callback) -> std::shared_ptr<timer> {
         assert(backend::scheduler && "You must provide stg::timer::backend::scheduler");
 
         // Note: we don't use stg::make_unique here,
         // because we want to keep default constructor private.
-        auto timer = std::unique_ptr<stg::timer>(new stg::timer());
+        auto timer = std::shared_ptr<stg::timer>(new stg::timer());
+        auto weak_timer_ptr = std::weak_ptr<stg::timer>(timer);
+
         timer->repeats = repeats;
-        timer->implementation = backend::scheduler(duration, repeats, [=](void *impl) {
+        timer->implementation = backend::scheduler(duration, [repeats, callback, weak_timer_ptr](void *impl) {
             callback();
 
-            if (!repeats)
+            auto timer = weak_timer_ptr.lock();
+
+            if (!repeats) {
                 backend::invalidator(impl);
+                if (timer) timer->invalidated = true;
+            }
         });
 
         return timer;
@@ -46,8 +52,12 @@ namespace stg {
         invalidated = true;
     }
 
+    auto timer::is_running() const -> bool {
+        return !invalidated;
+    }
+
     timer::~timer() {
-        // If timer is non-repeating it is automatically invalidated,
+        // If timer is non-repeating it is automatically invalidated by backend,
         // and we don't want to invalidate it before it fires.
 
         if (repeats)

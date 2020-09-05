@@ -41,6 +41,15 @@ TEST_CASE("Persistent Storage", "[persistent]") {
         REQUIRE(*stg::persistent_storage::get<uint32_t>("uint32_t") == 48);
     }
 
+    SECTION("raw_buffer") {
+        {
+            stg::raw_buffer test_buff = {0u, 1u, 2u};
+            stg::persistent_storage::set("raw_buffer", test_buff);
+        }
+
+        REQUIRE(*stg::persistent_storage::get<stg::raw_buffer>("raw_buffer") == stg::raw_buffer({0u, 1u, 2u}));
+    }
+
     SECTION("std::string") {
         {
             std::string test_string = "test std::string";
@@ -54,29 +63,31 @@ TEST_CASE("Persistent Storage", "[persistent]") {
 
     SECTION("std::vector<std::string>") {
         {
-            std::vector<std::string> test_strings = {"Test 1", "Тест 2"};
+            std::vector<std::string> test_strings = {"Test 1",
+                                                     "Тест 2"};
             stg::persistent_storage::set("std::vector", test_strings);
         }
 
-        std::vector<std::string> expected_strings = {"Test 1", "Тест 2"};
+        std::vector<std::string> expected_strings = {"Test 1",
+                                                     "Тест 2"};
         REQUIRE(*stg::persistent_storage::get<std::vector<std::string>>("std::vector") == expected_strings);
     }
 
-    SECTION("stg::notifier::dictionary") {
+    SECTION("stg::user_notifications::storage") {
         {
-            stg::notifier::dictionary test_map = {
-                    {"A", {"Test 1", "Тест 2"}},
-                    {"B", {"Test 3", "Тест 4"}}
-            };
+            stg::user_notifications::storage test_map({{"A", {"Test 1", "Тест 2"}},
+                                                       {"B", {"Test 3", "Тест 4"}}});
 
-            stg::persistent_storage::set("std::unordered_map", test_map);
+            stg::persistent_storage::set("stg::user_notifications::storage", test_map);
         }
 
-        stg::notifier::dictionary expected_map = {
-                {"A", {"Test 1", "Тест 2"}},
-                {"B", {"Test 3", "Тест 4"}}
-        };
+        stg::user_notifications::storage expected_map({{"A", {"Test 1", "Тест 2"}},
+                                                       {"B", {"Test 3", "Тест 4"}}});
 
-        REQUIRE(*stg::persistent_storage::get<stg::notifier::dictionary>("std::unordered_map") == expected_map);
+        auto persisted_map = stg::persistent_storage::get<stg::user_notifications::storage>(
+                "stg::user_notifications::storage");
+
+        REQUIRE(persisted_map != nullptr);
+        REQUIRE(*persisted_map == expected_map);
     }
 }

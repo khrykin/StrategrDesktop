@@ -5,21 +5,21 @@
 #import <EventKit/EventKit.h>
 #import <AppKit/AppKit.h>
 
-#import "cocoa/SGCalendarExportViewController.h"
-#import "cocoa/SGCalendarImportViewController.h"
-#import "cocoa/SGCalendarImportView.h"
-#import "cocoa/SGCalendarExportView.h"
-#import "cocoa/SGCalendarExportProgressWindow.h"
+#import "cocoa/STGCalendarExportViewController.h"
+#import "cocoa/STGCalendarImportViewController.h"
+#import "cocoa/STGCalendarImportView.h"
+#import "cocoa/STGCalendarExportView.h"
+#import "cocoa/STGCalendarExportProgressWindow.h"
 
-#import "SGCalendarExporter.h"
-#import "SGCalendarImporter.h"
+#import "STGCalendarExporter.h"
+#import "STGCalendarImporter.h"
 
 #include "macoscalendarexporter.h"
 
 void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy) {
-    SGCalendarExportView *optionsView = [[SGCalendarExportView alloc] init];
+    STGCalendarExportView *optionsView = [[STGCalendarExportView alloc] init];
 
-    SGCalendarExportViewController *optionsWindowViewController = [[SGCalendarExportViewController alloc] init];
+    STGCalendarExportViewController *optionsWindowViewController = [[STGCalendarExportViewController alloc] init];
     optionsWindowViewController.view = optionsView;
 
     NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
@@ -42,31 +42,31 @@ void MacOSCalendarExporter::exportStrategy(const stg::strategy &strategy) {
     [app endModalSession:session];
 
     if (response == NSModalResponseOK) {
-        [SGCalendarExporter saveDefaultSettings:optionsView.viewModel.settings];
+        [STGCalendarExporter saveDefaultSettings:optionsView.viewModel.settings];
 
-        SGCalendarExportProgressWindow *progressWindow = [[SGCalendarExportProgressWindow alloc] init];
+        STGCalendarExportProgressWindow *progressWindow = [[STGCalendarExportProgressWindow alloc] init];
         progressWindow.title = @"Exporting Strategy...";
 
         // window will be released automatically by ARC
         progressWindow.releasedWhenClosed = NO;
         [progressWindow makeKeyAndOrderFront:nil];
 
-        [SGCalendarExporter exportFromStrategyPtr:(void *) &strategy
-                                             date:optionsView.viewModel.settings.date
-                                         delegate:progressWindow
-                                completionHandler:^(BOOL accessGranted) {
-                                    if (!accessGranted) {
-                                        showAccessDeniedAlert();
-                                        return;
-                                    }
-                                }];
+        [STGCalendarExporter exportFromStrategyPtr:&strategy
+                                              date:optionsView.viewModel.settings.date
+                                          delegate:progressWindow
+                                 completionHandler:^(BOOL accessGranted) {
+                                     if (!accessGranted) {
+                                         showAccessDeniedAlert();
+                                         return;
+                                     }
+                                 }];
     }
 }
 
 void MacOSCalendarExporter::importStrategy(stg::strategy &strategy) {
-    SGCalendarImportView *optionsView = [[SGCalendarImportView alloc] init];
+    STGCalendarImportView *optionsView = [[STGCalendarImportView alloc] init];
 
-    SGCalendarImportViewController *optionsWindowViewController = [[SGCalendarImportViewController alloc] init];
+    STGCalendarImportViewController *optionsWindowViewController = [[STGCalendarImportViewController alloc] init];
     optionsWindowViewController.view = optionsView;
 
     NSPanel *window = [NSPanel windowWithContentViewController:optionsWindowViewController];
@@ -78,7 +78,7 @@ void MacOSCalendarExporter::importStrategy(stg::strategy &strategy) {
     NSApplication *app = [NSApplication sharedApplication];
     NSModalSession session = [app beginModalSessionForWindow:window];
 
-    [SGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
+    [STGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
         if (!store) {
             return showAccessDeniedAlert();
         }
@@ -99,11 +99,10 @@ void MacOSCalendarExporter::importStrategy(stg::strategy &strategy) {
     [app endModalSession:session];
 
     if (response == NSModalResponseOK) {
-        auto *strategyPtr = (void *) &strategy;
-        [SGCalendarImporter saveDefaultSettings:optionsView.viewModel.settings];
-        [SGCalendarImporter importToStrategyPtr:strategyPtr
-                                           date:optionsView.viewModel.settings.date
-                              completionHandler:nil];
+        [STGCalendarImporter saveDefaultSettings:optionsView.viewModel.settings];
+        [STGCalendarImporter importToStrategyPtr:&strategy
+                                            date:optionsView.viewModel.settings.date
+                               completionHandler:nil];
     }
 }
 

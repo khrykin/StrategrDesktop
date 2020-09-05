@@ -37,7 +37,7 @@ NotifierBackend::NotifierBackend() {
     }
 }
 
-void NotifierBackend::sendMessage(const QString &title, const QString &message) {
+void NotifierBackend::sendMessage(const QString &title, const QString &message) const {
     if (Application::trayIcon && QSystemTrayIcon::supportsMessages()) {
         Application::trayIcon->showMessage(title, message, ApplicationIcon::defaultIcon(), 10000);
     } else {

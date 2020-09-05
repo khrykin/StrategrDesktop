@@ -16,9 +16,9 @@ namespace stg {
 
         class backend {
         public:
-            using scheduler_callback_t = std::function<void(void *implementation)>;
-            using scheduler_t = std::function<void *(seconds duration, bool repeats, scheduler_callback_t)>;
-            using invalidator_t = std::function<void(void *timer_impl_ptr)>;
+            using scheduler_callback_t = std::function<void(void *)>;
+            using scheduler_t = std::function<void *(seconds duration, const scheduler_callback_t &)>;
+            using invalidator_t = std::function<void(void *)>;
 
             static void set_scheduler(scheduler_t fn);
             static void set_invalidator(invalidator_t fn);
@@ -30,11 +30,12 @@ namespace stg {
             static invalidator_t invalidator;
         };
 
-        static auto schedule(seconds duration, bool repeats, const callback_t &callback) -> std::unique_ptr<timer>;
+        static auto schedule(seconds duration, bool repeats, const callback_t &callback) -> std::shared_ptr<timer>;
 
         ~timer();
 
         void invalidate();
+        auto is_running() const -> bool;
 
     private:
         timer() = default;

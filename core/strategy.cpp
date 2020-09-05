@@ -390,7 +390,7 @@ namespace stg {
         commit_to_history();
     }
 
-    auto strategy::is_resizing() -> bool {
+    auto strategy::is_resizing() const -> bool {
         return current_resize_operation != nullptr;
     }
 
@@ -422,7 +422,7 @@ namespace stg {
         current_resize_operation.reset();
     }
 
-    auto strategy::is_dragging() -> bool {
+    auto strategy::is_dragging() const -> bool {
         return current_drag_operation != nullptr;
     }
 

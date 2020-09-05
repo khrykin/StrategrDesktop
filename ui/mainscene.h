@@ -34,14 +34,9 @@ public:
     void reloadStrategy();
 private:
     stg::strategy &_strategy;
-    stg::selection _selection = stg::selection(_strategy);
-    stg::mouse_handler _mouse_handler = stg::mouse_handler(_strategy,
-                                                           _selection,
+    stg::action_center _action_center = stg::action_center(_strategy,
                                                            [] { return ApplicationSettings::defaultSlotHeight; },
                                                            [this] { return scrollboardScrollArea()->viewportRectRelativeToContent(); });
-
-    stg::action_center _action_center = stg::action_center(_strategy, _mouse_handler, _selection);
-
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
 };

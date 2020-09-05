@@ -96,7 +96,7 @@ namespace stg {
         void set_blue_component(float value);
         void set_alpha_component(float value);
 
-        void set_rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255);
+        void set_rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha = 255u);
         auto rgb_components() const -> std::array<double, 4>;
 
 #pragma mark - Managing HSL Components

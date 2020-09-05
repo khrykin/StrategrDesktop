@@ -39,11 +39,11 @@ stg::strategy &MainScene::strategy() {
 }
 
 stg::selection &MainScene::selection() {
-    return _selection;
+    return _action_center.selection();
 }
 
 stg::mouse_handler &MainScene::mouseHandler() {
-    return _mouse_handler;
+    return _action_center.mouse_handler();
 }
 
 stg::action_center &MainScene::actionCenter() {

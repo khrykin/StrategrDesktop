@@ -6,19 +6,24 @@
 #define STRATEGR_BACKENDS_H
 
 #include <QTimer>
+#include <utility>
 
 #include "timer.h"
 #include "persistent.h"
+#include "application.h"
+#include "notifications.h"
+
 #include "application.h"
 
 inline void setupBackends() {
     using namespace stg;
 
-    timer::backend::set_scheduler([](timer::seconds duration, bool repeats, auto callback) {
+    timer::backend::set_scheduler([](timer::seconds duration,
+                                     const timer::backend::scheduler_callback_t &callback) -> void * {
         auto *qTimer = new QTimer();
-        void *implementation = reinterpret_cast<void *>(qTimer);
-        qTimer->setSingleShot(!repeats);
-        QObject::connect(qTimer, &QTimer::timeout, [callback, implementation] {
+        void *implementation = static_cast<void *>(qTimer);
+
+        QObject::connect(qTimer, &QTimer::timeout, [=] {
             callback(implementation);
         });
 
@@ -27,8 +32,9 @@ inline void setupBackends() {
         return implementation;
     });
 
-    timer::backend::set_invalidator([](void *timerImpl) {
-        auto *qTimer = reinterpret_cast<QTimer *>(timerImpl);
+    timer::backend::set_invalidator([](void *implementation) {
+        auto *qTimer = static_cast<QTimer *>(implementation);
+
         qTimer->stop();
         qTimer->deleteLater();
     });
@@ -52,6 +58,12 @@ inline void setupBackends() {
         }
 
         result_callback(value.toByteArray().data());
+    });
+
+    user_notifications::backend::set_immediate_sender([](const user_notifications::notification &notification) {
+        std::cout << "want to sent notification: " << notification << "\n";
+        Application::notifierBackend().sendMessage(notification.title.c_str(),
+                                                   notification.message.c_str());
     });
 }
 

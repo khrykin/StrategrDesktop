@@ -31,7 +31,7 @@ NotifierBackend::NotifierBackend() {
     }
 }
 
-void NotifierBackend::sendMessage(const QString &title, const QString &message) {
+void NotifierBackend::sendMessage(const QString &title, const QString &message) const {
     if (@available(macOS 10.14, *)) {
         UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
         content.title = title.toNSString();

@@ -6,7 +6,7 @@
 class NotifierBackend {
 public:
     NotifierBackend();
-    void sendMessage(const QString& title, const QString& message);
+    void sendMessage(const QString &title, const QString &message) const;
 };
 
 

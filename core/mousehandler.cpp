@@ -384,6 +384,8 @@ namespace stg {
     }
 
     void mouse_handler::stop_autoscroll() {
+        assert(autoscroll_timer.use_count() <= 1);
+
         autoscroll_timer = nullptr;
     }
 

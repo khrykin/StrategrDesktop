@@ -150,6 +150,12 @@ auto Application::theme() -> const stg::theme & {
     return theme;
 }
 
+auto Application::notifierBackend() -> const NotifierBackend & {
+    static auto backend = NotifierBackend();
+    return backend;
+}
+
+
 #ifdef Q_OS_WIN
 
 void Application::checkForUpdates() {

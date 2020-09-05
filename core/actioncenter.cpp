@@ -3,16 +3,23 @@
 //
 
 #include "actioncenter.h"
+
+#include <utility>
 #include "mousehandler.h"
 
 namespace stg {
+
+#pragma mark - Construction
+
     action_center::action_center(stg::strategy &strategy,
-                                 stg::mouse_handler &mouse_handler,
-                                 stg::selection &selection)
+                                 std::function<gfloat()> slot_height_getter,
+                                 std::function<rect()> viewport_getter)
             : strategy(strategy),
-              mouse_handler(mouse_handler),
-              selection(selection) {
-        mouse_handler.action_center = this;
+              _mouse_handler(strategy,
+                             _selection,
+                             std::move(slot_height_getter),
+                             std::move(viewport_getter)) {
+        _mouse_handler.action_center = this;
 
         strategy.sessions().add_on_change_callback([this] {
             stg::timer::schedule(1, false, [this] { lazily_update_current_session(); });
@@ -36,6 +43,18 @@ namespace stg {
 
         timer_callback();
     }
+
+#pragma mark - Acessing Depenent Structures
+
+    auto action_center::selection() -> stg::selection & {
+        return _selection;
+    }
+
+    auto action_center::mouse_handler() -> stg::mouse_handler & {
+        return _mouse_handler;
+    }
+
+#pragma mark - Current Session
 
     auto action_center::current_session_is_shown() const -> bool {
         return _current_session_is_shown;

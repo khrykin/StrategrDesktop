@@ -5,30 +5,18 @@
 #ifndef STRATEGR_UTILITY_H
 #define STRATEGR_UTILITY_H
 
-#include <string>
-#include <regex>
-#include <codecvt>
-#include <utf8proc.h>
+#include <vector>
 
-namespace stg::text {
-    inline std::wstring wstring_from_utf8_string(const std::string &str) {
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        return converter.from_bytes(str);
-    }
+#ifndef STG_FORWARD_DECLARE_OBJC_CLASS
+#  ifdef __OBJC__
+#    define STG_FORWARD_DECLARE_OBJC_CLASS(classname) @class classname
+#  else
+#    define STG_FORWARD_DECLARE_OBJC_CLASS(classname) typedef struct objc_object classname
+#  endif
+#endif
 
-    inline std::string string_from_utf8_wstring(const std::wstring &wstr) {
-        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-        return converter.to_bytes(wstr);
-    }
-
-    inline std::string utf8_fold_case(const std::string &str) {
-        auto *lowered = (char *) utf8proc_NFKC_Casefold((utf8proc_uint8_t *) str.c_str());
-        return std::string(lowered);
-    }
-
-    inline void strip_bounding_whitespaces(std::string &str) {
-        str = std::regex_replace(str, std::regex("^\\s*"), "");
-        str = std::regex_replace(str, std::regex("\\s*$"), "");
-    }
+namespace stg {
+    using raw_buffer = std::vector<uint8_t>;
 }
+
 #endif //STRATEGR_UTILITY_H

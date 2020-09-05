@@ -11,13 +11,14 @@
 #include "strategy.h"
 #include "selection.h"
 #include "timer.h"
+#include "mousehandler.h"
 
 namespace stg {
-    class mouse_handler;
-    class selection;
-
     class action_center {
     public:
+
+#pragma mark - Delegate Callbacks
+
         std::function<void()> on_show_activities = nullptr;
         std::function<void()> on_show_sessions = nullptr;
         std::function<void(bool)> on_toggle_current_session = nullptr;
@@ -25,9 +26,18 @@ namespace stg {
         std::function<void()> on_update_current_time_marker = nullptr;
         std::function<void(bool animated)> on_scroll_to_current_time = nullptr;
 
+#pragma mark - Construction
+
         action_center(stg::strategy &strategy,
-                      stg::mouse_handler &mouse_handler,
-                      stg::selection &selection);
+                      std::function<gfloat()> slot_height_getter,
+                      std::function<rect()> viewport_getter);
+
+#pragma mark - Acessing Depenent Structures
+
+        auto selection() -> stg::selection &;
+        auto mouse_handler() -> stg::mouse_handler &;
+
+#pragma mark - Actions
 
         const action show_activities{"Show Activities",
                                      [this] {
@@ -59,32 +69,32 @@ namespace stg {
 
         const action set_activity{"Set Activity",
                                   [this] { if (on_show_activities) on_show_activities(); },
-                                  [this] { return !selection.empty(); }};
+                                  [this] { return !_selection.empty(); }};
 
         const action empty_selection{"Delete",
                                      [this] {
-                                         this->strategy.make_empty_at(selection);
-                                         this->selection.deselect_all();
+                                         this->strategy.make_empty_at(_selection);
+                                         this->_selection.deselect_all();
                                      },
                                      [this] {
-                                         return !selection.empty() && !selection.only_empty_selected();
+                                         return !_selection.empty() && !_selection.only_empty_selected();
                                      },
                                      action::destructive};
 
         const action make_room{"Make Room",
                                [this] {
-                                   this->strategy.shift_below_time_slot(selection.front(),
-                                                                        (stg::index_t) selection.size());
-                                   this->selection.deselect_all();
+                                   this->strategy.shift_below_time_slot(_selection.front(),
+                                                                        (stg::index_t) _selection.size());
+                                   this->_selection.deselect_all();
                                },
-                               [this] { return selection.is_continuous() && !selection.only_empty_selected(); }};
+                               [this] { return _selection.is_continuous() && !_selection.only_empty_selected(); }};
 
-        const action deselect{"Deselect", [this] { this->selection.deselect_all(); },
-                              [this] { return !selection.empty(); }};
+        const action deselect{"Deselect", [this] { this->_selection.deselect_all(); },
+                              [this] { return !_selection.empty(); }};
 
         const action select_all{"Select All",
-                                [this] { this->selection.select_all(); },
-                                [this] { return !selection.is_all_selected(); }};
+                                [this] { this->_selection.select_all(); },
+                                [this] { return !_selection.is_all_selected(); }};
 
         const action go_to_current_time{"Go To Current Time",
                                         [this] {
@@ -95,21 +105,23 @@ namespace stg {
         const action reorder_activities_by_usage{"Reorder Activities By Usage",
                                                  [this] { this->strategy.reorder_activities_by_usage(); }};
 
-        auto current_session_is_shown() const -> bool;
-
         void place_activity_in_selection(index_t actvity_index) {
-            strategy.place_activity(actvity_index, selection);
-            selection.deselect_all();
+            strategy.place_activity(actvity_index, _selection);
+            _selection.deselect_all();
 
             if (on_show_sessions) on_show_sessions();
         }
 
+#pragma mark - Current Session Visibility
+
+        auto current_session_is_shown() const -> bool;
+
     private:
         stg::strategy &strategy;
-        stg::mouse_handler &mouse_handler;
-        stg::selection &selection;
+        stg::mouse_handler _mouse_handler;
+        stg::selection _selection{strategy};
 
-        std::unique_ptr<stg::timer> timer;
+        std::shared_ptr<stg::timer> timer;
 
         bool _current_session_is_shown = strategy.active_session() != nullptr;
         std::chrono::time_point<std::chrono::system_clock> last_current_time_update_time{};

@@ -11,9 +11,11 @@
 #include <unordered_map>
 #include <iostream>
 
-namespace stg {
-    using raw_buffer = std::vector<uint8_t>;
+#include "utility"
+#include "notifications.h"
+#include "file_bookmark.h"
 
+namespace stg {
     template<typename T>
     struct is_plain_type {
         static constexpr bool value = std::is_standard_layout<T>::value
@@ -28,9 +30,10 @@ namespace stg {
         return raw_buffer((uint8_t *) &i, (uint8_t *) &i + sizeof(POD));
     }
 
+    auto serialize(const raw_buffer &buff) -> raw_buffer;
     auto serialize(const std::string &str) -> raw_buffer;
     auto serialize(const std::vector<std::string> &vec) -> raw_buffer;
-    auto serialize(const std::unordered_map<std::string, std::vector<std::string>> &dict) -> raw_buffer;
+    auto serialize(const user_notifications::storage &storage) -> raw_buffer;
 
     template<typename T = void, typename = void>
     struct is_serializable : std::false_type {
@@ -53,9 +56,11 @@ namespace stg {
     }
 
     template<typename T,
-            std::enable_if_t<is_serializable<T>::value &&
-                             !is_plain_type<T>::value, int> = 0>
+            std::enable_if_t<!is_plain_type<T>::value, int> = 0>
     auto deserialize(const uint8_t *&data) -> T;
+
+    template<>
+    auto deserialize(const uint8_t *&data) -> raw_buffer;
 
     template<>
     auto deserialize(const uint8_t *&data) -> std::string;
@@ -64,7 +69,10 @@ namespace stg {
     auto deserialize(const uint8_t *&data) -> std::vector<std::string>;
 
     template<>
-    auto deserialize(const uint8_t *&data) -> std::unordered_map<std::string, std::vector<std::string>>;
+    auto deserialize(const uint8_t *&data) -> user_notifications::storage;
+
+    template<>
+    auto deserialize(const uint8_t *&data) -> file_bookmark;
 
     template<typename T = void, typename = void>
     struct is_deserializable : std::false_type {
@@ -83,7 +91,7 @@ namespace stg {
         public:
             using result_callback_t = std::function<void(const void *)>;
             using setter_t = std::function<void(const std::string &key,
-                                                const void *data, size_t size)>;
+                                                void *data, size_t size)>;
             using getter_t = std::function<void(const std::string &key,
                                                 const result_callback_t &result_callback)>;
 
@@ -121,7 +129,7 @@ namespace stg {
 
         auto buffer = serialize(data);
 
-        backend::set(name, static_cast<const void *>(buffer.data()), buffer.size());
+        backend::set(name, static_cast<void *>(buffer.data()), buffer.size());
     }
 
     template<typename T>

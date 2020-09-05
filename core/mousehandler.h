@@ -57,6 +57,7 @@ namespace stg {
 
         struct resize_boundary_configuration {
             static constexpr index_t none = -2;
+            
             index_t slot_index = resize_boundary_configuration::none;
             index_t session_index = resize_boundary_configuration::none;
         };
@@ -140,7 +141,7 @@ namespace stg {
         stg::selection &selection;
 
         std::unique_ptr<operation> current_operaion;
-        std::unique_ptr<timer> autoscroll_timer = nullptr;
+        std::shared_ptr<timer> autoscroll_timer = nullptr;
 
         cursor current_cursor = cursor::pointer;
         mouse_zone current_mouse_zone = mouse_zone::out_of_bounds;

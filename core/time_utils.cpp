@@ -47,9 +47,7 @@ namespace stg::time_utils {
         day_components.tm_min = 0;
         day_components.tm_sec = 0;
 
-        timestamp = timestamp_from_day_components(&day_components);
-
-        return timestamp;
+        return timestamp_from_day_components(&day_components);;
     }
 
     auto today_timestamp() -> time_t {
@@ -87,8 +85,19 @@ namespace stg::time_utils {
 
 #pragma mark - Getting Calendar Time from Relative Time
 
+    auto calendar_time_from_seconds(seconds seconds_in_today) -> time_t {
+        return today_timestamp() + seconds_in_today;
+    }
+
     auto calendar_time_from_minutes(minutes minutes_in_today) -> time_t {
-        return today_timestamp() + minutes_in_today * 60;
+        return calendar_time_from_seconds(minutes_in_today * 60);
+    }
+
+#pragma mark - Getting Relative Time from Calendar Time
+
+    auto seconds_from_calendar_time(time_t calendar_time) -> seconds {
+        auto start_of_a_day = start_of_a_day_from_timestamp(calendar_time);
+        return static_cast<seconds>(calendar_time - start_of_a_day);
     }
 
 #pragma mark - Getting String Representation of Time
@@ -142,5 +151,14 @@ namespace stg::time_utils {
         }
 
         return result;
+    }
+
+    auto to_string(time_t calendar_time, const char *format) -> std::string {
+        std::tm *tm = std::localtime(&calendar_time);
+        char buffer[255];
+
+        std::strftime(buffer, 255, format, tm);
+
+        return buffer;
     }
 }

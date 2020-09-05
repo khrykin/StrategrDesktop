@@ -6,7 +6,7 @@
 #include <regex>
 
 #include "activitylist.h"
-#include "utility.h"
+#include "stgstring.h"
 
 namespace stg {
     void activity_list::silently_add(const activity &activity) {
@@ -151,7 +151,7 @@ namespace stg {
     }
 
     auto activity_list::search(std::string query) const -> bool {
-        text::strip_bounding_whitespaces(query);
+        stg::string::strip_bounding_whitespaces(query);
 
         auto old_query = search_query;
         search_query = query;
@@ -163,11 +163,11 @@ namespace stg {
             return was_updated;
         }
 
-        query = text::utf8_fold_case(query);
+        query = string::utf8_fold_case(query);
 
         data_t results;
         std::for_each(begin(), end(), [&query, &results](auto &activity) {
-            auto name = text::utf8_fold_case(activity->name());
+            auto name = string::utf8_fold_case(activity->name());
 
             if (name.find(query) != std::string::npos)
                 results.push_back(activity);

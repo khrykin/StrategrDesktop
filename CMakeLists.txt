@@ -40,20 +40,19 @@ include(GenerateVersionFile)
 
 if (APPLE)
     set(CORE_PLATFORM_FILES
-            core/apple/NSColor+HexString.h
-            core/apple/NSColor+HexString.m
-            core/apple/SGCalendarManager.m
-            core/apple/SGCalendarManager.h
-            core/apple/SGCalendarExporter.h
-            core/apple/SGCalendarExporter.mm
-            core/apple/SGCalendarImporter.mm
-            core/apple/SGCalendarImporter.h
-            core/apple/SGCalendarImportViewModel.h
-            core/apple/SGCalendarImportViewModel.m
-            core/apple/SGCalendarExportViewModel.h
-            core/apple/SGCalendarExportViewModel.m
-            core/color.mm
-            core/stgstring.mm)
+            core/apple/STGCalendarManager.m
+            core/apple/STGCalendarManager.h
+            core/apple/STGCalendarExporter.h
+            core/apple/STGCalendarExporter.mm
+            core/apple/STGCalendarImporter.mm
+            core/apple/STGCalendarImporter.h
+            core/apple/STGCalendarImportViewModel.h
+            core/apple/STGCalendarImportViewModel.m
+            core/apple/STGCalendarExportViewModel.h
+            core/apple/STGCalendarExportViewModel.m
+            core/apple/color.mm
+            core/apple/stgstring.mm
+            core/apple/file_bookmark.mm)
 endif ()
 
 set(CORE ${CORE_PLATFORM_FILES}
@@ -114,7 +113,11 @@ set(CORE ${CORE_PLATFORM_FILES}
         core/stgstring.cpp
         core/stgstring.h
         core/persistent.cpp
-        core/persistent.h)
+        core/persistent.h
+        core/notifications.cpp
+        core/notifications.h
+        core/file_bookmark.cpp
+        core/file_bookmark.h)
 
 set(CORE_TESTS
         core/tests/strategy_settings_test.cpp
@@ -122,7 +125,10 @@ set(CORE_TESTS
         core/tests/strategy_activities_slots_interaction_test.cpp
         core/tests/strategy_history_test.cpp
         core/tests/json_tests.cpp
-        core/tests/persistent_test.cpp core/tests/time_utils_test.cpp core/tests/notifier_immeadiate_test.cpp core/tests/notifier_scheduled_test.cpp)
+        core/tests/persistent_test.cpp
+        core/tests/time_utils_test.cpp
+        core/tests/notifier_immeadiate_test.cpp
+        core/tests/notifier_scheduled_test.cpp)
 
 set(CORE_LIBRARIES ${utf8Proc_LIBRARY_PATH})
 
@@ -257,22 +263,22 @@ if (APPLE)
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
             third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h
-            ui/cocoa/SGCalendarExportViewController.m
-            ui/cocoa/SGCalendarExportViewController.h
-            ui/cocoa/SGCalendarExportProgressWindow.h
-            ui/cocoa/SGCalendarExportProgressWindow.m
-            ui/cocoa/SGCalendarExportView.h
-            ui/cocoa/SGCalendarExportView.m
-            ui/cocoa/SGProgressWindow.h
-            ui/cocoa/SGProgressWindow.m
-            ui/cocoa/SGCalendarImportExportView.h
-            ui/cocoa/SGCalendarImportExportViewSubclass.h
-            ui/cocoa/SGCalendarImportExportView.m
-            ui/cocoa/SGCalendarImportView.h
-            ui/cocoa/SGCalendarImportView.m
-            ui/cocoa/SGColoredCheckBoxView.h
-            ui/cocoa/SGColoredCheckBoxView.m
-            ui/colorprovider.mm ui/cocoa/SGCalendarImportViewController.m ui/cocoa/SGCalendarImportViewController.h ui/cocoa/SGToolbar.mm ui/cocoa/SGToolbar.h)
+            ui/cocoa/STGCalendarExportViewController.m
+            ui/cocoa/STGCalendarExportViewController.h
+            ui/cocoa/STGCalendarExportProgressWindow.h
+            ui/cocoa/STGCalendarExportProgressWindow.m
+            ui/cocoa/STGCalendarExportView.h
+            ui/cocoa/STGCalendarExportView.m
+            ui/cocoa/STGProgressWindow.h
+            ui/cocoa/STGProgressWindow.m
+            ui/cocoa/STGCalendarImportExportView.h
+            ui/cocoa/STGCalendarImportExportViewSubclass.h
+            ui/cocoa/STGCalendarImportExportView.m
+            ui/cocoa/STGCalendarImportView.h
+            ui/cocoa/STGCalendarImportView.m
+            ui/cocoa/STGColoredCheckBoxView.h
+            ui/cocoa/STGColoredCheckBoxView.m
+            ui/colorprovider.mm ui/cocoa/STGCalendarImportViewController.m ui/cocoa/STGCalendarImportViewController.h ui/cocoa/STGToolbar.mm ui/cocoa/STGToolbar.h)
 
     set(PLATFORM_RESOURCES
             deployment/Strategr.icns

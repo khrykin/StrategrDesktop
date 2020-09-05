@@ -35,8 +35,6 @@ public:
 private:
     stg::notifier notifier = stg::notifier(strategy());
 
-    NotifierBackend notifierBackend;
-
     StrategySettingsWidget *strategySettingsWidget = nullptr;
     CurrentSessionWidget *currentSessionWidget = nullptr;
 

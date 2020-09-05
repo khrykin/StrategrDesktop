@@ -13,6 +13,7 @@
 
 #include "aboutwindow.h"
 #include "mainwindow.h"
+#include "notifierbackend.h"
 
 #include "core/theme.h"
 
@@ -39,6 +40,8 @@ public:
     static bool fileIsOpened(const QString &filePath);
     static void checkForUpdates();
     static auto theme() -> const stg::theme &;
+
+    static auto notifierBackend() -> const NotifierBackend &;
 private:
     static void setupFonts();
 
