@@ -31,7 +31,7 @@ namespace stg {
 
         explicit overview(const strategy &strategy, std::function<stg::gfloat()> width_getter);
 
-        auto elements() -> std::vector<overview_item>;
+        auto elements() const -> std::vector<overview_item>;
 
         auto viewport_marker_for(const rect &slots_bounds,
                                  const rect &viewport_rect) const -> viewport_marker;
@@ -39,7 +39,7 @@ namespace stg {
                                const rect &slots_bounds,
                                const rect &viewport_rect) const -> gfloat;
 
-        auto current_time_position() -> gfloat;
+        auto current_time_position() const -> gfloat;
 
     private:
         const strategy &strategy;

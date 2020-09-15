@@ -11,7 +11,7 @@ namespace stg {
               width_getter(std::move(width_getter)) {
     }
 
-    auto overview::elements() -> std::vector<overview::overview_item> {
+    auto overview::elements() const -> std::vector<overview::overview_item> {
         const auto &activity_sessions = strategy.sessions();
         std::vector<overview_item> result;
 
@@ -58,7 +58,7 @@ namespace stg {
         return viewport_marker{marker_origin_x, marker_width};
     }
 
-    auto overview::current_time_position() -> gfloat {
+    auto overview::current_time_position() const -> gfloat {
         return std::round(strategy.progress() * width());
     }
 
