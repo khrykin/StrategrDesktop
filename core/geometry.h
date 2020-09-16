@@ -12,14 +12,16 @@
 namespace stg {
     using gfloat = float;
 
+#pragma mark - Type Traits
+
     template<typename T, typename = int, typename = int>
     struct is_cg_point_like : std::false_type {
     };
 
     template<typename T>
     struct is_cg_point_like<T,
-            decltype((void) (T::x), 0),
-            decltype((void) (T::y), 0)> : std::true_type {
+        decltype((void) (T::x), 0),
+        decltype((void) (T::y), 0)> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -28,8 +30,8 @@ namespace stg {
 
     template<typename T>
     struct is_cg_rect_like<T,
-            decltype((void) (T::origin), 0),
-            decltype((void) (T::size), 0)> : std::true_type {
+        decltype((void) (T::origin), 0),
+        decltype((void) (T::size), 0)> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -38,8 +40,8 @@ namespace stg {
 
     template<typename T>
     struct is_qpoint_like<T,
-            decltype(std::declval<T>().x()),
-            decltype(std::declval<T>().y())> : std::true_type {
+        decltype(std::declval<T>().x()),
+        decltype(std::declval<T>().y())> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -48,9 +50,11 @@ namespace stg {
 
     template<typename T>
     struct is_qrect_like<T,
-            decltype(std::declval<T>().x()),
-            decltype(std::declval<T>().width())> : std::true_type {
+        decltype(std::declval<T>().x()),
+        decltype(std::declval<T>().width())> : std::true_type {
     };
+
+#pragma mark - Point
 
     struct point {
         static const point zero;
@@ -58,7 +62,7 @@ namespace stg {
         gfloat x = 0;
         gfloat y = 0;
 
-        constexpr explicit point(gfloat x = 0, gfloat y = 0) : x(x), y(y) {}
+        constexpr explicit point(gfloat x = 0, gfloat y = 0) : x{x}, y{y} {}
 
         template<typename T, std::enable_if_t<is_qpoint_like<T>::value, int> = 0>
         point(const T &point) {
@@ -99,33 +103,24 @@ namespace stg {
 
     inline constexpr point point::zero = point();
 
+#pragma mark - Rectangle
+
     struct rect {
         static const rect zero;
 
-        stg::gfloat left = 0;
-        stg::gfloat top = 0;
-        stg::gfloat width = 0;
-        stg::gfloat height = 0;
+        gfloat left = 0;
+        gfloat top = 0;
+        gfloat width = 0;
+        gfloat height = 0;
 
-        constexpr rect(std::initializer_list<stg::gfloat> l = {}) noexcept {
-            if (l.size() == 4) {
-                const auto *it = l.begin();
-                left = *it++;
-                top = *it++;
-                width = *it++;
-                height = *it;
-            }
-        }
-
-//        constexpr rect(std::initializer_list<int> l = {}) noexcept {
-//            if (l.size() == 4) {
-//                const auto *it = l.begin();
-//                left = *it++;
-//                top = *it++;
-//                width = *it++;
-//                height = *it;
-//            }
-//        }
+        constexpr explicit rect(gfloat left = 0,
+                                gfloat top = 0,
+                                gfloat width = 0,
+                                gfloat height = 0)
+            : left{left},
+              top{top},
+              width{width},
+              height{height} {}
 
         template<typename T, std::enable_if_t<is_qrect_like<T>::value, int> = 0>
         rect(const T &rect) {
@@ -152,8 +147,8 @@ namespace stg {
         operator T() const {
             return {(gfloat) left,
                     (gfloat) top, {
-                            (gfloat) width,
-                            (gfloat) height
+                        (gfloat) width,
+                        (gfloat) height
                     }};
         }
 
