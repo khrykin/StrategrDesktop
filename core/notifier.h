@@ -5,11 +5,8 @@
 #ifndef STRATEGR_NOTIFIER_H
 #define STRATEGR_NOTIFIER_H
 
-#include <thread>
-#include <stdexcept>
 #include <ostream>
 #include <string>
-#include <unordered_map>
 #include <unordered_set>
 #include <optional>
 
@@ -99,8 +96,8 @@ namespace stg {
         const strategy &strategy;
         std::optional<file_bookmark> _file;
 
-        std::shared_ptr<stg::timer> polling_timer;
-        std::shared_ptr<stg::timer> on_change_timer;
+        std::shared_ptr<timer> polling_timer;
+        std::shared_ptr<timer> on_change_timer;
 
         seconds last_poll_time = 0;
 
