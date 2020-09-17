@@ -12,7 +12,6 @@
 #include "time_utils.h"
 #include "timer.h"
 #include "notifications.h"
-#include "persistent.h"
 
 namespace stg {
     constexpr auto *notifications_dictionary_key = "activeURLs";
@@ -109,8 +108,8 @@ namespace stg {
 #pragma mark - Construction
 
     notifier::notifier(const stg::strategy &strategy, std::optional<file_bookmark> file)
-            : strategy(strategy),
-              _file(std::move(file)) {
+        : strategy(strategy),
+          _file(std::move(file)) {
         // The strategy might have changed before previous notifications were scheduled
         // (e.g. by manipulating the file directly),
         // so we mandatorily reschedule notifications for safety.
