@@ -96,8 +96,9 @@ namespace stg {
         auto json_string = persistent_storage::get<std::string>(persistent_storage::keys::default_strategy);
 
         if (json_string) {
-            if (auto strategy = stg::strategy::from_json_string(*json_string))
+            if (auto strategy = stg::strategy::from_json_string(*json_string)) {
                 return *strategy;
+            }
         }
 
         return strategy();
@@ -106,9 +107,11 @@ namespace stg {
     void strategy::import_events(const std::vector<event> &events, bool override = false) {
         std::cout << "imported_events (override: " << override << "): [\n";
 
-        if (override)
-            for (auto &slot : _time_slots._data)
+        if (override) {
+            for (auto &slot : _time_slots._data) {
                 slot.activity = no_activity;
+            }
+        }
 
         for (const auto &event : events) {
             std::cout << "\tevent: " << event.name
@@ -128,8 +131,9 @@ namespace stg {
             }
 
             auto *activity = activities().at(*activity_index);
-            for (auto &slot : slots_for_event)
+            for (auto &slot : slots_for_event) {
                 slot->activity = activity;
+            }
         }
 
         _activities.on_change_event();
@@ -328,6 +332,8 @@ namespace stg {
         }
 
         std::vector<std::pair<activity *, duration_t>> pairs;
+        pairs.reserve(usage.size());
+
         for (const auto &elem : usage) {
             pairs.emplace_back(elem);
         }

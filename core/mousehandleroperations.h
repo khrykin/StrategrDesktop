@@ -468,15 +468,14 @@ private:
             return;
         }
 
-        if (!is_safe(handler.current_slot_index))
+        if (!is_safe(handler.current_slot_index)) {
             return;
+        }
 
         handler.selection.fill(initial_slot_index, handler.current_slot_index);
     };
 
     void teardown(const mouse_event &event) override {
-        std::cout << "event: " << event << "\n";
-
         if (handler.selection.is_clicked()) {
             handler.selection.set_is_clicked(false);
 

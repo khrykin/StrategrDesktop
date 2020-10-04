@@ -21,7 +21,7 @@ SlotRuler::SlotRuler(QWidget *parent) : DataProviderWidget(parent) {
 
     reloadStrategy();
 
-    selection().add_on_change_callback(this, &SlotRuler::updateList);
+    selection().add_on_change_callback(this, &SlotRuler::reloadStrategy);
     strategy().time_slots().add_on_ruler_change_callback([this] {
         reloadStrategy();
     });
@@ -80,7 +80,10 @@ QVBoxLayout *SlotRuler::listLayout() {
 }
 
 void SlotRuler::reuseItemAtIndex(int index, ColoredLabel *itemWidget) {
-    itemWidget->setText(labelAtIndex(index));
+    if (slotTimeChangedAt(index)) {
+        itemWidget->setText(labelAtIndex(index));
+    }
+
     itemWidget->setFixedHeight(slotHeight());
     itemWidget->setFontHeight(isIntegerHourAtIndex(index) ? bigFontHeight : smallFontHeight);
     itemWidget->setDynamicColor(labelColorGetterAtIndex(index));
@@ -91,8 +94,9 @@ SlotRuler::ColorGetter SlotRuler::labelColorGetterAtIndex(int index) {
                            ? &SlotRuler::secondaryTextColor
                            : &SlotRuler::tertiaryTextColor;
 
-    if (selection().is_boundary(index) || mouseHandler().resize_boundary().slot_index == index - 1)
+    if (selection().is_boundary(index) || mouseHandler().resize_boundary().slot_index == index - 1) {
         colorGetter = &SlotRuler::controlColor;
+    }
 
     return colorGetter;
 }
@@ -114,6 +118,13 @@ bool SlotRuler::isIntegerHourAtIndex(int index) {
     return time % 3600 == 0;
 }
 
+bool SlotRuler::slotTimeChangedAt(int index) {
+    auto indexIsSafe = index < prevTimes.size() && index >= 0;
+    auto &slotTime = strategy().time_slots().ruler_times()[index];
+
+    return indexIsSafe && prevTimes[index] != slotTime;
+}
+
 QString SlotRuler::labelAtIndex(int index) {
     auto time = strategy().time_slots().ruler_times()[index];
     return QStringForCalendarTime(time);
@@ -121,4 +132,5 @@ QString SlotRuler::labelAtIndex(int index) {
 
 void SlotRuler::reloadStrategy() {
     updateList();
+    prevTimes = strategy().time_slots().ruler_times();
 }

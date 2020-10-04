@@ -23,8 +23,11 @@ public:
 private:
     using ColorGetter = QColor (*)();
 
+    std::vector<std::time_t> prevTimes;
+
     int calculateLabelWidth();
     bool isIntegerHourAtIndex(int index);
+    bool slotTimeChangedAt(int index);
 
     ColorGetter labelColorGetterAtIndex(int index);
 
