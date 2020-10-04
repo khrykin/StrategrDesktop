@@ -211,7 +211,8 @@ set(UI
         ui/slotboardscrollarea.cpp
         ui/slotboardscrollarea.h
         ui/dataproviderwidget.cpp
-        ui/dataproviderwidget.h)
+        ui/dataproviderwidget.h
+        ui/drawingutils.h)
 
 set(UTILITY
         ${VERSION_FILE}
@@ -278,7 +279,11 @@ if (APPLE)
             ui/cocoa/STGCalendarImportView.m
             ui/cocoa/STGColoredCheckBoxView.h
             ui/cocoa/STGColoredCheckBoxView.m
-            ui/colorprovider.mm ui/cocoa/STGCalendarImportViewController.m ui/cocoa/STGCalendarImportViewController.h ui/cocoa/STGToolbar.mm ui/cocoa/STGToolbar.h)
+            ui/colorprovider.mm
+            ui/cocoa/STGCalendarImportViewController.m
+            ui/cocoa/STGCalendarImportViewController.h
+            ui/cocoa/STGToolbar.mm
+            ui/cocoa/STGToolbar.h)
 
     set(PLATFORM_RESOURCES
             deployment/Strategr.icns

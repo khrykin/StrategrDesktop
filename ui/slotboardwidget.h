@@ -36,6 +36,7 @@ private:
 
     void paintEvent(QPaintEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void drawResizeBoundaryCircles(QPainter &painter);
 };
 
 #endif// SLOTBOARD_H

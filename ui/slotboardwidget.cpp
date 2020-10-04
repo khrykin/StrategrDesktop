@@ -85,6 +85,10 @@ void SlotBoardWidget::paintEvent(QPaintEvent *event) {
 
     painter.drawRect(QRect(0, 0, width(), height()));
 
+    drawResizeBoundaryCircles(painter);
+}
+
+void SlotBoardWidget::drawResizeBoundaryCircles(QPainter &painter) {
     auto slotBeforeResizeBoundaryIndex = mouseHandler().resize_boundary().slot_index;
 
     if (slotBeforeResizeBoundaryIndex >= -1) {
@@ -97,7 +101,7 @@ void SlotBoardWidget::paintEvent(QPaintEvent *event) {
 
         auto slotsRect = slotsWidget->geometry();
 
-        auto diameter = 6;
+        const auto diameter = 6;
 
         auto topOffset = slotsRect.top() + slotHeight() / 2 + (slotBeforeResizeBoundaryIndex + 1) * slotHeight() + 1 - diameter / 2;
 

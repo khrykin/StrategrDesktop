@@ -5,7 +5,7 @@
 #include <QLayout>
 #include <QPainter>
 
-#include "colorutils.h"
+#include "drawingutils.h"
 #include "selectionwidget.h"
 
 SelectionWidget::SelectionWidget(QWidget *parent) : DataProviderWidget(parent) {
@@ -50,7 +50,9 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
 
 void SelectionWidget::drawSelectionForItem(const stg::grouped_selection_element &selectionItem,
                                            QPainter &painter) {
-    auto topPosition = slotHeight() * selectionItem.front() + slotHeight() * 0.5;
+    using namespace DrawingUtils;
+
+    auto topPosition = slotHeight() * selectionItem.front() + slotHeight() / 2;
     auto widgetHeight = (int) selectionItem.size() * slotHeight();
 
     const auto &firstTimeSlot = strategy().time_slots()[selectionItem.front()];
@@ -61,5 +63,8 @@ void SelectionWidget::drawSelectionForItem(const stg::grouped_selection_element 
                       width() - 2,
                       widgetHeight - topMargin - 2);
 
-    painter.drawRoundedRect(rect, 4, 4);
+    const auto radius = 5;
+    const auto roundness = 0.2;
+
+    painter.drawPath(squirclePath(rect, radius, roundness));
 }
