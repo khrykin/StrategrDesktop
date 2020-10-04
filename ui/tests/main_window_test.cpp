@@ -6,14 +6,14 @@
 #include <QtTest/QTest>
 #include <catch2/catch.hpp>
 
-#include <QDataStream>
 #include <QBuffer>
+#include <QDataStream>
 #include <QDebug>
 
 #include <iostream>
 
-#include "mainwindow.h"
 #include "applicationsettings.h"
+#include "mainwindow.h"
 
 std::ostream &operator<<(std::ostream &os, const QRect &r) {
     os << "QRect("
@@ -38,10 +38,10 @@ TEST_CASE("MainWindow") {
         SECTION("should persist it's previous rect") {
             auto w = MainWindow();
             auto testRect = QRect(
-                    100,
-                    100,
-                    ApplicationSettings::windowMinimumWidth,
-                    ApplicationSettings::windowMinimumHeight);
+                100,
+                100,
+                ApplicationSettings::windowMinimumWidth,
+                ApplicationSettings::windowMinimumHeight);
 
             w.setGeometry(testRect);
             w.close();

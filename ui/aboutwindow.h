@@ -6,9 +6,9 @@
 #define STRATEGR_ABOUTWINDOW_H
 
 #include <QDialog>
+#include <QLabel>
 #include <QLayout>
 #include <QPushButton>
-#include <QLabel>
 
 class AboutWindow : public QDialog {
 public:
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //STRATEGR_ABOUTWINDOW_H
+#endif//STRATEGR_ABOUTWINDOW_H

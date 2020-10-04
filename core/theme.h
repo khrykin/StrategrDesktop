@@ -8,9 +8,9 @@
 #include <functional>
 #include <utility>
 
+#include "activity.h"
 #include "color.h"
 #include "session.h"
-#include "activity.h"
 
 namespace stg {
     struct theme {
@@ -28,4 +28,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_THEME_H
+#endif//STRATEGR_THEME_H

@@ -5,16 +5,16 @@
 #ifndef STRATEGR_NOTIFICATIONS_H
 #define STRATEGR_NOTIFICATIONS_H
 
+#include <memory>
 #include <ostream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
 #include <utility>
-#include <memory>
+#include <vector>
 
-#include "stgstring.h"
 #include "file_bookmark.h"
+#include "stgstring.h"
 #include "time_utils.h"
 
 namespace stg::user_notifications {
@@ -115,11 +115,13 @@ namespace stg::user_notifications {
 
     private:
         data_type data;
+
     public:
         friend std::ostream &operator<<(std::ostream &os, const storage &storage);
+
     private:
         friend auto operator==(const storage &lhs, const storage &rhs) -> bool;
     };
 }
 
-#endif //STRATEGR_NOTIFICATIONS_H
+#endif//STRATEGR_NOTIFICATIONS_H

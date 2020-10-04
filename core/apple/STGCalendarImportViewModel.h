@@ -31,7 +31,7 @@ NS_SWIFT_NAME(CalendarImportViewModelDelegate)
 NS_SWIFT_NAME(CalendarImportViewModel)
 @interface STGCalendarImportViewModel : NSObject
 
-@property(nonatomic, weak) id <STGCalendarImportViewModelDelegate> delegate;
+@property(nonatomic, weak) id<STGCalendarImportViewModelDelegate> delegate;
 
 @property(nonatomic, strong) NSArray<EKCalendar *> *calendars;
 @property(nonatomic, readonly) STGCalendarImporterSettings *settings;

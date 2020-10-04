@@ -1,12 +1,12 @@
 #include <algorithm>
-#include <vector>
-#include <map>
 #include <fstream>
+#include <map>
+#include <vector>
 
-#include "strategy.h"
 #include "json.h"
-#include "time_utils.h"
 #include "persistent.h"
+#include "strategy.h"
+#include "time_utils.h"
 
 namespace stg {
 
@@ -15,28 +15,26 @@ namespace stg {
     strategy::strategy(time_t begin_time,
                        duration_t time_slot_duration,
                        size_t number_of_time_slots)
-            : _time_slots(time_slots_state(begin_time, time_slot_duration, number_of_time_slots)),
-              history(make_history_entry()) {
+        : _time_slots(time_slots_state(begin_time, time_slot_duration, number_of_time_slots)),
+          history(make_history_entry()) {
 
         time_slots_changed();
         setup_time_slots_callback();
     }
 
     strategy::strategy(const time_slots_state::data_t &time_slots,
-                       const activity_list::data_t &activities) :
-            _time_slots(time_slots),
-            _activities(activities),
-            history(make_history_entry()) {
+                       const activity_list::data_t &activities) : _time_slots(time_slots),
+                                                                  _activities(activities),
+                                                                  history(make_history_entry()) {
 
         time_slots_changed();
         setup_time_slots_callback();
     }
 
-    strategy::strategy(const strategy &other) :
-            _time_slots(other._time_slots.data()),
-            _activities(other._activities.data()),
-            _sessions(other.sessions().data()),
-            history(make_history_entry()) {
+    strategy::strategy(const strategy &other) : _time_slots(other._time_slots.data()),
+                                                _activities(other._activities.data()),
+                                                _sessions(other.sessions().data()),
+                                                history(make_history_entry()) {
 
         setup_time_slots_callback();
     }
@@ -112,7 +110,7 @@ namespace stg {
             for (auto &slot : _time_slots._data)
                 slot.activity = no_activity;
 
-        for (const auto &event: events) {
+        for (const auto &event : events) {
             std::cout << "\tevent: " << event.name
                       << ", color: " << event.color
                       << ", begin_time: " << event.begin_time
@@ -220,8 +218,8 @@ namespace stg {
 
         const auto *next_session = sessions().session_after(*current_session);
         return next_session && next_session->activity
-               ? next_session
-               : nullptr;
+                   ? next_session
+                   : nullptr;
     }
 
     auto strategy::progress() const -> float {
@@ -351,8 +349,8 @@ namespace stg {
 
         for (const auto &activity : _activities) {
             if (std::find_if(reordered.begin(), reordered.end(), [&activity](auto &a) {
-                return a == activity;
-            }) == reordered.end()) {
+                    return a == activity;
+                }) == reordered.end()) {
                 reordered.push_back(activity);
             };
         }
@@ -454,8 +452,8 @@ namespace stg {
         time_slots().on_change_event();
 
         auto new_session_index = new_indexes.empty()
-                                 ? session_index
-                                 : sessions().session_index_for_time_slot_index(new_indexes.front());
+                                     ? session_index
+                                     : sessions().session_index_for_time_slot_index(new_indexes.front());
 
         return new_session_index;
     }

@@ -5,10 +5,10 @@
 #ifndef STRATEGR_FILE_BOOKMARK_H
 #define STRATEGR_FILE_BOOKMARK_H
 
-#include <string>
-#include <vector>
 #include <functional>
 #include <ostream>
+#include <string>
+#include <vector>
 
 #include "utility.h"
 
@@ -20,7 +20,6 @@ namespace stg {
 
     class file_bookmark {
     public:
-
 #pragma mark - Construction
 
         file_bookmark(raw_buffer data);
@@ -65,4 +64,4 @@ namespace std {
 }
 
 
-#endif //STRATEGR_FILE_BOOKMARK_H
+#endif//STRATEGR_FILE_BOOKMARK_H

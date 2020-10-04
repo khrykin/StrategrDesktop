@@ -7,11 +7,11 @@
 
 namespace stg {
     current_time_marker::current_time_marker(const stg::strategy &strategy, gfloat marker_radius)
-            : strategy(strategy),
-              marker_radius(marker_radius) {}
+        : strategy(strategy),
+          marker_radius(marker_radius) {}
 
     auto current_time_marker::top_offset_in_slots(gfloat total_height) const -> gfloat {
-        auto slot_height = total_height / (gfloat) (strategy.number_of_time_slots() + 1);
+        auto slot_height = total_height / (gfloat)(strategy.number_of_time_slots() + 1);
 
         return (total_height - slot_height) * strategy.progress() + slot_height / 2;
     }
@@ -28,11 +28,10 @@ namespace stg {
 
     auto current_time_marker::rect_in_slots_rect(const rect &slotboard_rect) const -> rect {
         return rect{
-                slotboard_rect.left - marker_radius,
-                slotboard_rect.top + top_offset_in_slots(slotboard_rect.height) - marker_radius,
-                slotboard_rect.width + marker_radius,
-                2 * marker_radius
-        };
+            slotboard_rect.left - marker_radius,
+            slotboard_rect.top + top_offset_in_slots(slotboard_rect.height) - marker_radius,
+            slotboard_rect.width + marker_radius,
+            2 * marker_radius};
     }
 
     auto current_time_marker::scroll_offset(const rect &slots_rect, rect viewport_rect) const -> gfloat {

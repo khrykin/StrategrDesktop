@@ -5,12 +5,12 @@
 #ifndef STRATEGR_SELECTION_H
 #define STRATEGR_SELECTION_H
 
-#include <vector>
 #include <functional>
 #include <optional>
+#include <vector>
 
-#include "strategy.h"
 #include "notifiableonchange.h"
+#include "strategy.h"
 
 namespace stg {
     using index_t = strategy::time_slot_index_t;
@@ -60,4 +60,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_SELECTION_H
+#endif//STRATEGR_SELECTION_H

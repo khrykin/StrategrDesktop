@@ -2,12 +2,12 @@
 // Created by Dmitry Khrykin on 2020-02-18.
 //
 
-#include <sstream>
-#include <regex>
-#include <cmath>
 #include <algorithm>
-#include <iomanip>
 #include <array>
+#include <cmath>
+#include <iomanip>
+#include <regex>
+#include <sstream>
 
 #include "color.h"
 
@@ -137,8 +137,8 @@ namespace stg {
         auto m = lightness - 0.5 * chroma;
         std::transform(rgb.begin(), rgb.end(),
                        rgb.begin(), [&m](auto &c) {
-                    return c + m;
-                });
+                           return c + m;
+                       });
 
         set_red_component(rgb[0]);
         set_green_component(rgb[1]);
@@ -208,21 +208,15 @@ namespace stg {
 #pragma mark - Color Operations
 
     void color::blend_with(const color &overlay_color) {
-        auto new_red_component = red_component()
-                                 + (overlay_color.red_component() - red_component())
-                                   * overlay_color.alpha_component();
+        auto new_red_component = red_component() + (overlay_color.red_component() - red_component()) * overlay_color.alpha_component();
 
         set_red_component(new_red_component);
 
-        auto new_green_component = green_component()
-                                   + (overlay_color.green_component() - green_component())
-                                     * overlay_color.alpha_component();
+        auto new_green_component = green_component() + (overlay_color.green_component() - green_component()) * overlay_color.alpha_component();
 
         set_green_component(new_green_component);
 
-        auto new_blue_component = blue_component()
-                                  + (overlay_color.blue_component() - blue_component())
-                                    * overlay_color.alpha_component();
+        auto new_blue_component = blue_component() + (overlay_color.blue_component() - blue_component()) * overlay_color.alpha_component();
 
         set_blue_component(new_blue_component);
     }
@@ -268,10 +262,7 @@ namespace stg {
 
         std::string result = "#";
 
-        result = result
-                 + component_string(red())
-                 + component_string(green())
-                 + component_string(blue());
+        result = result + component_string(red()) + component_string(green()) + component_string(blue());
 
         if (alpha() < 255u)
             result += component_string(alpha());

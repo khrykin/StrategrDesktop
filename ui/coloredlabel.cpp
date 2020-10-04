@@ -2,16 +2,16 @@
 // Created by Dmitry Khrykin on 2019-07-26.
 //
 
-#include <QPainter>
 #include <QFontMetrics>
+#include <QPainter>
 #include <utility>
 
 #include "coloredlabel.h"
 #include "fontutils.h"
 
 ColoredLabel::ColoredLabel(QString text, QWidget *parent)
-        : _text(std::move(text)),
-          QWidget(parent) {
+    : _text(std::move(text)),
+      QWidget(parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
@@ -49,8 +49,8 @@ void ColoredLabel::paintEvent(QPaintEvent *event) {
     } else {
         auto textRect = contentsRect();
         auto printedText = _elideMode == Qt::ElideNone
-                           ? _text
-                           : fontMetrics().elidedText(_text, Qt::ElideMiddle, textRect.width());
+                               ? _text
+                               : fontMetrics().elidedText(_text, Qt::ElideMiddle, textRect.width());
 
         painter.drawText(textRect, _alignment, printedText);
     }
@@ -114,5 +114,3 @@ void ColoredLabel::setElideMode(Qt::TextElideMode elideMode) {
 
     update();
 }
-
-

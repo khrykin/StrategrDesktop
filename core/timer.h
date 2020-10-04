@@ -47,4 +47,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_TIMER_H
+#endif//STRATEGR_TIMER_H

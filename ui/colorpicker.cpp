@@ -1,7 +1,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
-#include <random>
 #include <algorithm>
+#include <random>
 
 #include "colorpicker.h"
 #include "colorpickeritem.h"
@@ -79,4 +79,3 @@ std::vector<QColor> ColorPicker::colorsFromDefaultColors() {
 
     return result;
 }
-

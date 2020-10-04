@@ -5,8 +5,8 @@
 #ifndef STRATEGR_COLOREDLABEL_H
 #define STRATEGR_COLOREDLABEL_H
 
-#include <functional>
 #include <QLabel>
+#include <functional>
 
 class ColoredLabel : public QWidget {
 public:
@@ -32,6 +32,7 @@ public:
     void setElideMode(Qt::TextElideMode elideMode);
 
     QSize sizeHint() const override;
+
 private:
     Qt::TextElideMode _elideMode = Qt::ElideNone;
     std::function<QColor()> colorGetter = [] { return Qt::black; };
@@ -44,4 +45,4 @@ private:
 };
 
 
-#endif //STRATEGR_COLOREDLABEL_H
+#endif//STRATEGR_COLOREDLABEL_H

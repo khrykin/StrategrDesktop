@@ -3,14 +3,14 @@
 
 #include <QWidget>
 
-#include "navbar.h"
 #include "activityeditormenu.h"
-#include "third-party/slidingstackedwidget.h"
 #include "activitywidget.h"
-#include "reactivelist.hpp"
-#include "colorprovider.h"
 #include "coloredlabel.h"
+#include "colorprovider.h"
 #include "dataproviderwidget.h"
+#include "navbar.h"
+#include "reactivelist.hpp"
+#include "third-party/slidingstackedwidget.h"
 
 class SearchBoxWidget;
 class MainScene;
@@ -21,15 +21,17 @@ class QScrollArea;
 class ActivityListWidget : public DataProviderWidget,
                            public ReactiveList<ActivityWidget>,
                            public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ActivityListWidget(QWidget *parent);
 
     void reloadStrategy();
     void showNewActivityMenu();
+
 protected:
     void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *object, QEvent *event) override;
+
 private:
     SearchBoxWidget *searchBox = nullptr;
     QScrollArea *scrollArea = nullptr;
@@ -70,4 +72,4 @@ private:
     void scrollDownItemIntoViewAtIndex(int index);
 };
 
-#endif // ACTIVITIESLISTWIDGET_H
+#endif// ACTIVITIESLISTWIDGET_H

@@ -23,4 +23,3 @@ void CurrentTimeMarkerWidget::paintEvent(QPaintEvent *event) {
                         markerSize);
     painter.end();
 }
-

@@ -4,7 +4,7 @@
 #include <QPainter>
 
 ColorPickerItem::ColorPickerItem(QColor color, QWidget *parent)
-        : QWidget(parent), _color(std::move(color)) {
+    : QWidget(parent), _color(std::move(color)) {
     setFixedWidth(24);
     setFixedHeight(24);
 }
@@ -23,8 +23,8 @@ void ColorPickerItem::paintEvent(QPaintEvent *) {
     if (_isSelected || isHovered) {
         painter.setPen(QColor("#999"));
         auto brushColor = isHovered
-                          ? QColor(0, 0, 0, 50)
-                          : QColor(0, 0, 0, 0);
+                              ? QColor(0, 0, 0, 50)
+                              : QColor(0, 0, 0, 0);
         painter.setBrush(brushColor);
         painter.drawEllipse(baseRect.adjusted(1, 1, -1, -1));
     }

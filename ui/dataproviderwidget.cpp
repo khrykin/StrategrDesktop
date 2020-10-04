@@ -2,8 +2,8 @@
 // Created by Dmitry Khrykin on 16.06.2020.
 //
 
-#include "applicationsettings.h"
 #include "dataproviderwidget.h"
+#include "applicationsettings.h"
 #include "mainscene.h"
 #include "mainwindow.h"
 #include "slotswidget.h"
@@ -45,4 +45,3 @@ SlotboardScrollArea *DataProviderWidget::slotboardScrollArea() {
 SlotsWidget *DataProviderWidget::slotsWidget() {
     return mainScene()->slotsWidget();
 }
-

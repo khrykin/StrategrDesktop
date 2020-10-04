@@ -5,24 +5,23 @@
 #ifndef STRATEGR_OVERVIEWWIDGET_H
 #define STRATEGR_OVERVIEWWIDGET_H
 
-#include <QWidget>
 #include <QScrollArea>
+#include <QWidget>
 
-#include "overview.h"
-#include "dataproviderwidget.h"
-#include "strategy.h"
 #include "colorprovider.h"
+#include "dataproviderwidget.h"
+#include "overview.h"
+#include "strategy.h"
 
 class OverviewWidget : public DataProviderWidget,
                        public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit OverviewWidget(QWidget *parent);
 
     void reloadStrategy();
 
 private:
-
     void paintEvent(QPaintEvent *) override;
     void drawElements(QPainter &painter, stg::overview &overview);
     void drawViewportMarker(QPainter &painter, stg::overview &overview);
@@ -37,4 +36,4 @@ private:
 };
 
 
-#endif //STRATEGR_OVERVIEWWIDGET_H
+#endif//STRATEGR_OVERVIEWWIDGET_H

@@ -8,11 +8,11 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#include "aboutwindow.h"
 #include "application.h"
 #include "applicationmenu.h"
-#include "mainwindow.h"
-#include "aboutwindow.h"
 #include "mainscene.h"
+#include "mainwindow.h"
 #include "utils.h"
 
 #ifdef Q_OS_MAC
@@ -40,7 +40,7 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
 
     aboutAction->setMenuRole(QAction::AboutRole);
 
-//    if (!Application::updateMenuAdded) {
+    //    if (!Application::updateMenuAdded) {
     auto *updateAction = helpMenu->addAction(tr("Check For Updates..."), [=] {
         Application::checkForUpdates();
     });
@@ -48,7 +48,7 @@ ApplicationMenu::ApplicationMenu(MainWindow *window) : window(window) {
     updateAction->setMenuRole(QAction::ApplicationSpecificRole);
 
     Application::updateMenuAdded = true;
-//    }
+    //    }
 
     window->setMenuBar(this);
 }
@@ -69,7 +69,6 @@ void ApplicationMenu::setupEditMenu() {
     addAction(editMenu,
               actionCenter().reorder_activities_by_usage,
               QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
-
 }
 
 void ApplicationMenu::setupViewMenu() {

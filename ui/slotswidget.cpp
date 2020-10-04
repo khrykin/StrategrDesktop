@@ -5,9 +5,9 @@
 #include <QStyleOption>
 #include <QVector>
 
-#include "slotswidget.h"
-#include "mainwindow.h"
 #include "mainscene.h"
+#include "mainwindow.h"
+#include "slotswidget.h"
 #include "utils.h"
 
 SlotsWidget::SlotsWidget(QWidget *parent) : DataProviderWidget(parent) {
@@ -222,8 +222,3 @@ void SlotsWidget::resizeEvent(QResizeEvent *event) {
 void SlotsWidget::enterEvent(QEvent *event) {
     setFocus();
 }
-
-
-
-
-

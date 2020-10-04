@@ -5,8 +5,8 @@
 #ifndef STRATEGR_STRATEGYHISTORY_H
 #define STRATEGR_STRATEGYHISTORY_H
 
-#include <vector>
 #include <optional>
+#include <vector>
 
 #include "activitylist.h"
 #include "timeslotsstate.h"
@@ -55,4 +55,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_STRATEGYHISTORY_H
+#endif//STRATEGR_STRATEGYHISTORY_H

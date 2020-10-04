@@ -5,8 +5,8 @@
 #ifndef STRATEGR_MACOSWINDOW_H
 #define STRATEGR_MACOSWINDOW_H
 
-#include <QtCore>
 #include <QPixmap>
+#include <QtCore>
 
 #ifdef Q_OS_MAC
 
@@ -26,6 +26,7 @@ public:
     static QPixmap openHandCursor();
 
     static bool hasSFSymbol();
+
 private:
     static NSString *makeToolbarIdentifier(const MainWindow *window);
 };
@@ -33,4 +34,4 @@ private:
 #endif
 
 
-#endif //STRATEGR_MACOSWINDOW_H
+#endif//STRATEGR_MACOSWINDOW_H

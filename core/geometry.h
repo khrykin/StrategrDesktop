@@ -20,8 +20,8 @@ namespace stg {
 
     template<typename T>
     struct is_cg_point_like<T,
-        decltype((void) (T::x), 0),
-        decltype((void) (T::y), 0)> : std::true_type {
+                            decltype((void) (T::x), 0),
+                            decltype((void) (T::y), 0)> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -30,8 +30,8 @@ namespace stg {
 
     template<typename T>
     struct is_cg_rect_like<T,
-        decltype((void) (T::origin), 0),
-        decltype((void) (T::size), 0)> : std::true_type {
+                           decltype((void) (T::origin), 0),
+                           decltype((void) (T::size), 0)> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -40,8 +40,8 @@ namespace stg {
 
     template<typename T>
     struct is_qpoint_like<T,
-        decltype(std::declval<T>().x()),
-        decltype(std::declval<T>().y())> : std::true_type {
+                          decltype(std::declval<T>().x()),
+                          decltype(std::declval<T>().y())> : std::true_type {
     };
 
     template<typename T, typename = int, typename = int>
@@ -50,8 +50,8 @@ namespace stg {
 
     template<typename T>
     struct is_qrect_like<T,
-        decltype(std::declval<T>().x()),
-        decltype(std::declval<T>().width())> : std::true_type {
+                         decltype(std::declval<T>().x()),
+                         decltype(std::declval<T>().width())> : std::true_type {
     };
 
 #pragma mark - Point
@@ -146,10 +146,9 @@ namespace stg {
         template<typename T, std::enable_if_t<is_cg_rect_like<T>::value, int> = 0>
         operator T() const {
             return {(gfloat) left,
-                    (gfloat) top, {
-                        (gfloat) width,
-                        (gfloat) height
-                    }};
+                    (gfloat) top,
+                    {(gfloat) width,
+                     (gfloat) height}};
         }
 
         auto origin() const -> point {
@@ -184,4 +183,4 @@ namespace stg {
     inline constexpr rect rect::zero = rect{0, 0, 0, 0};
 }
 
-#endif //STRATEGR_GEOMETRY_H
+#endif//STRATEGR_GEOMETRY_H

@@ -2,15 +2,15 @@
 // Created by Dmitry Khrykin on 31.07.2020.
 //
 
+#include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
-#include <algorithm>
 
 #include <catch2/catch.hpp>
 
-#include "strategy.h"
 #include "notifier.h"
 #include "persistent.h"
+#include "strategy.h"
 
 TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
     using namespace stg;
@@ -82,7 +82,6 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
             // will be persisted.
             auto strategy = stg::strategy();
             auto notifier = stg::notifier(strategy, "file.stg");
-
         }
 
         {
@@ -155,11 +154,9 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
         }
 
         std::unordered_set<file_bookmark> expected_active_files = {
-                "file.stg",
-                "file2.stg"
-        };
+            "file.stg",
+            "file2.stg"};
 
         REQUIRE(notifier::active_files() == expected_active_files);
     }
-
 }

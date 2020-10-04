@@ -1,19 +1,19 @@
 #ifndef CURRENTACTIVITYWIDGET_H
 #define CURRENTACTIVITYWIDGET_H
 
-#include <optional>
 #include <functional>
+#include <optional>
 
 #include <QLabel>
 #include <QWidget>
 
-#include "dataproviderwidget.h"
 #include "colorprovider.h"
+#include "dataproviderwidget.h"
 
 class ColoredLabel;
 class CurrentSessionWidget : public DataProviderWidget,
                              public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit CurrentSessionWidget(QWidget *parent);
 
@@ -51,4 +51,4 @@ private:
     QString makeActivitySessionTitle();
 };
 
-#endif // CURRENTACTIVITYWIDGET_H
+#endif// CURRENTACTIVITYWIDGET_H

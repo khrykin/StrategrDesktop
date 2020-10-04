@@ -8,15 +8,14 @@
 #include <chrono>
 
 #include "action.hpp"
-#include "strategy.h"
-#include "selection.h"
-#include "timer.h"
 #include "mousehandler.h"
+#include "selection.h"
+#include "strategy.h"
+#include "timer.h"
 
 namespace stg {
     class action_center {
     public:
-
 #pragma mark - Delegate Callbacks
 
         std::function<void()> on_show_activities = nullptr;
@@ -52,7 +51,7 @@ namespace stg {
                                    }};
 
         const action undo{"Undo",
-                          [this] { this->strategy.undo(); }, // Note: Explicit this here and below due to MSVC++ bug.
+                          [this] { this->strategy.undo(); },// Note: Explicit this here and below due to MSVC++ bug.
                           [this] { return strategy.has_undo(); }};
 
         const action redo{"Redo",
@@ -132,4 +131,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_ACTIONCENTER_H
+#endif//STRATEGR_ACTIONCENTER_H

@@ -26,14 +26,14 @@ namespace stg {
         }
 
         return is_selected
-               ? activity_color
-               : activity_color.with_alpha_component(0.15);
+                   ? activity_color
+                   : activity_color.with_alpha_component(0.15);
     }
 
     auto theme::session_ruler_color(const session &session, bool is_selected) const -> color {
         return is_selected
-               ? session.activity->desaturated_dark_color()
-               : session.activity->desaturated_light_color();
+                   ? session.activity->desaturated_dark_color()
+                   : session.activity->desaturated_light_color();
     }
 
     auto theme::session_duration_color(const session &session, bool is_selected) const -> color {
@@ -42,23 +42,23 @@ namespace stg {
 
         const auto activity_color = session.activity->color();
         auto default_duration_color = text_color()
-                .blended_with(activity_color
-                                      .with_hsl(activity_color.hue(), 0.2, 0.7)
-                                      .with_alpha_component(0.6));
+                                          .blended_with(activity_color
+                                                            .with_hsl(activity_color.hue(), 0.2, 0.7)
+                                                            .with_alpha_component(0.6));
 
         auto selected_duration_color = base_color()
-                .blended_with(activity_color
+                                           .blended_with(activity_color
 
-                                      .with_alpha_component(0.2));
+                                                             .with_alpha_component(0.2));
 
         auto duration_color = is_selected
-                              ? selected_duration_color
-                              : default_duration_color;
+                                  ? selected_duration_color
+                                  : default_duration_color;
 
 
         if (session.activity->color().lightness() < 0.2 && is_selected) {
             duration_color = color::white_color
-                    .blended_with(session.activity->color().with_alpha_component(0.5));
+                                 .blended_with(session.activity->color().with_alpha_component(0.5));
         }
 
         return duration_color;

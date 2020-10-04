@@ -7,9 +7,9 @@
 
 #include <QApplication>
 #include <QFileOpenEvent>
-#include <QtDebug>
-#include <QTimer>
 #include <QSystemTrayIcon>
+#include <QTimer>
+#include <QtDebug>
 
 #include "aboutwindow.h"
 #include "mainwindow.h"
@@ -42,6 +42,7 @@ public:
     static auto theme() -> const stg::theme &;
 
     static auto notifierBackend() -> const NotifierBackend &;
+
 private:
     static void setupFonts();
 
@@ -60,4 +61,4 @@ private:
     bool event(QEvent *event) override;
 };
 
-#endif //STRATEGR_APPLICATION_H
+#endif//STRATEGR_APPLICATION_H

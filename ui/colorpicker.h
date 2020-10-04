@@ -8,7 +8,7 @@
 #include "activity.h"
 
 class ColorPicker : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ColorPicker(QWidget *parent = nullptr);
 
@@ -19,6 +19,7 @@ public:
 signals:
     void colorChanged(const std::optional<QColor> &color);
     void colorChangedByClick(const std::optional<QColor> &color);
+
 private:
     static const QVector<QColor> defaultColors;
 
@@ -32,4 +33,4 @@ private:
     static std::vector<QColor> colorsFromDefaultColors();
 };
 
-#endif // COLORPICKER_H
+#endif// COLORPICKER_H

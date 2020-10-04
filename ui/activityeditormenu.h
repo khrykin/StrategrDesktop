@@ -6,12 +6,12 @@
 #include <QMenu>
 #include <QWidgetAction>
 
-#include "colorpicker.h"
 #include "activity.h"
 #include "coloredlabel.h"
+#include "colorpicker.h"
 
 class ActivityEditorMenu : public QMenu {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ActivityEditorMenu(std::optional<stg::activity> activity = std::nullopt,
                                 QWidget *parent = nullptr);
@@ -41,11 +41,11 @@ private:
 
     int platformPadding =
 #ifdef Q_OS_WIN32
-            20
+        20
 #else
-            0
+        0
 #endif
-    ;
+        ;
 
     void addLineEditWidgetAction();
     void addColorWidgetAction();
@@ -68,4 +68,4 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
 };
 
-#endif // ACTIVITYEDITORMENU_H
+#endif// ACTIVITYEDITORMENU_H

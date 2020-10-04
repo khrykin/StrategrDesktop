@@ -63,7 +63,6 @@ TEST_CASE("Strategy history", "[strategy][history]") {
 
             REQUIRE(strategy.activities().size() == 2);
         }
-
     }
 
     SECTION("activity removal while present in slots") {
@@ -75,7 +74,6 @@ TEST_CASE("Strategy history", "[strategy][history]") {
         strategy.undo();
         REQUIRE(strategy.activities()[0] == initial_activity);
         REQUIRE(strategy.sessions()[0].length() == 2);
-
     }
 
     SECTION("time slots change") {

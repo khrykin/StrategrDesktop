@@ -7,8 +7,8 @@
 
 namespace stg {
     overview::overview(const stg::strategy &strategy, std::function<gfloat()> width_getter)
-            : strategy(strategy),
-              width_getter(std::move(width_getter)) {
+        : strategy(strategy),
+          width_getter(std::move(width_getter)) {
     }
 
     auto overview::elements() const -> std::vector<overview::overview_item> {
@@ -33,13 +33,12 @@ namespace stg {
         }
 
         return result;
-
     }
 
     auto overview::viewport_marker_for(const rect &slots_bounds,
                                        const rect &viewport_rect) const -> viewport_marker {
-//        std::cout << "slots_bounds: " << slots_bounds << "\n";
-//        std::cout << "viewport_rect: " << viewport_rect << "\n";
+        //        std::cout << "slots_bounds: " << slots_bounds << "\n";
+        //        std::cout << "viewport_rect: " << viewport_rect << "\n";
 
         auto relative_top = viewport_rect.top;
         auto relative_bottom = slots_bounds.height - viewport_rect.top - viewport_rect.height;

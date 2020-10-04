@@ -7,7 +7,7 @@
 #include "selection.h"
 
 stg::selection::selection(const stg::strategy &strategy)
-        : strategy(strategy) {
+    : strategy(strategy) {
     add_on_change_callback([this] { reload(); });
 }
 
@@ -92,15 +92,15 @@ bool stg::selection::is_continuous() const {
 
 bool stg::selection::only_empty_selected() const {
     return std::find_if(begin(), end(), [this](auto index) {
-        return strategy.time_slots()[index].activity != stg::strategy::no_activity;
-    }) == end();
+               return strategy.time_slots()[index].activity != stg::strategy::no_activity;
+           }) == end();
 }
 
 
 bool stg::selection::only_non_empty_selected() const {
     return std::find_if(begin(), end(), [this](auto index) {
-        return strategy.time_slots()[index].activity == stg::strategy::no_activity;
-    }) == end();
+               return strategy.time_slots()[index].activity == stg::strategy::no_activity;
+           }) == end();
 }
 
 bool stg::selection::has_selected(index_t slot_index) const {
@@ -114,8 +114,8 @@ void stg::selection::reload() {
     for (auto i = begin(); i != end(); ++i) {
         auto current_index = *i;
         auto previous = i != begin()
-                        ? std::make_optional(*prev(i))
-                        : std::nullopt;
+                            ? std::make_optional(*prev(i))
+                            : std::nullopt;
 
         if (!previous || current_index == *previous + 1) {
             current_item.push_back(current_index);
@@ -151,8 +151,7 @@ bool stg::selection::is_all_selected() const {
 }
 
 bool stg::selection::is_boundary(stg::index_t slot_index) const {
-    return (!has_selected(slot_index - 1) && has_selected(slot_index))
-           || (has_selected(slot_index - 1) && !has_selected(slot_index));
+    return (!has_selected(slot_index - 1) && has_selected(slot_index)) || (has_selected(slot_index - 1) && !has_selected(slot_index));
 }
 
 void stg::selection::make_safe(int &index) {
@@ -162,5 +161,3 @@ void stg::selection::make_safe(int &index) {
         index = strategy.number_of_time_slots() - 1;
     }
 }
-
-

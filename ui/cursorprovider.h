@@ -18,4 +18,4 @@ protected:
 };
 
 
-#endif //STRATEGR_CURSORPROVIDER_H
+#endif//STRATEGR_CURSORPROVIDER_H

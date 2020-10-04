@@ -2,8 +2,8 @@
 // Created by Dmitry Khrykin on 2020-02-10.
 //
 
-#import <Foundation/Foundation.h>
 #import <EventKit/EventKit.h>
+#import <Foundation/Foundation.h>
 
 #ifdef __cplusplus
 
@@ -40,14 +40,14 @@ NS_SWIFT_NAME(CalendarExporterDelegate)
 NS_SWIFT_NAME(CalendarExporter)
 @interface STGCalendarExporter : NSObject
 
-@property(nonatomic, weak) id <STGCalendarExporterDelegate> delegate;
+@property(nonatomic, weak) id<STGCalendarExporterDelegate> delegate;
 @property(nonatomic, readonly) NSDate *date;
 
 #ifdef __cplusplus
 
 + (void)exportFromStrategyPtr:(const stg::strategy *)strategy
                          date:(NSDate *_Nullable)date
-                     delegate:(nullable id <STGCalendarExporterDelegate>)delegate
+                     delegate:(nullable id<STGCalendarExporterDelegate>)delegate
             completionHandler:(nullable void (^)(BOOL exported))completionHandler;
 
 #endif

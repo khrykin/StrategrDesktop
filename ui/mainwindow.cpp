@@ -6,29 +6,29 @@
 
 #include <QCloseEvent>
 
-#include "mainwindow.h"
-#include "application.h"
 #include "alert.h"
+#include "application.h"
+#include "applicationmenu.h"
 #include "macoswindow.h"
 #include "mainscene.h"
-#include "applicationmenu.h"
+#include "mainwindow.h"
 
 MainWindow::MainWindow(const QString &filePath, QWidget *parent)
-        : strategy(fsIOManager.openFromPathOrDefault(filePath)),
-          QMainWindow(parent) {
+    : strategy(fsIOManager.openFromPathOrDefault(filePath)),
+      QMainWindow(parent) {
     setup();
 }
 
 MainWindow::MainWindow(QWidget *parent)
-        : strategy(fsIOManager.openDefault()),
-          QMainWindow(parent) {
+    : strategy(fsIOManager.openDefault()),
+      QMainWindow(parent) {
     setup();
 }
 
 MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
-        : QMainWindow(parent),
-          fsIOManager(std::move(existingFsIOManager)),
-          strategy(fsIOManager.openLastOrDefault()) {
+    : QMainWindow(parent),
+      fsIOManager(std::move(existingFsIOManager)),
+      strategy(fsIOManager.openLastOrDefault()) {
     fsIOManager.setWindow(this);
     setup();
 }

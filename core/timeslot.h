@@ -5,8 +5,8 @@
 #ifndef MODELS_TIMESLOT_H
 #define MODELS_TIMESLOT_H
 
-#include <iostream>
 #include <ctime>
+#include <iostream>
 
 namespace stg {
     struct activity;
@@ -33,6 +33,7 @@ namespace stg {
         friend auto operator==(const time_slot &lhs, const time_slot &rhs) -> bool;
         friend auto operator!=(const time_slot &lhs, const time_slot &rhs) -> bool;
         friend auto operator<<(std::ostream &os, const time_slot &slot) -> std::ostream &;
+
     private:
         struct keys {
             static constexpr auto begin_time = "start_time";
@@ -40,4 +41,4 @@ namespace stg {
     };
 }
 
-#endif //MODELS_TIMESLOT_H
+#endif//MODELS_TIMESLOT_H

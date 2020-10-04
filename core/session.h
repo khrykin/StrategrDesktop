@@ -1,10 +1,10 @@
 #ifndef STRATEGR_ACTIVITYSESSION_H
 #define STRATEGR_ACTIVITYSESSION_H
 
-#include <vector>
+#include <iostream>
 #include <memory>
 #include <optional>
-#include <iostream>
+#include <vector>
 
 #include "timeslot.h"
 
@@ -45,4 +45,4 @@ namespace stg {
 
 };
 
-#endif // STRATEGR_ACTIVITYSESSION_H
+#endif// STRATEGR_ACTIVITYSESSION_H

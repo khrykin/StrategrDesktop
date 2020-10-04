@@ -5,8 +5,8 @@
 #include "cursorprovider.h"
 #include "applicationsettings.h"
 
-#include <iostream>
 #include <QFont>
+#include <iostream>
 
 #ifdef Q_OS_MAC
 

@@ -12,9 +12,7 @@ TEST_CASE("Strategy settings", "[strategy][settings]") {
     SECTION("change begin time") {
         strategy.set_begin_time(666);
 
-        const auto end_time = 666
-                              + strategy.number_of_time_slots()
-                                * strategy.time_slot_duration();
+        const auto end_time = 666 + strategy.number_of_time_slots() * strategy.time_slot_duration();
 
         REQUIRE(strategy.sessions().first().begin_time() == 666);
         REQUIRE(strategy.sessions().last().end_time() == end_time);

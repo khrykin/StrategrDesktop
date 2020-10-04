@@ -2,19 +2,19 @@
 // Created by Dmitry Khrykin on 2019-12-25.
 //
 
-#include <QLineEdit>
-#include <QHBoxLayout>
-#include <QPainter>
-#include <QFontMetrics>
-#include <QPalette>
 #include <QAction>
 #include <QFocusEvent>
+#include <QFontMetrics>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QPainter>
+#include <QPalette>
 
-#include "searchboxwidget.h"
 #include "applicationsettings.h"
+#include "searchboxwidget.h"
 
 SearchBoxWidget::SearchBoxWidget(const QString &placeholder, QWidget *parent)
-        : QWidget(parent) {
+    : QWidget(parent) {
     using namespace ApplicationSettings;
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -92,9 +92,7 @@ void SearchBoxWidget::paintEvent(QPaintEvent *event) {
     painter.setFont(iconFont());
     painter.setPen(secondaryTextColor());
     painter.drawText(2 * ApplicationSettings::defaultPadding,
-                     lineEdit->geometry().bottomLeft().y()
-                     - lineEdit->height() / 2
-                     + iconHeight / 2 - 1, searchIconText());
+                     lineEdit->geometry().bottomLeft().y() - lineEdit->height() / 2 + iconHeight / 2 - 1, searchIconText());
 }
 
 QRect SearchBoxWidget::iconRect() const {
@@ -123,8 +121,6 @@ bool SearchBoxWidget::eventFilter(QObject *object, QEvent *event) {
                 return true;
             }
         }
-
-
     }
 
     return false;
@@ -137,4 +133,3 @@ void SearchBoxWidget::focus() {
 void SearchBoxWidget::removeFocus() {
     lineEdit->clearFocus();
 }
-

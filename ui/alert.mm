@@ -1,6 +1,6 @@
 #include "alert.h"
-#include <QMessageBox>
 #include <QAbstractButton>
+#include <QMessageBox>
 #include <QTimer>
 
 #import <AppKit/NSAlert.h>
@@ -11,20 +11,15 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
 
     @autoreleasepool {
         QMessageBox messageBox;
-        messageBox.setStandardButtons(QMessageBox::Save
-                                      | QMessageBox::Discard
-                                      | QMessageBox::Cancel);
+        messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
         NSAlert *alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:
-                messageBox.button(QMessageBox::Save)->text()
-                        .toNSString()];
+                   messageBox.button(QMessageBox::Save)->text().toNSString()];
         [alert addButtonWithTitle:
-                messageBox.button(QMessageBox::Cancel)->text()
-                        .toNSString()];
+                   messageBox.button(QMessageBox::Cancel)->text().toNSString()];
         [alert addButtonWithTitle:
-                messageBox.button(QMessageBox::Discard)->text()
-                        .toNSString()];
+                   messageBox.button(QMessageBox::Discard)->text().toNSString()];
 
         [alert setMessageText:title.toNSString()];
         [alert setInformativeText:message.toNSString()];
@@ -52,17 +47,17 @@ int Alert::showWarning(QWidget *,
     NSString *nsMessage = message.toNSString();
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        @autoreleasepool {
-            NSAlert *alert = [[NSAlert alloc] init];
-            alert.alertStyle = NSAlertStyleCritical;
-            alert.icon = [NSImage imageNamed:NSImageNameCaution];
+      @autoreleasepool {
+          NSAlert *alert = [[NSAlert alloc] init];
+          alert.alertStyle = NSAlertStyleCritical;
+          alert.icon = [NSImage imageNamed:NSImageNameCaution];
 
-            [alert setMessageText:nsTitle];
-            [alert setInformativeText:nsMessage];
-            [alert setAlertStyle:NSAlertStyleWarning];
+          [alert setMessageText:nsTitle];
+          [alert setInformativeText:nsMessage];
+          [alert setAlertStyle:NSAlertStyleWarning];
 
-            [alert runModal];
-        }
+          [alert runModal];
+      }
     });
 
     return QMessageBox::Ok;

@@ -7,10 +7,9 @@
 #include "time_utils.h"
 
 namespace stg {
-    time_slot::time_slot(minutes begin_time, minutes duration, stg::activity *activity) :
-            begin_time(begin_time),
-            duration(duration),
-            activity(activity) {}
+    time_slot::time_slot(minutes begin_time, minutes duration, stg::activity *activity) : begin_time(begin_time),
+                                                                                          duration(duration),
+                                                                                          activity(activity) {}
 
     auto time_slot::end_time() const -> time_slot::minutes {
         return begin_time + duration;
@@ -29,9 +28,7 @@ namespace stg {
     }
 
     auto operator==(const time_slot &lhs, const time_slot &rhs) -> bool {
-        return lhs.activity == rhs.activity
-               && lhs.begin_time == rhs.begin_time
-               && lhs.duration == rhs.duration;
+        return lhs.activity == rhs.activity && lhs.begin_time == rhs.begin_time && lhs.duration == rhs.duration;
     }
 
     auto operator!=(const time_slot &lhs, const time_slot &rhs) -> bool {

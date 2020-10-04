@@ -4,19 +4,19 @@
 #include <QTimeEdit>
 
 class SteppedTimeEdit : public QTimeEdit {
-  using QTimeEdit::QTimeEdit;
+    using QTimeEdit::QTimeEdit;
 
-  void stepBy(int steps) override {
-    if (currentSection() == MinuteSection) {
-      setTime(time().addMSecs(steps * minuteStepSize * 60 * 1000));
-      return;
+    void stepBy(int steps) override {
+        if (currentSection() == MinuteSection) {
+            setTime(time().addMSecs(steps * minuteStepSize * 60 * 1000));
+            return;
+        }
+
+        QTimeEdit::stepBy(steps);
     }
 
-    QTimeEdit::stepBy(steps);
-  }
-
 public:
-  int minuteStepSize = 1;
+    int minuteStepSize = 1;
 };
 
-#endif // STEPPEDTIMEEDIT_H
+#endif// STEPPEDTIMEEDIT_H

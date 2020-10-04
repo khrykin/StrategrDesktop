@@ -1,15 +1,15 @@
 #ifndef SLOTBOARD_H
 #define SLOTBOARD_H
 
-#include <QWidget>
-#include <QScrollArea>
 #include <QPropertyAnimation>
+#include <QScrollArea>
+#include <QWidget>
 
-#include "dataproviderwidget.h"
-#include "currenttimemarkerwidget.h"
-#include "slotswidget.h"
-#include "slotruler.h"
 #include "colorprovider.h"
+#include "currenttimemarkerwidget.h"
+#include "dataproviderwidget.h"
+#include "slotruler.h"
+#include "slotswidget.h"
 
 class MainWindow;
 class SlotboardScrollArea;
@@ -20,6 +20,7 @@ public:
     explicit SlotBoardWidget(QWidget *parent);
 
     void reloadStrategy();
+
 private:
     SlotsWidget *slotsWidget = nullptr;
     SessionWidget *draggedSessionWidget = nullptr;
@@ -37,4 +38,4 @@ private:
     void resizeEvent(QResizeEvent *event) override;
 };
 
-#endif // SLOTBOARD_H
+#endif// SLOTBOARD_H

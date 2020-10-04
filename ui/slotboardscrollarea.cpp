@@ -6,9 +6,9 @@
 
 #include <iostream>
 
-#include <QScrollBar>
 #include <QDebug>
 #include <QResizeEvent>
+#include <QScrollBar>
 
 void SlotboardScrollArea::setViewportTopOffset(int top) {
     viewportTopOffset = top;
@@ -59,5 +59,3 @@ void SlotboardScrollArea::setScrollOffset(int topOffset) {
 
     fixScrollBar();
 }
-
-

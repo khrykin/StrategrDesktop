@@ -3,8 +3,8 @@
 //
 
 #include "session.h"
-#include "time_utils.h"
 #include "activity.h"
+#include "time_utils.h"
 
 namespace stg {
     auto session::length() const -> length_t {
@@ -80,33 +80,29 @@ namespace stg {
     }
 
     auto operator<<(std::ostream &os, const session &session) -> std::ostream & {
-       os << "session(";
+        os << "session(";
 
-       if (session.activity) {
-           os << *session.activity;
-       } else {
-           os << "none";
-       }
+        if (session.activity) {
+            os << *session.activity;
+        } else {
+            os << "none";
+        }
 
-       os << ", length: " << session.length();
-       os << ", begin_time: " << session.begin_time();
-       os << ", end_time: " << session.end_time();
-       os << ", duration: " << session.duration();
+        os << ", length: " << session.length();
+        os << ", begin_time: " << session.begin_time();
+        os << ", end_time: " << session.end_time();
+        os << ", duration: " << session.duration();
 
-       os << ")";
+        os << ")";
 
-       return os;
-   }
+        return os;
+    }
 
-   auto operator==(const session &lhs, const session &rhs) -> bool {
-       return lhs.activity == rhs.activity
-              && lhs.begin_time() == rhs.begin_time()
-              && lhs.length() == rhs.length()
-              && lhs.duration() == rhs.duration();
-   }
+    auto operator==(const session &lhs, const session &rhs) -> bool {
+        return lhs.activity == rhs.activity && lhs.begin_time() == rhs.begin_time() && lhs.length() == rhs.length() && lhs.duration() == rhs.duration();
+    }
 
-   auto operator!=(const session &lhs, const session &rhs) -> bool {
-       return !(lhs == rhs);
-   }
+    auto operator!=(const session &lhs, const session &rhs) -> bool {
+        return !(lhs == rhs);
+    }
 }
-

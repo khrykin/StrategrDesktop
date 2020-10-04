@@ -5,8 +5,8 @@
 #ifndef MODELS_NOTIFIABLEONCHANGE_H
 #define MODELS_NOTIFIABLEONCHANGE_H
 
-#include <optional>
 #include <functional>
+#include <optional>
 
 namespace stg {
     class notifiable_on_change {
@@ -29,11 +29,11 @@ namespace stg {
         mutable std::vector<callback_t> on_change_callbacks = {};
 
         virtual void on_change_event() const {
-            for (const auto &callback: on_change_callbacks) {
+            for (const auto &callback : on_change_callbacks) {
                 callback();
             }
         }
     };
 };
 
-#endif //MODELS_NOTIFIABLEONCHANGE_H
+#endif//MODELS_NOTIFIABLEONCHANGE_H

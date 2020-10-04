@@ -43,4 +43,3 @@ namespace stg {
         return cg_color;
     }
 }
-

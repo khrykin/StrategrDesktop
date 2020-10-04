@@ -6,8 +6,8 @@
 
 #include <catch2/catch.hpp>
 
-#include "strategy.h"
 #include "notifier.h"
+#include "strategy.h"
 #include "time_utils.h"
 
 constexpr auto immediate_seconds_interval = stg::notifier::immediate_seconds_interval;

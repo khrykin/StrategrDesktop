@@ -7,10 +7,10 @@
 
 #include <QWidget>
 
-#include "strategy.h"
-#include "mousehandler.h"
 #include "actioncenter.h"
+#include "mousehandler.h"
 #include "selection.h"
+#include "strategy.h"
 
 class MainScene;
 class SlotboardScrollArea;
@@ -34,4 +34,4 @@ protected:
 };
 
 
-#endif //STRATEGR_DATAPROVIDERWIDGET_H
+#endif//STRATEGR_DATAPROVIDERWIDGET_H

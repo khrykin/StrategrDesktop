@@ -4,8 +4,8 @@
 #ifndef STRATEGR_APPLICATIONMENU_H
 #define STRATEGR_APPLICATIONMENU_H
 
-#include <QMenuBar>
 #include <QMenu>
+#include <QMenuBar>
 
 #include "actioncenter.h"
 
@@ -13,11 +13,12 @@ class MainWindow;
 class MainScene;
 
 class ApplicationMenu : public QMenuBar {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ApplicationMenu(MainWindow *window);
 
     void updateRecentFilesActions();
+
 private:
     MainWindow *window;
 
@@ -46,4 +47,4 @@ private:
 };
 
 
-#endif //STRATEGR_APPLICATIONMENU_H
+#endif//STRATEGR_APPLICATIONMENU_H

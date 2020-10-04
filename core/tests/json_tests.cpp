@@ -4,11 +4,11 @@
 
 #include <fstream>
 
-#include <catch2/catch.hpp>
 #include <boost/filesystem.hpp>
+#include <catch2/catch.hpp>
 
-#include "strategy.h"
 #include "json.h"
+#include "strategy.h"
 
 std::string read_test_file(const std::string &filename) {
     using namespace boost::filesystem;

@@ -104,11 +104,9 @@
     NSDate *beginningOfToday = [self beginningOfDayForDate:date];
 
     event.startDate = [NSDate dateWithTimeIntervalSince1970:
-            beginningOfToday.timeIntervalSince1970
-            + beginMinutes * 60];
+                                  beginningOfToday.timeIntervalSince1970 + beginMinutes * 60];
     event.endDate = [NSDate dateWithTimeIntervalSince1970:
-            beginningOfToday.timeIntervalSince1970
-            + (beginMinutes + durationMinutes) * 60];
+                                beginningOfToday.timeIntervalSince1970 + (beginMinutes + durationMinutes) * 60];
 
     event.calendar = calendar;
 
@@ -158,13 +156,13 @@
 
     NSPredicate *iCloudPredicate = [NSPredicate predicateWithBlock:^BOOL(EKSource *source,
                                                                          NSDictionary<NSString *, id> *bindings) {
-        return source.sourceType == EKSourceTypeCalDAV &&
-               [source.title isEqualToString:@"iCloud"];
+      return source.sourceType == EKSourceTypeCalDAV &&
+             [source.title isEqualToString:@"iCloud"];
     }];
 
     NSPredicate *localPredicate = [NSPredicate predicateWithBlock:^BOOL(EKSource *source,
                                                                         NSDictionary<NSString *, id> *bindings) {
-        return source.sourceType == EKSourceTypeLocal;
+      return source.sourceType == EKSourceTypeLocal;
     }];
 
     NSArray *matchedSources = [[self.store sources] filteredArrayUsingPredicate:iCloudPredicate];
@@ -185,9 +183,9 @@
 
     [[NSWorkspace sharedWorkspace] openURL:iCalURL];
     NSArray *apps = [NSRunningApplication
-            runningApplicationsWithBundleIdentifier:@"com.apple.iCal"];
+        runningApplicationsWithBundleIdentifier:@"com.apple.iCal"];
     [(NSRunningApplication *) apps[0]
-            activateWithOptions:NSApplicationActivateAllWindows];
+        activateWithOptions:NSApplicationActivateAllWindows];
 #else
     NSString *iCalURLString = [NSString stringWithFormat:@"calshow:%ld", (NSInteger) date.timeIntervalSinceReferenceDate];
     NSURL *iCalURL = [[NSURL alloc] initWithString:iCalURLString];
@@ -209,16 +207,14 @@
         NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
         [offsetComponents setDay:1];
 
-        NSDate *nextDayDate
-                = [[NSCalendar currentCalendar] dateByAddingComponents:offsetComponents
-                                                                toDate:date
-                                                               options:0];
-        NSPredicate *predicate
-                = [self.store predicateForEventsWithStartDate:[self beginningOfDayForDate:date]
-                                                      endDate:[self beginningOfDayForDate:nextDayDate]
-                                                    calendars:calendars];
+        NSDate *nextDayDate = [[NSCalendar currentCalendar] dateByAddingComponents:offsetComponents
+                                                                            toDate:date
+                                                                           options:0];
+        NSPredicate *predicate = [self.store predicateForEventsWithStartDate:[self beginningOfDayForDate:date]
+                                                                     endDate:[self beginningOfDayForDate:nextDayDate]
+                                                                   calendars:calendars];
 
-        NSArray <EKEvent *> *events = [self.store eventsMatchingPredicate:predicate];
+        NSArray<EKEvent *> *events = [self.store eventsMatchingPredicate:predicate];
 
         for (EKEvent *event in events) {
             NSError *removeEventError;
@@ -244,19 +240,20 @@
     EKEventStore *store = [[EKEventStore alloc] init];
 
     if (authorizationStatus != EKAuthorizationStatusAuthorized) {
-        [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
-            if (!granted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completionHandler(nil);
-                });
+        [store requestAccessToEntityType:EKEntityTypeEvent
+                              completion:^(BOOL granted, NSError *error) {
+                                if (!granted) {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                      completionHandler(nil);
+                                    });
 
-                return;
-            }
+                                    return;
+                                }
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionHandler(store);
-            });
-        }];
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                  completionHandler(store);
+                                });
+                              }];
     } else {
         completionHandler(store);
     }
@@ -286,7 +283,7 @@
     NSArray<EKEvent *> *events = [self.store eventsMatchingPredicate:datePredicate];
 
     NSPredicate *nonAllDayPredicate = [NSPredicate predicateWithBlock:^BOOL(EKEvent *event, NSDictionary *_) {
-        return !event.allDay;
+      return !event.allDay;
     }];
 
     return [events filteredArrayUsingPredicate:nonAllDayPredicate];

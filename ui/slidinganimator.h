@@ -8,7 +8,7 @@
 #include <functional>
 
 class SlidingAnimator : public QObject {
-Q_OBJECT
+    Q_OBJECT
 private:
     static const auto defaultDuration = 150;
     static const auto defaultUpdateInterval = 20;
@@ -31,7 +31,7 @@ public:
 
         // Explicit constructor definition is needed here because of clang bug.
         // See: https://stackoverflow.com/questions/53408962
-        Options() {};
+        Options(){};
     };
 
     static void hideWidget(QWidget *widget, const Options &options = Options());
@@ -41,15 +41,18 @@ private:
     class ResizeAwareWidget;
 
     enum class Operation {
-        Show, Hide
+        Show,
+        Hide
     };
 
     enum class Orientation {
-        Horizontal, Vertical
+        Horizontal,
+        Vertical
     };
 
     using WidgetSizeSetterPointer = void (QWidget::*)(int);
-    template<class T> using SizeGetterPointer = int (T::*)() const;
+    template<class T>
+    using SizeGetterPointer = int (T::*)() const;
 
     static QVector<QWidget *> widgetsInOperation;
 
@@ -142,7 +145,7 @@ signals:
 };
 
 class SlidingAnimator::ResizeAwareWidget : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ResizeAwareWidget(QWidget *parent = nullptr) : QWidget(parent) {}
 
@@ -156,4 +159,4 @@ private:
     }
 };
 
-#endif // SLIDINGANIMATOR_H
+#endif// SLIDINGANIMATOR_H

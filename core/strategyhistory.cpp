@@ -5,7 +5,7 @@
 #include "strategyhistory.h"
 
 stg::strategy_history::strategy_history(entry current_state)
-        : current_state(std::move(current_state)) {}
+    : current_state(std::move(current_state)) {}
 
 bool stg::strategy_history::commit(const entry &new_state) {
     if (new_state != current_state) {

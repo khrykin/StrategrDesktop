@@ -28,8 +28,8 @@ namespace stg {
                        std::back_inserter(json[keys::slots]),
                        [&strategy](auto &time_slot) {
                            auto activity_index = strategy
-                                   .activities()
-                                   .index_of(time_slot.activity);
+                                                     .activities()
+                                                     .index_of(time_slot.activity);
 
                            if (activity_index)
                                return nlohmann::json(*activity_index);

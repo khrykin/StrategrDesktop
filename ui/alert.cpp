@@ -14,9 +14,7 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
 
     messageBox.setInformativeText(message);
 
-    messageBox.setStandardButtons(QMessageBox::Save
-                                  | QMessageBox::Discard
-                                  | QMessageBox::Cancel);
+    messageBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 
     messageBox.setDefaultButton(QMessageBox::Save);
 
@@ -24,8 +22,8 @@ int Alert::showAskToSave(const QString &title, const QString &message) {
 }
 
 int Alert::showWarning(QWidget *parent,
-                        const QString &title,
-                        const QString &message) {
+                       const QString &title,
+                       const QString &message) {
     QMessageBox::warning(parent, title, message);
     return 0;
 }

@@ -4,24 +4,23 @@
 
 #import <AppKit/AppKit.h>
 
-#include <QMacNativeWidget>
 #include <QLayout>
+#include <QMacNativeWidget>
 #import <QPushButton>
 
 #include "visualeffectwidget.h"
 
-VisualEffectWidget::VisualEffectWidget(QWidget *parent) :
-        QMacCocoaViewContainer(nil, parent) {
+VisualEffectWidget::VisualEffectWidget(QWidget *parent) : QMacCocoaViewContainer(nil, parent) {
     @autoreleasepool {
         NSView *mainView = [[NSView alloc] init];
         mainView.autoresizesSubviews = YES;
 
-//        NSVisualEffectView *visualEffectView = [[[NSVisualEffectView alloc] init] autorelease];
-//        visualEffectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
-//        visualEffectView.autoresizingMask = NSViewWidthSizable |
-//                                            NSViewHeightSizable;
-//
-//        [mainView addSubview:visualEffectView];
+        //        NSVisualEffectView *visualEffectView = [[[NSVisualEffectView alloc] init] autorelease];
+        //        visualEffectView.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+        //        visualEffectView.autoresizingMask = NSViewWidthSizable |
+        //                                            NSViewHeightSizable;
+        //
+        //        [mainView addSubview:visualEffectView];
 
         setCocoaView(mainView);
         [mainView release];
@@ -30,38 +29,38 @@ VisualEffectWidget::VisualEffectWidget(QWidget *parent) :
 
 void VisualEffectWidget::setChildWidget(QWidget *widget) {
     @autoreleasepool {
-//        auto *nativeWidget = new QMacNativeWidget();
-//        auto *layout = new QVBoxLayout();
-//        // Don't use the layout rect calculated from QMacStyle.
-//        widget->setAttribute(Qt::WA_LayoutUsesWidgetRect);
-////        layout->addWidget(widget);
-//        nativeWidget->setStyleSheet("border: 5px solid blue;"
-//                                    "background: red;");
-//        nativeWidget->setLayout(layout);
-//
-////        // Adjust Cocoa layouts
-//        auto *nativeWidgetView = nativeWidget->nativeView();
-////        nativeWidgetView.frame = cocoaView().frame;
-////        nativeWidgetView.autoresizingMask = NSViewWidthSizable |
-////                                            NSViewHeightSizable;
-////        nativeWidgetView.autoresizesSubviews = YES;
-////
-////        auto *widgetNSView = reinterpret_cast<NSView *>(widget->winId());
-////        [widgetNSView setAutoresizingMask:NSViewWidthSizable |
-////                                          NSViewHeightSizable];
-////
-////        widgetNSView.frame = cocoaView().frame;
-////        widgetNSView.autoresizingMask = NSViewWidthSizable |
-////                                        NSViewHeightSizable;
-//
-////        NSTextField *nativeWidgetView = [NSTextField textFieldWithString:@"BITCH"];
-//        nativeWidgetView.frame = cocoaView().frame;
-//        nativeWidgetView.autoresizingMask = NSViewWidthSizable |
-//                                            NSViewHeightSizable;
-//
-//        [cocoaView() addSubview:nativeWidgetView];
-//        nativeWidget->show();
-//        widget->show();
+        //        auto *nativeWidget = new QMacNativeWidget();
+        //        auto *layout = new QVBoxLayout();
+        //        // Don't use the layout rect calculated from QMacStyle.
+        //        widget->setAttribute(Qt::WA_LayoutUsesWidgetRect);
+        ////        layout->addWidget(widget);
+        //        nativeWidget->setStyleSheet("border: 5px solid blue;"
+        //                                    "background: red;");
+        //        nativeWidget->setLayout(layout);
+        //
+        ////        // Adjust Cocoa layouts
+        //        auto *nativeWidgetView = nativeWidget->nativeView();
+        ////        nativeWidgetView.frame = cocoaView().frame;
+        ////        nativeWidgetView.autoresizingMask = NSViewWidthSizable |
+        ////                                            NSViewHeightSizable;
+        ////        nativeWidgetView.autoresizesSubviews = YES;
+        ////
+        ////        auto *widgetNSView = reinterpret_cast<NSView *>(widget->winId());
+        ////        [widgetNSView setAutoresizingMask:NSViewWidthSizable |
+        ////                                          NSViewHeightSizable];
+        ////
+        ////        widgetNSView.frame = cocoaView().frame;
+        ////        widgetNSView.autoresizingMask = NSViewWidthSizable |
+        ////                                        NSViewHeightSizable;
+        //
+        ////        NSTextField *nativeWidgetView = [NSTextField textFieldWithString:@"BITCH"];
+        //        nativeWidgetView.frame = cocoaView().frame;
+        //        nativeWidgetView.autoresizingMask = NSViewWidthSizable |
+        //                                            NSViewHeightSizable;
+        //
+        //        [cocoaView() addSubview:nativeWidgetView];
+        //        nativeWidget->show();
+        //        widget->show();
 
         QMacNativeWidget *nativeWidget = new QMacNativeWidget();
         nativeWidget->move(0, 0);
@@ -69,7 +68,7 @@ void VisualEffectWidget::setChildWidget(QWidget *widget) {
         nativeWidget->setAutoFillBackground(true);
         QVBoxLayout *layout = new QVBoxLayout();
         QPushButton *pushButton = new QPushButton("An Embedded Qt Button!", nativeWidget);
-        pushButton->setAttribute(Qt::WA_LayoutUsesWidgetRect); // Don't use the layout rect calculated from QMacStyle.
+        pushButton->setAttribute(Qt::WA_LayoutUsesWidgetRect);// Don't use the layout rect calculated from QMacStyle.
         layout->addWidget(pushButton);
         nativeWidget->setLayout(layout);
 
@@ -88,4 +87,3 @@ void VisualEffectWidget::setChildWidget(QWidget *widget) {
         pushButton->show();
     }
 }
-

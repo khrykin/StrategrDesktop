@@ -6,8 +6,8 @@
 //  Copyright © 2020 Dmitry Khrykin. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "STGColoredCheckBoxView.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface SGInnerShadowLayer : CAShapeLayer <CALayerDelegate>
 
@@ -158,14 +158,15 @@
     [self.innerShadowLayer setNeedsDisplay];
 }
 
-- (id <CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
+- (id<CAAction>)actionForLayer:(CALayer *)layer forKey:(NSString *)event {
     if (layer == self.checkLayer) {
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:event];
         animation.duration = 0;
 
         return animation;
 
-    } else return nil;
+    } else
+        return nil;
 }
 
 - (CGRect)backgroundFrame {

@@ -6,11 +6,11 @@
 
 namespace stg {
     event::event(key_modifiers modifiers)
-            : modifiers(modifiers) {}
+        : modifiers(modifiers) {}
 
     mouse_event::mouse_event(const point &position, key_modifiers modifiers)
-            : event(modifiers),
-              position(position) {}
+        : event(modifiers),
+          position(position) {}
 
     auto event::has_only(key_modifiers mod) const -> bool {
         return modifiers == mod;

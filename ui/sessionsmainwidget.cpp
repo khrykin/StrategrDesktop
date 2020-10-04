@@ -8,14 +8,14 @@
 #include <QPainter>
 #include <QScrollBar>
 
-#include "sessionsmainwidget.h"
-#include "overviewwidget.h"
-#include "strategysettingswidget.h"
 #include "currentsessionwidget.h"
-#include "slotboardwidget.h"
-#include "notifierbackend.h"
 #include "mainwindow.h"
+#include "notifierbackend.h"
+#include "overviewwidget.h"
+#include "sessionsmainwidget.h"
 #include "slotboardscrollarea.h"
+#include "slotboardwidget.h"
+#include "strategysettingswidget.h"
 
 SessionsMainWidget::SessionsMainWidget(QWidget *parent) : DataProviderWidget(parent) {
     auto *mainLayout = new QVBoxLayout();

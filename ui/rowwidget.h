@@ -5,9 +5,9 @@
 #ifndef STRATEGR_ROWWIDGET_H
 #define STRATEGR_ROWWIDGET_H
 
-#include <functional>
-#include <QWidget>
 #include "colorprovider.h"
+#include <QWidget>
+#include <functional>
 
 class RowWidget : public QWidget, public ColorProvider {
 public:
@@ -17,6 +17,7 @@ public:
 
     QColor borderColor() const;
     void setBorderColor(const std::function<QColor(void)> &borderColor);
+
 private:
     void paintEvent(QPaintEvent *event) override;
     bool _isHardBorder = false;
@@ -24,4 +25,4 @@ private:
 };
 
 
-#endif //STRATEGR_ROWWIDGET_H
+#endif//STRATEGR_ROWWIDGET_H

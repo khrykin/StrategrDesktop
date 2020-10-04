@@ -2,14 +2,14 @@
 // Created by Dmitry Khrykin on 2019-08-15.
 //
 
+#include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
-#include <QMouseEvent>
 
-#include "overviewwidget.h"
-#include "colorutils.h"
 #include "applicationsettings.h"
+#include "colorutils.h"
 #include "overview.h"
+#include "overviewwidget.h"
 #include "slotboardscrollarea.h"
 #include "slotboardwidget.h"
 

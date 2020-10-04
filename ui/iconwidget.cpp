@@ -8,7 +8,7 @@
 #include "iconwidget.h"
 
 IconWidget::IconWidget(const QString &code, QWidget *parent)
-        : _code(code), QWidget(parent) {}
+    : _code(code), QWidget(parent) {}
 
 void IconWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);

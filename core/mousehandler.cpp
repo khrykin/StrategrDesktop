@@ -3,8 +3,8 @@
 //
 
 #include "mousehandler.h"
-#include "mousehandleroperations.h"
 #include "actioncenter.h"
+#include "mousehandleroperations.h"
 
 namespace stg {
     mouse_handler::mouse_handler(stg::strategy &strategy,
@@ -12,12 +12,12 @@ namespace stg {
                                  std::function<gfloat()> slot_height_getter,
                                  std::function<rect()> viewport_getter,
                                  const mouse_parameters &settings)
-            : strategy(strategy),
-              selection(selection),
-              get_slot_height(std::move(slot_height_getter)),
-              get_viewport(std::move(viewport_getter)),
-              settings(settings),
-              current_operaion(make_operation<none_operation>()) {
+        : strategy(strategy),
+          selection(selection),
+          get_slot_height(std::move(slot_height_getter)),
+          get_viewport(std::move(viewport_getter)),
+          settings(settings),
+          current_operaion(make_operation<none_operation>()) {
         assert(get_slot_height != nullptr && "slot_height_getter must be provided");
     }
 
@@ -235,11 +235,11 @@ namespace stg {
         auto bottom_stretch_zone = range{session_range.bottom - settings.stretch_zone_size,
                                          session_range.bottom};
 
-//    std::cout << "pos:  " << mouse_pos << "\n";
-//    std::cout << "slot_height:  " << get_slot_height() << "\n";
-//    std::cout << "session_range:  " << session_range << "\n";
-//    std::cout << "top_stretch_zone:  " << top_stretch_zone << "\n";
-//    std::cout << "bottom_stretch_zone:  " << bottom_stretch_zone << "\n";
+        //    std::cout << "pos:  " << mouse_pos << "\n";
+        //    std::cout << "slot_height:  " << get_slot_height() << "\n";
+        //    std::cout << "session_range:  " << session_range << "\n";
+        //    std::cout << "top_stretch_zone:  " << top_stretch_zone << "\n";
+        //    std::cout << "bottom_stretch_zone:  " << bottom_stretch_zone << "\n";
 
         if (!session_range.contains(mouse_pos.y)) {
             return mouse_zone::out_of_bounds;
@@ -312,18 +312,18 @@ namespace stg {
                         return cursor::pointer;
                     case mouse_zone::drag:
                         return current_slot.empty()
-                               ? cursor::pointer
-                               : cursor::open_hand;
+                                   ? cursor::pointer
+                                   : cursor::open_hand;
                     case mouse_zone::stretch_top:
                         return !current_slot.empty() ||
-                               (current_slot.empty() && !prev_empty)
-                               ? cursor::resize
-                               : cursor::pointer;
+                                       (current_slot.empty() && !prev_empty)
+                                   ? cursor::resize
+                                   : cursor::pointer;
                     case mouse_zone::stretch_bottom:
                         return !current_slot.empty() ||
-                               (current_slot.empty() && !next_empty)
-                               ? cursor::resize
-                               : cursor::pointer;
+                                       (current_slot.empty() && !next_empty)
+                                   ? cursor::resize
+                                   : cursor::pointer;
                 }
             case drag:
                 return cursor::closed_hand;
@@ -373,8 +373,8 @@ namespace stg {
 
         auto setup_auto_scroll_frame = [=] {
             auto scroll_offset_increment = direction == mouse_handler::scroll_direction::down
-                                           ? pixels_in_second * frame_seconds_duration
-                                           : -pixels_in_second * frame_seconds_duration;
+                                               ? pixels_in_second * frame_seconds_duration
+                                               : -pixels_in_second * frame_seconds_duration;
 
             auto mouse_position = on_auto_scroll_frame(scroll_offset_increment);
             auto_scroll_frame(mouse_position);
@@ -418,10 +418,10 @@ namespace stg {
             case mouse_handler::mouse_zone::stretch_bottom:
                 os << "stretch_bottom";
                 break;
-            case mouse_handler::mouse_zone::drag :
+            case mouse_handler::mouse_zone::drag:
                 os << "drag";
                 break;
-            case mouse_handler::mouse_zone::out_of_bounds :
+            case mouse_handler::mouse_zone::out_of_bounds:
                 os << "out_of_bounds";
                 break;
         }

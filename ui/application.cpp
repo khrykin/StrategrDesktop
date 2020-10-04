@@ -32,7 +32,7 @@ QSettings &Application::currentSettings() {
 
 
 Application::Application(int &argc, char **argv)
-        : QApplication(argc, argv) {
+    : QApplication(argc, argv) {
     currentSettings().setProperty("lastLaunchedVersion", ApplicationSettings::version);
 
     setupFonts();
@@ -53,7 +53,6 @@ Application::Application(int &argc, char **argv)
 #ifdef Q_OS_MAC
         QTimer::singleShot(100, [=]() {
 #endif
-
             if (!launchedByOpenEvent) {
                 auto window = MainWindow::createLastOpened();
                 window->show();

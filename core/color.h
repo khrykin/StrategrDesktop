@@ -5,10 +5,10 @@
 #ifndef STRATEGR_COLOR_H
 #define STRATEGR_COLOR_H
 
-#include <string>
 #include <algorithm>
 #include <array>
 #include <ostream>
+#include <string>
 
 #if __APPLE__
 
@@ -22,19 +22,19 @@ namespace stg {
 #pragma mark - SFINAE helpers
 
         template<typename T,
-                typename = int,
-                typename = int,
-                typename = int,
-                typename = int>
+                 typename = int,
+                 typename = int,
+                 typename = int,
+                 typename = int>
         struct is_qcolor_like : std::false_type {
         };
 
         template<typename T>
         struct is_qcolor_like<T,
-                decltype(std::declval<T>().red()),
-                decltype(std::declval<T>().green()),
-                decltype(std::declval<T>().blue()),
-                decltype(std::declval<T>().alpha())> : std::true_type {
+                              decltype(std::declval<T>().red()),
+                              decltype(std::declval<T>().green()),
+                              decltype(std::declval<T>().blue()),
+                              decltype(std::declval<T>().alpha())> : std::true_type {
         };
 
 #pragma mark - Default Colors
@@ -149,4 +149,4 @@ namespace stg {
     inline constexpr const color color::white_color = color(0xff'ff'ff'ffu);
 }
 
-#endif //STRATEGR_COLOR_H
+#endif//STRATEGR_COLOR_H

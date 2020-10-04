@@ -4,12 +4,12 @@
 #include <QTime>
 #include <QTimer>
 
-#include "currentsessionwidget.h"
-#include "slidinganimator.h"
-#include "utils.h"
-#include "fontutils.h"
 #include "applicationsettings.h"
+#include "currentsessionwidget.h"
+#include "fontutils.h"
+#include "slidinganimator.h"
 #include "time_utils.h"
+#include "utils.h"
 
 #include "coloredlabel.h"
 
@@ -194,7 +194,6 @@ void CurrentSessionWidget::slideAndHide(const std::function<void()> &onFinishedC
     options.duration = ApplicationSettings::currentSessionShowDelay;
 
     SlidingAnimator::hideWidget(this, options);
-
 }
 
 void CurrentSessionWidget::slideAndShow(const std::function<void()> &onFinishedCallback) {
@@ -228,13 +227,7 @@ void CurrentSessionWidget::updateUIWithSession(const stg::session *activeSession
 
 QString CurrentSessionWidget::makeActivitySessionTitle() {
     const auto *activitySession = strategy().active_session();
-    return QString::fromStdString(stg::time_utils::human_string_from_minutes(activitySession->duration()))
-           + " "
-           + "<font color=\""
-           + QString::fromStdString(activitySession->activity->color())
-           + "\">"
-           + QString::fromStdString(activitySession->activity->name())
-           + "</font>";
+    return QString::fromStdString(stg::time_utils::human_string_from_minutes(activitySession->duration())) + " " + "<font color=\"" + QString::fromStdString(activitySession->activity->color()) + "\">" + QString::fromStdString(activitySession->activity->name()) + "</font>";
 }
 
 double CurrentSessionWidget::progress() const { return _progress; }
@@ -253,4 +246,3 @@ void CurrentSessionWidget::reloadSessionIfNeeded() {
         updateUIWithSession(strategy().active_session());
     }
 }
-

@@ -4,8 +4,8 @@
 #include <QStyleOption>
 #include <QVariant>
 
-#include "navbar.h"
 #include "applicationsettings.h"
+#include "navbar.h"
 
 #ifdef HIDE_NAVBAR
 
@@ -59,8 +59,8 @@ void Navbar::paintEvent(QPaintEvent *) {
     painter.setPen(Qt::NoPen);
     painter.setBrush(baseColor());
     painter.drawRect(0, 0, width(), height());
-//    painter.setBrush(borderColor());
-//    painter.drawRect(0, height() - 1, width(), 1);
+    //    painter.setBrush(borderColor());
+    //    painter.drawRect(0, height() - 1, width(), 1);
 }
 
 void Navbar::setupWidgets() {

@@ -7,8 +7,8 @@
 
 
 #include <QApplication>
-#include <QPalette>
 #include <QColor>
+#include <QPalette>
 
 #include "colorutils.h"
 
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //STRATEGR_COLORPROVIDER_H
+#endif//STRATEGR_COLORPROVIDER_H

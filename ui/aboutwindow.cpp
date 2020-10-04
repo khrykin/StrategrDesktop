@@ -7,11 +7,11 @@
 #include <QUrl.h>
 
 #include "aboutwindow.h"
+#include "application.h"
 #include "applicationicon.h"
+#include "applicationsettings.h"
 #include "coloredlabel.h"
 #include "colorprovider.h"
-#include "applicationsettings.h"
-#include "application.h"
 
 class HyperLinkLabel : public ColoredLabel {
 public:
@@ -115,8 +115,8 @@ AboutWindow::AboutWindow(QWidget *parent) : QDialog(parent) {
 
     auto *copyLabel = new ColoredLabel(QString("Copyright © %1 %2.\n"
                                                "All Rights Reserved.")
-                                               .arg(years)
-                                               .arg(QApplication::organizationName()));
+                                           .arg(years)
+                                           .arg(QApplication::organizationName()));
     copyLabel->setDynamicColor(&ColorProvider::textColorJustLighter);
     copyLabel->setAlignment(Qt::AlignCenter);
     copyLabel->setFontHeight(12);

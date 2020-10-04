@@ -16,6 +16,7 @@ public:
 
     QRect viewportRectRelativeToContent();
     QRect viewportRect();
+
 private:
     int viewportTopOffset = 0;
 
@@ -26,4 +27,4 @@ private:
 };
 
 
-#endif //STRATEGR_SLOTBOARDSCROLLAREA_H
+#endif//STRATEGR_SLOTBOARDSCROLLAREA_H

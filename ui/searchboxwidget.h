@@ -15,7 +15,7 @@ class QLineEdit;
 class SearchBoxWidget : public QWidget,
                         private ColorProvider,
                         private CursorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit SearchBoxWidget(const QString &placeholder, QWidget *parent = nullptr);
 
@@ -29,9 +29,11 @@ signals:
     void textEdited(const QString &);
     void gotFocus();
     void lostFocus();
+
 protected:
     void paintEvent(QPaintEvent *) override;
     bool eventFilter(QObject *object, QEvent *event) override;
+
 private:
     QLineEdit *lineEdit;
 
@@ -45,4 +47,4 @@ private:
 };
 
 
-#endif //STRATEGR_SEARCHBOXWIDGET_H
+#endif//STRATEGR_SEARCHBOXWIDGET_H

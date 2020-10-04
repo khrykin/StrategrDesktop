@@ -1,13 +1,13 @@
 #ifndef COLORUTILS_H
 #define COLORUTILS_H
 
-#include <string>
 #include <cmath>
-
-#include <QColor>
-#include <QDebug>
+#include <string>
 
 #include <QApplication>
+#include <QColor>
+#include <QDebug>
+#include <QPalette>
 
 namespace ColorUtils {
     inline QColor scale(const QColor &color, double factor) {
@@ -38,27 +38,24 @@ namespace ColorUtils {
     inline QString qColorToCSS(const QColor &color) {
         if (color.alpha() == 255) {
             return QString("rgb(%1, %2, %3)")
-                    .arg(color.red())
-                    .arg(color.green())
-                    .arg(color.blue());
+                .arg(color.red())
+                .arg(color.green())
+                .arg(color.blue());
         }
 
         return QString("rgba(%1, %2, %3, %4)")
-                .arg(color.red())
-                .arg(color.green())
-                .arg(color.blue())
-                .arg(color.alpha());
+            .arg(color.red())
+            .arg(color.green())
+            .arg(color.blue())
+            .arg(color.alpha());
     }
 
     inline QColor overlayWithAlpha(const QColor &overlay,
                                    double alpha = 1.0,
                                    const QColor &substrate = QApplication::palette().color(QPalette::Base)) {
-        auto redComponent = substrate.redF()
-                            + (overlay.redF() - substrate.redF()) * alpha;
-        auto greenComponent = substrate.greenF()
-                              + (overlay.greenF() - substrate.greenF()) * alpha;
-        auto blueComponent = substrate.blueF()
-                             + (overlay.blueF() - substrate.blueF()) * alpha;
+        auto redComponent = substrate.redF() + (overlay.redF() - substrate.redF()) * alpha;
+        auto greenComponent = substrate.greenF() + (overlay.greenF() - substrate.greenF()) * alpha;
+        auto blueComponent = substrate.blueF() + (overlay.blueF() - substrate.blueF()) * alpha;
 
         return QColor(static_cast<int>(255 * redComponent),
                       static_cast<int>(255 * greenComponent),
@@ -69,10 +66,7 @@ namespace ColorUtils {
                                     float offset = 0.5,
                                     const QColor &source = QApplication::palette().color(QPalette::Base)) {
         power = power - power % 2;
-        return std::pow(2, power)
-               * (1 - offset)
-               * std::pow(source.lightnessF() - 0.5, power)
-               + offset;
+        return std::pow(2, power) * (1 - offset) * std::pow(source.lightnessF() - 0.5, power) + offset;
     }
 
     inline QColor safeForegroundColor(const QColor &color) {
@@ -82,6 +76,6 @@ namespace ColorUtils {
 
         return color;
     }
-} // namespace ColorUtils
+}// namespace ColorUtils
 
-#endif // COLORUTILS_H
+#endif// COLORUTILS_H

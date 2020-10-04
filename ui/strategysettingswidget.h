@@ -7,15 +7,15 @@
 #include <QSpinBox>
 #include <QWidget>
 
-#include "dataproviderwidget.h"
-#include "strategy.h"
-#include "navbar.h"
-#include "steppedtimeedit.h"
 #include "coloredlabel.h"
+#include "dataproviderwidget.h"
+#include "navbar.h"
 #include "rowwidget.h"
+#include "steppedtimeedit.h"
+#include "strategy.h"
 
 class StrategySettingsWidget : public DataProviderWidget {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit StrategySettingsWidget(QWidget *parent = nullptr);
@@ -48,4 +48,4 @@ private:
     void paintEvent(QPaintEvent *) override;
 };
 
-#endif // STRATEGYSETTINGS_H
+#endif// STRATEGYSETTINGS_H

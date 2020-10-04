@@ -5,7 +5,7 @@
 #include <QWidget>
 
 class ColorPickerItem : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ColorPickerItem(QColor color,
                              QWidget *parent = nullptr);
@@ -35,4 +35,4 @@ private:
     void mouseReleaseEvent(QMouseEvent *event) override;
 };
 
-#endif // COLORPICKERITEM_H
+#endif// COLORPICKERITEM_H

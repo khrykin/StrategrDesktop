@@ -4,8 +4,8 @@
 
 #include "timer.h"
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 namespace stg {
     timer::backend::scheduler_t timer::backend::scheduler = nullptr;

@@ -4,9 +4,9 @@
 
 #include "notifications.h"
 
-#include <utility>
-#include "time_utils.h"
 #include "persistent.h"
+#include "time_utils.h"
+#include <utility>
 
 namespace stg::user_notifications {
 
@@ -16,10 +16,10 @@ namespace stg::user_notifications {
                                std::string message,
                                time_t delivery_time,
                                std::shared_ptr<void> user_info)
-            : title(std::move(title)),
-              message(std::move(message)),
-              delivery_time(delivery_time),
-              user_info(std::move(user_info)) {}
+        : title(std::move(title)),
+          message(std::move(message)),
+          delivery_time(delivery_time),
+          user_info(std::move(user_info)) {}
 
     auto notification::relative_delivery_time() const -> time_utils::seconds {
         return time_utils::seconds_from_calendar_time(delivery_time);
@@ -144,8 +144,8 @@ namespace stg::user_notifications {
 
     auto storage::find(const url_type &url) -> iterator {
         auto it = backend::paths_comparator != nullptr
-                  ? std::find_if(data.begin(), data.end(), backend::path_equals_to(url))
-                  : data.find(url);
+                      ? std::find_if(data.begin(), data.end(), backend::path_equals_to(url))
+                      : data.find(url);
 
         return it;
     }
@@ -179,7 +179,7 @@ namespace stg::user_notifications {
     std::ostream &operator<<(std::ostream &os, const storage &storage) {
         os << "user_notifications::storage(\n";
 
-        for (auto &[bookmark, ids]: storage) {
+        for (auto &[bookmark, ids] : storage) {
             os << "\t" << bookmark << ":\n";
             for (auto &id : ids) {
                 os << "\t\t\"" << id << "\"\n";

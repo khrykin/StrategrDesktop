@@ -195,8 +195,7 @@ void SlidingAnimator::addWidgetToStub() {
 }
 
 void SlidingAnimator::updateWidgetGeometryOnStubResize() {
-    if (direction == Direction::ShowsFromBottom
-        || direction == Direction::ShowsFromRight) {
+    if (direction == Direction::ShowsFromBottom || direction == Direction::ShowsFromRight) {
         return;
     }
 
@@ -227,12 +226,12 @@ void SlidingAnimator::prepareOperation() {
 }
 
 SlidingAnimator::SlidingAnimator(QWidget *widget, const Options &options)
-        : QObject(widget),
-          widget(widget),
-          direction(options.direction),
-          duration(options.duration),
-          updateInterval(options.updateInterval),
-          curveShape(options.curveShape) {}
+    : QObject(widget),
+      widget(widget),
+      direction(options.direction),
+      duration(options.duration),
+      updateInterval(options.updateInterval),
+      curveShape(options.curveShape) {}
 
 void SlidingAnimator::show() {
     if (widgetIsInOperation() || !widget->isHidden()) {

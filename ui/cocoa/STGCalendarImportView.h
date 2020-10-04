@@ -9,8 +9,8 @@
 #import <EventKit/EventKit.h>
 
 #import "STGCalendarImportExportView.h"
-#import "STGCalendarImporter.h"
 #import "STGCalendarImportViewModel.h"
+#import "STGCalendarImporter.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

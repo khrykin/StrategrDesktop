@@ -15,4 +15,4 @@
 @interface STGCalendarExportProgressWindow : STGProgressWindow <STGCalendarExporterDelegate>
 @end
 
-#endif //STRATEGR_SGCALENDAREXPORTPROGRESSWINDOW_H
+#endif//STRATEGR_SGCALENDAREXPORTPROGRESSWINDOW_H

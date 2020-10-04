@@ -79,7 +79,7 @@ NSString *const STGCalendarImporterKeyCalendarsIdentifiers = @"importCalendarsId
     }
 
     auto overwrite =
-            (self.settings.optionsMask & STGCalendarImportOptionsOverwrite) == STGCalendarImportOptionsOverwrite;
+        (self.settings.optionsMask & STGCalendarImportOptionsOverwrite) == STGCalendarImportOptionsOverwrite;
     strategy->import_events(events, overwrite);
 }
 
@@ -87,24 +87,24 @@ NSString *const STGCalendarImporterKeyCalendarsIdentifiers = @"importCalendarsId
                        date:(NSDate *)date
           completionHandler:(void (^)(BOOL granted))completionHandler {
     [STGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
-        if (!store) {
-            if (completionHandler)
-                completionHandler(false);
+      if (!store) {
+          if (completionHandler)
+              completionHandler(false);
 
-            return;
-        }
+          return;
+      }
 
-        STGCalendarImporterSettings *settings = [STGCalendarImporter defaultSettings];
-        settings.date = date;
+      STGCalendarImporterSettings *settings = [STGCalendarImporter defaultSettings];
+      settings.date = date;
 
-        STGCalendarImporter *calendarImporter = [[STGCalendarImporter alloc] initWithStrategyPtr:strategyPtr
-                                                                                      eventStore:store
-                                                                                        settings:settings];
+      STGCalendarImporter *calendarImporter = [[STGCalendarImporter alloc] initWithStrategyPtr:strategyPtr
+                                                                                    eventStore:store
+                                                                                      settings:settings];
 
-        [calendarImporter import];
+      [calendarImporter import];
 
-        if (completionHandler)
-            completionHandler(true);
+      if (completionHandler)
+          completionHandler(true);
     }];
 }
 

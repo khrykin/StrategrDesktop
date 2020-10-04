@@ -18,10 +18,11 @@ namespace stg {
         void fill_slots_shifting(index_t from_index, index_t till_index);
 
         auto state_changed() -> bool;
+
     private:
         time_slots_state *time_slots;
         time_slots_state::data_t initial_time_slots = time_slots->data();
     };
 }
 
-#endif //STRATEGR_RESIZEOPERATION_H
+#endif//STRATEGR_RESIZEOPERATION_H

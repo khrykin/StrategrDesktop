@@ -5,8 +5,8 @@
 #import "STGToolbar.h"
 #import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
 
-#include "mainwindow.h"
 #include "mainscene.h"
+#include "mainwindow.h"
 
 const NSString *ToolbarItemActivitiesIdentifier = @"Activities";
 const NSString *ToolbarItemStrategyTitleIdentifier = @"Title:Strategy";
@@ -40,8 +40,8 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar
-     itemForItemIdentifier:(NSString *)itemIdentifier
- willBeInsertedIntoToolbar:(BOOL)flag {
+        itemForItemIdentifier:(NSString *)itemIdentifier
+    willBeInsertedIntoToolbar:(BOOL)flag {
     NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
 
     if ([itemIdentifier isEqual:TAAdaptiveSpaceItemIdentifier]) {
@@ -73,11 +73,10 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 - (NSSegmentedControl *)makeBackButton {
     NSArray<NSImage *> *images = @[[NSImage imageNamed:NSImageNameGoBackTemplate]];
 
-    NSSegmentedControl *segmentedControl
-            = [NSSegmentedControl segmentedControlWithImages:images
-                                                trackingMode:NSSegmentSwitchTrackingMomentary
-                                                      target:self
-                                                      action:@selector(openSessions:)];
+    NSSegmentedControl *segmentedControl = [NSSegmentedControl segmentedControlWithImages:images
+                                                                             trackingMode:NSSegmentSwitchTrackingMomentary
+                                                                                   target:self
+                                                                                   action:@selector(openSessions:)];
 
     segmentedControl.segmentStyle = NSSegmentStyleSeparated;
     return segmentedControl;
@@ -161,7 +160,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:
-        (NSToolbar *)toolbar {
+    (NSToolbar *)toolbar {
     return [self toolbarDefaultItemIdentifiers:toolbar];
 }
 

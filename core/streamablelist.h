@@ -33,4 +33,4 @@ namespace stg {
     };
 };
 
-#endif //MODELS_TESTS_STREAMABLELIST_H
+#endif//MODELS_TESTS_STREAMABLELIST_H

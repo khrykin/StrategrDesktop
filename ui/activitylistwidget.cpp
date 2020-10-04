@@ -2,18 +2,18 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPainter>
-#include <QStyle>
-#include <QStyleOption>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QStyle>
+#include <QStyleOption>
 
 #include "activityinvalidpropertyexception.h"
 #include "activitylistwidget.h"
 #include "activitywidget.h"
 #include "mainscene.h"
 #include "mainwindow.h"
-#include "slotboardwidget.h"
 #include "searchboxwidget.h"
+#include "slotboardwidget.h"
 
 ActivityListWidget::ActivityListWidget(QWidget *parent) : DataProviderWidget(parent) {
     strategy().activities().add_on_change_callback(this, &ActivityListWidget::updateUI);
@@ -118,7 +118,7 @@ void ActivityListWidget::layoutChildWidgets() {
 
 void ActivityListWidget::setSelectedForItemAtIndex(int index, bool isSelected) const {
     auto listItem = qobject_cast<ActivityWidget *>(
-            listWidget->layout()->itemAt(index)->widget());
+        listWidget->layout()->itemAt(index)->widget());
 
     if (listItem)
         listItem->setIsSelected(isSelected);
@@ -205,7 +205,7 @@ void ActivityListWidget::showNewActivityMenu() {
     }
 
     auto center = QPoint(mapToGlobal(geometry().topRight()).x() -
-                         newActivityMenu->sizeHint().width() - margin,
+                             newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);
 
     center.setY(center.y() + toolbarHeight());
@@ -270,7 +270,7 @@ void ActivityListWidget::updateUI() {
 }
 
 bool ActivityListWidget::eventFilter(QObject *object, QEvent *event) {
-    auto *keyEvent = dynamic_cast<QKeyEvent *> (event);
+    auto *keyEvent = dynamic_cast<QKeyEvent *>(event);
     auto isKeyPressEvent = keyEvent &&
                            (keyEvent->type() == QEvent::ShortcutOverride ||
                             keyEvent->type() == QEvent::KeyPress);
@@ -354,4 +354,3 @@ void ActivityListWidget::scrollDownItemIntoViewAtIndex(int index) {
         scrollArea->verticalScrollBar()->setValue(newScrollTop);
     }
 }
-

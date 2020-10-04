@@ -5,8 +5,8 @@
 #ifndef STRATEGR_CURRENTTIMEMARKER_H
 #define STRATEGR_CURRENTTIMEMARKER_H
 
-#include "time_utils.h"
 #include "geometry.h"
+#include "time_utils.h"
 
 namespace stg {
     class strategy;
@@ -22,6 +22,7 @@ namespace stg {
         auto rect_in_slots_rect(const rect &slotboard_rect) const -> rect;
 
         auto scroll_offset(const rect &slots_rect, rect viewport_rect) const -> stg::gfloat;
+
     private:
         const strategy &strategy;
 
@@ -30,4 +31,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_CURRENTTIMEMARKER_H
+#endif//STRATEGR_CURRENTTIMEMARKER_H

@@ -4,7 +4,7 @@
 #include <QObject>
 
 class EnterPressEater : public QObject {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit EnterPressEater(QObject *parent = nullptr);
 
@@ -15,4 +15,4 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
-#endif // ENTERPRESSEATER_H
+#endif// ENTERPRESSEATER_H

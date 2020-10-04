@@ -8,21 +8,21 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include "dataproviderwidget.h"
-#include "sessionwidget.h"
-#include "slotruler.h"
 #include "applicationsettings.h"
-#include "selectionwidget.h"
-#include "reactivelist.hpp"
-#include "selection.h"
 #include "colorprovider.h"
 #include "cursorprovider.h"
+#include "dataproviderwidget.h"
+#include "reactivelist.hpp"
+#include "selection.h"
+#include "selectionwidget.h"
+#include "sessionwidget.h"
+#include "slotruler.h"
 
 class SlotsWidget : public DataProviderWidget,
                     public ReactiveList<SessionWidget>,
                     private CursorProvider,
                     private ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit SlotsWidget(QWidget *parent = nullptr);
 
@@ -33,6 +33,7 @@ public:
     QAction *selectAllAction = nullptr;
 
     void reloadStrategy();
+
 private:
     QVBoxLayout *slotsLayout = nullptr;
     QWidget *slotsWidget = nullptr;
@@ -61,4 +62,4 @@ private:
     void paintEvent(QPaintEvent *event) override;
 };
 
-#endif // GROUPSLIST_H
+#endif// GROUPSLIST_H

@@ -6,19 +6,19 @@
 #define STRATEGR_MOUSEHANDLER_H
 
 #include <cstdint>
-#include <ostream>
-#include <iostream>
 #include <functional>
-#include <utility>
-#include <optional>
+#include <iostream>
 #include <memory>
+#include <optional>
+#include <ostream>
+#include <utility>
 
-#include "geometry.h"
-#include "strategy.h"
-#include "event.h"
-#include "selection.h"
-#include "timer.h"
 #include "action.hpp"
+#include "event.h"
+#include "geometry.h"
+#include "selection.h"
+#include "strategy.h"
+#include "timer.h"
 
 namespace stg {
     class action_center;
@@ -57,7 +57,7 @@ namespace stg {
 
         struct resize_boundary_configuration {
             static constexpr index_t none = -2;
-            
+
             index_t slot_index = resize_boundary_configuration::none;
             index_t session_index = resize_boundary_configuration::none;
         };
@@ -96,6 +96,7 @@ namespace stg {
 
         void key_down(const event &event);
         void key_up(const event &event);
+
     private:
         enum class mouse_zone {
             out_of_bounds,
@@ -191,4 +192,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_MOUSEHANDLER_H
+#endif//STRATEGR_MOUSEHANDLER_H

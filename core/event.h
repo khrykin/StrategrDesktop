@@ -56,4 +56,4 @@ namespace stg {
 };
 
 
-#endif //STRATEGR_EVENT_H
+#endif//STRATEGR_EVENT_H

@@ -5,8 +5,8 @@
 #include <QLayout>
 #include <QPainter>
 
-#include "selectionwidget.h"
 #include "colorutils.h"
+#include "selectionwidget.h"
 
 SelectionWidget::SelectionWidget(QWidget *parent) : DataProviderWidget(parent) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
@@ -18,12 +18,12 @@ SelectionWidget::SelectionWidget(QWidget *parent) : DataProviderWidget(parent) {
 
 
 void SelectionWidget::resizeEvent(QResizeEvent *event) {
-//    for (auto *child : children()) {
-//        auto *widget = qobject_cast<QWidget *>(child);
-//        if (widget) {
-//            widget->setFixedWidth(width());
-//        }
-//    }
+    //    for (auto *child : children()) {
+    //        auto *widget = qobject_cast<QWidget *>(child);
+    //        if (widget) {
+    //            widget->setFixedWidth(width());
+    //        }
+    //    }
 }
 
 void SelectionWidget::paintEvent(QPaintEvent *event) {
@@ -36,7 +36,7 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
     penColor.setAlphaF(0.5);
 
     painter.setPen(QPen(penColor, 1));
-//    painter.setPen(Qt::NoPen);
+    //    painter.setPen(Qt::NoPen);
 
     auto clickedColor = selectionColor();
     clickedColor.setAlphaF(clickedColor.alphaF() * 1.25);

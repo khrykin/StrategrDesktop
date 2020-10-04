@@ -4,10 +4,10 @@
 #include <QVBoxLayout>
 
 #include "applicationsettings.h"
-#include "utils.h"
-#include "slotruler.h"
 #include "slotboardwidget.h"
+#include "slotruler.h"
 #include "slotswidget.h"
+#include "utils.h"
 
 SlotRuler::SlotRuler(QWidget *parent) : DataProviderWidget(parent) {
     auto *layout = new QVBoxLayout();
@@ -33,42 +33,42 @@ int SlotRuler::calculateLabelWidth() {
     font.setBold(true);
 
     return QFontMetrics(font)
-            .horizontalAdvance(QStringForMinutes(0));
+        .horizontalAdvance(QStringForMinutes(0));
 }
 
 void SlotRuler::paintEvent(QPaintEvent *) {
-//    QPainter p(this);
-//
-//    auto handleBorderColor = highlightColor();
-//    handleBorderColor.setAlphaF(0.25);
-//
-//    auto handleBgColor = highlightColor();
-//    handleBgColor.setAlphaF(0.1);
-//
-//    p.setBrush(handleBgColor);
-//    p.setPen(handleBorderColor);
+    //    QPainter p(this);
+    //
+    //    auto handleBorderColor = highlightColor();
+    //    handleBorderColor.setAlphaF(0.25);
+    //
+    //    auto handleBgColor = highlightColor();
+    //    handleBgColor.setAlphaF(0.1);
+    //
+    //    p.setBrush(handleBgColor);
+    //    p.setPen(handleBorderColor);
 
-//    for (auto &selectionSegment : selection().grouped()) {
-//        auto firstIndex = selectionSegment.front();
-//        auto lastIndex = selectionSegment.back() + 1;
-//
-//        auto handleWidth = calculateLabelWidth() + 4;
-//        auto handleHeight = bigFontHeight * 1.5;
-//
-//        auto rect1 = QRect((width() - handleWidth) / 2,
-//                           firstIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
-//                           handleWidth,
-//                           handleHeight);
-//
-//        auto rect2 = QRect((width() - handleWidth) / 2,
-//                           lastIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
-//                           handleWidth,
-//                           handleHeight);
-//
-//
-//        p.drawRoundedRect(rect1, 2, 2);
-//        p.drawRoundedRect(rect2, 2, 2);
-//    }
+    //    for (auto &selectionSegment : selection().grouped()) {
+    //        auto firstIndex = selectionSegment.front();
+    //        auto lastIndex = selectionSegment.back() + 1;
+    //
+    //        auto handleWidth = calculateLabelWidth() + 4;
+    //        auto handleHeight = bigFontHeight * 1.5;
+    //
+    //        auto rect1 = QRect((width() - handleWidth) / 2,
+    //                           firstIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
+    //                           handleWidth,
+    //                           handleHeight);
+    //
+    //        auto rect2 = QRect((width() - handleWidth) / 2,
+    //                           lastIndex * cellHeight() + (cellHeight() - handleHeight) / 2,
+    //                           handleWidth,
+    //                           handleHeight);
+    //
+    //
+    //        p.drawRoundedRect(rect1, 2, 2);
+    //        p.drawRoundedRect(rect2, 2, 2);
+    //    }
 }
 
 int SlotRuler::numberOfItems() {
@@ -88,8 +88,8 @@ void SlotRuler::reuseItemAtIndex(int index, ColoredLabel *itemWidget) {
 
 SlotRuler::ColorGetter SlotRuler::labelColorGetterAtIndex(int index) {
     auto colorGetter = this->isIntegerHourAtIndex(index)
-                       ? &SlotRuler::secondaryTextColor
-                       : &SlotRuler::tertiaryTextColor;
+                           ? &SlotRuler::secondaryTextColor
+                           : &SlotRuler::tertiaryTextColor;
 
     if (selection().is_boundary(index) || mouseHandler().resize_boundary().slot_index == index - 1)
         colorGetter = &SlotRuler::controlColor;
@@ -122,4 +122,3 @@ QString SlotRuler::labelAtIndex(int index) {
 void SlotRuler::reloadStrategy() {
     updateList();
 }
-

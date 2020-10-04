@@ -5,13 +5,13 @@
 #ifndef STRATEGR_DRAGOPERATION_H
 #define STRATEGR_DRAGOPERATION_H
 
-#include <vector>
 #include <map>
 #include <tuple>
+#include <vector>
 
-#include <iostream>
-#include "timeslotsstate.h"
 #include "session.h"
+#include "timeslotsstate.h"
+#include <iostream>
 
 namespace stg {
     class drag_operation {
@@ -39,6 +39,7 @@ namespace stg {
         auto state_changed() -> bool;
 
         auto initial_state() -> time_slots_state::data_t &;
+
     private:
         struct indices_range {
             indices_range(index_t frst, index_t lst);
@@ -103,4 +104,4 @@ namespace stg {
         static void print_movements(const movements_state &movements);
     };
 }
-#endif //STRATEGR_DRAGOPERATION_H
+#endif//STRATEGR_DRAGOPERATION_H

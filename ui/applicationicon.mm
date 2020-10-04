@@ -3,8 +3,8 @@
 #include <QtMacExtras>
 
 #include "applicationicon.h"
-#include "utils.h"
 #include "cocoautils.h"
+#include "utils.h"
 
 QPixmap ApplicationIcon::defaultIcon() {
     @autoreleasepool {
@@ -21,4 +21,3 @@ QPixmap ApplicationIcon::defaultIcon() {
         return pixmap;
     }
 }
-

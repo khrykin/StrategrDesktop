@@ -7,15 +7,15 @@
 #include <QWidget>
 #include <QWidgetAction>
 
-#include "colorpicker.h"
 #include "activity.h"
 #include "activityeditormenu.h"
-#include "colorprovider.h"
 #include "coloredlabel.h"
+#include "colorpicker.h"
+#include "colorprovider.h"
 #include "dataproviderwidget.h"
 
 class ActivityWidget : public DataProviderWidget, public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit ActivityWidget(stg::activity *activity, QWidget *parent);
 
@@ -35,6 +35,7 @@ signals:
 
     void activityEdited(const stg::activity &activity);
     void activityDeleted();
+
 private:
     static constexpr int circleSize = 10;
 
@@ -67,4 +68,4 @@ private:
     void showContextMenu(const QPoint &position);
 };
 
-#endif // ACTIVITYLISTITEMWIDGET_H
+#endif// ACTIVITYLISTITEMWIDGET_H

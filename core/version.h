@@ -10,4 +10,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_VERSION_H
+#endif//STRATEGR_VERSION_H

@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //STRATEGR_ALERT_H
+#endif//STRATEGR_ALERT_H

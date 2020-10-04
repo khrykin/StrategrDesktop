@@ -5,13 +5,13 @@
 #ifndef STRATEGR_ACTIVITYLIST_H
 #define STRATEGR_ACTIVITYLIST_H
 
-#include <optional>
-#include <vector>
 #include <functional>
 #include <memory>
+#include <optional>
+#include <vector>
 
-#include "notifiableonchange.h"
 #include "activity.h"
+#include "notifiableonchange.h"
 #include "privatelist.h"
 #include "streamablelist.h"
 
@@ -21,10 +21,9 @@ namespace stg {
     using activity_index_t = unsigned int;
     using activity_list_base = private_list<std::shared_ptr<activity>>;
 
-    class activity_list :
-            public activity_list_base,
-            public notifiable_on_change,
-            public streamable_list<activity_list> {
+    class activity_list : public activity_list_base,
+                          public notifiable_on_change,
+                          public streamable_list<activity_list> {
     public:
         class already_present_exception;
         using const_iterator = std::vector<activity>::const_iterator;
@@ -46,6 +45,7 @@ namespace stg {
         void reset_with(data_t data) override;
 
         auto class_print_name() const -> std::string override;
+
     private:
         friend strategy;
 
@@ -73,4 +73,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_ACTIVITYLIST_H
+#endif//STRATEGR_ACTIVITYLIST_H

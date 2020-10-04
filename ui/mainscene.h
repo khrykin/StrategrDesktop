@@ -5,14 +5,14 @@
 #ifndef STRATEGR_MAINSCENE_H
 #define STRATEGR_MAINSCENE_H
 
-#include "third-party/slidingstackedwidget.h"
-#include "strategy.h"
 #include "applicationsettings.h"
+#include "strategy.h"
+#include "third-party/slidingstackedwidget.h"
 
-#include "sessionsmainwidget.h"
+#include "actioncenter.h"
 #include "activitylistwidget.h"
 #include "mousehandler.h"
-#include "actioncenter.h"
+#include "sessionsmainwidget.h"
 #include "slotboardscrollarea.h"
 #include "slotswidget.h"
 
@@ -32,13 +32,15 @@ public:
     void showNewActivityMenu();
 
     void reloadStrategy();
+
 private:
     stg::strategy &_strategy;
-    stg::action_center _action_center = stg::action_center(_strategy,
-                                                           [] { return ApplicationSettings::defaultSlotHeight; },
-                                                           [this] { return scrollboardScrollArea()->viewportRectRelativeToContent(); });
+    stg::action_center _action_center = stg::action_center(
+        _strategy,
+        [] { return ApplicationSettings::defaultSlotHeight; },
+        [this] { return scrollboardScrollArea()->viewportRectRelativeToContent(); });
     SessionsMainWidget *sessionsMainWidget;
     ActivityListWidget *activitiesWidget;
 };
 
-#endif //STRATEGR_MAINSCENE_H
+#endif//STRATEGR_MAINSCENE_H

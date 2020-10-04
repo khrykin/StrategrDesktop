@@ -5,8 +5,8 @@
 #ifndef STRATEGR_JSON_H
 #define STRATEGR_JSON_H
 
-#include <string>
 #include <nlohmann/json.hpp>
+#include <string>
 
 #include "activitylist.h"
 #include "timeslotsstate.h"
@@ -26,6 +26,7 @@ namespace stg {
             static constexpr auto slots = "slots";
             static constexpr auto version = "version";
         };
+
     private:
         activity_list activities;
 
@@ -35,6 +36,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_JSON_H
-
-
+#endif//STRATEGR_JSON_H

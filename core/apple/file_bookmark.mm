@@ -22,7 +22,7 @@ namespace stg {
                 NSLog(@"Can't create bookmark from NSURL with the folowing error:\n"
                       @"\tcode: %ld\n"
                       @"\tdescription:\n\t\t%@",
-                      (long)error.code, error.localizedDescription);
+                      (long) error.code, error.localizedDescription);
             }
         }
 
@@ -35,7 +35,7 @@ namespace stg {
 #pragma mark - Construction
 
     file_bookmark::file_bookmark(NSURL *url)
-            : data(make_bookmark(url)) {}
+        : data(make_bookmark(url)) {}
 
 #pragma mark - Conversions
 
@@ -53,7 +53,7 @@ namespace stg {
 
         if (error) {
             NSLog(@"Can't resolve NSURL bookmark with the folowing error:\n\tcode: %ld\n\ndescription: %@",
-                  (long)error.code, error.localizedDescription);
+                  (long) error.code, error.localizedDescription);
         }
 
         return url;

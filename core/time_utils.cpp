@@ -2,8 +2,8 @@
 // Created by Dmitry Khrykin on 2019-08-15.
 //
 
-#include <string>
 #include <functional>
+#include <string>
 
 #include "time_utils.h"
 
@@ -47,7 +47,8 @@ namespace stg::time_utils {
         day_components.tm_min = 0;
         day_components.tm_sec = 0;
 
-        return timestamp_from_day_components(&day_components);;
+        return timestamp_from_day_components(&day_components);
+        ;
     }
 
     auto today_timestamp() -> time_t {

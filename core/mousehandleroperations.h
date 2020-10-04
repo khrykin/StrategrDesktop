@@ -7,8 +7,8 @@
 
 #include <vector>
 
-#include "mousehandler.h"
 #include "actioncenter.h"
+#include "mousehandler.h"
 
 struct stg::mouse_handler::operation {
     enum class state {
@@ -42,7 +42,8 @@ struct stg::mouse_handler::operation {
         _state = state::idle;
     }
 
-    virtual void handle_direction_change() {};
+    virtual void handle_direction_change(){};
+
 protected:
     mouse_handler &handler;
     stg::strategy &strategy = handler.strategy;
@@ -61,11 +62,11 @@ struct stg::mouse_handler::none_operation : public operation {
     }
 
 private:
-    void init(const mouse_event &event) override {};
+    void init(const mouse_event &event) override{};
 
-    void change(const mouse_event &event) override {};
+    void change(const mouse_event &event) override{};
 
-    void teardown(const mouse_event &event) override {};
+    void teardown(const mouse_event &event) override{};
 };
 
 struct stg::mouse_handler::copy_drag_operation : public operation {
@@ -100,9 +101,7 @@ private:
 
         auto get_global_distance = [this](const mouse_event &event) -> int {
             auto new_global_distance = static_cast<int>(
-                    (event.position.y - initial_position.y - 0.5 * handler.get_slot_height())
-                    / handler.get_slot_height()
-            );
+                (event.position.y - initial_position.y - 0.5 * handler.get_slot_height()) / handler.get_slot_height());
 
             if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
                 new_global_distance++;
@@ -173,6 +172,7 @@ struct stg::mouse_handler::drag_operation : public operation {
 
         handler.current_operaion = std::move(new_current_operation);
     };
+
 private:
     point initial_position;
 
@@ -206,9 +206,7 @@ private:
 
         auto get_global_distance = [this](const mouse_event &event) -> int {
             auto new_global_distance = static_cast<int>(
-                    (event.position.y - initial_position.y - 0.5 * handler.get_slot_height())
-                    / handler.get_slot_height()
-            );
+                (event.position.y - initial_position.y - 0.5 * handler.get_slot_height()) / handler.get_slot_height());
 
             if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
                 new_global_distance++;
@@ -295,8 +293,8 @@ private:
         }
 
         auto new_mouse_zone = handler.current_direction == direction::down
-                              ? mouse_zone::stretch_bottom
-                              : mouse_zone::stretch_top;
+                                  ? mouse_zone::stretch_bottom
+                                  : mouse_zone::stretch_top;
 
         handle_index = handler.current_slot_index;
         initial_mouse_zone = new_mouse_zone;
@@ -344,7 +342,7 @@ private:
 
     void select_sessions(const mouse_event &event, index_t source_index, enum mouse_zone mouse_zone) {
         auto first_selection_index = strategy.sessions()
-                .session_index_for_time_slot_index(source_index);
+                                         .session_index_for_time_slot_index(source_index);
 
         if (mouse_zone == mouse_zone::stretch_top &&
             handler.current_direction == direction::down) {
@@ -501,4 +499,4 @@ private:
     }
 };
 
-#endif //STRATEGR_MOUSEHANDLEROPERATIONS_H
+#endif//STRATEGR_MOUSEHANDLEROPERATIONS_H

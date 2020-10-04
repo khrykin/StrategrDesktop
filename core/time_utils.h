@@ -5,8 +5,8 @@
 #ifndef STRATEGR_TIME_UTILS_H
 #define STRATEGR_TIME_UTILS_H
 
-#include <ctime>
 #include <chrono>
+#include <ctime>
 #include <iostream>
 
 namespace stg::time_utils {
@@ -46,4 +46,4 @@ namespace stg::time_utils {
 }
 
 
-#endif //STRATEGR_TIME_UTILS_H
+#endif//STRATEGR_TIME_UTILS_H

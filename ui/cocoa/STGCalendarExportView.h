@@ -5,9 +5,9 @@
 #ifndef STRATEGR_OPTIONSVIEW_H
 #define STRATEGR_OPTIONSVIEW_H
 
+#import "STGCalendarExportViewModel.h"
 #import "STGCalendarExporter.h"
 #import "STGCalendarImportExportView.h"
-#import "STGCalendarExportViewModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,4 +19,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#endif //STRATEGR_OPTIONSVIEW_H
+#endif//STRATEGR_OPTIONSVIEW_H

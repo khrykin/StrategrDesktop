@@ -1,11 +1,11 @@
 #ifndef SESSION_WIDGET_H
 #define SESSION_WIDGET_H
 
-#include "strategy.h"
-#include "session.h"
 #include "applicationsettings.h"
 #include "colorprovider.h"
 #include "dataproviderwidget.h"
+#include "session.h"
+#include "strategy.h"
 
 #include <QMap>
 #include <QWidget>
@@ -19,6 +19,7 @@ public:
     void setIsBorderSelected(bool isBorderSelected);
     void setSession(const stg::session &newSession);
     void setDrawsBorders(bool drawsBorders);
+
 private:
     bool _isSelected = false;
     bool _isBorderSelected = false;
@@ -46,4 +47,4 @@ private:
 };
 
 
-#endif // SESSION_WIDGET_H
+#endif// SESSION_WIDGET_H

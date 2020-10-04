@@ -4,7 +4,7 @@
 #include <QWidget>
 
 class CurrentTimeMarkerWidget : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit CurrentTimeMarkerWidget(QWidget *parent = nullptr);
 
@@ -18,4 +18,4 @@ signals:
 public slots:
 };
 
-#endif // CURRENTTIMEMARKER_H
+#endif// CURRENTTIMEMARKER_H

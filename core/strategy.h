@@ -6,15 +6,15 @@
 #include <optional>
 #include <vector>
 
-#include "stgstring.h"
-#include "notifiableonchange.h"
 #include "activity.h"
 #include "activitylist.h"
-#include "timeslotsstate.h"
-#include "sessionslist.h"
-#include "strategyhistory.h"
 #include "dragoperation.h"
+#include "notifiableonchange.h"
 #include "resizeoperation.h"
+#include "sessionslist.h"
+#include "stgstring.h"
+#include "strategyhistory.h"
+#include "timeslotsstate.h"
 
 namespace stg {
     class strategy : public notifiable_on_change {
@@ -169,4 +169,4 @@ namespace stg {
     };
 }
 
-#endif // STRATEGR_STRATEGY_H
+#endif// STRATEGR_STRATEGY_H

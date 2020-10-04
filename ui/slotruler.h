@@ -5,16 +5,16 @@
 #include <QWidget>
 
 #include "applicationsettings.h"
-#include "reactivelist.hpp"
 #include "coloredlabel.h"
 #include "colorprovider.h"
 #include "dataproviderwidget.h"
+#include "reactivelist.hpp"
 
 class SlotsWidget;
 class SlotRuler : public DataProviderWidget,
                   public ReactiveList<ColoredLabel>,
                   public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit SlotRuler(QWidget *parent = nullptr);
 
@@ -42,4 +42,4 @@ private:
     static const int smallFontHeight = 9;
 };
 
-#endif // SLOTRULER_H
+#endif// SLOTRULER_H

@@ -4,8 +4,8 @@
 
 #include <QPainter>
 
-#include "separator.h"
 #include "colorprovider.h"
+#include "separator.h"
 
 Separator::Separator(QWidget *parent) : QWidget(parent) {
     setFixedHeight(1);

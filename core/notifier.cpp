@@ -4,14 +4,14 @@
 
 #include <algorithm>
 #include <cassert>
-#include <utility>
 #include <cstdlib>
+#include <utility>
 
+#include "notifications.h"
 #include "notifier.h"
 #include "strategy.h"
 #include "time_utils.h"
 #include "timer.h"
-#include "notifications.h"
 
 namespace stg {
     constexpr auto *notifications_dictionary_key = "activeURLs";
@@ -27,10 +27,7 @@ namespace stg {
         if (!session.activity)
             throw std::invalid_argument("session must have an activity for this type of notification");
 
-        return session.activity->name()
-               + " ("
-               + time_utils::human_string_from_minutes(session.duration())
-               + ")";
+        return session.activity->name() + " (" + time_utils::human_string_from_minutes(session.duration()) + ")";
     }
 
     static auto make_notification_message(const session &session, notification_type type) -> std::string {
@@ -248,7 +245,8 @@ namespace stg {
                                            notifications.end(),
                                            [current_seconds](const notification &notification) {
                                                return notification.relative_delivery_time() < current_seconds;
-                                           }), notifications.end());
+                                           }),
+                            notifications.end());
     }
 
     auto notifier::scheduled_identifiers() const -> std::vector<std::string> {

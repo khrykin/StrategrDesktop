@@ -101,7 +101,6 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
             REQUIRE(strategy.sessions()[0].length() == strategy.number_of_time_slots());
             REQUIRE(strategy.sessions()[0].activity == stg::strategy::no_activity);
         }
-
     }
 
     SECTION("drag activity session") {
@@ -154,9 +153,9 @@ TEST_CASE("Strategy sessions on change notifications", "[strategy][sessions]") {
     auto callbackWasCalled = false;
 
     strategy.sessions()
-            .add_on_change_callback([&callbackWasCalled]() {
-                callbackWasCalled = true;
-            });
+        .add_on_change_callback([&callbackWasCalled]() {
+            callbackWasCalled = true;
+        });
 
     strategy.add_activity(stg::activity("Some"));
 

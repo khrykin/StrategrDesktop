@@ -5,16 +5,16 @@
 #ifndef STRATEGR_SESSIONSMAINWIDGET_H
 #define STRATEGR_SESSIONSMAINWIDGET_H
 
-#include <QWidget>
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 #include <QScrollArea>
+#include <QWidget>
 
-#include "dataproviderwidget.h"
 #include "colorprovider.h"
-#include "selectionwidget.h"
+#include "dataproviderwidget.h"
 #include "notifier.h"
 #include "notifierbackend.h"
+#include "selectionwidget.h"
 
 class StrategySettingsWidget;
 class CurrentSessionWidget;
@@ -32,6 +32,7 @@ public:
     void reloadStrategy();
 
     SlotboardScrollArea *slotboardScrollArea() const;
+
 private:
     stg::notifier notifier = stg::notifier(strategy());
 
@@ -50,4 +51,4 @@ private:
 };
 
 
-#endif //STRATEGR_SESSIONSMAINWIDGET_H
+#endif//STRATEGR_SESSIONSMAINWIDGET_H

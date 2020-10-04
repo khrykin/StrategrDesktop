@@ -6,9 +6,9 @@
 #include <QDesktopWidget>
 
 #include "application.h"
-#include "windowgeometrymanager.h"
-#include "mainwindow.h"
 #include "macoswindow.h"
+#include "mainwindow.h"
+#include "windowgeometrymanager.h"
 
 QWidgetList WindowGeometryManager::windows;
 
@@ -63,7 +63,7 @@ QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
     const auto titlebarHeight = 30;
     const auto windowInitialHeight = desktopGeometry.height() - titlebarHeight;
     const auto windowInitialLeft = (desktopGeometry.width() - windowInitialWidth) / 2;
- 
+
     return {windowInitialLeft,
             titlebarHeight,
             windowInitialWidth,

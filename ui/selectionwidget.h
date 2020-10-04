@@ -8,8 +8,8 @@
 #include <QWidget>
 
 #include "applicationsettings.h"
-#include "dataproviderwidget.h"
 #include "colorprovider.h"
+#include "dataproviderwidget.h"
 #include "selection.h"
 
 class SelectionWidget : public DataProviderWidget,
@@ -25,4 +25,4 @@ private:
     void paintEvent(QPaintEvent *event) override;
 };
 
-#endif //STRATEGR_SELECTIONWIDGET_H
+#endif//STRATEGR_SELECTIONWIDGET_H

@@ -2,17 +2,17 @@
 #include <QPushButton>
 
 #include "activityeditormenu.h"
-#include "enterpresseater.h"
 #include "alert.h"
-#include "colorprovider.h"
-#include "utils.h"
-#include "colorutils.h"
 #include "applicationsettings.h"
+#include "colorprovider.h"
+#include "colorutils.h"
+#include "enterpresseater.h"
+#include "utils.h"
 
 ActivityEditorMenu::ActivityEditorMenu(std::optional<stg::activity> activity,
                                        QWidget *parent)
-        : activity(std::move(activity)),
-          QMenu(parent) {
+    : activity(std::move(activity)),
+      QMenu(parent) {
     addLineEditWidgetAction();
 
     addSeparator();
@@ -109,8 +109,8 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
     auto *lineEditLayout = new QVBoxLayout(lineEditWrapper);
     lineEditLayout->setSpacing(0);
     lineEditLayout->setContentsMargins(
-            lineEditLayout->contentsMargins().left() + platformPadding, 0,
-            lineEditLayout->contentsMargins().right(), 0);
+        lineEditLayout->contentsMargins().left() + platformPadding, 0,
+        lineEditLayout->contentsMargins().right(), 0);
 
     lineEditWrapper->setLayout(lineEditLayout);
 
@@ -141,8 +141,8 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
 
 QString ActivityEditorMenu::defaultLineEditText() const {
     return activity
-           ? QString::fromStdString(activity->name())
-           : "";
+               ? QString::fromStdString(activity->name())
+               : "";
 }
 
 void ActivityEditorMenu::addColorWidgetAction() {
@@ -214,7 +214,7 @@ void ActivityEditorMenu::addSaveCancelWidgetAction() {
 }
 
 void ActivityEditorMenu::colorPickerColorChanged(
-        const std::optional<QColor> &color) {
+    const std::optional<QColor> &color) {
     customColorAction->setChecked(false);
 
     if (color) {

@@ -10,8 +10,8 @@
 #include "mainwindow.h"
 
 MainScene::MainScene(stg::strategy &strategy, QWidget *parent)
-        : SlidingStackedWidget(parent),
-          _strategy(strategy) {
+    : SlidingStackedWidget(parent),
+      _strategy(strategy) {
     sessionsMainWidget = new SessionsMainWidget(this);
     activitiesWidget = new ActivityListWidget(this);
 

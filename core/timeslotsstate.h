@@ -7,10 +7,10 @@
 
 #include <vector>
 
-#include "timeslot.h"
-#include "privatelist.h"
 #include "notifiableonchange.h"
+#include "privatelist.h"
 #include "streamablelist.h"
+#include "timeslot.h"
 
 namespace stg {
     class strategy;
@@ -18,10 +18,9 @@ namespace stg {
     class resize_operation;
 
     using time_slots_state_base = private_list<time_slot>;
-    class time_slots_state :
-            public time_slots_state_base,
-            public notifiable_on_change,
-            public streamable_list<time_slots_state> {
+    class time_slots_state : public time_slots_state_base,
+                             public notifiable_on_change,
+                             public streamable_list<time_slots_state> {
     public:
         using minutes = time_slot::minutes;
         using size_t = int;
@@ -105,4 +104,4 @@ namespace stg {
     };
 }
 
-#endif //MODELS_TIMESLOTSSTATE_H
+#endif//MODELS_TIMESLOTSSTATE_H

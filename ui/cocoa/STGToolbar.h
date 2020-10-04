@@ -20,4 +20,4 @@ class MainWindow;
 @end
 
 
-#endif //STRATEGR_SGTOOLBAR_H
+#endif//STRATEGR_SGTOOLBAR_H

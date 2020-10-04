@@ -33,10 +33,14 @@
 
     [self addSubview:box];
     [self addConstraints:@[
-            [box.topAnchor constraintEqualToAnchor:self.topAnchor constant:20],
-            [box.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:20],
-            [box.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-20],
-            [box.bottomAnchor constraintEqualToAnchor:self.buttonsView.topAnchor constant:-8],
+        [box.topAnchor constraintEqualToAnchor:self.topAnchor
+                                      constant:20],
+        [box.leadingAnchor constraintEqualToAnchor:self.leadingAnchor
+                                          constant:20],
+        [box.trailingAnchor constraintEqualToAnchor:self.trailingAnchor
+                                           constant:-20],
+        [box.bottomAnchor constraintEqualToAnchor:self.buttonsView.topAnchor
+                                         constant:-8],
     ]];
 
     NSStackView *boxStackView = [[NSStackView alloc] init];
@@ -46,16 +50,20 @@
     boxStackView.alignment = NSLayoutAttributeLeft;
     boxStackView.orientation = NSUserInterfaceLayoutOrientationVertical;
     boxStackView.translatesAutoresizingMaskIntoConstraints = NO;
-//    boxStackView.wantsLayer = YES;
-//    boxStackView.layer.borderColor = [[NSColor orangeColor] CGColor];
-//    boxStackView.layer.borderWidth = 1;
+    //    boxStackView.wantsLayer = YES;
+    //    boxStackView.layer.borderColor = [[NSColor orangeColor] CGColor];
+    //    boxStackView.layer.borderWidth = 1;
 
     [box addSubview:boxStackView];
     [box addConstraints:@[
-            [boxStackView.leadingAnchor constraintEqualToAnchor:box.leadingAnchor constant:20],
-            [boxStackView.trailingAnchor constraintEqualToAnchor:box.trailingAnchor constant:-20],
-            [boxStackView.topAnchor constraintEqualToAnchor:box.topAnchor constant:20],
-            [boxStackView.bottomAnchor constraintEqualToAnchor:box.bottomAnchor constant:-20],
+        [boxStackView.leadingAnchor constraintEqualToAnchor:box.leadingAnchor
+                                                   constant:20],
+        [boxStackView.trailingAnchor constraintEqualToAnchor:box.trailingAnchor
+                                                    constant:-20],
+        [boxStackView.topAnchor constraintEqualToAnchor:box.topAnchor
+                                               constant:20],
+        [boxStackView.bottomAnchor constraintEqualToAnchor:box.bottomAnchor
+                                                  constant:-20],
     ]];
 
     NSStackView *middleStackView = [[NSStackView alloc] init];
@@ -63,9 +71,9 @@
     middleStackView.spacing = 20;
     middleStackView.alignment = NSLayoutAttributeCenterY;
     middleStackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
-//    middleStackView.wantsLayer = YES;
-//    middleStackView.layer.borderColor = [[NSColor blackColor] CGColor];
-//    middleStackView.layer.borderWidth = 1;
+    //    middleStackView.wantsLayer = YES;
+    //    middleStackView.layer.borderColor = [[NSColor blackColor] CGColor];
+    //    middleStackView.layer.borderWidth = 1;
 
     [boxStackView addArrangedSubview:middleStackView];
 
@@ -75,9 +83,9 @@
     leftView.spacing = 8;
     leftView.alignment = NSLayoutAttributeCenterY;
     leftView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
-//    leftView.wantsLayer = YES;
-//    leftView.layer.borderColor = [[NSColor yellowColor] CGColor];
-//    leftView.layer.borderWidth = 1;
+    //    leftView.wantsLayer = YES;
+    //    leftView.layer.borderColor = [[NSColor yellowColor] CGColor];
+    //    leftView.layer.borderWidth = 1;
 
     [leftView setHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
 
@@ -89,9 +97,9 @@
     rightView.spacing = 8;
     rightView.alignment = NSLayoutAttributeCenterY | NSLayoutAttributeLeading;
     rightView.orientation = NSUserInterfaceLayoutOrientationVertical;
-//    rightView.wantsLayer = YES;
-//    rightView.layer.borderColor = [[NSColor blueColor] CGColor];
-//    rightView.layer.borderWidth = 1;
+    //    rightView.wantsLayer = YES;
+    //    rightView.layer.borderColor = [[NSColor blueColor] CGColor];
+    //    rightView.layer.borderWidth = 1;
 
     [middleStackView addArrangedSubview:rightView];
 
@@ -102,9 +110,9 @@
     bottomView.alignment = NSLayoutAttributeCenterY | NSLayoutAttributeLeading;
     bottomView.orientation = NSUserInterfaceLayoutOrientationVertical;
     bottomView.translatesAutoresizingMaskIntoConstraints = false;
-//    bottomView.wantsLayer = YES;
-//    bottomView.layer.borderColor = [[NSColor greenColor] CGColor];
-//    bottomView.layer.borderWidth = 1;
+    //    bottomView.wantsLayer = YES;
+    //    bottomView.layer.borderColor = [[NSColor greenColor] CGColor];
+    //    bottomView.layer.borderWidth = 1;
 
     [boxStackView addArrangedSubview:bottomView];
 }
@@ -131,10 +139,15 @@
     self.cancelButton = cancelButton;
 
     [self addConstraints:@[
-            [buttonsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:20],
-            [buttonsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-20],
-            [buttonsView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-8],
-            [buttonsView.heightAnchor constraintEqualToAnchor:okButton.heightAnchor multiplier:1 constant:20]
+        [buttonsView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor
+                                                  constant:20],
+        [buttonsView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor
+                                                   constant:-20],
+        [buttonsView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor
+                                                 constant:-8],
+        [buttonsView.heightAnchor constraintEqualToAnchor:okButton.heightAnchor
+                                               multiplier:1
+                                                 constant:20]
     ]];
 
 

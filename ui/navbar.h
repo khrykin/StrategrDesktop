@@ -15,7 +15,7 @@
 #endif
 
 class Navbar : public QWidget, public ColorProvider {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit Navbar(QWidget *parent = nullptr);
 
@@ -29,17 +29,16 @@ public:
 
     template<typename Method>
     void setLeftButton(
-            const QString &text,
-            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-            Method slot) {
+        const QString &text,
+        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+        Method slot) {
     }
 
     template<typename Method>
     void setRightButton(
-            const QString &text,
-            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-            Method slot) {
-
+        const QString &text,
+        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+        Method slot) {
     }
 
 #else
@@ -47,18 +46,18 @@ public:
 
     template<typename Method>
     void setLeftButton(
-            const QString &text,
-            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-            Method slot) {
+        const QString &text,
+        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+        Method slot) {
         _leftButton->setCode(text);
         QObject::connect(_leftButton, &IconWidget::clicked, receiver, slot);
     }
 
     template<typename Method>
     void setRightButton(
-            const QString &text,
-            const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-            Method slot) {
+        const QString &text,
+        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
+        Method slot) {
         _rightButton->setCode(text);
         QObject::connect(_rightButton, &IconWidget::clicked, receiver, slot);
     }
@@ -85,4 +84,4 @@ private:
 #endif
 };
 
-#endif // NAVSCREEN_H
+#endif// NAVSCREEN_H

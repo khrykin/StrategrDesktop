@@ -50,41 +50,42 @@ NSString *const STGCalendarExporterKeyCalendarName = @"exportCalendarName";
     return self.settings.date;
 }
 
-- (void)export:(void (^)())completionHandler; {
+- (void)export:(void (^)())completionHandler;
+{
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_async(queue, ^{
-        STGCalendarExportOptions optionsMask = self.settings.optionsMask;
+      STGCalendarExportOptions optionsMask = self.settings.optionsMask;
 
-        auto nonEmptySessions = self->strategy->sessions().get_non_empty();
-        auto numberOfEvents = static_cast<unsigned int>(nonEmptySessions.size());
+      auto nonEmptySessions = self->strategy->sessions().get_non_empty();
+      auto numberOfEvents = static_cast<unsigned int>(nonEmptySessions.size());
 
-        NSString *calendarName = self.usingSpecificCalendar ? self.settings.calendarName : nil;
+      NSString *calendarName = self.usingSpecificCalendar ? self.settings.calendarName : nil;
 
-        if ((optionsMask & STGCalendarExportOptionsOverwrite) == STGCalendarExportOptionsOverwrite) {
-            [self.calendarManager removeAllEventsForDate:self.date andCalendarName:calendarName];
-        }
+      if ((optionsMask & STGCalendarExportOptionsOverwrite) == STGCalendarExportOptionsOverwrite) {
+          [self.calendarManager removeAllEventsForDate:self.date andCalendarName:calendarName];
+      }
 
-        if (nonEmptySessions.empty()) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [self.delegate calendarExporterProgressChanged:1.0];
-            });
-        } else {
-            for (auto &session : nonEmptySessions) {
-                if (!session.activity)
-                    continue;
+      if (nonEmptySessions.empty()) {
+          dispatch_sync(dispatch_get_main_queue(), ^{
+            [self.delegate calendarExporterProgressChanged:1.0];
+          });
+      } else {
+          for (auto &session : nonEmptySessions) {
+              if (!session.activity)
+                  continue;
 
-                [self exportSession:&session];
+              [self exportSession:&session];
 
-                auto currentEventIndex = static_cast<unsigned >(&session - &nonEmptySessions[0]);
-                auto progress = static_cast<float>(currentEventIndex + 1) / numberOfEvents;
+              auto currentEventIndex = static_cast<unsigned>(&session - &nonEmptySessions[0]);
+              auto progress = static_cast<float>(currentEventIndex + 1) / numberOfEvents;
 
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    [self.delegate calendarExporterProgressChanged:progress];
-                });
-            }
-        }
+              dispatch_sync(dispatch_get_main_queue(), ^{
+                [self.delegate calendarExporterProgressChanged:progress];
+              });
+          }
+      }
 
-        dispatch_sync(dispatch_get_main_queue(), completionHandler);
+      dispatch_sync(dispatch_get_main_queue(), completionHandler);
     });
 }
 
@@ -119,31 +120,31 @@ NSString *const STGCalendarExporterKeyCalendarName = @"exportCalendarName";
 
 + (void)exportFromStrategyPtr:(const stg::strategy *)strategy
                          date:(NSDate *_Nullable)date
-                     delegate:(nullable id <STGCalendarExporterDelegate>)delegate
+                     delegate:(nullable id<STGCalendarExporterDelegate>)delegate
             completionHandler:(nullable void (^)(BOOL exported))completionHandler {
     [STGCalendarManager requestCalendarAccess:^(EKEventStore *store) {
-        if (!store) {
-            if (completionHandler)
-                completionHandler(false);
+      if (!store) {
+          if (completionHandler)
+              completionHandler(false);
 
-            return;
-        }
+          return;
+      }
 
-        STGCalendarExporterSettings *settings = [STGCalendarExporter defaultSettings];
-        settings.date = date;
+      STGCalendarExporterSettings *settings = [STGCalendarExporter defaultSettings];
+      settings.date = date;
 
-        STGCalendarExporter *exporter = [[STGCalendarExporter alloc] initWithStrategyPtr:strategy
-                                                                              eventStore:store
-                                                                                settings:settings];
+      STGCalendarExporter *exporter = [[STGCalendarExporter alloc] initWithStrategyPtr:strategy
+                                                                            eventStore:store
+                                                                              settings:settings];
 
-        exporter.delegate = delegate;
+      exporter.delegate = delegate;
 
-        [exporter export:^{
-            [STGCalendarManager launchCalendarAppWithDate:exporter.date];
+      [exporter export:^{
+        [STGCalendarManager launchCalendarAppWithDate:exporter.date];
 
-            if (completionHandler)
-                completionHandler(true);
-        }];
+        if (completionHandler)
+            completionHandler(true);
+      }];
     }];
 }
 

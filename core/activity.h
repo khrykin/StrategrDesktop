@@ -1,10 +1,10 @@
 #ifndef STRATEGR_ACTIVITY_H
 #define STRATEGR_ACTIVITY_H
 
-#include <nlohmann/json.hpp>
 #include <iostream>
-#include <utility>
+#include <nlohmann/json.hpp>
 #include <string>
+#include <utility>
 
 #include "color.h"
 
@@ -52,4 +52,4 @@ namespace stg {
     };
 }
 
-#endif // STRATEGR_ACTIVITY_H
+#endif// STRATEGR_ACTIVITY_H

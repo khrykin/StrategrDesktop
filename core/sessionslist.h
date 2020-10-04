@@ -8,21 +8,20 @@
 #include <iostream>
 #include <optional>
 
-#include "session.h"
-#include "privatelist.h"
-#include "notifiableonchange.h"
-#include "timeslotsstate.h"
-#include "streamablelist.h"
 #include "activity.h"
+#include "notifiableonchange.h"
+#include "privatelist.h"
+#include "session.h"
+#include "streamablelist.h"
+#include "timeslotsstate.h"
 
 namespace stg {
     using sessions_list_base = private_list<session>;
     class strategy;
 
-    class sessions_list :
-            public sessions_list_base,
-            public notifiable_on_change,
-            public streamable_list<sessions_list> {
+    class sessions_list : public sessions_list_base,
+                          public notifiable_on_change,
+                          public streamable_list<sessions_list> {
     public:
         struct overview_item {
             float duration_percentage = 0.0;
@@ -53,6 +52,7 @@ namespace stg {
         auto overview() const -> std::vector<overview_item>;
 
         auto class_print_name() const -> std::string override;
+
     private:
         using sessions_list_base::sessions_list_base;
 
@@ -62,4 +62,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_SESSIONSLIST_H
+#endif//STRATEGR_SESSIONSLIST_H

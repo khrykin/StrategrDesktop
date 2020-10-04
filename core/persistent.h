@@ -6,21 +6,19 @@
 #define STRATEGR_PERSISTENT_H
 
 #include <functional>
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <iostream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "utility"
-#include "notifications.h"
 #include "file_bookmark.h"
+#include "notifications.h"
+#include "utility"
 
 namespace stg {
     template<typename T>
     struct is_plain_type {
-        static constexpr bool value = std::is_standard_layout<T>::value
-                                      && std::is_trivial<T>::value
-                                      && !std::is_pointer<T>::value;
+        static constexpr bool value = std::is_standard_layout<T>::value && std::is_trivial<T>::value && !std::is_pointer<T>::value;
     };
 
 #pragma mark - Serialization
@@ -41,13 +39,13 @@ namespace stg {
 
     template<typename T>
     struct is_serializable<T,
-            std::void_t<decltype(serialize(std::declval<T>()))>> : std::true_type {
+                           std::void_t<decltype(serialize(std::declval<T>()))>> : std::true_type {
     };
 
 #pragma mark - Deserialization
 
     template<typename POD,
-            std::enable_if_t<is_plain_type<POD>::value, int> = 0>
+             std::enable_if_t<is_plain_type<POD>::value, int> = 0>
     auto deserialize(const uint8_t *&data) -> POD {
         auto pod = *reinterpret_cast<const POD *>(data);
         data += sizeof(POD);
@@ -56,7 +54,7 @@ namespace stg {
     }
 
     template<typename T,
-            std::enable_if_t<!is_plain_type<T>::value, int> = 0>
+             std::enable_if_t<!is_plain_type<T>::value, int> = 0>
     auto deserialize(const uint8_t *&data) -> T;
 
     template<>
@@ -80,7 +78,7 @@ namespace stg {
 
     template<typename T>
     struct is_deserializable<T, std::void_t<decltype(deserialize<T>(std::declval<const uint8_t *&>()))>>
-            : std::true_type {
+        : std::true_type {
     };
 
 #pragma mark - Storage
@@ -153,4 +151,4 @@ namespace stg {
     }
 }
 
-#endif //STRATEGR_PERSISTENT_H
+#endif//STRATEGR_PERSISTENT_H

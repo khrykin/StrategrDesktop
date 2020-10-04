@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface STGCalendarImportExportView : NSView
 
-@property(nonatomic, weak) id <SGCalendarImportExportViewDelegate> delegate;
+@property(nonatomic, weak) id<SGCalendarImportExportViewDelegate> delegate;
 
 @end
 

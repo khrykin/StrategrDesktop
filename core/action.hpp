@@ -5,10 +5,10 @@
 #ifndef STRATEGR_ACTION_HPP
 #define STRATEGR_ACTION_HPP
 
-#include <functional>
-#include <utility>
 #include <cassert>
+#include <functional>
 #include <string>
+#include <utility>
 
 namespace stg {
     class action_center;
@@ -23,7 +23,8 @@ namespace stg {
         };
 
         static auto separator_action() -> const action & {
-            static const auto separator_action = action("", [] {}, action_type::separator);
+            static const auto separator_action = action(
+                "", [] {}, action_type::separator);
             return separator_action;
         }
 
@@ -34,17 +35,17 @@ namespace stg {
                std::function<void()> performer,
                std::function<bool()> enabled,
                action_type type = action_type::standard)
-                : name(std::move(name)),
-                  performer(std::move(performer)),
-                  enabled_getter(std::move(enabled)),
-                  type(type) {
+            : name(std::move(name)),
+              performer(std::move(performer)),
+              enabled_getter(std::move(enabled)),
+              type(type) {
             assert(this->performer && "action performer must not be null");
         }
 
         action(const std::string &name,
                std::function<void()> performer,
                action_type type = action_type::standard)
-                : action(name, std::move(performer), nullptr, type) {}
+            : action(name, std::move(performer), nullptr, type) {}
 
         auto is_enabled() const -> bool {
             return enabled_getter ? enabled_getter() : true;
@@ -63,4 +64,4 @@ namespace stg {
     };
 }
 
-#endif //STRATEGR_ACTION_HPP
+#endif//STRATEGR_ACTION_HPP

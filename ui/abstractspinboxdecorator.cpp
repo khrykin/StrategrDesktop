@@ -42,7 +42,7 @@ void AbstractSpinBoxDecorator::applyStyleSheet() {
                           "    width: 0px;"
                           "    height: 0px;"
                           "}")
-                          .arg(QString::number(fontPixelSize)));
+                      .arg(QString::number(fontPixelSize)));
 }
 
 void AbstractSpinBoxDecorator::createLayout() {
@@ -116,7 +116,7 @@ QAbstractSpinBox *AbstractSpinBoxDecorator::abstractSpinBox() const {
 
 AbstractSpinBoxDecorator::AbstractSpinBoxDecorator(QAbstractSpinBox *spinBox,
                                                    QWidget *parent)
-        : QWidget(parent), _abstractSpinBox(spinBox) {
+    : QWidget(parent), _abstractSpinBox(spinBox) {
     spinBox->setParent(this);
     setup();
 }

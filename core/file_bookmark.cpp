@@ -11,13 +11,13 @@ namespace stg {
 #pragma mark - Construction
 
     file_bookmark::file_bookmark(raw_buffer data)
-            : data(std::move(data)) {}
+        : data(std::move(data)) {}
 
     file_bookmark::file_bookmark(const std::string &path)
-            : data(path.begin(), path.end()) {}
+        : data(path.begin(), path.end()) {}
 
     file_bookmark::file_bookmark(const char *data)
-            : file_bookmark(std::string(data)) {}
+        : file_bookmark(std::string(data)) {}
 
 #pragma mark - Conversions
 

@@ -40,6 +40,3 @@ QPixmap ApplicationIcon::defaultIcon() {
 }
 
 #endif
-
-
-

@@ -9,8 +9,8 @@
 #include <QtMac>
 
 #include "macoswindow.h"
-#include "mainwindow.h"
 #include "mainscene.h"
+#include "mainwindow.h"
 
 NSWindow *NSWindowFromQWindow(const MainWindow *window) {
     auto *nsView = reinterpret_cast<NSView *>(window->winId());

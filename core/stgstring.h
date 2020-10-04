@@ -5,12 +5,11 @@
 #ifndef STRATEGR_STGSTRING_H
 #define STRATEGR_STGSTRING_H
 
+#include <codecvt>
+#include <locale>
+#include <regex>
 #include <string>
 #include <type_traits>
-#include <locale>
-#include <string>
-#include <regex>
-#include <codecvt>
 #include <utf8proc.h>
 
 #ifdef __OBJC__
@@ -24,7 +23,7 @@ namespace stg {
 
     template<typename T>
     struct is_qstring_like<T,
-            decltype(std::declval<T>().toStdString())> : std::true_type {
+                           decltype(std::declval<T>().toStdString())> : std::true_type {
     };
 
     template<typename T, std::enable_if_t<is_qstring_like<T>::value, int> = 0>
@@ -70,4 +69,4 @@ namespace stg {
 }
 
 
-#endif //STRATEGR_STGSTRING_H
+#endif//STRATEGR_STGSTRING_H

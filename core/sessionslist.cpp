@@ -2,9 +2,9 @@
 // created by dmitry khrykin on 2019-07-06.
 //
 
-#include <algorithm>
 #include "sessionslist.h"
 #include "activity.h"
+#include <algorithm>
 
 namespace stg {
 
@@ -33,8 +33,8 @@ namespace stg {
         for (const auto &time_slot : time_slots) {
             auto time_slot_index = &time_slot - &time_slots[0];
             auto *previous_activity = time_slot_index > 0
-                                      ? time_slots[(index_t) time_slot_index - 1].activity
-                                      : time_slot::no_activity;
+                                          ? time_slots[(index_t) time_slot_index - 1].activity
+                                          : time_slot::no_activity;
 
             auto *current_activity = time_slot.activity;
 
@@ -87,8 +87,8 @@ namespace stg {
             auto begin_percentage = (float) (session.begin_time() - overall_begin_time) / duration();
 
             auto color = session.activity
-                         ? std::make_optional(session.activity->color())
-                         : std::nullopt;
+                             ? std::make_optional(session.activity->color())
+                             : std::nullopt;
 
             return overview_item{duration_percentage,
                                  begin_percentage,
@@ -103,15 +103,16 @@ namespace stg {
 
     auto sessions_list::duration() const -> time_slot::minutes {
         if (_data.empty()) return 0;
-        return _data.back().end_time() - _data.front().begin_time();;
+        return _data.back().end_time() - _data.front().begin_time();
+        ;
     }
 
     auto sessions_list::get_non_empty() const -> std::vector<session> {
         std::vector<session> result;
         std::copy_if(_data.begin(), _data.end(),
                      std::back_inserter(result), [](auto &session) {
-                    return session.activity != time_slot::no_activity;
-                });
+                         return session.activity != time_slot::no_activity;
+                     });
 
         return result;
     }

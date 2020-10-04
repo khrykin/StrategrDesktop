@@ -4,8 +4,8 @@
 
 #include "actioncenter.h"
 
-#include <utility>
 #include "mousehandler.h"
+#include <utility>
 
 namespace stg {
 
@@ -14,11 +14,11 @@ namespace stg {
     action_center::action_center(stg::strategy &strategy,
                                  std::function<gfloat()> slot_height_getter,
                                  std::function<rect()> viewport_getter)
-            : strategy(strategy),
-              _mouse_handler(strategy,
-                             _selection,
-                             std::move(slot_height_getter),
-                             std::move(viewport_getter)) {
+        : strategy(strategy),
+          _mouse_handler(strategy,
+                         _selection,
+                         std::move(slot_height_getter),
+                         std::move(viewport_getter)) {
         _mouse_handler.action_center = this;
 
         strategy.sessions().add_on_change_callback([this] {

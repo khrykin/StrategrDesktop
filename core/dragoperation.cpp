@@ -7,8 +7,8 @@
 
 namespace stg {
     drag_operation::drag_operation(time_slots_state *time_slots, indices_vector initial_indices)
-            : time_slots(time_slots),
-              initial_dragged_indices(std::move(initial_indices)) {
+        : time_slots(time_slots),
+          initial_dragged_indices(std::move(initial_indices)) {
     }
 
     auto drag_operation::record_drag(const std::vector<time_slot> &time_slots_to_drag,
@@ -32,15 +32,14 @@ namespace stg {
     auto drag_operation::silently_drag(const indices_range &range_to_drag,
                                        int distance) -> indices_vector {
         auto destination_index = distance < 0
-                                 ? range_to_drag.first + distance
-                                 : range_to_drag.last + distance;
+                                     ? range_to_drag.first + distance
+                                     : range_to_drag.last + distance;
 
         if (destination_index > time_slots->size() - 1) {
             return {};
         }
 
-        auto[cache_range, restore_cache_range, new_drag_range]
-        = get_ranges(range_to_drag, destination_index, distance);
+        auto [cache_range, restore_cache_range, new_drag_range] = get_ranges(range_to_drag, destination_index, distance);
 
         auto cache = make_cache(cache_range);
 
@@ -72,7 +71,7 @@ namespace stg {
                                        movements_state &movements) const {
         for (size_t i = 0; i < cache.size(); i++) {
             auto insert_at_index = static_cast<index_t>(restore_cache_range.first + i);
-            auto[history_index, activity] = cache[i];
+            auto [history_index, activity] = cache[i];
 
             movements[history_index] = insert_at_index;
 
@@ -88,8 +87,8 @@ namespace stg {
                                            distance);
 
         auto restore_cache_first_index = distance < 0
-                                         ? destination_index + indices_to_drag.size()
-                                         : indices_to_drag.first;
+                                             ? destination_index + indices_to_drag.size()
+                                             : indices_to_drag.first;
 
         auto restore_cache_range = indices_range{restore_cache_first_index,
                                                  restore_cache_first_index + cache_range.size()};
@@ -105,8 +104,8 @@ namespace stg {
                                                   index_t destination_index,
                                                   int distance) -> indices_range {
         auto new_first_index = distance < 0
-                               ? destination_index
-                               : destination_index - dragging_indices.size() + 1;
+                                   ? destination_index
+                                   : destination_index - dragging_indices.size() + 1;
 
         return indices_range{new_first_index,
                              new_first_index + dragging_indices.size()};
@@ -116,10 +115,10 @@ namespace stg {
                                          index_t destination_index,
                                          int distance) -> indices_range {
         return distance < 0
-               ? indices_range{destination_index,
-                               dragging_indices.first - 1}
-               : indices_range{dragging_indices.last + 1,
-                               destination_index};
+                   ? indices_range{destination_index,
+                                   dragging_indices.first - 1}
+                   : indices_range{dragging_indices.last + 1,
+                                   destination_index};
     }
 
     auto drag_operation::make_cache(indices_range cache_indices) const -> indices_cache {
@@ -143,7 +142,7 @@ namespace stg {
         while (!nobody_can_move) {
             auto cant_move_count = 0;
 
-            for (auto const&[current_index, past_indices] : history) {
+            for (auto const &[current_index, past_indices] : history) {
                 auto slot_is_dragged = std::find(new_dragged_indices.begin(),
                                                  new_dragged_indices.end(),
                                                  current_index) != new_dragged_indices.end();
@@ -181,8 +180,8 @@ namespace stg {
 
     auto drag_operation::get_initial(index_t index) -> index_t {
         return history.count(index)
-               ? history[index][initial_index_key]
-               : index;
+                   ? history[index][initial_index_key]
+                   : index;
     }
 
     void drag_operation::print_indices(const std::string &name,
@@ -199,7 +198,7 @@ namespace stg {
     void drag_operation::print_history(const std::string &name,
                                        const history_state &history_state) {
         std::cout << name << std::endl;
-        for (auto const&[current_index, past_indices] : history_state) {
+        for (auto const &[current_index, past_indices] : history_state) {
             if (!past_indices.empty()) {
                 print_indices(std::to_string(current_index), past_indices);
             }
@@ -208,7 +207,7 @@ namespace stg {
 
     void drag_operation::print_movements(const movements_state &movements) {
         std::cout << "movements:" << std::endl;
-        for (auto const&[past_index, current_index] : movements) {
+        for (auto const &[past_index, current_index] : movements) {
             std::cout << past_index << " -> " << current_index << std::endl;
         }
     }
@@ -216,14 +215,14 @@ namespace stg {
     void drag_operation::apply_movements_to_history(const movements_state &movements) {
         history_state new_history_stacks;
 
-        for (auto const&[past_index, current_index] : movements) {
+        for (auto const &[past_index, current_index] : movements) {
             auto new_history_stack = history[past_index];
             new_history_stack.push_back(past_index);
 
             new_history_stacks[current_index] = new_history_stack;
         }
 
-        for (auto const&[index, stack] : new_history_stacks) {
+        for (auto const &[index, stack] : new_history_stacks) {
             if (index == stack.front()) {
                 history.erase(index);
             } else {

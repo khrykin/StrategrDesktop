@@ -2,10 +2,10 @@
 // Created by Dmitry Khrykin on 2019-08-15.
 //
 
-#import <Foundation/Foundation.h>
-#import <UserNotifications/UNUserNotificationCenter.h>
 #import <AppKit/NSDocumentController.h>
+#import <Foundation/Foundation.h>
 #import <Sparkle/Sparkle.h>
+#import <UserNotifications/UNUserNotificationCenter.h>
 
 #include "application.h"
 
@@ -14,7 +14,7 @@
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(
-        macosx(10.14));
+                                   macosx(10.14));
 
 + (void)registerRecentFile:(NSString *)filePath;
 + (void)clearRecentFiles;
@@ -26,14 +26,13 @@
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-    UNNotificationPresentationOptions options = UNNotificationPresentationOptionSound
-                                                | UNNotificationPresentationOptionBadge;
+    UNNotificationPresentationOptions options = UNNotificationPresentationOptionSound | UNNotificationPresentationOptionBadge;
     completionHandler(options);
 }
 
 + (void)registerRecentFile:(NSString *)filePath {
     [[NSDocumentController sharedDocumentController]
-            noteNewRecentDocumentURL:[NSURL fileURLWithPath:filePath]];
+        noteNewRecentDocumentURL:[NSURL fileURLWithPath:filePath]];
 }
 
 + (void)clearRecentFiles {

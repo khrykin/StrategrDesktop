@@ -25,7 +25,7 @@ NS_SWIFT_NAME(CalendarExportViewModelDelegate)
 NS_SWIFT_NAME(CalendarExportViewModel)
 @interface STGCalendarExportViewModel : NSObject
 
-@property(nonatomic, weak) id <STGCalendarExportViewModelDelegate> delegate;
+@property(nonatomic, weak) id<STGCalendarExportViewModelDelegate> delegate;
 @property(nonatomic, strong) STGCalendarExporterSettings *settings;
 
 @property(nonatomic, readonly) BOOL overwriteIsOn;

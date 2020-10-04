@@ -11,6 +11,7 @@ template<class ItemWidget>
 class ReactiveList {
 public:
     virtual ~ReactiveList() = default;
+
 protected:
     virtual int numberOfItems() = 0;
     virtual QVBoxLayout *listLayout() = 0;
@@ -79,4 +80,4 @@ private:
 };
 
 
-#endif //STRATEGR_REACTIVELIST_HPP
+#endif//STRATEGR_REACTIVELIST_HPP

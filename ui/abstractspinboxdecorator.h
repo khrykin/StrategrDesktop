@@ -8,7 +8,7 @@
 #include <QWidget>
 
 class AbstractSpinBoxDecorator : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit AbstractSpinBoxDecorator(QAbstractSpinBox *_abstractSpinBox,
                                       QWidget *parent = nullptr);
@@ -52,7 +52,7 @@ protected:
 };
 
 class SpinBoxDecorator : public AbstractSpinBoxDecorator {
-Q_OBJECT
+    Q_OBJECT
 
     void connectImplementation() override {
         connect(spinBox(), QOverload<int>::of(&QSpinBox::valueChanged), this,
@@ -72,7 +72,7 @@ public slots:
 };
 
 class TimeEditDecorator : public AbstractSpinBoxDecorator {
-Q_OBJECT
+    Q_OBJECT
 
     void connectImplementation() override {
         connect(timeEdit(), &QTimeEdit::timeChanged, this,
@@ -93,4 +93,4 @@ public slots:
     }
 };
 
-#endif // ABSTRACTSPINBOXDECORATOR_H
+#endif// ABSTRACTSPINBOXDECORATOR_H

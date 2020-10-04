@@ -2,14 +2,14 @@
 // Created by Dmitry Khrykin on 27.07.2020.
 //
 
-#include <vector>
-#include <unordered_map>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
 
 #include <catch2/catch.hpp>
 
-#include "persistent.h"
 #include "notifier.h"
+#include "persistent.h"
 
 TEST_CASE("Persistent Storage", "[persistent]") {
     std::unordered_map<std::string, std::vector<uint8_t>> storage_mock;
@@ -85,7 +85,7 @@ TEST_CASE("Persistent Storage", "[persistent]") {
                                                        {"B", {"Test 3", "Тест 4"}}});
 
         auto persisted_map = stg::persistent_storage::get<stg::user_notifications::storage>(
-                "stg::user_notifications::storage");
+            "stg::user_notifications::storage");
 
         REQUIRE(persisted_map != nullptr);
         REQUIRE(*persisted_map == expected_map);

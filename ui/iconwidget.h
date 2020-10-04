@@ -8,7 +8,7 @@
 #include <QWidget>
 
 class IconWidget : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 public:
     static QString backCode();
     static QString addCode();
@@ -19,11 +19,13 @@ public:
 
 signals:
     void clicked();
+
 private:
     QString _code = "";
 
 public:
     void setColor(const QColor &color);
+
 private:
     bool isPressed = false;
     QColor _color;
@@ -35,4 +37,4 @@ private:
 };
 
 
-#endif //STRATEGR_ICONWIDGET_H
+#endif//STRATEGR_ICONWIDGET_H

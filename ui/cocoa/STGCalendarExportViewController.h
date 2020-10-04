@@ -5,8 +5,8 @@
 #ifndef STRATEGR_SGCALENDAREXPORTVIEWCONTROLLER_H
 #define STRATEGR_SGCALENDAREXPORTVIEWCONTROLLER_H
 
-#import <AppKit/AppKit.h>
 #import "STGCalendarImportExportView.h"
+#import <AppKit/AppKit.h>
 
 @interface STGCalendarExportViewController : NSViewController <NSWindowDelegate, SGCalendarImportExportViewDelegate>
 
@@ -15,4 +15,4 @@
 
 @end
 
-#endif //STRATEGR_SGCALENDAREXPORTVIEWCONTROLLER_H
+#endif//STRATEGR_SGCALENDAREXPORTVIEWCONTROLLER_H

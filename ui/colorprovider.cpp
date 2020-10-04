@@ -11,14 +11,14 @@ QColor ColorProvider::baseColor() {
 
 QColor ColorProvider::borderColor() {
     return ColorUtils::overlayWithAlpha(
-            QColor(ApplicationSettings::rowBorderColor),
-            0.25 * ColorUtils::shadesAlphaFactor(0));
+        QColor(ApplicationSettings::rowBorderColor),
+        0.25 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::hardBorderColor() {
     return ColorUtils::overlayWithAlpha(
-            QColor(ApplicationSettings::rowBorderColor),
-            0.9 * ColorUtils::shadesAlphaFactor(8, 0.1));
+        QColor(ApplicationSettings::rowBorderColor),
+        0.9 * ColorUtils::shadesAlphaFactor(8, 0.1));
 }
 
 QColor ColorProvider::highlightColor() {
@@ -51,14 +51,14 @@ QColor ColorProvider::windowColor() {
 
 QColor ColorProvider::panelColor() {
     return ColorUtils::overlayWithAlpha(
-            QApplication::palette().color(QPalette::Window),
-            0.6 * ColorUtils::shadesAlphaFactor(0));
+        QApplication::palette().color(QPalette::Window),
+        0.6 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::darkPanelColor() {
     return ColorUtils::overlayWithAlpha(
-            QApplication::palette().color(QPalette::Window),
-            0.95 * ColorUtils::shadesAlphaFactor(0));
+        QApplication::palette().color(QPalette::Window),
+        0.95 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::highlightedTextColor() {
@@ -67,20 +67,18 @@ QColor ColorProvider::highlightedTextColor() {
 
 QColor ColorProvider::secondaryTextColor() {
     return ColorUtils::overlayWithAlpha(
-            QApplication::palette().color(QPalette::Text),
-            0.5 * ColorUtils::shadesAlphaFactor(4, 0.95));
+        QApplication::palette().color(QPalette::Text),
+        0.5 * ColorUtils::shadesAlphaFactor(4, 0.95));
 }
 
 QColor ColorProvider::tertiaryTextColor() {
     return ColorUtils::overlayWithAlpha(
-            QApplication::palette().color(QPalette::Text),
-            0.30 * ColorUtils::shadesAlphaFactor(0));
+        QApplication::palette().color(QPalette::Text),
+        0.30 * ColorUtils::shadesAlphaFactor(0));
 }
 
 QColor ColorProvider::textColorJustLighter() {
     return ColorUtils::overlayWithAlpha(
-            QApplication::palette().color(QPalette::Text),
-            0.75);
+        QApplication::palette().color(QPalette::Text),
+        0.75);
 }
-
-

@@ -16,4 +16,4 @@ private:
 };
 
 
-#endif //STRATEGR_SEPARATOR_H
+#endif//STRATEGR_SEPARATOR_H

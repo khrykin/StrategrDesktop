@@ -1,5 +1,5 @@
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 #include "activity.h"
 #include "activityinvalidpropertyexception.h"
@@ -7,16 +7,15 @@
 namespace stg {
     auto activity::default_colors() -> const std::vector<color_info> & {
         const static std::vector<color_info> colors = {
-                {"#FF6562", "Red"},
-                {"#FFB700", "Orange"},
-                {"#FFD600", "Yellow"},
-                {"#A463F2", "Purple"},
-                {"#D5008F", "Indigo"},
-                {"#19A974", "Green"},
-                {"#357EDD", "Blue"},
-                {"#000000", "Black"},
-                {"#777777", "Gray"}
-        };
+            {"#FF6562", "Red"},
+            {"#FFB700", "Orange"},
+            {"#FFD600", "Yellow"},
+            {"#A463F2", "Purple"},
+            {"#D5008F", "Indigo"},
+            {"#19A974", "Green"},
+            {"#357EDD", "Blue"},
+            {"#000000", "Black"},
+            {"#777777", "Gray"}};
 
         return colors;
     };

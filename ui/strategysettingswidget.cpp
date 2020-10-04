@@ -1,13 +1,13 @@
+#include <QKeyEvent>
 #include <QPainter>
 #include <QStyleOption>
-#include <QKeyEvent>
 
-#include "strategysettingswidget.h"
 #include "abstractspinboxdecorator.h"
-#include "slidinganimator.h"
-#include "utils.h"
 #include "colorutils.h"
 #include "rowwidget.h"
+#include "slidinganimator.h"
+#include "strategysettingswidget.h"
+#include "utils.h"
 
 StrategySettingsWidget::StrategySettingsWidget(QWidget *parent) : DataProviderWidget(parent) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);

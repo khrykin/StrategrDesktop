@@ -2,12 +2,12 @@
 // Created by Dmitry Khrykin on 2019-07-26.
 //
 
-#include <QPainter>
 #include <QApplication>
+#include <QPainter>
 
-#include "rowwidget.h"
-#include "colorutils.h"
 #include "applicationsettings.h"
+#include "colorutils.h"
+#include "rowwidget.h"
 
 void RowWidget::paintEvent(QPaintEvent *event) {
     using namespace ApplicationSettings;

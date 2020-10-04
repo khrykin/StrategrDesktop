@@ -1,22 +1,22 @@
 #include <QLayout>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPushButton>
 #include <QRegExpValidator>
 #include <QSpinBox>
 #include <QStyle>
 #include <QStyleOption>
-#include <QPushButton>
 
 #include "activitywidget.h"
-#include "utils.h"
-#include "colorutils.h"
 #include "applicationsettings.h"
-#include "mainwindow.h"
+#include "colorutils.h"
 #include "mainscene.h"
+#include "mainwindow.h"
 #include "time_utils.h"
+#include "utils.h"
 
 ActivityWidget::ActivityWidget(stg::activity *activity, QWidget *parent)
-        : DataProviderWidget(parent), _activity(activity) {
+    : DataProviderWidget(parent), _activity(activity) {
     setFixedHeight(ApplicationSettings::defaultActivityItemHeight);
 
     setLayout(new QHBoxLayout());

@@ -3,8 +3,8 @@
 //
 
 #include <algorithm>
-#include <numeric>
 #include <cassert>
+#include <numeric>
 
 #include "timeslotsstate.h"
 
@@ -53,8 +53,7 @@ namespace stg {
 
     void time_slots_state::update_begin_times() {
         for (auto slot_index = 0; slot_index < number_of_slots(); slot_index++) {
-            _data[slot_index].begin_time
-                    = make_slot_begin_time(_begin_time, slot_index);
+            _data[slot_index].begin_time = make_slot_begin_time(_begin_time, slot_index);
         }
     }
 
@@ -106,8 +105,8 @@ namespace stg {
     time_slots_state::time_slots_state(minutes start_time,
                                        minutes slot_duration,
                                        size_t number_of_slots)
-            : _begin_time(start_time),
-              _slot_duration(slot_duration) {
+        : _begin_time(start_time),
+          _slot_duration(slot_duration) {
         populate(start_time, number_of_slots);
     }
 
@@ -154,8 +153,8 @@ namespace stg {
         make_safe_index(from_index);
 
         auto *source_activity = has_index(source_index)
-                                ? _data[source_index].activity
-                                : time_slot::no_activity;
+                                    ? _data[source_index].activity
+                                    : time_slot::no_activity;
 
         for (auto i = from_index; i <= till_index; i++) {
             _data[i].activity = source_activity;
@@ -175,8 +174,8 @@ namespace stg {
             return;
 
         auto *source_activity = has_index(from_index)
-                                ? _data[from_index].activity
-                                : time_slot::no_activity;
+                                    ? _data[from_index].activity
+                                    : time_slot::no_activity;
 
         auto activities_not_equal = [&](const auto &v) {
             return v.activity != source_activity;
@@ -184,10 +183,10 @@ namespace stg {
 
         if (till_index > from_index) {
             auto movable_begin = from_index < 0
-                                 ? _data.begin()
-                                 : std::find_if(_data.begin() + from_index,
-                                                std::next(_data.begin() + till_index),
-                                                activities_not_equal);
+                                     ? _data.begin()
+                                     : std::find_if(_data.begin() + from_index,
+                                                    std::next(_data.begin() + till_index),
+                                                    activities_not_equal);
             if (movable_begin != _data.end()) {
                 auto movable_begin_index = std::distance(_data.begin(), movable_begin);
                 auto move_to_index = till_index + 1;
@@ -203,10 +202,10 @@ namespace stg {
             }
         } else {
             auto movable_rbegin = from_index >= _data.size()
-                                  ? _data.rbegin()
-                                  : std::find_if(_data.rbegin() + (_data.size() - 1 - from_index),
-                                                 std::next(_data.rbegin() + (_data.size() - 1 - till_index)),
-                                                 activities_not_equal);
+                                      ? _data.rbegin()
+                                      : std::find_if(_data.rbegin() + (_data.size() - 1 - from_index),
+                                                     std::next(_data.rbegin() + (_data.size() - 1 - till_index)),
+                                                     activities_not_equal);
 
             if (movable_rbegin != _data.rend()) {
                 auto movable_last_index = std::distance(movable_rbegin, _data.rend()) - 1;
@@ -250,7 +249,7 @@ namespace stg {
     void time_slots_state::set_activity_at_indices(activity *activity,
                                                    const std::vector<index_t> &indices) {
         auto activity_changed = false;
-        for (auto slot_index: indices) {
+        for (auto slot_index : indices) {
             auto current_activity_changed = _data[slot_index].activity != activity;
             if (current_activity_changed) {
                 silently_set_activity_at_index(slot_index, activity);
@@ -269,7 +268,7 @@ namespace stg {
 
     void time_slots_state::silently_set_activity_at_indices(activity *activity,
                                                             const std::vector<index_t> &indices) {
-        for (auto slot_index: indices) {
+        for (auto slot_index : indices) {
             silently_set_activity_at_index(slot_index, activity);
         }
     }
@@ -295,8 +294,8 @@ namespace stg {
 
     auto time_slots_state::has_activity(const activity *activity) const -> bool {
         return std::find_if(_data.begin(), _data.end(), [activity](const auto &time_slot) {
-            return time_slot.activity == activity;
-        }) != _data.end();
+                   return time_slot.activity == activity;
+               }) != _data.end();
     }
 
     void time_slots_state::remove_activity(activity *activity) {
@@ -434,14 +433,11 @@ namespace stg {
         auto range = end_time - begin_time;
 
         auto it = std::find_if(_data.begin(), _data.end(), [=](const time_slot &slot) {
-            auto slot_overlaps_with_range = slot.begin_time >= begin_time
-                                            && slot.end_time() >= begin_time;
+            auto slot_overlaps_with_range = slot.begin_time >= begin_time && slot.end_time() >= begin_time;
 
             auto found = range >= slot_duration()
-                         ? (slot.begin_time >= begin_time && slot.end_time() <= end_time)
-                           || slot_overlaps_with_range
-                         : (slot.begin_time <= begin_time && slot.end_time() >= end_time)
-                           || slot_overlaps_with_range;
+                             ? (slot.begin_time >= begin_time && slot.end_time() <= end_time) || slot_overlaps_with_range
+                             : (slot.begin_time <= begin_time && slot.end_time() >= end_time) || slot_overlaps_with_range;
 
             return found;
         });
@@ -458,11 +454,9 @@ namespace stg {
         for (auto &slot : _data) {
             auto fits_inside = slot.begin_time >= begin_time && slot.end_time() <= end_time;
 
-            auto overlaps_with_beginning = begin_time >= slot.begin_time && begin_time <= slot.end_time()
-                                           && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration();
+            auto overlaps_with_beginning = begin_time >= slot.begin_time && begin_time <= slot.end_time() && (float) (slot.end_time() - begin_time) >= 0.5f * slot_duration();
 
-            auto overlaps_with_end = end_time >= slot.begin_time && end_time <= slot.end_time()
-                                     && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration();
+            auto overlaps_with_end = end_time >= slot.begin_time && end_time <= slot.end_time() && (float) (end_time - slot.begin_time) >= 0.5f * slot_duration();
 
             if (fits_inside || overlaps_with_end || overlaps_with_beginning) {
                 result.push_back(&slot);
@@ -518,8 +512,7 @@ namespace stg {
     }
 
     auto time_slots_state::duration_for_activity(const activity *activity) const -> minutes {
-        return std::accumulate(_data.begin(), _data.end(), 0, [activity](minutes duration,
-                                                                         const time_slot &time_slot) {
+        return std::accumulate(_data.begin(), _data.end(), 0, [activity](minutes duration, const time_slot &time_slot) {
             auto duration_in_slot = time_slot.activity == activity ? time_slot.duration : 0;
             return duration + duration_in_slot;
         });

@@ -7,8 +7,8 @@
 
 #include <QMainWindow>
 
-#include "strategy.h"
 #include "filesystemiomanager.h"
+#include "strategy.h"
 #include "windowgeometrymanager.h"
 
 class MainScene;
@@ -19,7 +19,7 @@ class MacOSWindow;
 #endif
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit MainWindow(const QString &filePath, QWidget *parent = nullptr);
     explicit MainWindow(QWidget *parent = nullptr);
@@ -43,6 +43,7 @@ public:
 
     void reloadStrategy();
     int toolbarHeight();
+
 private:
     friend ApplicationMenu;
 
@@ -77,4 +78,4 @@ protected:
 };
 
 
-#endif //UI_MAINWINDOW_H
+#endif//UI_MAINWINDOW_H

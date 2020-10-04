@@ -5,8 +5,7 @@
 #include "resizeoperation.h"
 
 namespace stg {
-    resize_operation::resize_operation(time_slots_state *time_slots) :
-            time_slots(time_slots) {
+    resize_operation::resize_operation(time_slots_state *time_slots) : time_slots(time_slots) {
     }
 
     void resize_operation::fill_slots(index_t from_index, index_t till_index) {

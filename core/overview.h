@@ -5,9 +5,9 @@
 #ifndef STRATEGR_OVERVIEW_H
 #define STRATEGR_OVERVIEW_H
 
-#include <vector>
 #include <cmath>
 #include <optional>
+#include <vector>
 
 #include "color.h"
 #include "geometry.h"
@@ -50,4 +50,4 @@ namespace stg {
 
 }
 
-#endif //STRATEGR_OVERVIEW_H
+#endif//STRATEGR_OVERVIEW_H

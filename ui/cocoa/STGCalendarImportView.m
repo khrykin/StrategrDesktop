@@ -8,8 +8,8 @@
 
 #import <CoreImage/CoreImage.h>
 
-#import "STGCalendarImportView.h"
 #import "STGCalendarImportExportViewSubclass.h"
+#import "STGCalendarImportView.h"
 #import "STGColoredCheckBoxView.h"
 
 @interface SGCheckboxHeaderCell : NSTableHeaderCell
@@ -115,9 +115,9 @@
 
     [self.rightView addArrangedSubview:scrollView];
     [self addConstraints:@[
-            [scrollView.widthAnchor constraintEqualToConstant:250],
-            [scrollView.heightAnchor constraintEqualToAnchor:datePicker.heightAnchor],
-            [datePicker.topAnchor constraintEqualToAnchor:scrollView.topAnchor]
+        [scrollView.widthAnchor constraintEqualToConstant:250],
+        [scrollView.heightAnchor constraintEqualToAnchor:datePicker.heightAnchor],
+        [datePicker.topAnchor constraintEqualToAnchor:scrollView.topAnchor]
     ]];
 
     NSButton *overrideCheckbox = [NSButton checkboxWithTitle:STGCalendarImportViewModelTitleOverwrite
@@ -193,8 +193,8 @@
         checkbox.calendarIndex = row;
         checkbox.color = calendar.color;
         checkbox.state = [self.viewModel isCalendarSelected:calendar]
-                         ? NSControlStateValueOn
-                         : NSControlStateValueOff;
+                             ? NSControlStateValueOn
+                             : NSControlStateValueOff;
 
         return checkbox;
     }

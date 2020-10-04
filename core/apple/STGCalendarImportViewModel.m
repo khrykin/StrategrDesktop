@@ -28,11 +28,10 @@
         self.calendars = [[NSArray alloc] init];
         self.date = [[NSDate alloc] init];
         self.selectedCalendarsIdentifiers = defaultSettings.calendarsIdentifiers
-                                            ? [[NSMutableArray alloc] initWithArray:defaultSettings.calendarsIdentifiers]
-                                            : nil;
+                                                ? [[NSMutableArray alloc] initWithArray:defaultSettings.calendarsIdentifiers]
+                                                : nil;
 
         self.optionsMask = defaultSettings.optionsMask;
-
     }
 
     return self;
@@ -71,7 +70,7 @@
 
 - (void)setCalendars:(NSArray<EKCalendar *> *)calendars {
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES];
-    NSArray <EKCalendar *> *sortedCalendars = [calendars sortedArrayUsingDescriptors:@[sort]];
+    NSArray<EKCalendar *> *sortedCalendars = [calendars sortedArrayUsingDescriptors:@[sort]];
 
     _calendars = sortedCalendars;
 

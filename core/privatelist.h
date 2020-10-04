@@ -6,9 +6,9 @@
 #define PRIVATELIST
 
 #include <functional>
-#include <vector>
 #include <optional>
 #include <sstream>
+#include <vector>
 
 namespace stg {
     template<class Item>
@@ -21,7 +21,7 @@ namespace stg {
         using const_iterator = typename data_t::const_iterator;
 
         explicit private_list(data_t data = {})
-                : _data(std::move(data)) {}
+            : _data(std::move(data)) {}
 
         virtual void reset_with(data_t data) {
             _data = std::move(data);
@@ -75,15 +75,14 @@ namespace stg {
                 return false;
             }
 
-            return item_index >= 0
-                   && item_index < static_cast<index_t>(_data.size());
+            return item_index >= 0 && item_index < static_cast<index_t>(_data.size());
         }
 
         bool has_indices(index_t item_index) const {
             return has_index(item_index);
         }
 
-        template<typename ...Indices>
+        template<typename... Indices>
         bool has_indices(index_t item_index, Indices... indices) const {
             return has_index(item_index) && has_indices(indices...);
         }
@@ -123,4 +122,4 @@ namespace stg {
     };
 }
 
-#endif //PRIVATELIST
+#endif//PRIVATELIST

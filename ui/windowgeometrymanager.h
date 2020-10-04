@@ -30,4 +30,4 @@ private:
     static QWidgetList windows;
 };
 
-#endif //WINDOWGEOMETRYMANAGER_H
+#endif//WINDOWGEOMETRYMANAGER_H
