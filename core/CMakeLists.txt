@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(libstrategr)
+project(StrategrCore)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -27,6 +27,8 @@ find_package(utf8proc 2.4 REQUIRED)
 find_package(nlohmann_json 3.2 REQUIRED)
 
 # Core Library
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(libstrategr STATIC
         ${STRATEGR_CORE_VERSION_FILE}
@@ -91,6 +93,8 @@ add_library(libstrategr STATIC
         include/strategr/notifications.h
         src/file_bookmark.cpp
         include/strategr/file_bookmark.h)
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
 
 set_target_properties(libstrategr PROPERTIES OUTPUT_NAME strategr)
 
