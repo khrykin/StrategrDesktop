@@ -123,7 +123,7 @@ namespace stg {
 
         user_notifications::storage storage;
 
-        for (auto i = 0; i < dict_size; i++) {
+        for (size_t i = 0; i < dict_size; i++) {
             auto bookmark = deserialize<file_bookmark>(data);
             auto identifiers = deserialize<std::vector<std::string>>(data);
 

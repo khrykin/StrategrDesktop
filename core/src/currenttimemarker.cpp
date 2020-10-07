@@ -7,8 +7,8 @@
 
 namespace stg {
     current_time_marker::current_time_marker(const stg::strategy &strategy, gfloat marker_radius)
-        : strategy(strategy),
-          marker_radius(marker_radius) {}
+        : marker_radius(marker_radius),
+          strategy(strategy) {}
 
     auto current_time_marker::top_offset_in_slots(gfloat total_height) const -> gfloat {
         auto slot_height = total_height / (gfloat)(strategy.number_of_time_slots() + 1);

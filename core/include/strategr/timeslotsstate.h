@@ -23,6 +23,7 @@ namespace stg {
                              public streamable_list<time_slots_state> {
     public:
         using minutes = time_slot::minutes;
+        using size_t = int;
 
         auto next_slot_empty(index_t index) const -> bool;
         auto previous_slot_empty(index_t index) const -> bool;

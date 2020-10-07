@@ -84,8 +84,8 @@ namespace stg {
         on_change_event();
     }
 
-    auto time_slots_state::number_of_slots() const -> time_slots_state::size_t {
-        return (time_slots_state::size_t) _data.size();
+    auto time_slots_state::number_of_slots() const -> size_t {
+        return static_cast<size_t>(_data.size());
     }
 
     void time_slots_state::set_number_of_slots(size_t new_number_of_slots) {
@@ -170,8 +170,9 @@ namespace stg {
     void time_slots_state::fill_slots_shifting(index_t from_index, index_t till_index) {
         auto result = _data;
 
-        if (from_index == till_index)
+        if (from_index == till_index) {
             return;
+        }
 
         auto *source_activity = has_index(from_index)
                                     ? _data[from_index].activity
@@ -191,9 +192,9 @@ namespace stg {
                 auto movable_begin_index = std::distance(_data.begin(), movable_begin);
                 auto move_to_index = till_index + 1;
 
-                if (move_to_index < _data.size()) {
+                if (move_to_index < number_of_slots()) {
                     auto move_distance = move_to_index - movable_begin_index;
-                    auto movable_last_index = _data.size() - 1 - move_distance;
+                    auto movable_last_index = number_of_slots() - 1 - move_distance;
 
                     for (auto i = movable_begin_index; i <= movable_last_index; i++) {
                         result[i + move_distance].activity = _data[i].activity;
@@ -201,7 +202,7 @@ namespace stg {
                 }
             }
         } else {
-            auto movable_rbegin = from_index >= _data.size()
+            auto movable_rbegin = from_index >= number_of_slots()
                                       ? _data.rbegin()
                                       : std::find_if(_data.rbegin() + (_data.size() - 1 - from_index),
                                                      std::next(_data.rbegin() + (_data.size() - 1 - till_index)),
@@ -350,8 +351,9 @@ namespace stg {
 
         auto copied_length = till_index - from_index;
         auto destination_end_index = destination_index + copied_length;
-        if (destination_end_index > _data.size() - 1)
+        if (destination_end_index > number_of_slots() - 1) {
             destination_end_index = (index_t) _data.size() - 1;
+        }
 
         auto index_in_copied = 0;
         std::for_each(_data.begin() + destination_index,

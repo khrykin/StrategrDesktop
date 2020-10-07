@@ -48,7 +48,7 @@ void SelectionWidget::paintEvent(QPaintEvent *event) {
     }
 }
 
-void SelectionWidget::drawSelectionForItem(const stg::grouped_selection_element &selectionItem,
+void SelectionWidget::drawSelectionForItem(const stg::flat_selection &selectionItem,
                                            QPainter &painter) {
     using namespace DrawingUtils;
 

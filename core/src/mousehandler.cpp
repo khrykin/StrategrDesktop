@@ -12,11 +12,11 @@ namespace stg {
                                  std::function<gfloat()> slot_height_getter,
                                  std::function<rect()> viewport_getter,
                                  const mouse_parameters &settings)
-        : strategy(strategy),
-          selection(selection),
-          get_slot_height(std::move(slot_height_getter)),
+        : settings(settings),
           get_viewport(std::move(viewport_getter)),
-          settings(settings),
+          get_slot_height(std::move(slot_height_getter)),
+          strategy(strategy),
+          selection(selection),
           current_operaion(make_operation<none_operation>()) {
         assert(get_slot_height != nullptr && "slot_height_getter must be provided");
     }

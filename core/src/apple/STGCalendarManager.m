@@ -155,13 +155,17 @@
 #endif
 
     NSPredicate *iCloudPredicate = [NSPredicate predicateWithBlock:^BOOL(EKSource *source,
-                                                                         NSDictionary<NSString *, id> *bindings) {
+                                                                         NSDictionary<NSString *, id> *_) {
+      (void) _;
+
       return source.sourceType == EKSourceTypeCalDAV &&
              [source.title isEqualToString:@"iCloud"];
     }];
 
     NSPredicate *localPredicate = [NSPredicate predicateWithBlock:^BOOL(EKSource *source,
-                                                                        NSDictionary<NSString *, id> *bindings) {
+                                                                        NSDictionary<NSString *, id> *_) {
+      (void) _;
+
       return source.sourceType == EKSourceTypeLocal;
     }];
 
@@ -195,7 +199,7 @@
                              completionHandler:nil];
 
 #endif
-};
+}
 
 - (void)removeAllEventsForDate:(NSDate *)date
                andCalendarName:(NSString *)calendarName {
@@ -242,7 +246,7 @@
     if (authorizationStatus != EKAuthorizationStatusAuthorized) {
         [store requestAccessToEntityType:EKEntityTypeEvent
                               completion:^(BOOL granted, NSError *error) {
-                                if (!granted) {
+                                if (!granted || error) {
                                     dispatch_async(dispatch_get_main_queue(), ^{
                                       completionHandler(nil);
                                     });
@@ -283,6 +287,7 @@
     NSArray<EKEvent *> *events = [self.store eventsMatchingPredicate:datePredicate];
 
     NSPredicate *nonAllDayPredicate = [NSPredicate predicateWithBlock:^BOOL(EKEvent *event, NSDictionary *_) {
+      (void) _;
       return !event.allDay;
     }];
 

@@ -105,7 +105,7 @@ namespace stg {
                                                  [this] { this->strategy.reorder_activities_by_usage(); }};
 
         void place_activity_in_selection(index_t actvity_index) {
-            strategy.place_activity(actvity_index, _selection);
+            strategy.place_activity(actvity_index, _selection.flat());
             _selection.deselect_all();
 
             if (on_show_sessions) on_show_sessions();

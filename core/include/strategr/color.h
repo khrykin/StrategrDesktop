@@ -12,7 +12,7 @@
 
 #if __APPLE__
 
-#import <CoreGraphics/CGColor.h>
+#include <CoreGraphics/CGColor.h>
 
 #endif
 

@@ -35,10 +35,10 @@ namespace stg {
                std::function<void()> performer,
                std::function<bool()> enabled,
                action_type type = action_type::standard)
-            : name(std::move(name)),
+            : type(type),
+              name(std::move(name)),
               performer(std::move(performer)),
-              enabled_getter(std::move(enabled)),
-              type(type) {
+              enabled_getter(std::move(enabled)) {
             assert(this->performer && "action performer must not be null");
         }
 
