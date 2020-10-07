@@ -3,8 +3,8 @@
 #include <QApplication>
 #include <catch2/catch.hpp>
 
-#include "backends.h"
 #include "application.h"
+#include "backends.h"
 
 void setupCredentials() {
     QCoreApplication::setOrganizationName("Dmitry Khrykin");
