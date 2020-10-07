@@ -14,11 +14,10 @@
 
 namespace stg {
     using index_t = strategy::time_slot_index_t;
-    using grouped_selection_element = std::vector<index_t>;
-    using grouped_selection = std::vector<grouped_selection_element>;
+    using flat_selection = std::vector<index_t>;
+    using grouped_selection = std::vector<flat_selection>;
 
-    class selection : public std::vector<index_t>,
-                      public notifiable_on_change {
+    class selection : public notifiable_on_change {
     public:
         explicit selection(const stg::strategy &strategy);
 
@@ -45,11 +44,19 @@ namespace stg {
         bool is_clicked() const;
         void set_is_clicked(bool is_clicked);
 
-        const grouped_selection &grouped() const;
+        auto size() const -> time_slots_state::size_t;
+        auto empty() const -> bool;
+
+        auto flat() const -> const flat_selection &;
+        auto grouped() const -> const grouped_selection &;
+
+        auto front() const -> const index_t &;
+        auto back() const -> const index_t &;
 
     private:
         const stg::strategy &strategy;
 
+        flat_selection _flat;
         grouped_selection _grouped;
 
         void make_safe(int &index);

@@ -19,7 +19,7 @@ public:
     explicit SelectionWidget(QWidget *parent);
 
 private:
-    void drawSelectionForItem(const stg::grouped_selection_element &selectionItem,
+    void drawSelectionForItem(const stg::flat_selection &selectionItem,
                               QPainter &painter);
 
     void resizeEvent(QResizeEvent *event) override;

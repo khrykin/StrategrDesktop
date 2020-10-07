@@ -30,7 +30,7 @@ namespace stg {
         return session.activity->name() + " (" + time_utils::human_string_from_minutes(session.duration()) + ")";
     }
 
-    static auto make_notification_message(const session &session, notification_type type) -> std::string {
+    static auto make_notification_message(notification_type type) -> std::string {
         const auto minutes_interval = notifier::prepare_seconds_interval / 60;
         const auto time_string = time_utils::human_string_from_minutes(minutes_interval);
 
@@ -71,7 +71,7 @@ namespace stg {
         };
 
         auto relative_time = make_relative_time();
-        auto day = 24 * 60 * 60;
+        const auto day = 24 * 60 * 60;
 
         if (relative_time >= day) {
             relative_time = relative_time - day;
@@ -85,7 +85,7 @@ namespace stg {
 
 
         return user_notifications::notification(make_notification_title(session, type),
-                                                make_notification_message(session, type),
+                                                make_notification_message(type),
                                                 make_notification_delivery_time(session, type),
                                                 std::make_shared<notification_type>(type));
     }
@@ -158,8 +158,9 @@ namespace stg {
         using namespace user_notifications;
 
         auto current_time = time_utils::current_seconds();
+        seconds since_last_poll = std::abs((int) current_time - (int) last_poll_time);
 
-        if (last_poll_time && std::abs((int) current_time - (int) last_poll_time) > 4 * polling_seconds_interval) {
+        if (last_poll_time && since_last_poll > 4 * polling_seconds_interval) {
             // If time difference between two calls of this function was too big,
             // this probably means that the system time had changed, we need to reschedule.
             schedule();

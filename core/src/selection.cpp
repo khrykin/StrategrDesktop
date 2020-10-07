@@ -14,24 +14,24 @@ stg::selection::selection(const stg::strategy &strategy)
 void stg::selection::set_selected_at(index_t slot_index, bool is_selected) {
     make_safe(slot_index);
 
-    auto found_it = std::find(begin(), end(), slot_index);
-    auto already_selected = found_it != end();
+    auto found_it = std::find(_flat.begin(), _flat.end(), slot_index);
+    auto already_selected = found_it != _flat.end();
 
     if (already_selected && is_selected) {
         return;
     } else if (already_selected && !is_selected) {
-        erase(found_it);
+        _flat.erase(found_it);
     } else if (is_selected) {
-        push_back(slot_index);
-        std::sort(begin(), end());
+        _flat.push_back(slot_index);
+        std::sort(_flat.begin(), _flat.end());
     }
 
     on_change_event();
 }
 
 void stg::selection::reset_with(std::vector<index_t> slot_indices) {
-    assign(slot_indices.begin(), slot_indices.end());
-    std::sort(begin(), end());
+    _flat.assign(slot_indices.begin(), slot_indices.end());
+    std::sort(_flat.begin(), _flat.end());
 
     on_change_event();
 }
@@ -40,30 +40,30 @@ void stg::selection::reset_with(std::vector<index_t> slot_indices) {
 void stg::selection::toggle_at(index_t slot_index) {
     make_safe(slot_index);
 
-    auto found_it = std::find(begin(), end(), slot_index);
-    auto already_selected = found_it != end();
+    auto found_it = std::find(_flat.begin(), _flat.end(), slot_index);
+    auto already_selected = found_it != _flat.end();
 
     if (already_selected) {
-        erase(found_it);
+        _flat.erase(found_it);
     } else {
-        push_back(slot_index);
-        std::sort(begin(), end());
+        _flat.push_back(slot_index);
+        std::sort(_flat.begin(), _flat.end());
     }
 
     on_change_event();
 }
 
 void stg::selection::deselect_all() {
-    clear();
+    _flat.clear();
     _is_clicked = false;
 
     on_change_event();
 }
 
 void stg::selection::select_all() {
-    resize(strategy.number_of_time_slots());
+    _flat.resize(strategy.number_of_time_slots());
 
-    std::iota(begin(), end(), 0);
+    std::iota(_flat.begin(), _flat.end(), 0);
 
     on_change_event();
 }
@@ -78,10 +78,10 @@ void stg::selection::fill(index_t from_index, index_t to_index) {
 
     for (auto i = from_index; i <= to_index; i++) {
         if (!has_selected(i))
-            push_back(i);
+            _flat.push_back(i);
     }
 
-    std::sort(begin(), end());
+    std::sort(_flat.begin(), _flat.end());
 
     on_change_event();
 }
@@ -91,29 +91,29 @@ bool stg::selection::is_continuous() const {
 }
 
 bool stg::selection::only_empty_selected() const {
-    return std::find_if(begin(), end(), [this](auto index) {
+    return std::find_if(_flat.begin(), _flat.end(), [this](auto index) {
                return strategy.time_slots()[index].activity != stg::strategy::no_activity;
-           }) == end();
+           }) == _flat.end();
 }
 
 
 bool stg::selection::only_non_empty_selected() const {
-    return std::find_if(begin(), end(), [this](auto index) {
+    return std::find_if(_flat.begin(), _flat.end(), [this](auto index) {
                return strategy.time_slots()[index].activity == stg::strategy::no_activity;
-           }) == end();
+           }) == _flat.end();
 }
 
 bool stg::selection::has_selected(index_t slot_index) const {
-    return std::find(begin(), end(), slot_index) != end();
+    return std::find(_flat.begin(), _flat.end(), slot_index) != _flat.end();
 }
 
 void stg::selection::reload() {
     grouped_selection new_grouped;
-    grouped_selection_element current_item;
+    flat_selection current_item;
 
-    for (auto i = begin(); i != end(); ++i) {
+    for (auto i = _flat.begin(); i != _flat.end(); ++i) {
         auto current_index = *i;
-        auto previous = i != begin()
+        auto previous = i != _flat.begin()
                             ? std::make_optional(*prev(i))
                             : std::nullopt;
 
@@ -124,7 +124,7 @@ void stg::selection::reload() {
             current_item = {current_index};
         }
 
-        if (i == prev(end())) {
+        if (i == prev(_flat.end())) {
             new_grouped.push_back(current_item);
         }
     }
@@ -142,8 +142,28 @@ void stg::selection::set_is_clicked(bool is_clicked) {
     on_change_event();
 }
 
-const stg::grouped_selection &stg::selection::grouped() const {
+auto stg::selection::size() const -> time_slots_state::size_t {
+    return static_cast<time_slots_state::size_t>(_flat.size());
+}
+
+auto stg::selection::empty() const -> bool {
+    return _flat.empty();
+}
+
+auto stg::selection::flat() const -> const stg::flat_selection & {
+    return _flat;
+}
+
+auto stg::selection::grouped() const -> const stg::grouped_selection & {
     return _grouped;
+}
+
+auto stg::selection::front() const -> const index_t & {
+    return _flat.front();
+}
+
+auto stg::selection::back() const -> const index_t & {
+    return _flat.back();
 }
 
 bool stg::selection::is_all_selected() const {

@@ -50,8 +50,7 @@ NSString *const STGCalendarExporterKeyCalendarName = @"exportCalendarName";
     return self.settings.date;
 }
 
-- (void)export:(void (^)())completionHandler;
-{
+- (void)export:(void (^)())completionHandler {
     dispatch_queue_t queue = dispatch_get_global_queue(0, 0);
     dispatch_async(queue, ^{
       STGCalendarExportOptions optionsMask = self.settings.optionsMask;

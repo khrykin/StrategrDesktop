@@ -15,6 +15,9 @@ namespace stg {
 
         notifiable_on_change() = default;
         notifiable_on_change(const notifiable_on_change &) = delete;
+        virtual ~notifiable_on_change() = default;
+
+        auto operator=(const notifiable_on_change &other) -> notifiable_on_change & = delete;
 
         void add_on_change_callback(const callback_t &callback) const {
             on_change_callbacks.push_back(callback);

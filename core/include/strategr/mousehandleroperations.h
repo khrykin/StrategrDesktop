@@ -62,11 +62,9 @@ struct stg::mouse_handler::none_operation : public operation {
     }
 
 private:
-    void init(const mouse_event &event) override{};
-
-    void change(const mouse_event &event) override{};
-
-    void teardown(const mouse_event &event) override{};
+    void init(const mouse_event &) override{};
+    void change(const mouse_event &) override{};
+    void teardown(const mouse_event &) override{};
 };
 
 struct stg::mouse_handler::copy_drag_operation : public operation {
@@ -120,7 +118,7 @@ private:
             handler.on_draw_dragged_session(dragged_session_index, get_first_slot_index());
     }
 
-    void teardown(const mouse_event &event) override {
+    void teardown(const mouse_event &) override {
         if (dragged_session_index >= 0) {
             strategy.copy_session(dragged_session_index, get_first_slot_index());
         }
@@ -234,15 +232,17 @@ private:
 
         dragged_session_index = strategy.drag_session(dragged_session_index, new_local_distance);
 
-        if (handler.on_select_sessions)
+        if (handler.on_select_sessions) {
             handler.on_select_sessions({dragged_session_index});
+        }
     }
 
-    void teardown(const mouse_event &event) override {
+    void teardown(const mouse_event &) override {
         strategy.end_dragging();
 
-        if (handler.on_select_sessions)
+        if (handler.on_select_sessions) {
             handler.on_select_sessions({});
+        }
     };
 };
 
@@ -302,14 +302,16 @@ private:
         select_sessions(event, handle_index, initial_mouse_zone);
     }
 
-    void teardown(const mouse_event &event) override {
-        if (handler.on_select_sessions)
+    void teardown(const mouse_event &) override {
+        if (handler.on_select_sessions) {
             handler.on_select_sessions({});
+        }
 
         handler._resize_boundary = resize_boundary_configuration();
 
-        if (handler.on_resize_boundary_change)
+        if (handler.on_resize_boundary_change) {
             handler.on_resize_boundary_change();
+        }
 
         strategy.end_resizing();
         finished = true;
@@ -318,14 +320,16 @@ private:
     void handle_direction_change() override {
         if (initial_mouse_zone == mouse_zone::stretch_top &&
             handler.current_direction == direction::down) {
-            if (handle_index != boundary_slot_index + 1)
+            if (handle_index != boundary_slot_index + 1) {
                 handle_index = boundary_slot_index + 1;
+            }
         }
 
         if (initial_mouse_zone == mouse_zone::stretch_bottom &&
             handler.current_direction == direction::down) {
-            if (handle_index != boundary_slot_index)
+            if (handle_index != boundary_slot_index) {
                 handle_index = boundary_slot_index;
+            }
         }
     }
 
@@ -457,13 +461,14 @@ private:
             return;
         }
 
-        if (!is_safe(handler.current_slot_index))
+        if (!is_safe(handler.current_slot_index)) {
             return;
+        }
 
         handler.selection.toggle_at(handler.current_slot_index);
     };
 
-    void change(const mouse_event &event) override {
+    void change(const mouse_event &) override {
         if (current_slot_is_selected()) {
             return;
         }

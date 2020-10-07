@@ -5,6 +5,7 @@
 
 #include "json.h"
 #include "persistent.h"
+#include "selection.h"
 #include "strategy.h"
 #include "time_utils.h"
 
@@ -23,16 +24,16 @@ namespace stg {
     }
 
     strategy::strategy(const time_slots_state::data_t &time_slots,
-                       const activity_list::data_t &activities) : _time_slots(time_slots),
-                                                                  _activities(activities),
+                       const activity_list::data_t &activities) : _activities(activities),
+                                                                  _time_slots(time_slots),
                                                                   history(make_history_entry()) {
 
         time_slots_changed();
         setup_time_slots_callback();
     }
 
-    strategy::strategy(const strategy &other) : _time_slots(other._time_slots.data()),
-                                                _activities(other._activities.data()),
+    strategy::strategy(const strategy &other) : _activities(other._activities.data()),
+                                                _time_slots(other._time_slots.data()),
                                                 _sessions(other.sessions().data()),
                                                 history(make_history_entry()) {
 
@@ -382,8 +383,8 @@ namespace stg {
         commit_to_history();
     }
 
-    void strategy::make_empty_at(const std::vector<time_slot_index_t> &time_slot_indices) {
-        _time_slots.set_activity_at_indices(no_activity, time_slot_indices);
+    void strategy::make_empty_at(const stg::selection &selection) {
+        _time_slots.set_activity_at_indices(no_activity, selection.flat());
 
         commit_to_history();
     }

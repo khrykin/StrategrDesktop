@@ -140,7 +140,7 @@ namespace stg {
         auto nobody_can_move = false;
 
         while (!nobody_can_move) {
-            auto cant_move_count = 0;
+            std::size_t cant_move_count = 0;
 
             for (auto const &[current_index, past_indices] : history) {
                 auto slot_is_dragged = std::find(new_dragged_indices.begin(),
