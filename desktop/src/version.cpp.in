@@ -1,0 +1,10 @@
+//
+// Created by Dmitry Khrykin on 2019-08-12.
+//
+
+#include "applicationsettings.h"
+
+const char *const ApplicationSettings::version = "@DESKTOP_VERSION@";
+const char *const ApplicationSettings::shortVersion = "@DESKTOP_VERSION_SHORT@";
+const char *const ApplicationSettings::repoName = "@REPO_NAME@";
+const char *const ApplicationSettings::appcastURL = "@APPCAST_URL@";
