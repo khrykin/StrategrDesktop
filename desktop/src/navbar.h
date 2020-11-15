@@ -29,16 +29,16 @@ public:
 
     template<typename Method>
     void setLeftButton(
-        const QString &text,
-        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-        Method slot) {
+        const QString &,
+        const typename QtPrivate::FunctionPointer<Method>::Object *,
+        Method) {
     }
 
     template<typename Method>
     void setRightButton(
-        const QString &text,
-        const typename QtPrivate::FunctionPointer<Method>::Object *receiver,
-        Method slot) {
+        const QString &,
+        const typename QtPrivate::FunctionPointer<Method>::Object *,
+        Method) {
     }
 
 #else

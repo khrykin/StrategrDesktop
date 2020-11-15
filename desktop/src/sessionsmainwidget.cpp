@@ -81,7 +81,7 @@ void SessionsMainWidget::layoutChildWidgets() {
 
     connect(slotboardScrollArea()->verticalScrollBar(),
             &QScrollBar::valueChanged,
-            [this](int value) { overviewWidget->update(); });
+            [this](int) { overviewWidget->update(); });
 
     layout()->addWidget(strategySettingsWidget);
     layout()->addWidget(overviewWidget);
@@ -98,7 +98,7 @@ void SessionsMainWidget::reloadStrategy() {
     notifier.schedule();
 }
 
-void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
+void SessionsMainWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
 
     painter.setPen(Qt::NoPen);
@@ -106,7 +106,7 @@ void SessionsMainWidget::paintEvent(QPaintEvent *paintEvent) {
     painter.drawRect(0, 0, width(), height());
 }
 
-void SessionsMainWidget::resizeEvent(QResizeEvent *event) {
+void SessionsMainWidget::resizeEvent(QResizeEvent *) {
     _slotBoardScrollArea->setGeometry(contentsRect());
 }
 

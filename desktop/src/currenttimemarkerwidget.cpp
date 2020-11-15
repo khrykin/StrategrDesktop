@@ -7,7 +7,7 @@ CurrentTimeMarkerWidget::CurrentTimeMarkerWidget(QWidget *parent) : QWidget(pare
     setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
-void CurrentTimeMarkerWidget::paintEvent(QPaintEvent *event) {
+void CurrentTimeMarkerWidget::paintEvent(QPaintEvent *) {
     QPainter painter;
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing);

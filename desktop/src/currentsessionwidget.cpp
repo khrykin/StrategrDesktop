@@ -108,7 +108,7 @@ CurrentSessionWidget::CurrentSessionWidget(QWidget *parent) : DataProviderWidget
     }
 }
 
-void CurrentSessionWidget::paintEvent(QPaintEvent *event) {
+void CurrentSessionWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
 
     painter.setPen(Qt::red);

@@ -13,7 +13,7 @@
 class SessionWidget : public DataProviderWidget, public ColorProvider {
 public:
     static QColor borderColor();
-    explicit SessionWidget(const stg::session &session, QWidget *parent);
+    explicit SessionWidget(stg::session session, QWidget *parent);
 
     void setIsSelected(bool isSelected);
     void setIsBorderSelected(bool isBorderSelected);

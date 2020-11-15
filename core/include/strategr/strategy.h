@@ -116,7 +116,7 @@ namespace stg {
 #pragma mark - Operations On Slots
 
         void place_activity(activity_index_t activity_index, const std::vector<time_slot_index_t> &time_slot_indices);
-        void make_empty_at(const stg::selection &selection);
+        void make_empty_at(const std::vector<time_slot_index_t> &selection);
         void shift_below_time_slot(time_slot_index_t from_index, int length);
 
         auto is_resizing() const -> bool;

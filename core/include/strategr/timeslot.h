@@ -12,7 +12,7 @@ namespace stg {
     struct activity;
 
     struct time_slot {
-        using minutes = unsigned;
+        using minutes = int;
 
         static constexpr auto no_activity = nullptr;
 

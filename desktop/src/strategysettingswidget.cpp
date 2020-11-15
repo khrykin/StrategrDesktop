@@ -81,7 +81,7 @@ void StrategySettingsWidget::createSlotDurationForm() {
 
     connect(slotDurationEdit,
             QOverload<int>::of(&QSpinBox::valueChanged),
-            [this](int value) {
+            [this](int) {
                 auto slotDuration = slotDurationEdit->value();
                 strategy().set_time_slot_duration(slotDuration);
                 reloadStrategy();
@@ -182,24 +182,29 @@ ColoredLabel *StrategySettingsWidget::makeFormLabel(const QString &text) {
 }
 
 void StrategySettingsWidget::updateUI() {
-    auto slotDuration = strategy().time_slot_duration();
-    auto beginTime = QTimeFromMinutes(strategy().begin_time());
-    auto endTime = QTimeFromMinutes(strategy().end_time());
+    auto slotDuration = static_cast<int>(strategy().time_slot_duration());
+    auto beginTime = QTimeFromMinutes(static_cast<int>(strategy().begin_time()));
+    auto endTime = QTimeFromMinutes(static_cast<int>(strategy().end_time()));
 
-    if (slotDuration != slotDurationEdit->value())
+    if (slotDuration != slotDurationEdit->value()) {
         slotDurationEdit->setValue(slotDuration);
+    }
 
-    if (beginTime != beginTimeEdit->time())
+    if (beginTime != beginTimeEdit->time()) {
         beginTimeEdit->setTime(beginTime);
+    }
 
-    if (endTime != endTimeEdit->time())
+    if (endTime != endTimeEdit->time()) {
         endTimeEdit->setTime(endTime);
+    }
 
-    if (beginTimeEdit->minuteStepSize != strategy().time_slot_duration())
+    if (beginTimeEdit->minuteStepSize != static_cast<int>(strategy().time_slot_duration())) {
         beginTimeEdit->minuteStepSize = strategy().time_slot_duration();
+    }
 
-    if (endTimeEdit->minuteStepSize != strategy().time_slot_duration())
-        endTimeEdit->minuteStepSize = strategy().time_slot_duration();
+    if (endTimeEdit->minuteStepSize != static_cast<int>(strategy().time_slot_duration())) {
+        endTimeEdit->minuteStepSize = static_cast<int>(strategy().time_slot_duration());
+    }
 }
 
 void StrategySettingsWidget::slideAndHide(const std::function<void()> &onFinishedCallback) {
@@ -214,7 +219,7 @@ void StrategySettingsWidget::slideAndShow(const std::function<void()> &onFinishe
     SlidingAnimator::showWidget(this, options);
 }
 
-bool StrategySettingsWidget::eventFilter(QObject *object, QEvent *event) {
+bool StrategySettingsWidget::eventFilter(QObject *, QEvent *event) {
     // Disable all built-in shortcuts
     return event->type() == QEvent::ShortcutOverride;
 }

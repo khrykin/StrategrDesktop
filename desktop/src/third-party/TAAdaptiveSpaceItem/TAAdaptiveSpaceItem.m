@@ -12,7 +12,7 @@
 // Private
 @interface TAAdaptiveSpaceItem ()
 - (void)doAdaptiveSpaceItemInit_;
-@end // Private
+@end// Private
 
 @implementation TAAdaptiveSpaceItem
 
@@ -36,7 +36,7 @@
 
 - (NSSize)minSize {
     NSArray *items = [self.toolbar items];
-    NSInteger index = [items indexOfObject:self];
+    NSUInteger index = [items indexOfObject:self];
 
     if (index != NSNotFound) {
         NSRect thisFrame = self.view.superview.frame;
@@ -75,9 +75,8 @@
 // Private
 
 - (void)doAdaptiveSpaceItemInit_ {
-    TAAdaptiveSpaceItemView *adaptiveSpaceItemView
-            = [[TAAdaptiveSpaceItemView alloc] initWithFrame:NSMakeRect(0, 0, 1,
-                                                                        1)];
+    TAAdaptiveSpaceItemView *adaptiveSpaceItemView = [[TAAdaptiveSpaceItemView alloc] initWithFrame:NSMakeRect(0, 0, 1,
+                                                                                                               1)];
     adaptiveSpaceItemView.adaptiveSpaceItem = self;
     self.view = adaptiveSpaceItemView;
 }

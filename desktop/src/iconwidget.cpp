@@ -4,11 +4,12 @@
 
 #include <QPainter>
 #include <QStyleOption>
+#include <utility>
 
 #include "iconwidget.h"
 
-IconWidget::IconWidget(const QString &code, QWidget *parent)
-    : _code(code), QWidget(parent) {}
+IconWidget::IconWidget(QString code, QWidget *parent)
+    : QWidget(parent), _code(std::move(code)) {}
 
 void IconWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);

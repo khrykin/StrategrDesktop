@@ -9,7 +9,7 @@
 #include "colorutils.h"
 #include "rowwidget.h"
 
-void RowWidget::paintEvent(QPaintEvent *event) {
+void RowWidget::paintEvent(QPaintEvent *) {
     using namespace ApplicationSettings;
 
     auto painter = QPainter(this);

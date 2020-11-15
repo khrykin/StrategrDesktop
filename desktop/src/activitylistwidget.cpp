@@ -82,7 +82,7 @@ void ActivityListWidget::layoutChildWidgets() {
     searchBox = new SearchBoxWidget("Find...");
     connect(searchBox,
             &SearchBoxWidget::textEdited,
-            [=](const QString &text) {
+            [=](const QString &) {
                 performSearch();
             });
 
@@ -125,7 +125,7 @@ void ActivityListWidget::setSelectedForItemAtIndex(int index, bool isSelected) c
 }
 
 void ActivityListWidget::deselectAllItems() {
-    for (size_t i = 0; i < numberOfItems(); i++) {
+    for (auto i = 0; i < numberOfItems(); i++) {
         setSelectedForItemAtIndex(i, false);
     }
 
@@ -344,7 +344,7 @@ void ActivityListWidget::selectDown() {
     }
 }
 
-void ActivityListWidget::scrollDownItemIntoViewAtIndex(int index) {
+void ActivityListWidget::scrollDownItemIntoViewAtIndex(int) {
     auto *selectedWidget = listItemWidgetAtIndex(selectedActivityIndex);
     if (selectedWidget->geometry().bottom() >
         scrollArea->viewport()->height() + scrollArea->verticalScrollBar()->value()) {

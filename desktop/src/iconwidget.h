@@ -13,7 +13,7 @@ public:
     static QString backCode();
     static QString addCode();
 
-    explicit IconWidget(const QString &code = "", QWidget *parent = nullptr);
+    explicit IconWidget(QString code = "", QWidget *parent = nullptr);
     const QString &code() const;
     void setCode(const QString &code);
 

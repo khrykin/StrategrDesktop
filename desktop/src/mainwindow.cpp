@@ -14,14 +14,12 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(const QString &filePath, QWidget *parent)
-    : strategy(fsIOManager.openFromPathOrDefault(filePath)),
-      QMainWindow(parent) {
+    : QMainWindow(parent), strategy(fsIOManager.openFromPathOrDefault(filePath)) {
     setup();
 }
 
 MainWindow::MainWindow(QWidget *parent)
-    : strategy(fsIOManager.openDefault()),
-      QMainWindow(parent) {
+    : QMainWindow(parent), strategy(fsIOManager.openDefault()) {
     setup();
 }
 

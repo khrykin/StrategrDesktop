@@ -23,7 +23,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)windowResized:(NSNotification *)notification; {
+- (void)windowResized:(NSNotification *)notification {
     [_adaptiveSpaceItem updateWidth];
 }
 

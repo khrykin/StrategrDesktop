@@ -56,7 +56,7 @@ void OverviewWidget::drawCurrentTimeMarker(QPainter &painter, stg::overview &ove
     painter.fillRect(overview.current_time_position() + 2, 0, 1, height(), borderColor);
 }
 
-void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &overview) {
+void OverviewWidget::drawViewportMarker(QPainter &painter, stg::overview &) {
     auto viewportMarker = makeViewportMarker();
 
     auto blackColor = QColor(Qt::black);

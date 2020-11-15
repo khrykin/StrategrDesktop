@@ -11,8 +11,7 @@
 
 ActivityEditorMenu::ActivityEditorMenu(std::optional<stg::activity> activity,
                                        QWidget *parent)
-    : activity(std::move(activity)),
-      QMenu(parent) {
+    : QMenu(parent), activity(std::move(activity)) {
     addLineEditWidgetAction();
 
     addSeparator();

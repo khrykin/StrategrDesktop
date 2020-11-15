@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.14)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 
-project(StrategrDesktop)
+list(APPEND CMAKE_MODULE_PATH
+        ${CMAKE_CURRENT_SOURCE_DIR}/../core/cmake/modules
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
+# Get version from git tag
+include(GetVersionFromGit)
+
+project(StrategrDesktop VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
-
 
 # Include core library
 
@@ -12,11 +18,15 @@ add_subdirectory(../core ${CMAKE_CURRENT_BINARY_DIR}/core)
 
 # Configure files
 
-list(APPEND CMAKE_MODULE_PATH
-        ${CMAKE_CURRENT_SOURCE_DIR}/../core/cmake/modules
-        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
-
 include(ConfigureDesktop)
+
+# Compile options
+
+if (MSVC)
+    add_compile_options(/W4 /WX /wd4068)
+else ()
+    add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
+endif ()
 
 # Dependencies
 
@@ -242,9 +252,9 @@ if (APPLE)
     set_target_properties(Strategr PROPERTIES
             MACOSX_BUNDLE TRUE
             MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/deployment/Info.plist
-            MACOSX_BUNDLE_BUNDLE_VERSION ${DESKTOP_VERSION}
-            MACOSX_BUNDLE_LONG_VERSION_STRING ${DESKTOP_VERSION}
-            MACOSX_BUNDLE_SHORT_VERSION_STRING ${DESKTOP_VERSION_SHORT}
+            MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_SHORT}
+            MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
+            MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
             RESOURCE "${PLATFORM_RESOURCES}")
 endif ()
 

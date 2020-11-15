@@ -137,7 +137,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 }
 
 - (SEL)getActionSelectorForItemIdentifier:(NSString *)itemIdentifier {
-    SEL action;
+    SEL action = nil;
     if ([itemIdentifier isEqual:ToolbarItemActivitiesIdentifier]) {
         action = @selector(openActivities:);
     } else if ([itemIdentifier isEqual:ToolbarItemSettingsIdentifier]) {
@@ -184,6 +184,7 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
     _currentPage = index;
 
     for (NSToolbarItem *_ in self.items) {
+        (void) _;
         [self removeItemAtIndex:0];
     }
 

@@ -311,7 +311,8 @@ namespace stg {
     }
 
     void notifier::note_file_removed(const file_bookmark &file_path) {
-        std::cout << "note_file_removed: \"" << file_path << "\"\n";
+        // TODO: Remove or use toggable logging method
+        // std::cout << "note_file_removed: \"" << file_path << "\"\n";
 
         using namespace user_notifications;
 

@@ -1,20 +1,25 @@
 cmake_minimum_required(VERSION 3.14)
-project(StrategrCore)
+
+# Setup modules path
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
+# Get version from git tag
+include(GetVersionFromGit)
+
+project(StrategrCore VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
 
 # Configure Files
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 include(StrategrCoreConfigure)
 
 # Compile options
 
 if (MSVC)
-    add_compile_options(/W4 /WX)
+    add_compile_options(/W4 /WX /wd4068)
 else ()
-    add_compile_options(-Wall -Wextra -pedantic -Werror)
+    add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
 endif ()
 
 # Dependencies

@@ -17,7 +17,7 @@ SelectionWidget::SelectionWidget(QWidget *parent) : DataProviderWidget(parent) {
 }
 
 
-void SelectionWidget::resizeEvent(QResizeEvent *event) {
+void SelectionWidget::resizeEvent(QResizeEvent *) {
     //    for (auto *child : children()) {
     //        auto *widget = qobject_cast<QWidget *>(child);
     //        if (widget) {

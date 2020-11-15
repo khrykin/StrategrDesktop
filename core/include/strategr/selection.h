@@ -21,6 +21,10 @@ namespace stg {
     public:
         explicit selection(const stg::strategy &strategy);
 
+        operator std::vector<index_t>() const {
+            return flat();
+        }
+
         void set_selected_at(index_t slot_index, bool is_selected);
         void reset_with(std::vector<index_t> slot_indices);
 

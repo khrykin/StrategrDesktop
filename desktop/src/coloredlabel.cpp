@@ -10,8 +10,7 @@
 #include "fontutils.h"
 
 ColoredLabel::ColoredLabel(QString text, QWidget *parent)
-    : _text(std::move(text)),
-      QWidget(parent) {
+    : QWidget(parent), _text(std::move(text)) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 }
 
@@ -37,7 +36,7 @@ void ColoredLabel::setAlignment(const Qt::Alignment &alignment) {
     update();
 }
 
-void ColoredLabel::paintEvent(QPaintEvent *event) {
+void ColoredLabel::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 

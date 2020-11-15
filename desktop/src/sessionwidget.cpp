@@ -6,6 +6,7 @@
 #include <QStaticText>
 #include <QStyleOption>
 #include <QTextDocument>
+#include <utility>
 
 #include <strategr/theme.h>
 
@@ -16,8 +17,8 @@
 #include "fontutils.h"
 #include "sessionwidget.h"
 
-SessionWidget::SessionWidget(const stg::session &session, QWidget *parent)
-    : session(session), DataProviderWidget(parent) {
+SessionWidget::SessionWidget(stg::session session, QWidget *parent)
+    : DataProviderWidget(parent), session(std::move(session)) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
 
     reloadSession();
