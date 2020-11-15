@@ -12,8 +12,6 @@ TEST_CASE("Strategy activities and slots interaction") {
     auto strategy = stg::strategy();
 
     strategy.add_activity(stg::activity("Some 1"));
-    const auto &activity = strategy.activities()[0];
-
     strategy.place_activity(0, {0, 2});
 
     SECTION("deleting activity should also remove it from slots") {

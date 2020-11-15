@@ -119,7 +119,7 @@ bool SlotRuler::isIntegerHourAtIndex(int index) {
 }
 
 bool SlotRuler::slotTimeChangedAt(int index) {
-    auto indexIsSafe = index < prevTimes.size() && index >= 0;
+    auto indexIsSafe = index < static_cast<int>(prevTimes.size()) && index >= 0;
     auto &slotTime = strategy().time_slots().ruler_times()[index];
 
     return indexIsSafe && prevTimes[index] != slotTime;

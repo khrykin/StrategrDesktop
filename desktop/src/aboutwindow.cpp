@@ -52,24 +52,24 @@ private:
         setDynamicColor([=] { return color; });
     }
 
-    void mousePressEvent(QMouseEvent *event) override {
+    void mousePressEvent(QMouseEvent *) override {
         state = clicked;
         updateColor();
     }
 
-    void enterEvent(QEvent *event) override {
+    void enterEvent(QEvent *) override {
         state = hovered;
         setCursor(Qt::PointingHandCursor);
         updateColor();
     }
 
-    void leaveEvent(QEvent *event) override {
+    void leaveEvent(QEvent *) override {
         state = inactive;
         unsetCursor();
         updateColor();
     }
 
-    void mouseReleaseEvent(QMouseEvent *event) override {
+    void mouseReleaseEvent(QMouseEvent *) override {
         state = inactive;
         updateColor();
 

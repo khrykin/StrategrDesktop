@@ -25,11 +25,11 @@ TEST_CASE("Notifier immediate notifications", "[notifier][immediate]") {
 
     // Timer backend mock
     std::unordered_map<size_t, std::function<void()>> timers;
-    stg::timer::backend::set_scheduler([&timers](auto seconds, auto callback) {
-        auto timer_id = (void *) timers.size();
+    stg::timer::backend::set_scheduler([&timers](auto /* seconds */, auto callback) {
+        auto timer_id = reinterpret_cast<void *>(timers.size());
         auto timer_callback = [=]() { callback(timer_id); };
 
-        timers[(size_t) timer_id] = timer_callback;
+        timers[reinterpret_cast<size_t>(timer_id)] = timer_callback;
 
         return timer_id;
     });
@@ -181,7 +181,8 @@ TEST_CASE("Notifier immediate notifications", "[notifier][immediate]") {
 
         // Imitate run loop running timer callback until
         // the new notification's delivery time
-        while (current_seconds <= strategy.begin_time() * 60 - immediate_seconds_interval) {
+        int immeadiate_seconds = static_cast<int>(strategy.begin_time()) * 60 - static_cast<int>(immediate_seconds_interval);
+        while (current_seconds <= immeadiate_seconds) {
             current_seconds += polling_interval;
 
             timers[0]();

@@ -78,7 +78,7 @@ void SearchBoxWidget::setText(const QString &string) {
     lineEdit->setText(string);
 }
 
-void SearchBoxWidget::paintEvent(QPaintEvent *event) {
+void SearchBoxWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 

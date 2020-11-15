@@ -65,7 +65,7 @@ namespace stg {
         return activity == time_slot::no_activity;
     }
 
-    auto session::current_seconds() const -> unsigned {
+    auto session::current_seconds() const -> minutes {
         auto current_seconds = time_utils::current_seconds();
         auto begin_time_seconds = begin_time() * 60;
 
@@ -75,7 +75,7 @@ namespace stg {
         return current_seconds;
     }
 
-    auto session::current_minutes() const -> unsigned {
+    auto session::current_minutes() const -> minutes {
         return std::round(current_seconds() / 60);
     }
 

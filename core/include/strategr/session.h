@@ -39,8 +39,8 @@ namespace stg {
         friend auto operator<<(std::ostream &os, const session &session) -> std::ostream &;
 
     private:
-        auto current_seconds() const -> unsigned;
-        auto current_minutes() const -> unsigned;
+        auto current_seconds() const -> minutes;
+        auto current_minutes() const -> minutes;
     };
 
 };

@@ -13,10 +13,6 @@ TEST_CASE("Strategy activity sessions", "[strategy][sessions]") {
     strategy.add_activity(stg::activity("Some 1"));
     strategy.add_activity(stg::activity("Some 2"));
 
-    const auto &first_activity = strategy.activities()[0];
-    const auto &second_activity = strategy.activities()[1];
-    const auto &third_activity = strategy.activities()[2];
-
     SECTION("put activity in single slot") {
         strategy.place_activity(0, {0});
 

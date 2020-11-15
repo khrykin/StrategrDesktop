@@ -187,7 +187,7 @@ void SlotsWidget::keyReleaseEvent(QKeyEvent *event) {
     mouseHandler().key_up(event);
 }
 
-void SlotsWidget::paintEvent(QPaintEvent *event) {
+void SlotsWidget::paintEvent(QPaintEvent *) {
     using namespace ApplicationSettings;
     QPainter painter(this);
 
@@ -214,11 +214,11 @@ void SlotsWidget::updateSlotsLayoutContentMargins() {
     slotsLayout->setContentsMargins(0, slotHeight() / 2, 0, 0);
 }
 
-void SlotsWidget::resizeEvent(QResizeEvent *event) {
+void SlotsWidget::resizeEvent(QResizeEvent *) {
     slotsWidget->setGeometry(contentsRect());
     selectionWidget->setGeometry(contentsRect());
 }
 
-void SlotsWidget::enterEvent(QEvent *event) {
+void SlotsWidget::enterEvent(QEvent *) {
     setFocus();
 }

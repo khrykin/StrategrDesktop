@@ -78,7 +78,7 @@ void SlotBoardWidget::reloadStrategy() {
     slotRuler->reloadStrategy();
 }
 
-void SlotBoardWidget::paintEvent(QPaintEvent *event) {
+void SlotBoardWidget::paintEvent(QPaintEvent *) {
     auto painter = QPainter(this);
 
     painter.setPen(Qt::NoPen);
@@ -120,7 +120,7 @@ void SlotBoardWidget::drawResizeBoundaryCircles(QPainter &painter) {
     }
 }
 
-void SlotBoardWidget::resizeEvent(QResizeEvent *event) {
+void SlotBoardWidget::resizeEvent(QResizeEvent *) {
     updateCurrentTimeMarker();
 }
 

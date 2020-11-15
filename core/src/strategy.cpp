@@ -383,8 +383,8 @@ namespace stg {
         commit_to_history();
     }
 
-    void strategy::make_empty_at(const stg::selection &selection) {
-        _time_slots.set_activity_at_indices(no_activity, selection.flat());
+    void strategy::make_empty_at(const std::vector<time_slot_index_t> &selection) {
+        _time_slots.set_activity_at_indices(no_activity, selection);
 
         commit_to_history();
     }

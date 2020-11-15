@@ -166,10 +166,11 @@ namespace stg::user_notifications {
     void storage::persist_at(const std::string &key) const {
         persistent_storage::set(key, *this);
 
-        std::cout << "Persisting notifications for " << data.size() << " files:\n";
-        for (auto &[key, value] : data) {
-            std::cout << "\t\"" << key.to_string() << "\" (" << value.size() << ")\n";
-        }
+        // TODO: Remove or use toggable logging method
+        // std::cout << "Persisting notifications for " << data.size() << " files:\n";
+        // for (auto &[key, value] : data) {
+        //     std::cout << "\t\"" << key.to_string() << "\" (" << value.size() << ")\n";
+        // }
     }
 
     auto operator==(const storage &lhs, const storage &rhs) -> bool {

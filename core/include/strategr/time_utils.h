@@ -13,8 +13,8 @@ namespace stg::time_utils {
 
 #pragma mark - Type Aliases
 
-    using seconds = unsigned;
-    using minutes = unsigned;
+    using seconds = int;
+    using minutes = int;
 
     using duration = std::chrono::duration<double>;
 

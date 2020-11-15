@@ -13,7 +13,7 @@ Navbar::Navbar(QWidget *parent) : QWidget(parent) {
     setFixedHeight(0);
 }
 
-void Navbar::setTitle(const QString &title) {}
+void Navbar::setTitle(const QString &) {}
 
 QWidget *Navbar::leftButton() const {
     return nullptr;
