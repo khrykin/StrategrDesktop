@@ -22,6 +22,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>Strategr</string>
+	<key>LSMinimumSystemVersion</key>
+    <string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${MACOSX_BUNDLE_SHORT_VERSION_STRING}</string>
 	<key>Bundle versions string, long</key>

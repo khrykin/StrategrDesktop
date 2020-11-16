@@ -14,3 +14,6 @@ CMakeLists.txt.user
 deployment/Strategr_x64.iss
 deployment/Strategr_x86.iss
 docs/.vscode
+
+# Packages output folder
+/desktop/packages/
