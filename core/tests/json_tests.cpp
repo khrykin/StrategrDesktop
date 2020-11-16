@@ -2,16 +2,16 @@
 // Created by Dmitry Khrykin on 2019-11-23.
 //
 
+#include <filesystem>
 #include <fstream>
 
-#include <boost/filesystem.hpp>
 #include <catch2/catch.hpp>
 
 #include "json.h"
 #include "strategy.h"
 
 std::string read_test_file(const std::string &filename) {
-    using namespace boost::filesystem;
+    using namespace std::filesystem;
     const auto test_file_path = path{__FILE__}.parent_path() / path{filename};
 
     std::ifstream t(test_file_path.string());

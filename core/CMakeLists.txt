@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 
 # Setup modules path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -26,7 +27,7 @@ endif ()
 
 set(Boost_USE_STATIC_LIBS ON)
 
-find_package(Boost 1.71 COMPONENTS filesystem REQUIRED)
+find_package(Boost 1.71 COMPONENTS headers REQUIRED)
 find_package(Catch2 2.9 REQUIRED)
 find_package(utf8proc 2.4 REQUIRED)
 find_package(nlohmann_json 3.2 REQUIRED)
@@ -119,8 +120,34 @@ target_link_libraries(libstrategr
         Boost::headers
         utf8proc::utf8proc)
 
+add_executable(tests
+        tests/tests_main.cpp
+        tests/strategy_settings_test.cpp
+        tests/strategy_timeslots_test.cpp
+        tests/strategy_activities_slots_interaction_test.cpp
+        tests/strategy_history_test.cpp
+        tests/json_tests.cpp
+        tests/persistent_test.cpp
+        tests/time_utils_test.cpp
+        tests/notifier_immeadiate_test.cpp
+        tests/notifier_scheduled_test.cpp)
+
+target_include_directories(tests
+        PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/strategr)
+
+target_link_libraries(tests
+        PRIVATE
+        libstrategr
+        Catch2::Catch2)
+
 if (APPLE)
     target_compile_options(libstrategr PRIVATE -fobjc-arc)
+
+    # Enable std::filesystem for tests
+    target_compile_options(tests PRIVATE -mmacosx-version-min=10.15)
+    target_link_options(tests PRIVATE -mmacosx-version-min=10.15)
 
     target_sources(libstrategr
             PRIVATE
@@ -151,25 +178,8 @@ endif ()
 
 # Tests
 
-add_executable(test
-        tests/tests_main.cpp
-        tests/strategy_settings_test.cpp
-        tests/strategy_timeslots_test.cpp
-        tests/strategy_activities_slots_interaction_test.cpp
-        tests/strategy_history_test.cpp
-        tests/json_tests.cpp
-        tests/persistent_test.cpp
-        tests/time_utils_test.cpp
-        tests/notifier_immeadiate_test.cpp
-        tests/notifier_scheduled_test.cpp)
+enable_testing()
 
-target_include_directories(test
-        PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/strategr)
+include(Catch)
 
-target_link_libraries(test
-        PRIVATE
-        libstrategr
-        Catch2::Catch2
-        Boost::filesystem)
+catch_discover_tests(tests)

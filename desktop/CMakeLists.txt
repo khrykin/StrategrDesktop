@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS deployment version" FORCE)
 
 list(APPEND CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/../core/cmake/modules
@@ -42,7 +42,6 @@ if (WIN32)
     find_package(Qt5 COMPONENTS WinExtras REQUIRED)
     find_package(WinSparkle REQUIRED)
 endif ()
-
 
 # Resources
 
@@ -217,15 +216,15 @@ target_link_libraries(Strategr
 
 # UI Tests Executable
 
-add_executable(uitest
+add_executable(uitests
         ${QT_RESOURCES}
         ${DESKTOP_SOURCES}
         tests/qt_tests_main.cpp
         tests/main_window_test.cpp)
 
-target_compile_definitions(uitest PRIVATE STG_UI_TEST)
+target_compile_definitions(uitests PUBLIC STG_UI_TEST)
 
-target_link_libraries(uitest
+target_link_libraries(uitests
         PRIVATE
         ${PLATFORM_LIBRARIES}
         Qt5::Widgets
@@ -233,7 +232,13 @@ target_link_libraries(uitest
         Catch2::Catch2
         Qt5::Test)
 
-target_include_directories(uitest PUBLIC src)
+target_include_directories(uitests PUBLIC src)
+
+enable_testing()
+
+include(Catch)
+
+catch_discover_tests(uitests)
 
 # MacOS Specifics
 
@@ -242,20 +247,27 @@ if (APPLE)
 
     # Enable ARC
     target_compile_options(Strategr PRIVATE -fobjc-arc)
-    target_compile_options(uitest PRIVATE -fobjc-arc)
+    target_compile_options(uitests PRIVATE -fobjc-arc)
 
     # Disable ARC for given files:
     set_source_files_properties(src/application.mm PROPERTIES COMPILE_FLAGS -fno-objc-arc)
-    set_source_files_properties(src/macoswindow.mm PROPERTIES COMPILE_FLAGS -fno-objc-arc)     #
+    set_source_files_properties(src/macoswindow.mm PROPERTIES COMPILE_FLAGS -fno-objc-arc)
 
-    # Set a custom plist file for the app bundle
     set_target_properties(Strategr PROPERTIES
             MACOSX_BUNDLE TRUE
             MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/deployment/Info.plist
             MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_SHORT}
             MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
             MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
-            RESOURCE "${PLATFORM_RESOURCES}")
+            RESOURCE "${PLATFORM_RESOURCES}"
+            XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${CMAKE_SOURCE_DIR}/deployment/Strategr.entitlements)
+
+    set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH NO)
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "$ENV{CODE_SIGN_IDENTITY}")
+    set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--deep --timestamp --options runtime --keychain \"$ENV{CODE_SIGN_KEYCHAIN}\"")
+    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS NO)
+    set(CMAKE_XCODE_ATTRIBUTE_DEPLOYMENT_POSTPROCESSING ON)
+    set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET 10.13)
 endif ()
 
 
@@ -276,25 +288,13 @@ if (WIN32)
             DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
             DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-
-    # Copy non-Qt dlls
-
-    string(REGEX REPLACE "\\.lib" ".dll" WinSparkle_DLL "${WinSparkle_PATH}")
-    file(COPY "${WinSparkle_DLL}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-
 endif ()
 
 # Deployment
 
+include(Deployment)
+
 #if (CMAKE_BUILD_TYPE MATCHES Rel)
-#    if (APPLE)
-#        file(COPY ${Sparkle_FRAMEWORK_PATH} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
-#
-#        add_custom_command(TARGET Strategr
-#                POST_BUILD
-#                COMMAND ${CMAKE_SOURCE_DIR}/scripts/macos_deploy.sh ${CMAKE_CURRENT_BINARY_DIR} ${VERSION})
-#    endif ()
-#
 #    if (WIN32)
 #        set_target_properties(Strategr PROPERTIES WIN32_EXECUTABLE ON)
 #
@@ -304,7 +304,7 @@ endif ()
 #                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss")
 #
 #        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.template.iss"
-#                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss")
+#                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss ")
 #
 #        # Deploy Qt
 #
@@ -313,3 +313,6 @@ endif ()
 #                COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 #    endif ()
 #endif ()
+
+
+message(STATUS "CMAKE_OSX_DEPLOYMENT_TARGET ${CMAKE_OSX_DEPLOYMENT_TARGET}")
