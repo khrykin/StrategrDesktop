@@ -7,6 +7,7 @@
 
 #include <functional>
 #include <optional>
+#include <vector>
 
 namespace stg {
     class notifiable_on_change {

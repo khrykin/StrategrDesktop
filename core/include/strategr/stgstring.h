@@ -43,9 +43,6 @@ namespace stg {
 
     namespace string {
         auto utf8_fold_case(const std::string &str) -> std::string;
-        auto wstring_from_utf8_string(const std::string &str) -> std::wstring;
-        auto utf8_string_from_wstring(const std::wstring &wstr) -> std::string;
-
         void strip_bounding_whitespaces(std::string &str);
     }
 }

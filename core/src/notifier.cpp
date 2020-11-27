@@ -146,7 +146,7 @@ namespace stg {
 
 #pragma mark - Polling For Notifications
 
-    void notifier::start_polling(timer::seconds interval) {
+    void notifier::start_polling(seconds interval) {
         assert("Already polling" && polling_timer == nullptr);
 
         polling_timer = stg::timer::schedule(interval, true, [=] {

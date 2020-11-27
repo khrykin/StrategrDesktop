@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollBar>
+#include <QPainterPath>
 
 #include <strategr/overview.h>
 

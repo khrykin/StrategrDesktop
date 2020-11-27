@@ -18,7 +18,7 @@ QColor ColorProvider::borderColor() {
 QColor ColorProvider::hardBorderColor() {
     return ColorUtils::overlayWithAlpha(
         QColor(ApplicationSettings::rowBorderColor),
-        0.9 * ColorUtils::shadesAlphaFactor(8, 0.1));
+        0.9 * ColorUtils::shadesAlphaFactor(8, 0.1f));
 }
 
 QColor ColorProvider::highlightColor() {
@@ -68,7 +68,7 @@ QColor ColorProvider::highlightedTextColor() {
 QColor ColorProvider::secondaryTextColor() {
     return ColorUtils::overlayWithAlpha(
         QApplication::palette().color(QPalette::Text),
-        0.5 * ColorUtils::shadesAlphaFactor(4, 0.95));
+        0.5 * ColorUtils::shadesAlphaFactor(4, 0.95f));
 }
 
 QColor ColorProvider::tertiaryTextColor() {

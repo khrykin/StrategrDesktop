@@ -2,6 +2,8 @@
 // Created by Dmitry Khrykin on 22.07.2020.
 //
 
+#include <cassert>
+
 #include "persistent.h"
 
 namespace stg {

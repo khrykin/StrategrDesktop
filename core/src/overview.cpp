@@ -15,7 +15,7 @@ namespace stg {
         const auto &activity_sessions = strategy.sessions();
         std::vector<overview_item> result;
 
-        auto prev_origin_x = 0;
+        gfloat prev_origin_x = 0;
         for (auto &item : activity_sessions.overview()) {
             auto current_width = std::round(item.duration_percentage * width());
             auto origin_x = std::round(item.begin_percentage * width());

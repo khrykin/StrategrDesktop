@@ -64,7 +64,7 @@ namespace stg {
 
 #pragma mark - Polling For Notifications
 
-        void start_polling(timer::seconds interval);
+        void start_polling(seconds interval);
         void stop_polling();
 
 #pragma mark - Manually Scheduling Notifications

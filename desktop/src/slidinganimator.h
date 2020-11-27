@@ -12,7 +12,7 @@ class SlidingAnimator : public QObject {
 private:
     static const auto defaultDuration = 150;
     static const auto defaultUpdateInterval = 20;
-    static const auto defaultCurveShape = QTimeLine::EaseInOutCurve;
+    static const auto defaultCurveShape = QEasingCurve::Type::InOutCubic;
 
 public:
     enum class Direction {
@@ -26,7 +26,7 @@ public:
         Direction direction = Direction::ShowsFromTop;
         int duration = defaultDuration;
         int updateInterval = defaultUpdateInterval;
-        QTimeLine::CurveShape curveShape = defaultCurveShape;
+        QEasingCurve::Type curveShape = defaultCurveShape;
         std::function<void()> onFinishedCallback = nullptr;
 
         // Explicit constructor definition is needed here because of clang bug.
@@ -63,7 +63,7 @@ private:
     Direction direction;
     int duration;
     int updateInterval;
-    QTimeLine::CurveShape curveShape;
+    QEasingCurve::Type curveShape;
 
     Operation operation;
 
