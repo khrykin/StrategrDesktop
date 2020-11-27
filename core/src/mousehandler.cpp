@@ -2,8 +2,9 @@
 // Created by Dmitry Khrykin on 2020-01-29.
 //
 
+#include <numeric>
+
 #include "mousehandler.h"
-#include "actioncenter.h"
 #include "mousehandleroperations.h"
 
 namespace stg {
@@ -126,7 +127,7 @@ namespace stg {
         auto pos_in_viewport = event.position - viewport.origin();
 
         auto top_autoscroll_zone = range{0, autoscroll_zone_size};
-        auto slotboard_height = (strategy.number_of_time_slots() + 1.0) * get_slot_height();
+        auto slotboard_height = (strategy.number_of_time_slots() + 1) * get_slot_height();
 
         auto bottom_autoscroll_zone = range{viewport.height - autoscroll_zone_size,
                                             viewport.height};
@@ -254,7 +255,7 @@ namespace stg {
         }
     }
 
-    auto mouse_handler::get_direction(int delta) const -> direction {
+    auto mouse_handler::get_direction(gfloat delta) const -> direction {
         if (std::abs(delta) < settings.direction_change_resolution)
             return direction::none;
 
@@ -266,7 +267,7 @@ namespace stg {
     }
 
     auto mouse_handler::get_slot_index(const mouse_event &event) -> index_t {
-        auto index = (event.position.y - get_slot_height() / 2) / get_slot_height();
+        auto index = static_cast<index_t>((event.position.y - get_slot_height() / 2) / get_slot_height());
 
         if (index < 0)
             index = -1;
@@ -333,6 +334,8 @@ namespace stg {
                 return cursor::pointer;
             case copy_drag:
                 return cursor::drag_copy;
+            default:
+                return cursor::pointer;
         }
     }
 
@@ -368,7 +371,7 @@ namespace stg {
         if (!on_auto_scroll_frame)
             return;
 
-        double constexpr frame_seconds_duration = 1.0 / 30;
+        gfloat constexpr frame_seconds_duration = gfloat{1} / 30;
         gfloat constexpr pixels_in_second = 200;
 
         auto setup_auto_scroll_frame = [=] {

@@ -167,7 +167,7 @@ namespace stg {
         auto get_slot_index(const mouse_event &event) -> index_t;
         auto get_session_index(index_t slot_index) -> index_t;
         auto get_session_range(index_t session_index) -> range;
-        auto get_direction(int delta) const -> direction;
+        auto get_direction(gfloat delta) const -> direction;
         auto get_cursor(event::key_modifiers modifiers) -> cursor;
 
         auto get_mouse_zone(int session_index, const point &mouse_pos) -> mouse_zone;

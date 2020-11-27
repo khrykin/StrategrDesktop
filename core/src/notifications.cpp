@@ -2,11 +2,13 @@
 // Created by Dmitry Khrykin on 26.08.2020.
 //
 
-#include "notifications.h"
+#include <utility>
+#include <cassert>
 
+#include "notifications.h"
 #include "persistent.h"
 #include "time_utils.h"
-#include <utility>
+
 
 namespace stg::user_notifications {
 
@@ -164,7 +166,7 @@ namespace stg::user_notifications {
     }
 
     void storage::persist_at(const std::string &key) const {
-        persistent_storage::set(key, *this);
+        persistent_storage::set<storage>(key, *this);
 
         // TODO: Remove or use toggable logging method
         // std::cout << "Persisting notifications for " << data.size() << " files:\n";

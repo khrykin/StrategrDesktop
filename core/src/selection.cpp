@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <numeric>
 
 #include "selection.h"
 

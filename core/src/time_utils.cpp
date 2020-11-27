@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <string>
+#include <time.h>
 
 #include "time_utils.h"
 
@@ -155,10 +156,17 @@ namespace stg::time_utils {
     }
 
     auto to_string(time_t calendar_time, const char *format) -> std::string {
-        std::tm *tm = std::localtime(&calendar_time);
+        std::tm tm;
+
+#if defined(_MSC_VER)
+        localtime_s(&tm, &calendar_time);
+#else
+        localtime_r(&calendar_time, &tm);
+#endif
+
         char buffer[255];
 
-        std::strftime(buffer, 255, format, tm);
+        std::strftime(buffer, 255, format, &tm);
 
         return buffer;
     }

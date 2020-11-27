@@ -34,13 +34,11 @@ namespace stg {
     auto serialize(const user_notifications::storage &storage) -> raw_buffer;
 
     template<typename T = void, typename = void>
-    struct is_serializable : std::false_type {
-    };
+    struct is_serializable : std::false_type {};
 
     template<typename T>
     struct is_serializable<T,
-                           std::void_t<decltype(serialize(std::declval<T>()))>> : std::true_type {
-    };
+                           std::void_t<decltype(serialize(std::declval<std::decay_t<T>>()))>> : std::true_type {};
 
 #pragma mark - Deserialization
 
@@ -77,7 +75,7 @@ namespace stg {
     };
 
     template<typename T>
-    struct is_deserializable<T, std::void_t<decltype(deserialize<T>(std::declval<const uint8_t *&>()))>>
+    struct is_deserializable<T, std::void_t<decltype(deserialize<std::decay_t<T>>(std::declval<const uint8_t *&>()))>>
         : std::true_type {
     };
 

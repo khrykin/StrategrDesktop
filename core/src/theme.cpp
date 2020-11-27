@@ -20,14 +20,14 @@ namespace stg {
 
         auto activity_color = session.activity->color();
 
-        if (activity_color.lightness() < 0.5 &&
+        if (activity_color.lightness() < 0.5f &&
             is_dark_mode()) {
-            activity_color.set_hsl(activity_color.hue(), activity_color.saturation(), 0.2);
+            activity_color.set_hsl(activity_color.hue(), activity_color.saturation(), 0.2f);
         }
 
         return is_selected
                    ? activity_color
-                   : activity_color.with_alpha_component(0.15);
+                   : activity_color.with_alpha_component(0.15f);
     }
 
     auto theme::session_ruler_color(const session &session, bool is_selected) const -> color {
@@ -43,13 +43,13 @@ namespace stg {
         const auto activity_color = session.activity->color();
         auto default_duration_color = text_color()
                                           .blended_with(activity_color
-                                                            .with_hsl(activity_color.hue(), 0.2, 0.7)
-                                                            .with_alpha_component(0.6));
+                                                            .with_hsl(activity_color.hue(), 0.2f, 0.7f)
+                                                            .with_alpha_component(0.6f));
 
         auto selected_duration_color = base_color()
                                            .blended_with(activity_color
 
-                                                             .with_alpha_component(0.2));
+                                                             .with_alpha_component(0.2f));
 
         auto duration_color = is_selected
                                   ? selected_duration_color

@@ -80,27 +80,19 @@ namespace stg {
     }
 
     void color::set_red_component(float value) {
-        set_red(std::round(value * 255u));
+        set_red(static_cast<uint8_t>(std::round(value * 255u)));
     }
 
     void color::set_green_component(float value) {
-        set_green(std::round(value * 255u));
+        set_green(static_cast<uint8_t>(std::round(value * 255u)));
     }
 
     void color::set_blue_component(float value) {
-        set_blue(std::round(value * 255u));
+        set_blue(static_cast<uint8_t>(std::round(value * 255u)));
     }
 
     void color::set_alpha_component(float value) {
-        set_alpha(std::round(value * 255u));
-    }
-
-    void color::set_rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
-        data = 0u;
-        data = data | static_cast<uint32_t>(red << 24u);
-        data = data | static_cast<uint32_t>(green << 16u);
-        data = data | static_cast<uint32_t>(blue << 8u);
-        data = data | static_cast<uint32_t>(alpha);
+        set_alpha(static_cast<uint8_t>(std::round(value * 255u)));
     }
 
     auto color::rgb_components() const -> std::array<double, 4> {
@@ -134,9 +126,9 @@ namespace stg {
             rgb = {chroma, 0, x};
         }
 
-        auto m = lightness - 0.5 * chroma;
+        const auto m = lightness - 0.5f * chroma;
         std::transform(rgb.begin(), rgb.end(),
-                       rgb.begin(), [&m](auto &c) {
+                       rgb.begin(), [&m](float c) {
                            return c + m;
                        });
 
@@ -276,7 +268,7 @@ namespace stg {
         std::transform(color_string.begin(),
                        color_string.end(),
                        color_string.begin(),
-                       tolower);
+                       [](char c) { return static_cast<char>(std::tolower(static_cast<unsigned char>(c))); });
 
         color_string = std::regex_replace(color_string, std::regex("^#"), "");
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 
 #include <QLayout>
 #include <QVariant>
@@ -71,6 +72,8 @@ SlidingAnimator::Orientation SlidingAnimator::orientation() {
         case Direction::ShowsFromLeft:
         case Direction::ShowsFromRight:
             return Orientation::Horizontal;
+        default:
+            throw std::runtime_error("Unknown direction");
     }
 }
 
@@ -91,10 +94,14 @@ int SlidingAnimator::translationSign() {
         case Direction::ShowsFromLeft: {
             return -1;
         }
+
         case Direction::ShowsFromBottom:
         case Direction::ShowsFromRight: {
             return 1;
         }
+
+        default:
+            throw std::runtime_error("Unknown direction");
     }
 }
 
@@ -127,7 +134,7 @@ int SlidingAnimator::widgetSize() { return (widget->*sizeGetter<QWidget>())(); }
 QTimeLine *SlidingAnimator::makeTimeLine() {
     auto *timeLine = new QTimeLine(duration, this);
     timeLine->setUpdateInterval(updateInterval);
-    timeLine->setCurveShape(curveShape);
+    timeLine->easingCurve().setType(curveShape);
     return timeLine;
 }
 

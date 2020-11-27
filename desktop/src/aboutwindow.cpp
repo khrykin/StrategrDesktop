@@ -17,8 +17,8 @@ class HyperLinkLabel : public ColoredLabel {
 public:
     using ColoredLabel::ColoredLabel;
 
-    void setHyperlink(const QString &hyperlink) {
-        HyperLinkLabel::hyperlink = hyperlink;
+    void setHyperlink(const QString &hl) {
+        hyperlink = hl;
 
         updateColor();
     }
@@ -38,10 +38,10 @@ private:
 
         switch (state) {
             case clicked:
-                alpha = 0.8;
+                alpha = 0.8f;
                 break;
             case hovered:
-                alpha = 0.9;
+                alpha = 0.9f;
                 break;
             default:
                 break;

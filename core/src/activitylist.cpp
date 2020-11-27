@@ -136,7 +136,7 @@ namespace stg {
             return std::nullopt;
         }
 
-        return std::distance(_data.begin(), it);
+        return static_cast<index_t>(std::distance(_data.begin(), it));
     }
 
     auto activity_list::index_of(const activity &activity) const -> std::optional<index_t> {
@@ -147,7 +147,7 @@ namespace stg {
             return std::nullopt;
         }
 
-        return std::distance(_data.begin(), it);
+        return static_cast<index_t>(std::distance(_data.begin(), it));
     }
 
     auto activity_list::search(std::string query) const -> bool {
@@ -199,7 +199,7 @@ namespace stg {
         if (it == filtered().end())
             return std::nullopt;
 
-        return std::distance(filtered().begin(), it);
+        return static_cast<index_t>(std::distance(filtered().begin(), it));
     }
 
 

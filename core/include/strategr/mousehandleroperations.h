@@ -99,9 +99,9 @@ private:
 
         auto get_global_distance = [this](const mouse_event &event) -> int {
             auto new_global_distance = static_cast<int>(
-                (event.position.y - initial_position.y - 0.5 * handler.get_slot_height()) / handler.get_slot_height());
+                (event.position.y - initial_position.y - handler.get_slot_height() / 2) / handler.get_slot_height());
 
-            if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
+            if (event.position.y - initial_position.y > handler.get_slot_height() / 2) {
                 new_global_distance++;
             }
 
@@ -204,9 +204,9 @@ private:
 
         auto get_global_distance = [this](const mouse_event &event) -> int {
             auto new_global_distance = static_cast<int>(
-                (event.position.y - initial_position.y - 0.5 * handler.get_slot_height()) / handler.get_slot_height());
+                (event.position.y - initial_position.y - handler.get_slot_height() / 2) / handler.get_slot_height());
 
-            if (event.position.y - initial_position.y > 0.5 * handler.get_slot_height()) {
+            if (event.position.y - initial_position.y > handler.get_slot_height() / 2) {
                 new_global_distance++;
             }
 
@@ -335,7 +335,7 @@ private:
 
     gfloat get_boundary_delta(gfloat current_pos) {
         auto boundary_pos = get_boundary_position();
-        auto delta = static_cast<int>(current_pos - boundary_pos);
+        auto delta = current_pos - boundary_pos;
 
         return std::abs(delta);
     }

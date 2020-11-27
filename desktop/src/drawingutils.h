@@ -6,6 +6,7 @@
 #define STRATEGR_DRAWINGUTILS_H
 
 #include <QPainter>
+#include <QPainterPath>
 
 namespace DrawingUtils {
 

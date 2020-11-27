@@ -2,8 +2,10 @@
 // Created by Dmitry Khrykin on 2019-07-12.
 //
 
-#include "session.h"
+#include <cmath>
+
 #include "activity.h"
+#include "session.h"
 #include "time_utils.h"
 
 namespace stg {
@@ -35,7 +37,7 @@ namespace stg {
         if (is_future()) return 0;
         if (is_past()) return 1;
 
-        auto seconds_passed = (double) (current_seconds() - begin_time() * 60);
+        auto seconds_passed = static_cast<double>(current_seconds()) - static_cast<double>(begin_time()) * 60;
         auto seconds_duration = 60 * duration();
 
         return seconds_passed / seconds_duration;
@@ -76,7 +78,7 @@ namespace stg {
     }
 
     auto session::current_minutes() const -> minutes {
-        return std::round(current_seconds() / 60);
+        return static_cast<minutes>(std::round(current_seconds() / 60));
     }
 
     auto operator<<(std::ostream &os, const session &session) -> std::ostream & {

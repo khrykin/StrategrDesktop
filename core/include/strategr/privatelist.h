@@ -44,7 +44,7 @@ namespace stg {
             auto item_is_present = it != _data.end();
 
             if (item_is_present) {
-                return std::distance(_data.begin(), it);
+                return static_cast<index_t>(std::distance(_data.begin(), it));
             } else {
                 return std::nullopt;
             }
