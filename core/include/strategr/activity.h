@@ -2,7 +2,6 @@
 #define STRATEGR_ACTIVITY_H
 
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <string>
 #include <utility>
 
@@ -30,17 +29,9 @@ namespace stg {
         auto desaturated_light_color() const -> stg::color;
         auto desaturated_dark_color() const -> stg::color;
 
-        auto to_json() const -> nlohmann::json;
-        static auto from_json(const nlohmann::json &j) -> activity;
-
     private:
         std::string _name;
         stg::color _color;
-
-        struct keys {
-            static constexpr auto name = "name";
-            static constexpr auto color = "color";
-        };
 
         static auto empty_name_exception() -> invalid_property_exception;
 

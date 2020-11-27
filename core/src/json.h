@@ -5,7 +5,6 @@
 #ifndef STRATEGR_JSON_H
 #define STRATEGR_JSON_H
 
-#include <nlohmann/json.hpp>
 #include <string>
 
 #include "activitylist.h"
@@ -14,26 +13,23 @@
 namespace stg {
     class strategy;
 
-    class json {
-    public:
-        static auto serialize(const strategy &strategy) -> std::string;
-        static auto parse(const std::string &json_string) -> std::unique_ptr<strategy>;
+    namespace json {
+        namespace keys {
+            inline constexpr auto slot_duration = "slotDuration";
+            inline constexpr auto start_time = "startTime";
+            inline constexpr auto activities = "activities";
+            inline constexpr auto slots = "slots";
+            inline constexpr auto version = "version";
 
-        struct keys {
-            static constexpr auto slot_duration = "slotDuration";
-            static constexpr auto start_time = "startTime";
-            static constexpr auto activities = "activities";
-            static constexpr auto slots = "slots";
-            static constexpr auto version = "version";
-        };
+            namespace activity {
+                inline constexpr auto name = "name";
+                inline constexpr auto color = "color";
+            }
+        }
 
-    private:
-        activity_list activities;
-
-        static auto parse_activities(const nlohmann::json &json) -> activity_list::data_t;
-        static auto parse_time_slots(const nlohmann::json &json,
-                                     const activity_list::data_t &activities) -> time_slots_state::data_t;
-    };
+        auto serialize(const strategy &strategy) -> std::string;
+        auto parse(const std::string &json_string) -> std::unique_ptr<strategy>;
+    }
 }
 
 #endif//STRATEGR_JSON_H
