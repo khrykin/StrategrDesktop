@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 #include <catch2/catch.hpp>
 

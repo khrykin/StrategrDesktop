@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 #include "activity.h"
 #include "activityinvalidpropertyexception.h"
@@ -46,15 +47,15 @@ namespace stg {
 
     auto activity::light_color() const -> stg::color {
         auto clr = color();
-        clr.set_alpha_component(0.15);
+        clr.set_alpha_component(0.15f);
 
         return clr;
     }
 
     auto activity::desaturated_light_color() const -> stg::color {
         auto clr = color();
-        clr.set_hsl(clr.hue(), 0.3, 0.75);
-        clr.set_alpha_component(0.2);
+        clr.set_hsl(clr.hue(), 0.3f, 0.75f);
+        clr.set_alpha_component(0.2f);
 
         return clr;
     }
@@ -62,30 +63,12 @@ namespace stg {
     auto activity::desaturated_dark_color() const -> stg::color {
         auto clr = stg::color();
 
-        if (color().lightness() < 0.2)
+        if (color().lightness() < 0.2f)
             clr = stg::color(0xffffffff);
 
-        clr.set_alpha_component(0.1);
+        clr.set_alpha_component(0.1f);
 
         return clr;
-    }
-
-    auto activity::to_json() const -> nlohmann::json {
-        nlohmann::json j;
-        j[keys::name] = this->name();
-        j[keys::color] = this->color();
-        return j;
-    }
-
-    auto activity::from_json(const nlohmann::json &j) -> activity {
-        auto name = std::string(j[keys::name]);
-
-        stg::color color = activity::default_color;
-        if (j.count(keys::color) && !j[keys::color].is_null()) {
-            color = j[keys::color];
-        }
-
-        return activity{name, color};
     }
 
     auto activity::empty_name_exception() -> activity::invalid_property_exception {
