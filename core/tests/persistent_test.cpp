@@ -75,14 +75,14 @@ TEST_CASE("Persistent Storage", "[persistent]") {
 
     SECTION("stg::user_notifications::storage") {
         {
-            stg::user_notifications::storage test_map({{"A", {"Test 1", "Тест 2"}},
-                                                       {"B", {"Test 3", "Тест 4"}}});
+            stg::user_notifications::storage test_map({{stg::file_bookmark{"A"}, {"Test 1", "Тест 2"}},
+                                                       {stg::file_bookmark{"B"}, {"Test 3", "Тест 4"}}});
 
             stg::persistent_storage::set("stg::user_notifications::storage", test_map);
         }
 
-        stg::user_notifications::storage expected_map({{"A", {"Test 1", "Тест 2"}},
-                                                       {"B", {"Test 3", "Тест 4"}}});
+        stg::user_notifications::storage expected_map({{stg::file_bookmark{"A"}, {"Test 1", "Тест 2"}},
+                                                       {stg::file_bookmark{"B"}, {"Test 3", "Тест 4"}}});
 
         auto persisted_map = stg::persistent_storage::get<stg::user_notifications::storage>(
             "stg::user_notifications::storage");

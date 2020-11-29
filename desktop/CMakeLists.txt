@@ -23,9 +23,9 @@ include(ConfigureDesktop)
 # Compile options
 
 if (MSVC)
-    add_compile_options(/W4 /WX /wd4068)
+    add_compile_options(/W1 /wd4068 /wd26812)
 else ()
-    add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
+    add_compile_options(-Wno-unknown-pragmas)
 endif ()
 
 # Dependencies
@@ -157,7 +157,6 @@ if (APPLE)
             Qt5::MacExtras)
 
     list(APPEND DESKTOP_SOURCES
-            ${PLATFORM_RESOURCES}
             src/application.mm
             src/alert.mm
             src/macoswindow.mm
@@ -194,15 +193,25 @@ if (APPLE)
 
 endif ()
 
+# Windows specifics
+
 if (WIN32)
-    list(APPEND PLATFORM_LIBRARIES
-            WinSparkle::WinSparkle)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.rc"
+            "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
+
+    set(PLATFORM_RESOURCES
+            "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
+
+    set(PLATFORM_LIBRARIES
+            WinSparkle::WinSparkle
+            Qt5::WinExtras)
 endif ()
 
 # Main Executable
 
 add_executable(Strategr MACOSX_BUNDLE WIN32
         ${QT_RESOURCES}
+        ${PLATFORM_RESOURCES}
         ${DESKTOP_SOURCES}
         src/main.cpp)
 
@@ -268,6 +277,8 @@ if (APPLE)
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS NO)
     set(CMAKE_XCODE_ATTRIBUTE_DEPLOYMENT_POSTPROCESSING ON)
     set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET 10.13)
+
+    message(STATUS "OSX deployment target: ${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
 
 
@@ -294,25 +305,3 @@ endif ()
 
 include(Deployment)
 
-#if (CMAKE_BUILD_TYPE MATCHES Rel)
-#    if (WIN32)
-#        set_target_properties(Strategr PROPERTIES WIN32_EXECUTABLE ON)
-#
-#        # Configure installer scripts
-#
-#        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.template.iss"
-#                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x86.iss")
-#
-#        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.template.iss"
-#                "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr_x64.iss ")
-#
-#        # Deploy Qt
-#
-#        add_custom_command(TARGET Strategr
-#                POST_BUILD
-#                COMMAND ${Qt5_DIR}/../../../bin/windeployqt.exe --no-translations ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-#    endif ()
-#endif ()
-
-
-message(STATUS "CMAKE_OSX_DEPLOYMENT_TARGET ${CMAKE_OSX_DEPLOYMENT_TARGET}")

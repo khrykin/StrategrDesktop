@@ -16,9 +16,6 @@ namespace stg {
     file_bookmark::file_bookmark(const std::string &path)
         : data(path.begin(), path.end()) {}
 
-    file_bookmark::file_bookmark(const char *data)
-        : file_bookmark(std::string(data)) {}
-
 #pragma mark - Conversions
 
     auto file_bookmark::to_string() const -> std::string {

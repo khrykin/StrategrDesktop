@@ -43,14 +43,14 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
     SECTION("initial scheduling") {
         {
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
 
             REQUIRE(deleted_identifiers == nullptr);
             REQUIRE(scheduled_notifications->size() == 2);
         }
 
         auto strategy = stg::strategy();
-        auto notifier = stg::notifier(strategy, "file.stg");
+        auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
 
         // Should reschedule on every construction of notifier:
         REQUIRE(deleted_identifiers->size() == 2);
@@ -59,7 +59,7 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
 
     SECTION("scheduling on change") {
         auto strategy = stg::strategy();
-        auto notifier = stg::notifier(strategy, "file.stg");
+        auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
 
         auto expected_deleted_ids = std::vector<std::string>();
         std::transform(scheduled_notifications->begin(),
@@ -81,22 +81,22 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
             // At the end of this scope, notifications for file.stg
             // will be persisted.
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
         }
 
         {
             // At the end of this scope, notifications for file2.stg
             // will be persisted and notifications for file.stg must be removed
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
 
-            notifier.set_file("file2.stg");
+            notifier.set_file(file_bookmark{"file2.stg"});
         }
 
         {
             // Check normal re-scheduling scenario for file2.stg
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file2.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file2.stg"});
 
             REQUIRE(deleted_identifiers->size() == 2);
             REQUIRE(scheduled_notifications->size() == 2);
@@ -111,7 +111,7 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
             scheduled_notifications = nullptr;
 
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
 
             REQUIRE(deleted_identifiers == nullptr);
             REQUIRE(scheduled_notifications->size() == 2);
@@ -123,14 +123,14 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
             // At the end of this scope, notifications for file.stg
             // will be persisted.
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file.stg"});
         }
 
         {
             // At the end of this scope, notifications for file2.stg
             // will be persisted.
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file2.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file2.stg"});
         }
 
 
@@ -140,22 +140,22 @@ TEST_CASE("Notifier scheduled notifications", "[notifier][scheduled]") {
             // At the end of this scope, notifications for file3.stg
             // will be persisted.
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file3.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file3.stg"});
         }
 
-        notifier::note_file_removed("file3.stg");
+        notifier::note_file_removed(file_bookmark{"file3.stg"});
 
         {
             // At the end of this scope, notifications for file4.stg
             // SHOULD NOT be persisted.
             auto strategy = stg::strategy();
-            auto notifier = stg::notifier(strategy, "file4.stg");
+            auto notifier = stg::notifier(strategy, file_bookmark{"file4.stg"});
             notifier.set_file(std::nullopt);
         }
 
         std::unordered_set<file_bookmark> expected_active_files = {
-            "file.stg",
-            "file2.stg"};
+            file_bookmark{"file.stg"},
+            file_bookmark{"file2.stg"}};
 
         REQUIRE(notifier::active_files() == expected_active_files);
     }

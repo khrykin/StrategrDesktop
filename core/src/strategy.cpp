@@ -3,6 +3,7 @@
 #include <map>
 #include <numeric>
 #include <vector>
+#include <cassert>
 
 #include "json.h"
 #include "persistent.h"
