@@ -22,9 +22,8 @@ namespace stg {
     public:
 #pragma mark - Construction
 
-        file_bookmark(raw_buffer data);
+        explicit file_bookmark(raw_buffer data);
         file_bookmark(const std::string &path);
-        file_bookmark(const char *data);
 
 #ifdef __APPLE__
         file_bookmark(NSURL *url);

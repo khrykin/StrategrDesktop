@@ -119,8 +119,9 @@ namespace stg::json {
                                                      .activities()
                                                      .index_of(time_slot.activity);
 
-                           if (activity_index)
+                           if (activity_index) {
                                return nlohmann::json(*activity_index);
+                           }
 
                            return nlohmann::json();
                        });

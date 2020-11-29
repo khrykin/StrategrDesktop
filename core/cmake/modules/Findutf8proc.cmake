@@ -1,11 +1,19 @@
-# FindPackage file for static utf8roc
+# FindPackage file for static utf8proc
 
-find_file(utf8proc_HEADER utf8proc.h)
-find_library(utf8proc_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}utf8proc${CMAKE_STATIC_LIBRARY_SUFFIX})
+if (WIN32)
+    set(utf8proc_STATIC_LIBRARY_SUFFIX _static${CMAKE_STATIC_LIBRARY_SUFFIX})
+else ()
+    set(utf8proc_STATIC_LIBRARY_SUFFIX ${CMAKE_STATIC_LIBRARY_SUFFIX})
+endif ()
+
+find_path(utf8proc_INCLUDE_DIR utf8proc.h)
+find_library(utf8proc_LIBRARY ${CMAKE_STATIC_LIBRARY_PREFIX}utf8proc${utf8proc_STATIC_LIBRARY_SUFFIX})
 
 # Determine version:
 
-if (NOT ${utf8proc_HEADER} MATCHES NOTFOUND)
+if (NOT ${utf8proc_INCLUDE_DIR} MATCHES NOTFOUND)
+    set(utf8proc_HEADER "${utf8proc_INCLUDE_DIR}/utf8proc.h")
+
     file(READ ${utf8proc_HEADER} utf8proc_HEADER_CONTENTS)
 
     string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ ${utf8proc_HEADER_CONTENTS})
@@ -26,7 +34,7 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(utf8proc
         REQUIRED_VARS
         utf8proc_LIBRARY
-        utf8proc_HEADER
+        utf8proc_INCLUDE_DIR
 
         VERSION_VAR
         utf8proc_VERSION)
@@ -38,5 +46,9 @@ if (utf8proc_FOUND AND NOT TARGET utf8proc::utf8proc)
     set_target_properties(utf8proc::utf8proc
             PROPERTIES
             IMPORTED_LOCATION ${utf8proc_LIBRARY}
-            PUBLIC_HEADER ${utf8proc_HEADER})
+            INTERFACE_INCLUDE_DIRECTORIES ${utf8proc_INCLUDE_DIR})
+
+    target_compile_definitions(utf8proc::utf8proc
+            INTERFACE
+            UTF8PROC_STATIC)
 endif ()

@@ -18,7 +18,7 @@ include(StrategrCoreConfigure)
 # Compile options
 
 if (MSVC)
-    add_compile_options(/W4 /WX /wd4068)
+    add_compile_options(/W4 /WX /wd4068 /wd26812)
 else ()
     add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
 endif ()
@@ -27,14 +27,12 @@ endif ()
 
 set(Boost_USE_STATIC_LIBS ON)
 
-find_package(Boost 1.71 COMPONENTS headers REQUIRED)
+find_package(Boost 1.74 REQUIRED)
 find_package(Catch2 2.9 REQUIRED)
 find_package(utf8proc 2.4 REQUIRED)
 find_package(nlohmann_json 3.2 REQUIRED)
 
 # Core Library
-
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_library(libstrategr STATIC
         ${STRATEGR_CORE_VERSION_FILE}
@@ -100,9 +98,9 @@ add_library(libstrategr STATIC
         src/file_bookmark.cpp
         include/strategr/file_bookmark.h)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS OFF)
-
-set_target_properties(libstrategr PROPERTIES OUTPUT_NAME strategr)
+set_target_properties(libstrategr
+        PROPERTIES
+        OUTPUT_NAME strategr)
 
 target_include_directories(libstrategr
         PUBLIC
@@ -113,12 +111,10 @@ target_include_directories(libstrategr
         ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(libstrategr
-        PUBLIC
-        nlohmann_json::nlohmann_json
-
         PRIVATE
-        Boost::headers
-        utf8proc::utf8proc)
+        utf8proc::utf8proc
+        nlohmann_json::nlohmann_json
+        Boost::headers)
 
 add_executable(tests
         tests/tests_main.cpp
@@ -139,6 +135,7 @@ target_include_directories(tests
 
 target_link_libraries(tests
         PRIVATE
+        nlohmann_json::nlohmann_json
         libstrategr
         Catch2::Catch2)
 
@@ -174,6 +171,12 @@ if (APPLE)
             "-framework Foundation"
             "-framework QuartzCore"
             "-framework EventKit")
+endif ()
+
+if (WIN32)
+    target_link_libraries(libstrategr
+            PRIVATE
+            bcrypt)
 endif ()
 
 # Tests

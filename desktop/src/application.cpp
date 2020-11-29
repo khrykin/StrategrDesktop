@@ -15,6 +15,11 @@
 
 #endif
 
+/* Force use of Common Controls 6 */
+#ifdef _MSC_VER
+#pragma comment(linker, "\"/manifestdependency:type='Win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+#endif
+
 QStringList Application::openedFiles = QStringList();
 
 bool Application::updateMenuAdded = false;

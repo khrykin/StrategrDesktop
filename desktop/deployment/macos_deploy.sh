@@ -17,11 +17,10 @@ APP_BUNDLE_PATH="$2"
 echo "Specified Qt5 installation: $Qt5_ROOT"
 echo "App bundle: $APP_BUNDLE_PATH"
 
-"${Qt5_ROOT}/clang_64/bin/macdeployqt" "$APP_BUNDLE_PATH"
-
 codesign --deep \
          --force \
          --verify \
+         --timestamp \
          --verbose -s "$CODE_SIGN_IDENTITY" \
          --options runtime \
 				 --keychain "$CODE_SIGN_KEYCHAIN" \

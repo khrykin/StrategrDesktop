@@ -1,6 +1,6 @@
 option(RELEASE_ONLY "\
 Build only Release versions of vcpkg libraries. \
-Be careful, as this will edit all triplet files in your vcpkg installation" OFF)
+Be careful, as this will edit all triplet files in your vcpkg installation" ON)
 
 option(CLEAN "Clean vcpkg folder after install" OFF)
 

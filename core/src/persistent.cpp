@@ -137,7 +137,7 @@ namespace stg {
 
     template<>
     auto deserialize(const uint8_t *&data) -> file_bookmark {
-        return deserialize<raw_buffer>(data);
+        return file_bookmark{deserialize<raw_buffer>(data)};
     }
 
     void persistent_storage::test() {

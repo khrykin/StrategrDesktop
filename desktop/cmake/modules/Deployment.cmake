@@ -36,11 +36,59 @@ if (APPLE)
             COMMENT "Notarizing macOS package..."
             COMMAND "${MACOS_NOTARIZE_SCRIPT}"
             ARGS com.khrykin.Strategr "${MACOS_PACKAGE_PATH}")
+
+    set_target_properties(package
+            PROPERTIES
+            EXCLUDE_FROM_ALL true)
 endif ()
 
 if (WIN32)
-    # Copy non-Qt dlls
+    if ("${CMAKE_VS_PLATFORM_NAME}" MATCHES x64)
+        set(WINDOWS_64_OR_EMPTY 64)
+    endif ()
 
-    string(REGEX REPLACE " \\.lib" ".dll" WinSparkle_DLL "${WinSparkle_PATH}")
-    install(FILE "${WinSparkle_DLL}" DESTINATION "${CMAKE_CURRENT_BINARY_DIR} ")
+    if (${CMAKE_VS_PLATFORM_NAME} MATCHES Win32)
+        set(WINDOWS_PLATFORM_NAME x86)
+    else ()
+        set(WINDOWS_PLATFORM_NAME ${CMAKE_VS_PLATFORM_NAME})
+    endif ()
+
+    # Copy dlls
+
+    add_custom_command(TARGET Strategr
+            POST_BUILD
+
+            COMMAND ${CMAKE_COMMAND}
+            ARGS -E copy_if_different
+            "${WinSparkle_DLL}"
+            "$<TARGET_FILE_DIR:Strategr>")
+
+    # Configure installer script
+
+    configure_file("${CMAKE_SOURCE_DIR}/deployment/Strategr.in.iss"
+            "${CMAKE_CURRENT_BINARY_DIR}/Strategr.in.iss")
+
+    file(GENERATE OUTPUT "$<TARGET_FILE_DIR:Strategr>/Strategr.iss"
+            INPUT "${CMAKE_CURRENT_BINARY_DIR}/Strategr.in.iss "
+            CONDITION $<CONFIG:Release>)
+
+    # Package target
+
+    add_custom_target(package
+            COMMAND iscc "$<TARGET_FILE_DIR:Strategr>/Strategr.iss"
+            "/O\"$<SHELL_PATH:${CMAKE_CURRENT_SOURCE_DIR}/packages>\""
+            DEPENDS Strategr)
+
+    # Download MSVC Redist package
+
+    add_custom_command(TARGET package
+            PRE_BUILD
+            COMMAND ${CMAKE_COMMAND}
+            "-DDOWNLOAD_DIR=\"$<TARGET_FILE_DIR:Strategr>\""
+            "-DCMAKE_VS_PLATFORM_NAME=\"${CMAKE_VS_PLATFORM_NAME}\""
+            -P "${CMAKE_SOURCE_DIR}/cmake/modules/GetMSVCRedist.cmake")
+
+    set_target_properties(package
+            PROPERTIES
+            EXCLUDE_FROM_ALL true)
 endif ()
