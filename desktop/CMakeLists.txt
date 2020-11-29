@@ -147,7 +147,6 @@ set(DESKTOP_SOURCES
 
 if (APPLE)
     set(PLATFORM_RESOURCES
-            deployment/Strategr.icns
             deployment/Strategy.icns)
 
     set(PLATFORM_LIBRARIES
@@ -252,6 +251,11 @@ catch_discover_tests(uitests)
 # MacOS Specifics
 
 if (APPLE)
+    target_sources(Strategr PRIVATE deployment/Assets.xcassets)
+    set_source_files_properties(deployment/Assets.xcassets
+            PROPERTIES
+            MACOSX_PACKAGE_LOCATION Resources)
+
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
 
     # Enable ARC
@@ -276,6 +280,7 @@ if (APPLE)
     set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--deep --timestamp --options runtime --keychain \"$ENV{CODE_SIGN_KEYCHAIN}\"")
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS NO)
     set(CMAKE_XCODE_ATTRIBUTE_DEPLOYMENT_POSTPROCESSING ON)
+    set(CMAKE_XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon")
     set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET 10.13)
 
     message(STATUS "OSX deployment target: ${CMAKE_OSX_DEPLOYMENT_TARGET}")

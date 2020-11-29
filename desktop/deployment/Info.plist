@@ -15,7 +15,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
-	<string>Strategr.icns</string>
+	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.khrykin.strategr</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -37,20 +37,51 @@
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeIconFile</key>
-			<string>Strategy.icns</string>
-			<key>CFBundleTypeName</key>
-			<string>Strategy</string>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>stg</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-		</dict>
-	</array>
+    <array>
+        <dict>
+            <key>CFBundleTypeIconFile</key>
+            <string>Strategy.icns</string>
+            <key>CFBundleTypeIconSystemGenerated</key>
+            <integer>1</integer>
+            <key>CFBundleTypeName</key>
+            <string>Strategy</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>LSHandlerRank</key>
+            <string>Default</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.Strategr.Strategy</string>
+            </array>
+        </dict>
+    </array>
+	<key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeDescription</key>
+            <string>Strategy</string>
+            <key>UTTypeIconFile</key>
+            <string>Strategy.icns</string>
+            <key>UTTypeIcons</key>
+            <dict>
+                <key>UTTypeIconBackgroundName</key>
+                <string>StrategyFill</string>
+                <key>UTTypeIconBadgeName</key>
+                <string>StrategyIcon</string>
+                <key>UTTypeIconText</key>
+                <string>Strategy</string>
+            </dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.Strategr.Strategy</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>stg</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Strategr would be able to import and export Calendar events</string>
 	<key>SUFeedURL</key>
