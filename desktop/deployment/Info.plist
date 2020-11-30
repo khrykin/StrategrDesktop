@@ -17,7 +17,7 @@
 	<key>CFBundleIconFile</key>
 	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.khrykin.strategr</string>
+	<string>com.khrykin.Strategr</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -36,7 +36,7 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
-	<key>CFBundleDocumentTypes</key>
+    <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
             <key>CFBundleTypeIconFile</key>
@@ -51,13 +51,19 @@
             <string>Default</string>
             <key>LSItemContentTypes</key>
             <array>
-                <string>com.Strategr.Strategy</string>
+                <string>com.khrykin.Strategr.Strategy</string>
             </array>
+            <key>NSDocumentClass</key>
+            <string>NSDocument</string>
         </dict>
     </array>
 	<key>UTExportedTypeDeclarations</key>
     <array>
         <dict>
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
             <key>UTTypeDescription</key>
             <string>Strategy</string>
             <key>UTTypeIconFile</key>
@@ -72,7 +78,7 @@
                 <string>Strategy</string>
             </dict>
             <key>UTTypeIdentifier</key>
-            <string>com.Strategr.Strategy</string>
+            <string>com.khrykin.Strategr.Strategy</string>
             <key>UTTypeTagSpecification</key>
             <dict>
                 <key>public.filename-extension</key>

@@ -5,6 +5,9 @@ find_library(Sparkle_FRAMEWORK Sparkle)
 # Determine version:
 
 if (NOT ${Sparkle_FRAMEWORK} MATCHES NOTFOUND)
+    get_filename_component(Sparkle_DIR "${Sparkle_FRAMEWORK}" DIRECTORY)
+    set(ENV{Sparkle_DIR} "${Sparkle_DIR}")
+
     set(Sparkle_INFO_PLIST ${Sparkle_FRAMEWORK}/Resources/Info.plist)
 
     file(READ ${Sparkle_INFO_PLIST} Sparkle_INFO_PLIST_CONTENTS)
@@ -32,6 +35,8 @@ if (Sparkle_FOUND AND NOT TARGET Sparkle::Sparkle)
     set_target_properties(Sparkle::Sparkle
             PROPERTIES
             FRAMEWORK TRUE
+            INSTALL_NAME_DIR @executable_path/../Frameworks
+            BUILD_WITH_INSTALL_RPATH true
             IMPORTED_LOCATION ${Sparkle_FRAMEWORK}/Sparkle)
 
     target_include_directories(Sparkle::Sparkle

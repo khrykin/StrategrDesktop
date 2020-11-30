@@ -13,9 +13,8 @@ if (APPLE)
 
     add_custom_command(TARGET Strategr
             POST_BUILD
-
             COMMAND rsync
-            ARGS -avzh
+            ARGS -azh
             "${Sparkle_FRAMEWORK}"
             "${BUNDLE_FRAMEWORKS}")
 
@@ -23,11 +22,12 @@ if (APPLE)
             POST_BUILD
             COMMENT "Deploying macOS application..."
             COMMAND "${MACOS_DEPLOYMENT_SCRIPT}"
-            ARGS "${Qt5_ROOT}" "$<TARGET_BUNDLE_DIR:Strategr>")
+            ARGS "$<TARGET_BUNDLE_DIR:Strategr>")
 
     add_custom_target(package
             DEPENDS Strategr
-            COMMAND "${MACOS_PACKAGE_SCRIPT}"
+            COMMAND bash
+            ARGS "${MACOS_PACKAGE_SCRIPT}"
             "$<TARGET_BUNDLE_DIR:Strategr>"
             "${PACKAGES_DIR}")
 

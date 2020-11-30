@@ -17,3 +17,6 @@ docs/.vscode
 
 # Packages output folder
 /desktop/packages/
+dependencies/installed
+dependencies/tmp
+dependencies/tools
