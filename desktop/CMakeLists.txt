@@ -6,11 +6,18 @@ list(APPEND CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # Get version from git tag
+
 include(GetVersionFromGit)
 
 project(StrategrDesktop VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
+
+message(STATUS "Library prefix path: ${CMAKE_PREFIX_PATH}")
+
+# Get target architecture
+
+include(TargetArch)
 
 # Include core library
 
@@ -30,8 +37,8 @@ endif ()
 
 # Dependencies
 
-find_package(Qt5 5.14 COMPONENTS Widgets Test REQUIRED)
 find_package(Catch2 2.9 REQUIRED)
+find_package(Qt5 5.12 COMPONENTS Widgets Test REQUIRED)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
@@ -42,6 +49,8 @@ if (WIN32)
     find_package(Qt5 COMPONENTS WinExtras REQUIRED)
     find_package(WinSparkle REQUIRED)
 endif ()
+
+message(STATUS "Qt5 include: ${Qt5Widgets_INCLUDE_DIRS}")
 
 # Resources
 
@@ -216,6 +225,10 @@ add_executable(Strategr MACOSX_BUNDLE WIN32
 
 target_include_directories(Strategr PUBLIC src)
 
+set_target_properties(Strategr
+        PROPERTIES
+        BUILD_RPATH @executable_path/../Frameworks)
+
 target_link_libraries(Strategr
         PRIVATE
         ${PLATFORM_LIBRARIES}
@@ -229,6 +242,8 @@ add_executable(uitests
         ${DESKTOP_SOURCES}
         tests/qt_tests_main.cpp
         tests/main_window_test.cpp)
+
+add_dependencies(uitests Strategr)
 
 target_compile_definitions(uitests PUBLIC STG_UI_TEST)
 
@@ -275,12 +290,14 @@ if (APPLE)
             RESOURCE "${PLATFORM_RESOURCES}"
             XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${CMAKE_SOURCE_DIR}/deployment/Strategr.entitlements)
 
-    set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH NO)
+    set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH YES)
+    set(CMAKE_XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS @executable_path/../Frameworks)
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "$ENV{CODE_SIGN_IDENTITY}")
     set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--deep --timestamp --options runtime --keychain \"$ENV{CODE_SIGN_KEYCHAIN}\"")
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS NO)
     set(CMAKE_XCODE_ATTRIBUTE_DEPLOYMENT_POSTPROCESSING ON)
     set(CMAKE_XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon")
+    set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.khrykin.Strategr")
     set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET 10.13)
 
     message(STATUS "OSX deployment target: ${CMAKE_OSX_DEPLOYMENT_TARGET}")

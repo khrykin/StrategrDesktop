@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -e
 
@@ -11,11 +11,45 @@ status() {
 	printf "[deployment] %s%s%s\n" "$bold" "$1" "$normal"
 }
 
-Qt5_ROOT="$1"
-APP_BUNDLE_PATH="$2"
+fix_rpath() {
+    # Find rpaths via otool
+    otool_output=$(otool -l "$1" | grep RPATH -A2)
 
-echo "Specified Qt5 installation: $Qt5_ROOT"
+    fixed=false
+
+    # Split otool output by lines
+    while IFS= read -r line
+    do
+        regex="path (.+) \(offset.+$"
+
+        if [[ $line =~ $regex ]]
+        then
+            rpath="${BASH_REMATCH[1]}"
+
+            echo "Found rpath: \"$rpath\""
+
+            if [ "$rpath" == "@executable_path/../Frameworks" ] || [ "$rpath" == "@loader_path/../Frameworks" ]
+            then
+                fixed=true
+            else
+              echo "Removing rpath: \"$rpath\""
+    	        install_name_tool -delete_rpath "$rpath" "$1"
+            fi
+        fi
+    done <<< "$otool_output"
+
+    if [ $fixed != true ]
+    then
+        install_name_tool -add_rpath @executable_path/../Frameworks "$1"
+    fi
+}
+
+APP_BUNDLE_PATH="$1"
+EXECUTABLE_PATH="$APP_BUNDLE_PATH/Contents/MacOS/Strategr"
+
 echo "App bundle: $APP_BUNDLE_PATH"
+
+fix_rpath "$EXECUTABLE_PATH"
 
 codesign --deep \
          --force \

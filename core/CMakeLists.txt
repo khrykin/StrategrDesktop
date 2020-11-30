@@ -4,7 +4,12 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 # Setup modules path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
+# Get target architecture
+
+include(TargetArch)
+
 # Get version from git tag
+
 include(GetVersionFromGit)
 
 project(StrategrCore VERSION ${VERSION_SHORT})
@@ -29,7 +34,7 @@ set(Boost_USE_STATIC_LIBS ON)
 
 find_package(Boost 1.74 REQUIRED)
 find_package(Catch2 2.9 REQUIRED)
-find_package(utf8proc 2.4 REQUIRED)
+find_package(utf8proc 2.6.0 REQUIRED)
 find_package(nlohmann_json 3.2 REQUIRED)
 
 # Core Library
