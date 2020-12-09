@@ -143,6 +143,8 @@ namespace stg {
             std::size_t cant_move_count = 0;
 
             for (auto const &[current_index, past_indices] : history) {
+                (void) past_indices;
+
                 auto slot_is_dragged = std::find(new_dragged_indices.begin(),
                                                  new_dragged_indices.end(),
                                                  current_index) != new_dragged_indices.end();

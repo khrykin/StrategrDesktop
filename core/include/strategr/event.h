@@ -53,7 +53,6 @@ namespace stg {
 
         friend auto operator<<(std::ostream &os, const mouse_event &e) -> std::ostream &;
     };
-};
-
+}
 
 #endif//STRATEGR_EVENT_H

@@ -18,18 +18,18 @@ if (APPLE)
             "${Sparkle_FRAMEWORK}"
             "${BUNDLE_FRAMEWORKS}")
 
-    add_custom_command(TARGET Strategr
-            POST_BUILD
-            COMMENT "Deploying macOS application..."
-            COMMAND "${MACOS_DEPLOYMENT_SCRIPT}"
-            ARGS "$<TARGET_BUNDLE_DIR:Strategr>")
-
     add_custom_target(package
             DEPENDS Strategr
             COMMAND bash
             ARGS "${MACOS_PACKAGE_SCRIPT}"
             "$<TARGET_BUNDLE_DIR:Strategr>"
             "${PACKAGES_DIR}")
+
+    add_custom_command(TARGET package
+            PRE_BUILD
+            COMMENT "Deploying macOS application..."
+            COMMAND "${MACOS_DEPLOYMENT_SCRIPT}"
+            ARGS "$<TARGET_BUNDLE_DIR:Strategr>")
 
     add_custom_command(TARGET package
             POST_BUILD

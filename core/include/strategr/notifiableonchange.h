@@ -15,7 +15,10 @@ namespace stg {
         using callback_t = std::function<void()>;
 
         notifiable_on_change() = default;
-        notifiable_on_change(const notifiable_on_change &) = delete;
+        notifiable_on_change(const notifiable_on_change &other) {
+            on_change_callbacks = other.on_change_callbacks;
+        }
+
         virtual ~notifiable_on_change() = default;
 
         auto operator=(const notifiable_on_change &other) -> notifiable_on_change & = delete;
@@ -39,6 +42,6 @@ namespace stg {
     private:
         mutable std::vector<callback_t> on_change_callbacks = {};
     };
-};
+}
 
 #endif//MODELS_NOTIFIABLEONCHANGE_H

@@ -19,7 +19,7 @@ namespace stg {
             {"#777777", "Gray"}};
 
         return colors;
-    };
+    }
 
     activity::activity(std::string name, stg::color color) : _color(std::move(color)) {
         if (!is_valid(name))

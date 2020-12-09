@@ -16,7 +16,6 @@ namespace stg {
     private:
         std::string message;
     };
-};
-
+}
 
 #endif//STRATEGR_ACTIVITYINVALIDPROPERTYEXCEPTION_H

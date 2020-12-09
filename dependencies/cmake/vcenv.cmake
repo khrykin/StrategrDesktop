@@ -1,12 +1,17 @@
 cmake_minimum_required(VERSION 3.19.0)
 
-# Parses cmake -E environment output
-# and applies it to the current process's environment
+# Parses `cmake -E environment` output
+# and applies it to the current process environment
 function(apply_env env_output)
     set(path_delimeter "__________")
 
     string(REPLACE ";" ${path_delimeter} env_output "${env_output}")
     string(REPLACE "\n" ";" env_output "${env_output}")
+
+    list(LENGTH env_output env_vars_count)
+    string(LENGTH "${env_output}" env_output_length)
+
+    message(STATUS "Applying environment: ${env_vars_count} variables, content-length: ${env_output_length}")
 
     foreach (line ${env_output})
         string(REPLACE "=" ";" line "${line}")
@@ -16,6 +21,45 @@ function(apply_env env_output)
 
         string(REPLACE "${path_delimeter}" ";" env_var_value "${env_var_value}")
         set(ENV{${env_var_name}} "${env_var_value}")
+    endforeach ()
+endfunction()
+
+# Saves cmake -E environment output to a variable
+function(print_env output_var)
+    execute_process(COMMAND "${CMAKE_COMMAND}" -E environment
+            OUTPUT_VARIABLE out
+            COMMAND_ERROR_IS_FATAL ANY)
+
+    set(${output_var} ${out} PARENT_SCOPE)
+endfunction()
+
+# Saves cmake -E environment output to a file
+function(print_env_to_file output_file)
+    execute_process(COMMAND "${CMAKE_COMMAND}" -E environment
+            OUTPUT_FILE "${output_file}"
+            COMMAND_ERROR_IS_FATAL ANY)
+endfunction()
+
+# Removes all environment variables
+function(unset_env)
+    print_env(env_output)
+
+    set(path_delimeter "__________")
+
+    string(REPLACE ";" ${path_delimeter} env_output "${env_output}")
+    string(REPLACE "\n" ";" env_output "${env_output}")
+
+    list(LENGTH env_output env_vars_count)
+    string(LENGTH "${env_output}" env_output_length)
+
+    message(STATUS "Unsetting environment: ${env_vars_count} variables, content-length: ${env_output_length}")
+
+    foreach (line ${env_output})
+        string(REPLACE "=" ";" line "${line}")
+
+        list(GET line 0 env_var_name)
+
+        unset(ENV{${env_var_name}})
     endforeach ()
 endfunction()
 
@@ -43,20 +87,21 @@ function(set_msvc_env platform)
             COMMAND_ERROR_IS_FATAL ANY)
 
     string(REPLACE "\\" "/" vs_installation_path "${vs_installation_path}")
+
     set(vcvarsall_script "${vs_installation_path}/VC/Auxiliary/Build/vcvarsall.bat")
-
     set(printenv_script "${CMAKE_CURRENT_LIST_DIR}/__printenv.cmake")
-    file(WRITE "${printenv_script}" "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E environment)")
+    set(printenv_output_file "${CMAKE_CURRENT_LIST_DIR}/__printenv_${platform}")
 
-    execute_process(
-            COMMAND "${vcvarsall_script}" ${platform}>nul
-            && cmake -P "${printenv_script}"
+    file(WRITE "${printenv_script}" [[
+        execute_process(COMMAND "${CMAKE_COMMAND}" -E environment)
+    ]])
 
-            OUTPUT_VARIABLE env_output
-            OUTPUT_STRIP_TRAILING_WHITESPACE
+    execute_process(COMMAND "${vcvarsall_script}" ${platform} > nul
+            && "${CMAKE_COMMAND}" -P "${printenv_script}"
+            OUTPUT_VARIABLE printenv_output
             COMMAND_ERROR_IS_FATAL ANY)
 
-    apply_env("${env_output}")
+    apply_env("${printenv_output}")
 
     file(REMOVE "${printenv_script}")
 endfunction()

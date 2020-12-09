@@ -1,9 +1,9 @@
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <map>
 #include <numeric>
 #include <vector>
-#include <cassert>
 
 #include "json.h"
 #include "persistent.h"
@@ -34,7 +34,8 @@ namespace stg {
         setup_time_slots_callback();
     }
 
-    strategy::strategy(const strategy &other) : _activities(other._activities.data()),
+    strategy::strategy(const strategy &other) : notifiable_on_change(other),
+                                                _activities(other._activities.data()),
                                                 _time_slots(other._time_slots.data()),
                                                 _sessions(other.sessions().data()),
                                                 history(make_history_entry()) {

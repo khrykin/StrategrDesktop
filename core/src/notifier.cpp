@@ -349,8 +349,10 @@ namespace stg {
         auto dict = user_notifications::storage::persisted(notifications_dictionary_key);
 
         std::unordered_set<file_bookmark> files{dict.size()};
-        for (auto &[key, _] : dict)
+        for (auto &[key, _] : dict) {
+            (void) _;
             files.insert(key);
+        }
 
         return files;
     }

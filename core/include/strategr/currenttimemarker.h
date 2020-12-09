@@ -24,7 +24,7 @@ namespace stg {
         auto scroll_offset(const rect &slots_rect, rect viewport_rect) const -> stg::gfloat;
 
     private:
-        const strategy &strategy;
+        const stg::strategy &strategy;
 
         auto top_offset_in_slots(stg::gfloat total_height) const -> stg::gfloat;
     };

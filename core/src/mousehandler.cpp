@@ -2,6 +2,7 @@
 // Created by Dmitry Khrykin on 2020-01-29.
 //
 
+#include <cmath>
 #include <numeric>
 
 #include "mousehandler.h"
@@ -256,7 +257,7 @@ namespace stg {
     }
 
     auto mouse_handler::get_direction(gfloat delta) const -> direction {
-        if (std::abs(delta) < settings.direction_change_resolution)
+        if (std::fabs(delta) < settings.direction_change_resolution)
             return direction::none;
 
         return delta > 0 ? direction::down : direction::up;
@@ -326,6 +327,8 @@ namespace stg {
                                    ? cursor::resize
                                    : cursor::pointer;
                 }
+
+                break;
             case drag:
                 return cursor::closed_hand;
             case resize:
@@ -337,6 +340,8 @@ namespace stg {
             default:
                 return cursor::pointer;
         }
+
+        return cursor::pointer;
     }
 
     void mouse_handler::update_cursor(event::key_modifiers modifiers) {
@@ -357,7 +362,7 @@ namespace stg {
         auto new_direction = this->get_direction(delta);
         auto prev_direction = this->current_direction;
 
-        if (abs(delta) > this->settings.direction_change_resolution)
+        if (std::fabs(delta) > this->settings.direction_change_resolution)
             this->previous_position = event.position;
 
         if (new_direction != mouse_handler::direction::none &&

@@ -96,10 +96,10 @@ namespace stg {
     }
 
     auto color::rgb_components() const -> std::array<double, 4> {
-        return {red_component(),
-                green_component(),
-                blue_component(),
-                alpha_component()};
+        return {{red_component(),
+                 green_component(),
+                 blue_component(),
+                 alpha_component()}};
     }
 
 #pragma mark - Managing HSL Components
@@ -108,22 +108,22 @@ namespace stg {
         hue = hue * 360 / 60;
 
         auto chroma = (1 - std::abs(2 * lightness - 1)) * saturation;
-        auto x = chroma * (1 - std::abs(std::fmodf(hue, 2) - 1));
+        auto x = chroma * (1 - std::abs(::fmodf(hue, 2) - 1));
 
         auto rgb = std::array<float, 3>();
 
-        if (std::ceilf(hue) == 1) {
-            rgb = {chroma, x, 0};
-        } else if (std::ceilf(hue) == 2) {
-            rgb = {x, chroma, 0};
-        } else if (std::ceilf(hue) == 3) {
-            rgb = {0, chroma, x};
-        } else if (std::ceilf(hue) == 4) {
-            rgb = {0, x, chroma};
-        } else if (std::ceilf(hue) == 5) {
-            rgb = {x, 0, chroma};
-        } else if (std::ceilf(hue) == 6) {
-            rgb = {chroma, 0, x};
+        if (::ceilf(hue) == 1) {
+            rgb = {{chroma, x, 0}};
+        } else if (::ceilf(hue) == 2) {
+            rgb = {{x, chroma, 0}};
+        } else if (::ceilf(hue) == 3) {
+            rgb = {{0, chroma, x}};
+        } else if (::ceilf(hue) == 4) {
+            rgb = {{0, x, chroma}};
+        } else if (::ceilf(hue) == 5) {
+            rgb = {{x, 0, chroma}};
+        } else if (::ceilf(hue) == 6) {
+            rgb = {{chroma, 0, x}};
         }
 
         const auto m = lightness - 0.5f * chroma;

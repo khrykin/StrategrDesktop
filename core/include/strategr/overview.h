@@ -6,9 +6,9 @@
 #define STRATEGR_OVERVIEW_H
 
 #include <cmath>
+#include <functional>
 #include <optional>
 #include <vector>
-#include <functional>
 
 #include "color.h"
 #include "geometry.h"
@@ -43,7 +43,7 @@ namespace stg {
         auto current_time_position() const -> gfloat;
 
     private:
-        const strategy &strategy;
+        const stg::strategy &strategy;
         std::function<gfloat()> width_getter;
 
         gfloat width() const;

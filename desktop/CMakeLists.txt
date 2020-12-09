@@ -257,11 +257,11 @@ target_link_libraries(uitests
 
 target_include_directories(uitests PUBLIC src)
 
-enable_testing()
-
-include(Catch)
-
-catch_discover_tests(uitests)
+#enable_testing()
+#
+#include(Catch)
+#
+#catch_discover_tests(uitests)
 
 # MacOS Specifics
 

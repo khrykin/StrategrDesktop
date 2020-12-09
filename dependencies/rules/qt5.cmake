@@ -29,6 +29,8 @@ endif ()
 if (WIN32 AND NOT EXISTS "${MAKE_COMMAND}")
     # Downloading jom
 
+    message(STATUS "Installing jom...")
+
     file(DOWNLOAD http://download.qt.io/official_releases/jom/jom.zip
             ${TMP_DIR}/jom.zip)
 
@@ -61,15 +63,15 @@ function(build)
 
     if (WIN32)
         set(CONFIGURE_SCRIPT ${SOURCE_DIR}/configure.bat)
+        list(APPEND CONFIGURE_ARGS
+                -platform win32-msvc)
     else ()
         set(CONFIGURE_SCRIPT ${SOURCE_DIR}/configure)
-        list(APPEND CONFIGURE_ARGS
-                -ltcg)
     endif ()
 
     if (APPLE)
         list(APPEND CONFIGURE_ARGS
-                QMAKE_MAC_SDK=macosx11.0
+                #                QMAKE_MAC_SDK=macosx11.0
                 -appstore-compliant)
     endif ()
 

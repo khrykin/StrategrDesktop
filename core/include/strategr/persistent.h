@@ -145,7 +145,7 @@ namespace stg {
             }
         });
 
-        return std::move(object_ptr);
+        return object_ptr;
     }
 }
 

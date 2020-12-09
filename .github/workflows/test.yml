@@ -11,7 +11,7 @@ on:
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: RelWithDebInfo
+  BUILD_TYPE: Debug
   CREDENTIALS: ${{ secrets.CREDENTIALS }}
   DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
 
@@ -33,28 +33,31 @@ jobs:
           - name: "Linux x64 Clang"
             os: ubuntu-latest
             arch: x64
-            cxx-compiler: clang++
-            c-compiler: clang
+            cxx-compiler: clang++-9
+            c-compiler: clang-9
 
           - name: "Linux x64 GCC"
             os: ubuntu-latest
             arch: x64
-            cxx-compiler: g++
-            c-compiler: gcc
+            cxx-compiler: g++-10
+            c-compiler: gcc-10
 
           - name: "Windows x86"
             os: windows-latest
             arch: x86
+            install-deps-extra-args: "-DPLATFORMS=Win32"
             cmake-extra-args: "-A Win32"
 
           - name: "Windows x64"
             os: windows-latest
             arch: x64
+            install-deps-extra-args: "-DPLATFORMS=x64"
             cmake-extra-args: "-A x64"
 
     env:
       CXX: ${{ matrix.cxx-compiler }}
       CC: ${{ matrix.c-compiler }}
+      CXXFLAGS: ${{ matrix.cxx-flags }}
       BUILD_DIR: build
     steps:
       - uses: actions/checkout@v2
@@ -66,16 +69,31 @@ jobs:
         env:
           cache-name: dependencies-cache-${{ runner.os }}-${{ matrix.arch }}
         with:
-          path: dependencies
+          path: dependencies/installed
           key: ${{ env.cache-name }}-${{ hashFiles('dependencies/rules/*', 'dependencies/Install.cmake') }}
 
       - name: Xcode version
-        if: ${{ startsWith(runner.os, 'macOS') }}
+        if: ${{ runner.os =='macOS' }}
         run: |
           xcodebuild -version
 
+      - name: Setup Windows environment
+        if: ${{ runner.os == 'Windows' }}
+        shell: cmd
+        run: reg add HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem /t REG_DWORD /v LongPathsEnabled /d 00000001 /f
+
+      - name: Setup Linux dependencies
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo cp /etc/apt/sources.list /etc/apt/sources.list~
+          sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get build-dep qt5-default
+          sudo apt-get install libxcb-xinerama0-dev
+
       - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.4
+        uses: jwlawson/actions-setup-cmake@v1.7
         with:
           cmake-version: "3.19.x"
 
@@ -83,21 +101,24 @@ jobs:
         run: cmake --version
 
       - name: Build dependencies
-        run: cmake -DQt5_BUILD_STATIC_LIBS_ONLY=ON -P dependencies/Install.cmake
+        run: |
+          cmake -DQt5_BUILD_STATIC_LIBS_ONLY=ON \
+                ${{ matrix.install-deps-extra-args }} \
+                -P dependencies/Install.cmake
 
-      - name: Create build environment
+      - name: Create build directory
         run: cmake -E make_directory ${{ env.BUILD_DIR }}
 
       - name: Configure CMake
         working-directory: ${{ env.BUILD_DIR }}
         run: |
-          cmake ${{ matrix.cmake-extra-args }} $GITHUB_WORKSPACE \
+          cmake ${{ matrix.cmake-extra-args }} $GITHUB_WORKSPACE/desktop \
           -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
           -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies/installed \
           ${{ matrix.cmake-extra-defs }}
+
       - name: Build
         working-directory: ${{ env.BUILD_DIR }}
-        shell: bash
         run: cmake --build . --config $BUILD_TYPE
 
       - name: Test

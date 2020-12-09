@@ -5,6 +5,7 @@
 #ifndef STRATEGR_MOUSEHANDLEROPERATIONS_H
 #define STRATEGR_MOUSEHANDLEROPERATIONS_H
 
+#include <cmath>
 #include <vector>
 
 #include "actioncenter.h"
@@ -337,7 +338,7 @@ private:
         auto boundary_pos = get_boundary_position();
         auto delta = current_pos - boundary_pos;
 
-        return std::abs(delta);
+        return std::fabs(delta);
     }
 
     gfloat get_boundary_position() const {

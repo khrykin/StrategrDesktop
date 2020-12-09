@@ -167,3 +167,11 @@ void Application::checkForUpdates() {
 }
 
 #endif
+
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
+
+void Application::checkForUpdates() {
+    std::cout << "Warning: Auto updates are not supported on this platform\n";
+}
+
+#endif

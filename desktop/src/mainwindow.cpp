@@ -124,8 +124,8 @@ void MainWindow::setIsSaved(bool isSaved) {
     if (strategyTitle.isEmpty())
         strategyTitle = "Untitled";
 
-    setWindowModified(!isSaved);
     setWindowTitle(strategyTitle + "[*]");
+    setWindowModified(!isSaved);
 
 #ifdef Q_OS_MAC
     MacOSWindow::updateWindowTitle(this);

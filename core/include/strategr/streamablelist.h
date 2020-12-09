@@ -13,7 +13,7 @@ namespace stg {
     public:
         virtual ~streamable_list() = default;
 
-        friend std::ostream &operator<<(std::ostream &os, const Container &list) {
+        friend auto operator<<(std::ostream &os, const Container &list) -> std::ostream & {
             os << list.class_print_name() << " [" << std::endl;
             for (auto &element : list) {
                 os << "\t" << element;
@@ -24,13 +24,13 @@ namespace stg {
             return os;
         }
 
-        friend std::ostream &operator<<(std::ostream &os, const Container *list) {
+        friend auto operator<<(std::ostream &os, const Container *list) -> std::ostream & {
             return operator<<(os, *list);
         }
 
     protected:
-        virtual std::string class_print_name() const = 0;
+        virtual auto class_print_name() const -> std::string = 0;
     };
-};
+}
 
 #endif//MODELS_TESTS_STREAMABLELIST_H

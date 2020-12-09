@@ -30,6 +30,13 @@ public:
     static AboutWindow *aboutWindow;
     static QSystemTrayIcon *trayIcon;
     static QSettings &currentSettings();
+
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
+    static inline constexpr bool autoUpdatesSupported = true;
+#else
+    static inline constexpr bool autoUpdatesSupported = false;
+#endif
+
     // Workaround for Qt bug:
     // https://bugreports.qt.io/browse/QTBUG-13898
     static bool updateMenuAdded;
@@ -38,7 +45,9 @@ public:
     static void clearRecentFiles();
     static void markFileClosed(const QString &filePath);
     static bool fileIsOpened(const QString &filePath);
+
     static void checkForUpdates();
+
     static auto theme() -> const stg::theme &;
 
     static auto notifierBackend() -> const NotifierBackend &;

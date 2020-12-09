@@ -7,18 +7,20 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 option(OSX_UNIVERSAL_BINARIES "Build universal binaries for macOS" ON)
 
 if (NOT PLATFORMS)
-    if (APPLE)
-        set(PLATFORMS x86_64)
-    elseif (WIN32)
+    if (WIN32)
         set(PLATFORMS Win32 x64)
-    elseif (UNIX)
-        set(PLATFORMS x64)
+    else ()
+        set(PLATFORMS x86_64)
     endif ()
 endif ()
 
-# Special directories
+# Windows environment setup
 
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/vcenv.cmake")
+
+print_env(INITIAL_ENV)
+
+# Special directories
 
 set(DEPENDENCIES_DIR "${CMAKE_CURRENT_LIST_DIR}")
 set(DEPENDENCIES_TMP_DIR "${DEPENDENCIES_DIR}/tmp")
@@ -59,7 +61,6 @@ foreach (DEPENDECY_BUILD_FILE ${DEPENDENCIES_BUILD_RULES})
 
         # Reset temporary directory
 
-        # TODO:
         file(REMOVE_RECURSE "${DEPENDENCIES_TMP_DIR}")
 
         # Set dependency install directory
@@ -126,18 +127,33 @@ foreach (DEPENDECY_BUILD_FILE ${DEPENDENCIES_BUILD_RULES})
                     elseif (WIN32)
                         list(APPEND SHARED_CMAKE_DEFINITIONS
                                 -A ${PLATFORM})
+                        unset_env()
+                        apply_env("${INITIAL_ENV}")
                         set_msvc_env(${PLATFORM})
+
+                        execute_process(COMMAND cl RESULT_VARIABLE out)
+                        message("cl: ${out}")
                     endif ()
 
                     # Setting install directories
 
                     set(PLATFORM_PREFIX "${INSTALL_DIR}/${PLATFORM}")
+
                     set(PLATFORM_LIB_DIR "${PLATFORM_PREFIX}/lib")
+                    if (NOT EXISTS "${PLATFORM_LIB_DIR}")
+                        file(MAKE_DIRECTORY "${PLATFORM_LIB_DIR}")
+                    endif ()
+
                     set(PLATFORM_INCLUDE_DIR "${PLATFORM_PREFIX}/include")
+                    set(PLATFORM_LIB_DIR "${PLATFORM_PREFIX}/lib")
+                    if (NOT EXISTS "${PLATFORM_INCLUDE_DIR}")
+                        file(MAKE_DIRECTORY "${PLATFORM_INCLUDE_DIR}")
+                    endif ()
 
                     set(CMAKE_INSTALL_PREFIX "${PLATFORM_PREFIX}")
                     list(APPEND SHARED_CMAKE_DEFINITIONS
                             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}")
+
 
                     # Call build function from buildfile
                     build()
@@ -156,7 +172,6 @@ foreach (DEPENDECY_BUILD_FILE ${DEPENDENCIES_BUILD_RULES})
     endif ()
 endforeach ()
 
+
 message("")
-message(STATUS "Done installing dependencies")
-
-
+message(STATUS "Done installing dependencies ")
