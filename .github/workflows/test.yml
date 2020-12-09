@@ -1,0 +1,105 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - master
+    tags-ignore:
+      - v*
+
+  pull_request:
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: RelWithDebInfo
+  CREDENTIALS: ${{ secrets.CREDENTIALS }}
+  DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        include:
+          - name: "macOS x64"
+            os: macos-latest
+            arch: x64
+
+          - name: "Linux x64 Clang"
+            os: ubuntu-latest
+            arch: x64
+            cxx-compiler: clang++
+            c-compiler: clang
+
+          - name: "Linux x64 GCC"
+            os: ubuntu-latest
+            arch: x64
+            cxx-compiler: g++
+            c-compiler: gcc
+
+          - name: "Windows x86"
+            os: windows-latest
+            arch: x86
+            cmake-extra-args: "-A Win32"
+
+          - name: "Windows x64"
+            os: windows-latest
+            arch: x64
+            cmake-extra-args: "-A x64"
+
+    env:
+      CXX: ${{ matrix.cxx-compiler }}
+      CC: ${{ matrix.c-compiler }}
+      BUILD_DIR: build
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: dependencies-cache-${{ runner.os }}-${{ matrix.arch }}
+        with:
+          path: dependencies
+          key: ${{ env.cache-name }}-${{ hashFiles('dependencies/rules/*', 'dependencies/Install.cmake') }}
+
+      - name: Xcode version
+        if: ${{ startsWith(runner.os, 'macOS') }}
+        run: |
+          xcodebuild -version
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.4
+        with:
+          cmake-version: "3.19.x"
+
+      - name: Use CMake
+        run: cmake --version
+
+      - name: Build dependencies
+        run: cmake -DQt5_BUILD_STATIC_LIBS_ONLY=ON -P dependencies/Install.cmake
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{ env.BUILD_DIR }}
+
+      - name: Configure CMake
+        working-directory: ${{ env.BUILD_DIR }}
+        run: |
+          cmake ${{ matrix.cmake-extra-args }} $GITHUB_WORKSPACE \
+          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+          -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies/installed \
+          ${{ matrix.cmake-extra-defs }}
+      - name: Build
+        working-directory: ${{ env.BUILD_DIR }}
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE
+
+      - name: Test
+        working-directory: ${{ env.BUILD_DIR }}
+        run: echo "Run tests..."
