@@ -159,10 +159,11 @@ auto Application::theme() -> const stg::theme & {
     return theme;
 }
 
-#ifdef Q_OS_WIN
 
 void Application::checkForUpdates() {
+#ifdef Q_OS_WIN
     win_sparkle_check_update_with_ui();
+#endif
+
 }
 
-#endif
