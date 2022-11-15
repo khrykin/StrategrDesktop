@@ -3,8 +3,8 @@
 //
 
 #include <QDate>
-#include <QDesktopServices.h>
-#include <QUrl.h>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "aboutwindow.h"
 #include "applicationicon.h"

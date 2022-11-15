@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(Boost_USE_STATIC_LIBS ON)
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
-find_package(catch2 REQUIRED)
+# find_package(catch2 REQUIRED)
+find_package(Catch2 REQUIRED)
 find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
 
 find_library(utf8Proc_LIBRARY_PATH libutf8proc.a utf8proc.lib utf8proc)
@@ -20,6 +21,10 @@ endif ()
 if (WIN32)
     find_package(Qt5 COMPONENTS WinExtras REQUIRED)
     find_library(WinSparkle_PATH WinSparkle)
+endif ()
+
+if (UNIX)
+    add_compile_options("-fpermissive")
 endif ()
 
 include_directories(.)
