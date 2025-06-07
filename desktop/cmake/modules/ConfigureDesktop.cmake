@@ -5,12 +5,10 @@ set(DESKTOP_VERSION_SHORT ${VERSION_SHORT})
 
 file(REMOVE ${DESKTOP_VERSION_FILE})
 
-
 # Get repo name
-git_get_repo_name(REPO_NAME)
+set(REPO_NAME khrykin/StrategrDesktop)
 
 # Get appcast url
-
 string(REGEX REPLACE "^[^/]+/" "" GITHUB_REPO "${REPO_NAME}")
 string(REGEX REPLACE "/[^/]+$" "" GITHUB_USER "${REPO_NAME}")
 set(APPCAST_URL "https://${GITHUB_USER}.github.io/${GITHUB_REPO}/appcast.xml")

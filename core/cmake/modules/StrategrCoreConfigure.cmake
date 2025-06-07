@@ -1,5 +1,3 @@
-include(GitRepo)
-
 set(STRATEGR_CORE_VERSION ${VERSION})
 set(STRATEGR_CORE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/core_version.cpp")
 
