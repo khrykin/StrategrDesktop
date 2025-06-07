@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS deployment version" FORCE)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 13.0 CACHE STRING "Minimum macOS deployment version" FORCE)
 
 list(APPEND CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/../core/cmake/modules
@@ -166,10 +166,6 @@ if (APPLE)
             src/colorprovider.mm
             src/macoscalendarexporter.mm
             src/macoscalendarexporter.h
-            src/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.m
-            src/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h
-            src/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.m
-            src/third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItemView.h
             src/cocoa/STGCalendarExportViewController.m
             src/cocoa/STGCalendarExportViewController.h
             src/cocoa/STGCalendarExportProgressWindow.h

@@ -3,7 +3,6 @@
 //
 
 #import "STGToolbar.h"
-#import "third-party/TAAdaptiveSpaceItem/TAAdaptiveSpaceItem.h"
 
 #include "mainscene.h"
 #include "mainwindow.h"
@@ -14,18 +13,15 @@ const NSString *ToolbarItemNewActivityIdentifier = @"New";
 const NSString *ToolbarItemActivitiesTitleIdentifier = @"Title:Activities";
 const NSString *ToolbarItemBackButtonIdentifier = @"Back";
 const NSString *ToolbarItemSettingsIdentifier = @"Settings";
-const NSString *TAAdaptiveSpaceItemIdentifier = @"TAAdaptiveSpaceItem";
 
 
 const NSArray *sessionsPage = @[ToolbarItemActivitiesIdentifier,
                                 NSToolbarFlexibleSpaceItemIdentifier,
-                                ToolbarItemStrategyTitleIdentifier,
-                                TAAdaptiveSpaceItemIdentifier];
+                                ToolbarItemStrategyTitleIdentifier];
 
 const NSArray *activitiesPage = @[ToolbarItemNewActivityIdentifier,
                                   NSToolbarFlexibleSpaceItemIdentifier,
                                   ToolbarItemActivitiesTitleIdentifier,
-                                  TAAdaptiveSpaceItemIdentifier,
                                   ToolbarItemBackButtonIdentifier];
 
 const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
@@ -36,6 +32,8 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
         self.delegate = self;
     }
 
+    self.centeredItemIdentifiers = [NSSet setWithObjects:ToolbarItemStrategyTitleIdentifier, ToolbarItemActivitiesTitleIdentifier, nil];
+
     return self;
 }
 
@@ -43,10 +41,6 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
         itemForItemIdentifier:(NSString *)itemIdentifier
     willBeInsertedIntoToolbar:(BOOL)flag {
     NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
-
-    if ([itemIdentifier isEqual:TAAdaptiveSpaceItemIdentifier]) {
-        return [[TAAdaptiveSpaceItem alloc] initWithItemIdentifier:(NSString *) TAAdaptiveSpaceItemIdentifier];
-    }
 
     if ([itemIdentifier isEqual:ToolbarItemActivitiesTitleIdentifier] ||
         [itemIdentifier isEqual:ToolbarItemStrategyTitleIdentifier]) {
@@ -190,13 +184,6 @@ const NSArray *toolbarPages = @[sessionsPage, activitiesPage];
 
     for (NSString *itemIdentifier in toolbarPages[index]) {
         [self insertItemWithItemIdentifier:itemIdentifier atIndex:0];
-    }
-
-    for (NSToolbarItem *item in self.items) {
-        if ([item.itemIdentifier isEqualToString:(NSString *) TAAdaptiveSpaceItemIdentifier]) {
-            TAAdaptiveSpaceItem *adaptiveSpaceItem = (TAAdaptiveSpaceItem *) item;
-            [adaptiveSpaceItem updateWidth];
-        }
     }
 }
 

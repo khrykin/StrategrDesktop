@@ -9,7 +9,7 @@ project(StrategrCore VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 13.0)
 
 # Configure Files
 include(StrategrCoreConfigure)
