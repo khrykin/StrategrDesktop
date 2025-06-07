@@ -24,7 +24,7 @@ Strategr's data model is built with vanilla C++ 17, UI layer is Qt 5.
 Things are being reworked and building currently only supported on macOS. It may
 build on Windows & Linux with a fix or two though.
 
-Dependencies are manages via [vcpkg](https://vcpkg.io/en/). Run once:
+Dependencies are managed via [vcpkg](https://vcpkg.io/en/). Run once:
 
 ```shell
 ./scripts/setup_vcpkg.sh
