@@ -11,12 +11,16 @@ if (APPLE)
 
     set(BUNDLE_FRAMEWORKS "$<TARGET_BUNDLE_DIR:Strategr>/Contents/Frameworks")
 
+    # Create Frameworks directory and copy Sparkle framework
     add_custom_command(TARGET Strategr
             POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${BUNDLE_FRAMEWORKS}"
+            COMMAND ${CMAKE_COMMAND} -E echo "Copying Sparkle framework from ${Sparkle_FRAMEWORK} to ${BUNDLE_FRAMEWORKS}"
             COMMAND rsync
             ARGS -azh
             "${Sparkle_FRAMEWORK}"
-            "${BUNDLE_FRAMEWORKS}")
+            "${BUNDLE_FRAMEWORKS}"
+            COMMAND ${CMAKE_COMMAND} -E echo "Sparkle framework copy completed")
 
     add_custom_command(TARGET Strategr
             POST_BUILD
