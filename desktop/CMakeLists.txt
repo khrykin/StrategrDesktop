@@ -252,7 +252,7 @@ if (APPLE)
 
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
 
-    # @rpath/Sparkle somehow is set on the executable, which is incorrect. Fix
+    # @rpath/Sparkle is somehow set on the executable, which is incorrect. Fix
     # it manually:
     add_custom_command(TARGET Strategr
             POST_BUILD
