@@ -8,4 +8,4 @@ add_library(Sparkle::Sparkle INTERFACE IMPORTED)
 set_target_properties(Sparkle::Sparkle PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${SPARKLE_INCLUDE_DIR}"
     INTERFACE_LINK_LIBRARIES "${SPARKLE_LIBRARY}"
-) 
+)
