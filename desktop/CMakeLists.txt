@@ -6,29 +6,22 @@ list(APPEND CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 
 # Get version from git tag
-
 include(GetVersionFromGit)
 
 project(StrategrDesktop VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 message(STATUS "Library prefix path: ${CMAKE_PREFIX_PATH}")
 
-# Get target architecture
-
-include(TargetArch)
-
 # Include core library
-
 add_subdirectory(../core ${CMAKE_CURRENT_BINARY_DIR}/core)
 
 # Configure files
-
 include(ConfigureDesktop)
 
 # Compile options
-
 if (MSVC)
     add_compile_options(/W1 /wd4068 /wd26812)
 else ()
@@ -36,13 +29,12 @@ else ()
 endif ()
 
 # Dependencies
-
-find_package(Catch2 2.9 REQUIRED)
-find_package(Qt5 5.12 COMPONENTS Widgets Test REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
+find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
 
 if (APPLE)
     find_package(Qt5 COMPONENTS MacExtras REQUIRED)
-    find_package(Sparkle 1.22 REQUIRED)
+    find_package(Sparkle REQUIRED)
 endif ()
 
 if (WIN32)
@@ -153,7 +145,6 @@ set(DESKTOP_SOURCES
         src/backends.h)
 
 # MacOS Specifics
-
 if (APPLE)
     set(PLATFORM_RESOURCES
             deployment/Strategy.icns)
@@ -202,7 +193,6 @@ if (APPLE)
 endif ()
 
 # Windows specifics
-
 if (WIN32)
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.rc"
             "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
@@ -216,7 +206,6 @@ if (WIN32)
 endif ()
 
 # Main Executable
-
 add_executable(Strategr MACOSX_BUNDLE WIN32
         ${QT_RESOURCES}
         ${PLATFORM_RESOURCES}
@@ -227,7 +216,9 @@ target_include_directories(Strategr PUBLIC src)
 
 set_target_properties(Strategr
         PROPERTIES
-        BUILD_RPATH @executable_path/../Frameworks)
+        BUILD_WITH_INSTALL_RPATH true
+        INSTALL_RPATH @executable_path/../Frameworks)
+
 
 target_link_libraries(Strategr
         PRIVATE
@@ -236,7 +227,6 @@ target_link_libraries(Strategr
         libstrategr)
 
 # UI Tests Executable
-
 add_executable(uitests
         ${QT_RESOURCES}
         ${DESKTOP_SOURCES}
@@ -257,14 +247,7 @@ target_link_libraries(uitests
 
 target_include_directories(uitests PUBLIC src)
 
-enable_testing()
-
-include(Catch)
-
-catch_discover_tests(uitests)
-
 # MacOS Specifics
-
 if (APPLE)
     target_sources(Strategr PRIVATE deployment/Assets.xcassets)
     set_source_files_properties(deployment/Assets.xcassets
@@ -272,6 +255,20 @@ if (APPLE)
             MACOSX_PACKAGE_LOCATION Resources)
 
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+
+    # @rpah/Sparkle somehow is set one the executable - which is incorrect. Fix
+    # it manually:
+    add_custom_command(TARGET Strategr
+            POST_BUILD
+            COMMAND install_name_tool
+              -change @rpath/Sparkle @rpath/Sparkle.framework/Sparkle
+              "$<TARGET_FILE:Strategr>")
+
+    add_custom_command(TARGET uitests
+            POST_BUILD
+            COMMAND install_name_tool
+              -change @rpath/Sparkle @rpath/Sparkle.framework/Sparkle
+              "$<TARGET_FILE:uitests>")
 
     # Enable ARC
     target_compile_options(Strategr PRIVATE -fobjc-arc)
@@ -287,43 +284,33 @@ if (APPLE)
             MACOSX_BUNDLE_BUNDLE_VERSION ${VERSION_SHORT}
             MACOSX_BUNDLE_LONG_VERSION_STRING ${VERSION}
             MACOSX_BUNDLE_SHORT_VERSION_STRING ${VERSION_SHORT}
-            RESOURCE "${PLATFORM_RESOURCES}"
-            XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${CMAKE_SOURCE_DIR}/deployment/Strategr.entitlements)
-
-    set(CMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH YES)
-    set(CMAKE_XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS @executable_path/../Frameworks)
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "$ENV{CODE_SIGN_IDENTITY}")
-    set(CMAKE_XCODE_ATTRIBUTE_OTHER_CODE_SIGN_FLAGS "--deep --timestamp --options runtime --keychain \"$ENV{CODE_SIGN_KEYCHAIN}\"")
-    set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_INJECT_BASE_ENTITLEMENTS NO)
-    set(CMAKE_XCODE_ATTRIBUTE_DEPLOYMENT_POSTPROCESSING ON)
-    set(CMAKE_XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME "AppIcon")
-    set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.khrykin.Strategr")
-    set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET 10.13)
+            RESOURCE "${PLATFORM_RESOURCES}")
 
     message(STATUS "OSX deployment target: ${CMAKE_OSX_DEPLOYMENT_TARGET}")
 endif ()
 
 
 # Windows Specifics
-
 if (WIN32)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr)
 
     # Configure resource file
-
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.rc"
             "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
 
     # Copy icons
-
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategr.ico"
             DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
             DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 endif ()
 
-# Deployment
+# Testing
+enable_testing()
+include(Catch)
+catch_discover_tests(uitests)
 
+# Deployment
 include(Deployment)
 

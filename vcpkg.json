@@ -1,0 +1,66 @@
+{
+  "name": "strategr",
+  "version": "0.1.0",
+  "dependencies": [
+    "catch2",
+    "utf8proc",
+    "nlohmann-json",
+    "boost-uuid",
+    "qt5-base",
+    {
+      "name": "qt5-macextras",
+      "platform": "osx"
+    },
+    {
+      "name": "qt5-winextras",
+      "platform": "windows"
+    },
+    {
+      "name": "winsparkle",
+      "platform": "windows"
+    },
+    {
+      "name": "sparkle",
+      "platform": "osx"
+    }
+  ],
+  "builtin-baseline": "984f9232b2fe0eb94f5e9f161d6c632c581fff0c",
+  "overrides": [
+    {
+      "name": "catch2",
+      "version": "2.13.9"
+    },
+    {
+      "name": "utf8proc",
+      "version": "2.10.0"
+    },
+    {
+      "name": "nlohmann-json",
+      "version": "3.11.2"
+    },
+    {
+      "name": "boost-uuid",
+      "version": "1.83.0"
+    },
+    {
+      "name": "qt5-base",
+      "version": "5.15.12"
+    },
+    {
+      "name": "qt5-macextras",
+      "version": "5.15.12"
+    },
+    {
+      "name": "qt5-winextras",
+      "version": "5.15.12"
+    },
+    {
+      "name": "winsparkle",
+      "version": "0.9.0"
+    },
+    {
+      "name": "sparkle",
+      "version": "1.24.0"
+    }
+  ]
+}

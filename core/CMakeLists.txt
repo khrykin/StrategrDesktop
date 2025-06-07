@@ -1,27 +1,20 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 
 # Setup modules path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
-
-# Get target architecture
-
-include(TargetArch)
-
-# Get version from git tag
 
 include(GetVersionFromGit)
 
 project(StrategrCore VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13)
 
 # Configure Files
-
 include(StrategrCoreConfigure)
 
 # Compile options
-
 if (MSVC)
     add_compile_options(/W4 /WX /wd4068 /wd26812)
 else ()
@@ -29,16 +22,12 @@ else ()
 endif ()
 
 # Dependencies
-
-set(Boost_USE_STATIC_LIBS ON)
-
-find_package(Boost 1.74 REQUIRED)
-find_package(Catch2 2.9 REQUIRED)
-find_package(utf8proc 2.6.0 REQUIRED)
-find_package(nlohmann_json 3.2 REQUIRED)
+find_package(Boost REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(unofficial-utf8proc CONFIG REQUIRED)
 
 # Core Library
-
 add_library(libstrategr STATIC
         ${STRATEGR_CORE_VERSION_FILE}
         include/strategr/version.h
@@ -101,7 +90,8 @@ add_library(libstrategr STATIC
         src/notifications.cpp
         include/strategr/notifications.h
         src/file_bookmark.cpp
-        include/strategr/file_bookmark.h)
+        include/strategr/file_bookmark.h
+      )
 
 set_target_properties(libstrategr
         PROPERTIES
@@ -117,9 +107,10 @@ target_include_directories(libstrategr
 
 target_link_libraries(libstrategr
         PRIVATE
-        utf8proc::utf8proc
+        utf8proc
         nlohmann_json::nlohmann_json
-        Boost::headers)
+        Boost::headers
+      )
 
 add_executable(tests
         tests/tests_main.cpp
@@ -142,7 +133,9 @@ target_link_libraries(tests
         PRIVATE
         nlohmann_json::nlohmann_json
         libstrategr
-        Catch2::Catch2)
+        Catch2::Catch2
+        Catch2::Catch2WithMain
+      )
 
 if (APPLE)
     target_compile_options(libstrategr PRIVATE -fobjc-arc)
@@ -185,9 +178,7 @@ if (WIN32)
 endif ()
 
 # Tests
-
 enable_testing()
-
 include(Catch)
-
 catch_discover_tests(tests)
+

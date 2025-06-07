@@ -1,0 +1,10 @@
+{
+  "name": "sparkle",
+  "version": "2.4.0",
+  "description": "A software update framework for macOS",
+  "homepage": "https://sparkle-project.org",
+  "license": "MIT",
+  "supports": "osx",
+  "dependencies": []
+}
+

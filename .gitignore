@@ -4,7 +4,10 @@
 .stignore
 .DS_Store
 
-builds
+build
+
+# Clangd cache
+.cache
 
 # Visual Studio cmake project files
 CMakeSettings.json
@@ -15,8 +18,6 @@ deployment/Strategr_x64.iss
 deployment/Strategr_x86.iss
 docs/.vscode
 
-# Packages output folder
-/desktop/packages/
-dependencies/installed
-dependencies/tmp
-dependencies/tools
+# Vcpkg
+vcpkg
+vcpkg_installed
