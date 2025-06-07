@@ -219,6 +219,7 @@ set_target_properties(Strategr
         BUILD_WITH_INSTALL_RPATH true
         INSTALL_RPATH @executable_path/../Frameworks)
 
+
 target_link_libraries(Strategr
         PRIVATE
         ${PLATFORM_LIBRARIES}
@@ -246,12 +247,6 @@ target_link_libraries(uitests
 
 target_include_directories(uitests PUBLIC src)
 
-enable_testing()
-
-include(Catch)
-
-catch_discover_tests(uitests)
-
 # MacOS Specifics
 if (APPLE)
     target_sources(Strategr PRIVATE deployment/Assets.xcassets)
@@ -260,6 +255,20 @@ if (APPLE)
             MACOSX_PACKAGE_LOCATION Resources)
 
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+
+    # @rpah/Sparkle somehow is set one the executable - which is incorrect. Fix
+    # it manually:
+    add_custom_command(TARGET Strategr
+            POST_BUILD
+            COMMAND install_name_tool
+              -change @rpath/Sparkle @rpath/Sparkle.framework/Sparkle
+              "$<TARGET_FILE:Strategr>")
+
+    add_custom_command(TARGET uitests
+            POST_BUILD
+            COMMAND install_name_tool
+              -change @rpath/Sparkle @rpath/Sparkle.framework/Sparkle
+              "$<TARGET_FILE:uitests>")
 
     # Enable ARC
     target_compile_options(Strategr PRIVATE -fobjc-arc)
@@ -296,6 +305,11 @@ if (WIN32)
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Strategy.ico"
             DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 endif ()
+
+# Testing
+enable_testing()
+include(Catch)
+catch_discover_tests(uitests)
 
 # Deployment
 include(Deployment)

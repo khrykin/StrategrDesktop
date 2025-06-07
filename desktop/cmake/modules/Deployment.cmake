@@ -9,15 +9,14 @@ if (APPLE)
     set(MACOS_NOTARIZE_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/deployment/macos_notarize.sh")
     set(MACOS_PACKAGE_PATH "${PACKAGES_DIR}/Strategr ${VERSION_SHORT}.dmg")
 
-    set(BUNDLE_FRAMEWORKS "$<TARGET_BUNDLE_DIR:Strategr>/Contents/Frameworks")
+   set(BUNDLE_FRAMEWORKS "$<TARGET_BUNDLE_DIR:Strategr>/Contents/Frameworks")
 
     # Create Frameworks directory and copy Sparkle framework
     add_custom_command(TARGET Strategr
             POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E make_directory "${BUNDLE_FRAMEWORKS}"
             COMMAND ${CMAKE_COMMAND} -E echo "Copying Sparkle framework from ${Sparkle_FRAMEWORK} to ${BUNDLE_FRAMEWORKS}"
-            COMMAND rsync
-            ARGS -azh
+            COMMAND cp -R
             "${Sparkle_FRAMEWORK}"
             "${BUNDLE_FRAMEWORKS}"
             COMMAND ${CMAKE_COMMAND} -E echo "Sparkle framework copy completed")
