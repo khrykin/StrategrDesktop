@@ -30,7 +30,7 @@ endif ()
 
 # Dependencies
 find_package(Catch2 CONFIG REQUIRED)
-find_package(Qt6 COMPONENTS Widgets Test REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Test Gui Core REQUIRED)
 
 if (APPLE)
     find_package(Sparkle REQUIRED)
@@ -216,6 +216,8 @@ target_link_libraries(Strategr
         PRIVATE
         ${PLATFORM_LIBRARIES}
         Qt6::Widgets
+        Qt6::Gui
+        Qt6::Core
         libstrategr)
 
 # UI Tests Executable
@@ -233,6 +235,8 @@ target_link_libraries(uitests
         PRIVATE
         ${PLATFORM_LIBRARIES}
         Qt6::Widgets
+        Qt6::Gui
+        Qt6::Core
         libstrategr
         Catch2::Catch2
         Qt6::Test)

@@ -47,7 +47,7 @@ void AbstractSpinBoxDecorator::applyStyleSheet() {
 
 void AbstractSpinBoxDecorator::createLayout() {
     auto *mainLayout = new QHBoxLayout(this);
-    mainLayout->setMargin(0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(5);
     setLayout(mainLayout);
 }

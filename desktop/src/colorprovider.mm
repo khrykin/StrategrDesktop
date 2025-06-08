@@ -3,7 +3,7 @@
 //
 
 #import <AppKit/AppKit.h>
-#include <QtMacExtras>
+#include <QColor>
 
 #include "colorprovider.h"
 

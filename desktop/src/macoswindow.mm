@@ -6,7 +6,8 @@
 
 #import "cocoa/STGToolbar.h"
 
-#include <QtMac>
+#include <QImage>
+#include <QPixmap>
 
 #include "macoswindow.h"
 #include "mainscene.h"
@@ -63,26 +64,32 @@ void MacOSWindow::updateWindowTitle(MainWindow *window) {
 
 QPixmap MacOSWindow::resizeCursor() {
     NSCursor *cursor = [NSCursor resizeUpDownCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    
+    QImage image;
+    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 QPixmap MacOSWindow::closedHandCursor() {
     NSCursor *cursor = [NSCursor closedHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    
+    QImage image;
+    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 QPixmap MacOSWindow::openHandCursor() {
     NSCursor *cursor = [NSCursor openHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+    
+    QImage image;
+    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 QRect MacOSWindow::adjustedGeometry(MainWindow *window) {

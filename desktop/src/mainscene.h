@@ -16,6 +16,7 @@
 #include "slotswidget.h"
 
 class MainScene : public SlidingStackedWidget {
+    Q_OBJECT
 public:
     explicit MainScene(stg::strategy &strategy, QWidget *parent = nullptr);
 

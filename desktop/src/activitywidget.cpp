@@ -2,10 +2,10 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
-#include <QRegExpValidator>
 #include <QSpinBox>
 #include <QStyle>
 #include <QStyleOption>
+#include <QEnterEvent>
 
 #include <strategr/time_utils.h>
 
@@ -15,6 +15,11 @@
 #include "mainscene.h"
 #include "mainwindow.h"
 #include "utils.h"
+
+#include <QApplication>
+#include <QClipboard>
+#include <QKeyEvent>
+#include <QStylePainter>
 
 ActivityWidget::ActivityWidget(stg::activity *activity, QWidget *parent)
     : DataProviderWidget(parent), _activity(activity) {
@@ -189,7 +194,7 @@ void ActivityWidget::showContextMenu(const QPoint &position) {
     editorMenu->exec(mapToGlobal(position));
 }
 
-void ActivityWidget::enterEvent(QEvent *event) {
+void ActivityWidget::enterEvent(QEnterEvent *event) {
     QWidget::enterEvent(event);
     update();
 }

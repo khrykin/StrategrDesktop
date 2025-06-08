@@ -55,7 +55,9 @@ void MainWindow::setup() {
 }
 
 MainWindow::~MainWindow() {
-    teardown();
+    if (!alreadyTornDown) {
+        teardown();
+    }
 }
 
 MainScene *MainWindow::scene() const {
@@ -185,7 +187,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
         teardown();
         event->accept();
-        this->deleteLater();
     } else {
         event->ignore();
     }

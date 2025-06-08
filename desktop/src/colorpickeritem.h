@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QWidget>
+#include <QEnterEvent>
 
 class ColorPickerItem : public QWidget {
     Q_OBJECT
@@ -30,7 +31,7 @@ private:
 
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
-    void enterEvent(QEvent *event) override;
+    void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 };

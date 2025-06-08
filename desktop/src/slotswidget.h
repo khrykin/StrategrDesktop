@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QEnterEvent>
 
 #include <strategr/selection.h>
 
@@ -58,7 +59,7 @@ private:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
 
-    void enterEvent(QEvent *event) override;
+    void enterEvent(QEnterEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 };

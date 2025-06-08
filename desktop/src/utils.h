@@ -5,7 +5,6 @@
 #include <vector>
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QGuiApplication>
 #include <QLocale>
 #include <QScreen>

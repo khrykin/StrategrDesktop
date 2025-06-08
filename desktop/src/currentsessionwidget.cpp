@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QTime>
 #include <QTimer>
+#include <QEnterEvent>
 
 #include <strategr/time_utils.h>
 
@@ -168,7 +169,7 @@ void CurrentSessionWidget::mousePressEvent(QMouseEvent *) {
     update();
 }
 
-void CurrentSessionWidget::enterEvent(QEvent *) {
+void CurrentSessionWidget::enterEvent(QEnterEvent *) {
     isHovered = true;
     update();
 }

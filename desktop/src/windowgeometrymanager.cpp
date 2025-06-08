@@ -3,7 +3,6 @@
 //
 
 #include <QApplication>
-#include <QDesktopWidget>
 
 #include "application.h"
 #include "macoswindow.h"
@@ -71,7 +70,7 @@ QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
 }
 
 QRect WindowGeometryManager::avaliableGeometry(QWidget *widget) {
-    return QDesktopWidget().availableGeometry(widget);
+    return widget->screen()->availableGeometry();
 }
 
 int WindowGeometryManager::minLeft() {

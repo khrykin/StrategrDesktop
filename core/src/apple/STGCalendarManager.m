@@ -2,6 +2,7 @@
 // Created by Dmitry Khrykin on 2019-08-17.
 //
 
+#include <EventKit/EventKit.h>
 #import <TargetConditionals.h>
 
 #import "STGCalendarManager.h"
@@ -243,21 +244,20 @@
     EKAuthorizationStatus authorizationStatus = [EKEventStore authorizationStatusForEntityType:EKEntityTypeEvent];
     EKEventStore *store = [[EKEventStore alloc] init];
 
-    if (authorizationStatus != EKAuthorizationStatusAuthorized) {
-        [store requestAccessToEntityType:EKEntityTypeEvent
-                              completion:^(BOOL granted, NSError *error) {
-                                if (!granted || error) {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                      completionHandler(nil);
-                                    });
+    if (authorizationStatus != EKAuthorizationStatusFullAccess) {
+        [store requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+          if (!granted || error) {
+              dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler(nil);
+              });
 
-                                    return;
-                                }
+              return;
+          }
 
-                                dispatch_async(dispatch_get_main_queue(), ^{
-                                  completionHandler(store);
-                                });
-                              }];
+          dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(store);
+          });
+        }];
     } else {
         completionHandler(store);
     }

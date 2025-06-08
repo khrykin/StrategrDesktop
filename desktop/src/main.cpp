@@ -1,6 +1,8 @@
-#include "mainwindow.h"
 #include "application.h"
+#include "mainwindow.h"
+#include "utils.h"
 #include "backends.h"
+#include <QStyleFactory>
 
 void setupCredentials() {
     QCoreApplication::setOrganizationName("Dmitry Khrykin");
@@ -8,14 +10,37 @@ void setupCredentials() {
     QCoreApplication::setApplicationName("Strategr");
 }
 
+QString getNativeStyle() {
+#ifdef Q_OS_MAC
+    return "macintosh";
+#elif defined(Q_OS_WIN)
+    return "windowsvista";
+#else
+    // On Linux, try to use the desktop environment's native style
+    const QStringList availableStyles = QStyleFactory::keys();
+    if (availableStyles.contains("gtk3")) {
+        return "gtk3";
+    } else if (availableStyles.contains("gtk2")) {
+        return "gtk2";
+    } else if (availableStyles.contains("fusion")) {
+        return "fusion";
+    }
+    return "fusion"; // Fallback to fusion if no native style is available
+#endif
+}
+
 int main(int argc, char *argv[]) {
     setupCredentials();
     setupBackends();
 
-    Application::setAttribute(Qt::AA_EnableHighDpiScaling);
-    Application::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    Application app(argc, argv);
 
-    Application a(argc, argv);
+    // Set application style to native for the current platform
+    app.setStyle(getNativeStyle());
 
-    return QApplication::exec();
+    // Create and show main window
+    MainWindow window;
+    window.show();
+
+    return app.exec();
 }

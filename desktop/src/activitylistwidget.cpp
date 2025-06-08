@@ -66,7 +66,7 @@ void ActivityListWidget::layoutChildWidgets() {
     listWidget->setProperty("listWidget", true);
     listWidget->setLayout(new QVBoxLayout());
     listWidget->layout()->setSpacing(0);
-    listWidget->layout()->setMargin(0);
+    listWidget->layout()->setContentsMargins(0, 0, 0, 0);
     listWidget->setStyleSheet("[listWidget] {"
                               "background: rgba(255, 255, 255, 0);"
                               "}");

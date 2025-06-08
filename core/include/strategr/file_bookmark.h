@@ -12,8 +12,8 @@
 
 #include "utility.h"
 
-#ifdef __APPLE__
-STG_FORWARD_DECLARE_OBJC_CLASS(NSURL);
+#if defined(__APPLE__) && defined(__OBJC__)
+#include <Foundation/Foundation.h>
 #endif
 
 namespace stg {
@@ -25,7 +25,7 @@ namespace stg {
         explicit file_bookmark(raw_buffer data);
         file_bookmark(const std::string &path);
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && defined(__OBJC__)
         file_bookmark(NSURL *url);
 #endif
 
@@ -33,7 +33,7 @@ namespace stg {
 
         auto to_string() const -> std::string;
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && defined(__OBJC__)
         auto to_nsurl(bool *is_stale) const -> NSURL *;
 #endif
 
