@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 13.0 CACHE STRING "Minimum macOS deployment version" FORCE)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 14.0 CACHE STRING "Minimum macOS deployment version" FORCE)
 
 list(APPEND CMAKE_MODULE_PATH
         ${CMAKE_CURRENT_SOURCE_DIR}/../core/cmake/modules
@@ -30,23 +30,21 @@ endif ()
 
 # Dependencies
 find_package(Catch2 CONFIG REQUIRED)
-find_package(Qt5 COMPONENTS Widgets Test REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Test REQUIRED)
 
 if (APPLE)
-    find_package(Qt5 COMPONENTS MacExtras REQUIRED)
     find_package(Sparkle REQUIRED)
 endif ()
 
 if (WIN32)
-    find_package(Qt5 COMPONENTS WinExtras REQUIRED)
     find_package(WinSparkle REQUIRED)
 endif ()
 
-message(STATUS "Qt5 include: ${Qt5Widgets_INCLUDE_DIRS}")
+message(STATUS "Qt6 include: ${Qt6Widgets_INCLUDE_DIRS}")
 
 # Resources
 
-qt5_add_resources(QT_RESOURCES resources/fonts.qrc)
+qt6_add_resources(QT_RESOURCES resources/fonts.qrc)
 
 # Instruct CMake to run moc automatically when needed
 set(CMAKE_AUTOMOC ON)
@@ -152,8 +150,7 @@ if (APPLE)
     set(PLATFORM_LIBRARIES
             "-framework AppKit"
             "-framework UserNotifications"
-            Sparkle::Sparkle
-            Qt5::MacExtras)
+            Sparkle::Sparkle)
 
     list(APPEND DESKTOP_SOURCES
             src/application.mm
@@ -197,8 +194,7 @@ if (WIN32)
             "${CMAKE_CURRENT_BINARY_DIR}/Strategr.rc")
 
     set(PLATFORM_LIBRARIES
-            WinSparkle::WinSparkle
-            Qt5::WinExtras)
+            WinSparkle::WinSparkle)
 endif ()
 
 # Main Executable
@@ -219,7 +215,7 @@ set_target_properties(Strategr
 target_link_libraries(Strategr
         PRIVATE
         ${PLATFORM_LIBRARIES}
-        Qt5::Widgets
+        Qt6::Widgets
         libstrategr)
 
 # UI Tests Executable
@@ -236,10 +232,10 @@ target_compile_definitions(uitests PUBLIC STG_UI_TEST)
 target_link_libraries(uitests
         PRIVATE
         ${PLATFORM_LIBRARIES}
-        Qt5::Widgets
+        Qt6::Widgets
         libstrategr
         Catch2::Catch2
-        Qt5::Test)
+        Qt6::Test)
 
 target_include_directories(uitests PUBLIC src)
 
