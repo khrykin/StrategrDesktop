@@ -186,7 +186,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
         teardown();
         event->accept();
-        this->deleteLater();
     } else {
         event->ignore();
     }
