@@ -56,9 +56,7 @@ void MainWindow::setup() {
 }
 
 MainWindow::~MainWindow() {
-    if (!alreadyTornDown) {
-        teardown();
-    }
+    teardown();
 }
 
 MainScene *MainWindow::scene() const {
@@ -188,7 +186,7 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
         teardown();
         event->accept();
-        QMainWindow::closeEvent(event);
+        this->deleteLater();
     } else {
         event->ignore();
     }
@@ -206,6 +204,7 @@ void MainWindow::teardown() {
 MainWindow *MainWindow::createLastOpened() {
     auto fsIOManager = FileSystemIOManager(nullptr);
     auto *window = new MainWindow(fsIOManager);
+
     return window;
 }
 
