@@ -1,7 +1,7 @@
 #include "application.h"
+#include "backends.h"
 #include "mainwindow.h"
 #include "utils.h"
-#include "backends.h"
 #include <QStyleFactory>
 
 void setupCredentials() {
@@ -12,9 +12,9 @@ void setupCredentials() {
 
 QString getNativeStyle() {
 #ifdef Q_OS_MAC
-    return "macintosh";
+    return "macos";
 #elif defined(Q_OS_WIN)
-    return "windowsvista";
+    return "windows";
 #else
     // On Linux, try to use the desktop environment's native style
     const QStringList availableStyles = QStyleFactory::keys();
@@ -25,7 +25,7 @@ QString getNativeStyle() {
     } else if (availableStyles.contains("fusion")) {
         return "fusion";
     }
-    return "fusion"; // Fallback to fusion if no native style is available
+    return "fusion";// Fallback to fusion if no native style is available
 #endif
 }
 
