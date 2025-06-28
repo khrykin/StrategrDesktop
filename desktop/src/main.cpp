@@ -25,7 +25,7 @@ QString getNativeStyle() {
     } else if (availableStyles.contains("fusion")) {
         return "fusion";
     }
-    return "fusion";// Fallback to fusion if no native style is available
+    return "fusion";
 #endif
 }
 
@@ -34,13 +34,7 @@ int main(int argc, char *argv[]) {
     setupBackends();
 
     Application app(argc, argv);
-
-    // Set application style to native for the current platform
     app.setStyle(getNativeStyle());
-
-    // Create and show main window
-    MainWindow window;
-    window.show();
 
     return app.exec();
 }
