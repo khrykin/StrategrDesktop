@@ -4,6 +4,7 @@
 
 #include <QFontDatabase>
 #include <QSettings>
+#include <QWindow>
 
 #include "application.h"
 #include "colorprovider.h"
@@ -46,32 +47,35 @@ Application::Application(int &argc, char **argv)
     setupCocoaDelegate();
 #endif
 
+    // Connect to the lastWindowClosed signal to quit the application
+    connect(this, &QApplication::lastWindowClosed, this, &QApplication::quit);
+
+    // Create initial window based on launch conditions
     if (argc == 2) {
+        // Launched with a file path
         launchedByOpenEvent = true;
         auto filePath = QString(argv[1]);
-
-        auto window = new MainWindow(filePath);
-        window->show();
-    }
-
-    if (!launchedByOpenEvent) {
-#ifdef Q_OS_MAC
-        QTimer::singleShot(100, [=]() {
-#endif
-            if (!launchedByOpenEvent) {
+        
+        if (!fileIsOpened(filePath)) {
+            auto window = new MainWindow(filePath);
+            window->show();
+        }
+    } else {
+        // Launched normally - create a single window
+        // Use a single-shot timer to ensure all initialization is complete
+        QTimer::singleShot(0, [this]() {
+            if (openedFiles.isEmpty()) {
+                // No files are open, create a window with the last opened file
                 auto window = MainWindow::createLastOpened();
                 window->show();
             }
-
-#ifdef Q_OS_MAC
         });
-#endif
+    }
 
 #ifdef Q_OS_WIN
-        win_sparkle_set_appcast_url(ApplicationSettings::appcastURL);
-        win_sparkle_init();
+    win_sparkle_set_appcast_url(ApplicationSettings::appcastURL);
+    win_sparkle_init();
 #endif
-    }
 }
 
 Application::~Application() {

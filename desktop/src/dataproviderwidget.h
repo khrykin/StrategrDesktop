@@ -26,7 +26,6 @@ protected:
     SlotboardScrollArea *slotboardScrollArea();
     SlotsWidget *slotsWidget();
 
-    int toolbarHeight();
     int slotHeight();
 };
 

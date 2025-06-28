@@ -42,11 +42,6 @@ void MacOSWindow::setup(MainWindow *window) {
     }
 }
 
-double MacOSWindow::toolbarHeight(MainWindow *window) {
-    NSWindow *nativeWindow = NSWindowFromQWindow(window);
-    return nativeWindow.frame.size.height - nativeWindow.contentLayoutRect.size.height;
-}
-
 NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
     auto integerPointer = reinterpret_cast<uintptr_t>(window);
     return QString::number(integerPointer).toNSString();
@@ -66,9 +61,9 @@ QPixmap MacOSWindow::resizeCursor() {
     NSCursor *cursor = [NSCursor resizeUpDownCursor];
     NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
     NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-    
+
     QImage image;
-    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
     return QPixmap::fromImage(image);
 }
 
@@ -76,9 +71,9 @@ QPixmap MacOSWindow::closedHandCursor() {
     NSCursor *cursor = [NSCursor closedHandCursor];
     NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
     NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-    
+
     QImage image;
-    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
     return QPixmap::fromImage(image);
 }
 
@@ -86,9 +81,9 @@ QPixmap MacOSWindow::openHandCursor() {
     NSCursor *cursor = [NSCursor openHandCursor];
     NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
     NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-    
+
     QImage image;
-    image.loadFromData(static_cast<const uchar*>(pngData.bytes), pngData.length, "PNG");
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
     return QPixmap::fromImage(image);
 }
 
