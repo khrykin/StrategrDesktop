@@ -17,6 +17,7 @@ public:
 
     static void pageDidChanged(MainWindow *window, int pageIndex);
     static void updateWindowTitle(MainWindow *window);
+    static double toolbarHeight(MainWindow *window);
 
     static QPixmap resizeCursor();
     static QPixmap closedHandCursor();

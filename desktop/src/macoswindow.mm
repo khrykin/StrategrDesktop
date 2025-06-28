@@ -42,6 +42,11 @@ void MacOSWindow::setup(MainWindow *window) {
     }
 }
 
+double MacOSWindow::toolbarHeight(MainWindow *window) {
+    NSWindow *nativeWindow = NSWindowFromQWindow(window);
+    return nativeWindow.frame.size.height - nativeWindow.contentLayoutRect.size.height;
+}
+
 NSString *MacOSWindow::makeToolbarIdentifier(const MainWindow *window) {
     auto integerPointer = reinterpret_cast<uintptr_t>(window);
     return QString::number(integerPointer).toNSString();
