@@ -18,8 +18,6 @@ public:
     static void pageDidChanged(MainWindow *window, int pageIndex);
     static void updateWindowTitle(MainWindow *window);
 
-    static QRect adjustedGeometry(MainWindow *window);
-
     static QPixmap resizeCursor();
     static QPixmap closedHandCursor();
     static QPixmap openHandCursor();

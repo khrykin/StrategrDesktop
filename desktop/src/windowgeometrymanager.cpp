@@ -24,10 +24,6 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
         window->restoreGeometry(storedData);
     }
 
-#ifdef Q_OS_MAC
-    window->setGeometry(MacOSWindow::adjustedGeometry(window));
-#endif
-
     if (windows.count() > 0) {
         auto fixedGeometry = window->geometry();
         auto width = window->geometry().width();

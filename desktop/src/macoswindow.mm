@@ -25,8 +25,8 @@ void MacOSWindow::setup(MainWindow *window) {
         nsWindow.styleMask |= NSWindowStyleMaskFullSizeContentView;
         [nsWindow.contentView setWantsLayer:YES];
 
-        // Generate unique identifier to ensure that every window
-        // has it's own toolbar
+        // Generate a unique identifier to ensure that every window has its own
+        // toolbar
         NSString *toolbarIdentifier = makeToolbarIdentifier(window);
 
         STGToolbar *toolbar = [[[STGToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
@@ -85,16 +85,6 @@ QPixmap MacOSWindow::openHandCursor() {
     QImage image;
     image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
     return QPixmap::fromImage(image);
-}
-
-QRect MacOSWindow::adjustedGeometry(MainWindow *window) {
-    // NB! This method now does nothing. May be removed.
-    auto qRect = QRect(window->geometry().x(),
-                       window->geometry().y(),
-                       window->geometry().width(),
-                       window->geometry().height());
-
-    return qRect;
 }
 
 bool MacOSWindow::hasSFSymbol() {
