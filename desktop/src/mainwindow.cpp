@@ -40,7 +40,7 @@ void MainWindow::setup() {
     }
 
 #ifdef Q_OS_MAC
-    MacOSWindow::setup(this);
+    // MacOSWindow::setup(this);
 #endif
 
     strategy.add_on_change_callback(this, &MainWindow::strategyStateChanged);

@@ -22,6 +22,11 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
     } else {
         auto storedData = settings.value(windowGeometrySetting).toByteArray();
         window->restoreGeometry(storedData);
+#ifdef Q_OS_MAC
+        // auto toolbarHeight = MacOSWindow::toolbarHeight(window);
+        // qDebug() << "toolbarHeight:" << toolbarHeight;
+        // window->setGeometry(window->x(), window->y(), window->width(), window->height());
+#endif
     }
 
     if (windows.count() > 0) {
@@ -42,6 +47,8 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
 
 void WindowGeometryManager::saveGeometry(MainWindow *window) {
     windows.removeAll(window);
+
+    qDebug() << "window geometry:" << window->geometry();
 
     Application::currentSettings().setValue(windowGeometrySetting, window->saveGeometry());
 }
