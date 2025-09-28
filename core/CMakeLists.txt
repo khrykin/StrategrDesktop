@@ -141,8 +141,8 @@ if (APPLE)
     target_compile_options(libstrategr PRIVATE -fobjc-arc)
 
     # Enable std::filesystem for tests
-    target_compile_options(tests PRIVATE -mmacosx-version-min=10.15)
-    target_link_options(tests PRIVATE -mmacosx-version-min=10.15)
+    target_compile_options(tests PRIVATE -mmacos-version-min=15)
+    target_link_options(tests PRIVATE -mmacos-version-min=15)
 
     target_sources(libstrategr
             PRIVATE
