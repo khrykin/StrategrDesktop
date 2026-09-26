@@ -1,0 +1,23 @@
+--- a/cmake/FindWrapOpenGL.cmake
++++ b/cmake/FindWrapOpenGL.cmake
+@@ -38,15 +38,10 @@
+             set(__opengl_fw_path "-framework OpenGL")
+         endif()
+
+-        find_library(WrapOpenGL_AGL NAMES AGL)
+-        if(WrapOpenGL_AGL)
+-            set(__opengl_agl_fw_path "${WrapOpenGL_AGL}")
+-        endif()
+-        if(NOT __opengl_agl_fw_path)
+-            set(__opengl_agl_fw_path "-framework AGL")
+-        endif()
+-
+         target_link_libraries(WrapOpenGL::WrapOpenGL INTERFACE ${__opengl_fw_path})
+-        target_link_libraries(WrapOpenGL::WrapOpenGL INTERFACE ${__opengl_agl_fw_path})
++        # AGL.framework was removed from newer macOS SDKs. find_library() can
++        # still resolve it via the live system's /System/Library/Frameworks
++        # even when it is absent from the SDK used to link (sysroot-unaware),
++        # so don't rely on find_library here -- just never link it.
+     else()
+         target_link_libraries(WrapOpenGL::WrapOpenGL INTERFACE OpenGL::GL)
+     endif()

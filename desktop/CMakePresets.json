@@ -24,7 +24,8 @@
         "rhs": "Darwin"
       },
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "arm64-osx-14"
+        "VCPKG_TARGET_TRIPLET": "arm64-osx-14",
+        "VCPKG_HOST_TRIPLET": "arm64-osx-14"
       }
     }
   ],

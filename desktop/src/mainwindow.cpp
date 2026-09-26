@@ -33,15 +33,15 @@ MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
 }
 
 void MainWindow::setup() {
+#ifdef Q_OS_MAC
+    MacOSWindow::setup(this);
+#endif
+
     WindowGeometryManager::setInitialGeometry(this);
 
     if (!fsIOManager.fileInfo().filePath().isEmpty()) {
         Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
     }
-
-#ifdef Q_OS_MAC
-    MacOSWindow::setup(this);
-#endif
 
     strategy.add_on_change_callback(this, &MainWindow::strategyStateChanged);
 

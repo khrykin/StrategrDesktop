@@ -94,35 +94,45 @@ void ActivityEditorMenu::addErrorWidgetAction() {
     addAction(errorWidgetAction);
 }
 
-void ActivityEditorMenu::mouseReleaseEvent(QMouseEvent *) {
+void ActivityEditorMenu::mouseReleaseEvent(QMouseEvent *event) {
     QAction *action = activeAction();
-    if (action && action->isEnabled()) {
+    if (action && action->isEnabled() && !qobject_cast<QWidgetAction *>(action)) {
         action->trigger();
+    } else {
+        QMenu::mouseReleaseEvent(event);
     }
 }
 
 void ActivityEditorMenu::addLineEditWidgetAction() {
     lineEditWidgetAction = new QWidgetAction(this);
 
-    auto *lineEditWrapper = new QWidget(this);
-    auto *lineEditLayout = new QVBoxLayout(lineEditWrapper);
-    lineEditLayout->setSpacing(0);
-    lineEditLayout->setContentsMargins(
-        lineEditLayout->contentsMargins().left() + platformPadding, 0,
-        lineEditLayout->contentsMargins().right(), 0);
-
-    lineEditWrapper->setLayout(lineEditLayout);
-
-    lineEdit = new QLineEdit(lineEditWrapper);
-    lineEdit->setStyleSheet("font-weight: bold;"
-                            "font-size: 18px;"
-                            "border: transparent;"
-                            "background: transparent;");
+    // No wrapper/layout here on purpose: a QVBoxLayout was previously used
+    // just to add a left margin, but under Qt6 its cached geometry can go
+    // stale relative to the line edit's forced minimum height, leaving the
+    // line edit positioned outside its own parent's bounds and clipped to
+    // invisibility. QLineEdit's own text margins give the same padding
+    // without an intermediate layout to desync.
+    lineEdit = new QLineEdit(this);
+    lineEdit->setStyleSheet(QString("font-weight: bold;"
+                                    "font-size: 18px;"
+                                    "border: transparent;"
+                                    "background: transparent;"
+                                    "color: %1;")
+                                .arg(ColorUtils::qColorToCSS(ColorProvider::textColor())));
     lineEdit->setText(defaultLineEditText());
     lineEdit->setPlaceholderText("Activity Name");
     lineEdit->setFocus();
     lineEdit->setAttribute(Qt::WA_MacShowFocusRect, false);
     lineEdit->setContextMenuPolicy(Qt::NoContextMenu);
+    lineEdit->setTextMargins(12 + platformPadding, 0, 12, 0);
+
+    // The stylesheet's "border: transparent" leaves Qt6's QLineEdit size
+    // hint with no usable frame metrics, collapsing its computed height to
+    // 0. Force a sane fixed height explicitly instead of relying on it.
+    QFont lineEditFont;
+    lineEditFont.setPixelSize(18);
+    lineEditFont.setBold(true);
+    lineEdit->setFixedHeight(QFontMetrics(lineEditFont).height() + 12);
 
     auto *enterPressEater = new EnterPressEater(lineEdit);
     lineEdit->installEventFilter(enterPressEater);
@@ -132,9 +142,7 @@ void ActivityEditorMenu::addLineEditWidgetAction() {
             this,
             &ActivityEditorMenu::saveAndClose);
 
-    lineEditLayout->addWidget(lineEdit);
-
-    lineEditWidgetAction->setDefaultWidget(lineEditWrapper);
+    lineEditWidgetAction->setDefaultWidget(lineEdit);
     addAction(lineEditWidgetAction);
 }
 

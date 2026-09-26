@@ -6,7 +6,15 @@
     "utf8proc",
     "nlohmann-json",
     "boost-uuid",
-    "qtbase",
+    {
+      "name": "qtbase",
+      "default-features": false,
+      "features": [
+        "widgets",
+        "testlib",
+        "harfbuzz"
+      ]
+    },
     {
       "name": "winsparkle",
       "platform": "windows"

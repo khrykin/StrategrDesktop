@@ -3,9 +3,9 @@
 //
 
 #include <QApplication>
+#include <QTimer>
 
 #include "application.h"
-#include "macoswindow.h"
 #include "mainwindow.h"
 #include "windowgeometrymanager.h"
 
@@ -17,16 +17,12 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
 
     auto &settings = Application::currentSettings();
 
-    if (settings.value(windowGeometrySetting).isNull()) {
-        window->setGeometry(defaultInitialRect(window));
+    auto storedRect = settings.value(windowGeometrySetting).toRect();
+
+    if (storedRect.isValid()) {
+        window->setGeometry(storedRect);
     } else {
-        auto storedData = settings.value(windowGeometrySetting).toByteArray();
-        window->restoreGeometry(storedData);
-#ifdef Q_OS_MAC
-        // auto toolbarHeight = MacOSWindow::toolbarHeight(window);
-        // qDebug() << "toolbarHeight:" << toolbarHeight;
-        // window->setGeometry(window->x(), window->y(), window->width(), window->height());
-#endif
+        window->setGeometry(defaultInitialRect(window));
     }
 
     if (windows.count() > 0) {
@@ -43,14 +39,25 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
     }
 
     windows.append(window);
+
+#ifdef Q_OS_MAC
+    // Attaching the window to the native run loop (which happens
+    // asynchronously right after this call returns, before the window is
+    // shown) silently resets the vertical position -- macOS's native
+    // toolbar/titlebar layout pass overrides it once, discarding the
+    // geometry set above. Re-apply on the next event loop iteration to
+    // correct for it; this sticks permanently once done.
+    auto target = window->geometry();
+    QTimer::singleShot(0, window, [window, target]() {
+        window->setGeometry(target);
+    });
+#endif
 }
 
 void WindowGeometryManager::saveGeometry(MainWindow *window) {
     windows.removeAll(window);
 
-    qDebug() << "window geometry:" << window->geometry();
-
-    Application::currentSettings().setValue(windowGeometrySetting, window->saveGeometry());
+    Application::currentSettings().setValue(windowGeometrySetting, window->geometry());
 }
 
 void WindowGeometryManager::resetSavedGeometry() {
