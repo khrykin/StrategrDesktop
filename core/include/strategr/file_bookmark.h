@@ -5,6 +5,7 @@
 #ifndef STRATEGR_FILE_BOOKMARK_H
 #define STRATEGR_FILE_BOOKMARK_H
 
+#include <cstdint>
 #include <functional>
 #include <ostream>
 #include <string>

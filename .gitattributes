@@ -1,0 +1,9 @@
+# Patch files are applied byte-for-byte against source checked out with LF
+# endings; letting Git's Windows autocrlf conversion touch them corrupts the
+# patch (git apply/patch fails with "corrupt patch").
+*.patch text eol=lf
+*.diff text eol=lf
+
+# Shell scripts need LF to run under bash on any platform (e.g. Git for
+# Windows' bash, used by CI on windows-latest).
+*.sh text eol=lf

@@ -5,6 +5,7 @@
 #ifndef STRATEGR_PERSISTENT_H
 #define STRATEGR_PERSISTENT_H
 
+#include <cstdint>
 #include <functional>
 #include <iostream>
 #include <string>

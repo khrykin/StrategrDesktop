@@ -5,6 +5,7 @@
 #ifndef STRATEGR_UTILITY_H
 #define STRATEGR_UTILITY_H
 
+#include <cstdint>
 #include <vector>
 
 #ifndef STG_FORWARD_DECLARE_OBJC_CLASS
