@@ -34,7 +34,7 @@ jobs:
             vcpkg-macos-
 
       - name: Install build tools
-        run: brew install autoconf automake autoconf-archive pkg-config ninja
+        run: brew install autoconf automake autoconf-archive libtool pkg-config ninja
 
       - name: Setup vcpkg
         run: ./scripts/setup_vcpkg.sh
