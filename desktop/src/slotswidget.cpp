@@ -221,5 +221,6 @@ void SlotsWidget::resizeEvent(QResizeEvent *) {
 
 void SlotsWidget::enterEvent(QEnterEvent *event) {
     QWidget::enterEvent(event);
+    setFocus();
     update();
 }

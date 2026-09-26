@@ -66,11 +66,11 @@ void ApplicationMenu::setupEditMenu() {
 
     addAction(editMenu,
               actionCenter().select_all,
-              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_A));
+              QKeySequence(Qt::CTRL | Qt::Key_A));
 
     addAction(editMenu,
               actionCenter().empty_selection,
-              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
+              QKeySequence(Qt::Key_Backspace));
 
     editMenu->addSeparator();
 
