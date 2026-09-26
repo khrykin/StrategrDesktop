@@ -19,6 +19,15 @@ if (MSVC)
     add_compile_options(/W4 /WX /wd4068 /wd26812)
 else ()
     add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
+
+    # A handful of types across core/ have a same-named member (e.g. a
+    # `session` holding a reference to its `strategy`), which GCC warns
+    # about via -Wchanges-meaning; Clang doesn't have this warning at all.
+    # It's a long-established, pervasive convention here, not worth
+    # renaming, so disable just this one diagnostic on GCC.
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-Wno-changes-meaning)
+    endif ()
 endif ()
 
 # Dependencies

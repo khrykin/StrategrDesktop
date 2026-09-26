@@ -58,10 +58,6 @@ jobs:
             '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev \
             libxkbcommon-x11-dev libegl1-mesa-dev
 
-      - name: Install build tools (Windows)
-        if: runner.os == 'Windows'
-        run: choco install ninja -y
-
       - name: Setup MSVC (Windows)
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1

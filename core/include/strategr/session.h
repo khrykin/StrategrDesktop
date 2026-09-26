@@ -16,19 +16,7 @@ namespace stg {
         using minutes = time_slot::minutes;
 
         std::vector<time_slot> time_slots{};
-
-        // The member below intentionally shares its name with the `activity`
-        // type above; GCC warns about that (-Wchanges-meaning) but this is a
-        // long-established part of the public API, referenced throughout the
-        // codebase as `session.activity`, so it's not worth renaming.
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wchanges-meaning"
-#endif
         activity *activity = time_slot::no_activity;
-#if defined(__GNUC__) && !defined(__clang__)
-#pragma GCC diagnostic pop
-#endif
 
         auto length() const -> length_t;
         auto begin_time() const -> minutes;
