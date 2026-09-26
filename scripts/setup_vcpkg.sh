@@ -11,7 +11,8 @@ set -e
 if [ ! -f "vcpkg/bootstrap-vcpkg.sh" ]; then
     echo "Cloning vcpkg..."
     git clone https://github.com/Microsoft/vcpkg.git vcpkg-clone
-    rsync -a vcpkg-clone/ vcpkg/
+    mkdir -p vcpkg
+    cp -a vcpkg-clone/. vcpkg/
     rm -rf vcpkg-clone
 fi
 
