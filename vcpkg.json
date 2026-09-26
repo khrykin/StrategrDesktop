@@ -12,7 +12,8 @@
       "features": [
         "widgets",
         "testlib",
-        "harfbuzz"
+        "harfbuzz",
+        "png"
       ]
     },
     {
