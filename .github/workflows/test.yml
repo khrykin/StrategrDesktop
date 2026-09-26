@@ -1,12 +1,6 @@
 name: Test
 
 on:
-  push:
-    branches-ignore:
-      - master
-    tags-ignore:
-      - v*
-
   pull_request:
 
 jobs:
@@ -27,7 +21,6 @@ jobs:
         with:
           path: |
             vcpkg/downloads
-            vcpkg/buildtrees
             ~/.cache/vcpkg/archives
           key: vcpkg-macos-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/**', 'triplets/**') }}
           restore-keys: |
