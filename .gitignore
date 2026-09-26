@@ -21,3 +21,6 @@ docs/.vscode
 # Vcpkg
 vcpkg
 vcpkg_installed
+
+# Generated overlay port, see scripts/generate_qtbase_overlay_port.sh
+ports/qtbase

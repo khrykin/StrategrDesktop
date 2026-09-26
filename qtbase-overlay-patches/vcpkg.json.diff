@@ -1,0 +1,11 @@
+--- a/vcpkg.json	2026-09-26 23:43:05
++++ b/vcpkg.json	2026-09-26 23:43:05
+@@ -1,7 +1,7 @@
+ {
+   "name": "qtbase",
+   "version": "6.8.3",
+-  "port-version": 2,
++  "port-version": 5,
+   "description": "Qt Base (Core, Gui, Widgets, Network, ...)",
+   "homepage": "https://www.qt.io/",
+   "license": null,

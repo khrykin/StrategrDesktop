@@ -1,0 +1,12 @@
+--- a/portfile.cmake	2026-09-26 23:43:05
++++ b/portfile.cmake	2026-09-26 23:43:05
+@@ -23,6 +23,9 @@
+         fix_deploy_windows.patch
+         fix-link-lib-discovery.patch
+         macdeployqt-symlinks.patch
++        fix-yieldcpu-arm-acle.patch
++        fix-missing-agl-framework.patch
++        fix-missing-agl-framework-mkspec.patch
+ )
+  
+ if(VCPKG_TARGET_IS_WINDOWS AND NOT VCPKG_TARGET_IS_MINGW)

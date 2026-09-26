@@ -3,38 +3,75 @@ name: Test
 on:
   pull_request:
 
+env:
+  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-binary-cache
+
 jobs:
-  macos:
-    name: macOS
-    runs-on: macos-14
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         shell: bash
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            os: macos-14
+            preset: macos
+          - name: Linux
+            os: ubuntu-latest
+            preset: linux
+          - name: Windows
+            os: windows-latest
+            preset: windows
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Create vcpkg binary cache dir
+        run: mkdir -p "$VCPKG_DEFAULT_BINARY_CACHE"
+
       - name: Cache vcpkg
         uses: actions/cache@v4
         with:
           path: |
             vcpkg/downloads
-            ~/.cache/vcpkg/archives
-          key: vcpkg-macos-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/**', 'triplets/**') }}
+            ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/sparkle/**', 'qtbase-overlay-patches/**', 'triplets/**') }}
           restore-keys: |
-            vcpkg-macos-
+            vcpkg-${{ runner.os }}-
 
-      - name: Install build tools
+      - name: Install build tools (macOS)
+        if: runner.os == 'macOS'
         run: brew install autoconf automake autoconf-archive libtool pkg-config ninja
+
+      - name: Install build tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build autoconf automake autoconf-archive libtool pkg-config \
+            '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev \
+            libxkbcommon-x11-dev libegl1-mesa-dev
+
+      - name: Install build tools (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja -y
+
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Setup vcpkg
         run: ./scripts/setup_vcpkg.sh
 
       - name: Configure
         working-directory: desktop
-        run: cmake --preset macos
+        run: cmake --preset ${{ matrix.preset }}
 
       - name: Build
         working-directory: desktop

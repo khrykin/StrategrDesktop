@@ -18,3 +18,5 @@ fi
 echo "Bootstrapping vcpkg..."
 
 ./vcpkg/bootstrap-vcpkg.sh
+
+./scripts/generate_qtbase_overlay_port.sh
