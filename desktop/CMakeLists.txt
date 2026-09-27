@@ -26,6 +26,13 @@ if (MSVC)
     add_compile_options(/W1 /wd4068 /wd26812)
 else ()
     add_compile_options(-Wno-unknown-pragmas)
+
+    # See core/CMakeLists.txt for why: desktop/'s own TUs also transitively
+    # include the core/ headers that trigger this, and compile-option flags
+    # don't propagate across sibling CMakeLists.txt directories.
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-Wno-changes-meaning)
+    endif ()
 endif ()
 
 # Dependencies

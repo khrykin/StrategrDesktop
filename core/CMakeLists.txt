@@ -143,7 +143,6 @@ target_link_libraries(tests
         nlohmann_json::nlohmann_json
         libstrategr
         Catch2::Catch2
-        Catch2::Catch2WithMain
       )
 
 if (APPLE)
