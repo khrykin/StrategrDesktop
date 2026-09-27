@@ -252,12 +252,33 @@ target_include_directories(uitests PUBLIC src)
 
 # MacOS Specifics
 if (APPLE)
-    target_sources(Strategr PRIVATE deployment/Assets.xcassets)
-    set_source_files_properties(deployment/Assets.xcassets
-            PROPERTIES
-            MACOSX_PACKAGE_LOCATION Resources)
-
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Strategr.app/Contents/Frameworks)
+
+    # Compile the asset catalog (in particular, AppIcon.icon, our Liquid
+    # Glass app icon) with actool -- CMake's own MACOSX_PACKAGE_LOCATION
+    # handling only copies an .xcassets folder as-is, it doesn't compile it,
+    # so this was never actually producing a usable app icon. actool's
+    # --app-icon flag additionally emits a partial Info.plist fragment
+    # (setting CFBundleIconName, etc.) that has to be merged into the
+    # bundle's real Info.plist, same as Xcode's own build system does.
+    set(ASSET_CATALOG_PARTIAL_PLIST "${CMAKE_CURRENT_BINARY_DIR}/assetcatalog_generated_info.plist")
+
+    add_custom_command(TARGET Strategr
+            POST_BUILD
+            COMMENT "Compiling asset catalog..."
+            COMMAND xcrun actool
+              --output-format human-readable-text
+              --notices
+              --warnings
+              --platform macosx
+              --minimum-deployment-target ${CMAKE_OSX_DEPLOYMENT_TARGET}
+              --app-icon AppIcon
+              --output-partial-info-plist "${ASSET_CATALOG_PARTIAL_PLIST}"
+              --compile "$<TARGET_BUNDLE_DIR:Strategr>/Contents/Resources"
+              "${CMAKE_CURRENT_SOURCE_DIR}/deployment/Assets.xcassets"
+            COMMAND /usr/libexec/PlistBuddy
+              -c "Merge \"${ASSET_CATALOG_PARTIAL_PLIST}\""
+              "$<TARGET_BUNDLE_DIR:Strategr>/Contents/Info.plist")
 
     # @rpath/Sparkle is somehow set on the executable, which is incorrect. Fix
     # it manually:
