@@ -3,9 +3,9 @@
 //
 
 #include <QDate>
-#include <QDesktopServices.h>
-#include <QUrl.h>
+#include <QDesktopServices>
 #include <QEnterEvent>
+#include <QUrl>
 
 #include "aboutwindow.h"
 #include "application.h"
