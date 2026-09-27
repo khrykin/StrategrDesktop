@@ -29,11 +29,6 @@ stg::selection &DataProviderWidget::selection() {
     return mainScene()->selection();
 }
 
-int DataProviderWidget::toolbarHeight() {
-    auto *mainWindow = dynamic_cast<MainWindow *>(window());
-    return mainWindow->toolbarHeight();
-}
-
 int DataProviderWidget::slotHeight() {
     return ApplicationSettings::defaultSlotHeight;
 }

@@ -3,8 +3,9 @@
 //
 
 #include <QDate>
-#include <QDesktopServices.h>
-#include <QUrl.h>
+#include <QDesktopServices>
+#include <QEnterEvent>
+#include <QUrl>
 
 #include "aboutwindow.h"
 #include "application.h"
@@ -57,7 +58,7 @@ private:
         updateColor();
     }
 
-    void enterEvent(QEvent *) override {
+    void enterEvent(QEnterEvent *) override {
         state = hovered;
         setCursor(Qt::PointingHandCursor);
         updateColor();

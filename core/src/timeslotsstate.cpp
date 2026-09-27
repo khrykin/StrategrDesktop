@@ -37,10 +37,10 @@ namespace stg {
 
         for (const auto &slot : _data) {
             std::size_t slot_index = &slot - &_data[0];
-            auto old_index = slot_index + slot_difference;
+            int old_index = static_cast<int>(slot_index) + slot_difference;
 
             stg::activity *activity = time_slot::no_activity;
-            if (old_index >= 0 && old_index < old_data.size()) {
+            if (old_index >= 0 && static_cast<std::size_t>(old_index) < old_data.size()) {
                 const auto &old_slot = old_data[old_index];
                 activity = old_slot.activity;
             }

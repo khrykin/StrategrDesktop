@@ -13,7 +13,6 @@
 #ifdef Q_OS_WIN
 
 #include <Windows.h>
-#include <QtWinExtras>
 
 #endif
 
@@ -28,8 +27,8 @@ NotifierBackend::NotifierBackend() {
 #ifdef Q_OS_WIN
 
         auto hInstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
-        auto hicon = static_cast<HICON>(LoadIcon(hInstance,"IDI_ICON1"));
-        icon = QtWin::fromHICON(hicon);
+        auto hicon = static_cast<HICON>(LoadIcon(hInstance,L"IDI_ICON1"));
+        icon = ApplicationIcon::fromHICON(hicon);
 
 #endif
         Application::trayIcon->setIcon(icon);

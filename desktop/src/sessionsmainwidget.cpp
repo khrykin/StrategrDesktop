@@ -19,7 +19,7 @@
 
 SessionsMainWidget::SessionsMainWidget(QWidget *parent) : DataProviderWidget(parent) {
     auto *mainLayout = new QVBoxLayout();
-    mainLayout->setContentsMargins(0, toolbarHeight(), 0, 0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
     setLayout(mainLayout);

@@ -2,6 +2,7 @@
 
 #include <QTimer>
 #include <QApplication>
+#include <QScreen>
 
 #include "utils.h"
 
@@ -24,7 +25,7 @@ QString QStringForCalendarTime(time_t time) {
 }
 
 double devicePixelRatio() {
-    auto screenNumber = QApplication::desktop()->screenNumber();
+    auto screenNumber = QApplication::primaryScreen()->geometry().x();
     return QGuiApplication::screens()[screenNumber]->devicePixelRatio();
 }
 

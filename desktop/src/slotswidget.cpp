@@ -131,12 +131,12 @@ void SlotsWidget::setupActions() {
     addAction(clearSelectionAction);
 
     selectAllAction = new QAction(actionCenter().select_all.name.c_str(), this);
-    selectAllAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_A));
+    selectAllAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_A));
     connect(selectAllAction, &QAction::triggered, actionCenter().select_all);
     addAction(selectAllAction);
 
     shiftSlotsBelowAction = new QAction(actionCenter().make_room.name.c_str(), this);
-    shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down));
+    shiftSlotsBelowAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Down));
     connect(shiftSlotsBelowAction, &QAction::triggered, actionCenter().make_room);
     addAction(shiftSlotsBelowAction);
 }
@@ -219,6 +219,8 @@ void SlotsWidget::resizeEvent(QResizeEvent *) {
     selectionWidget->setGeometry(contentsRect());
 }
 
-void SlotsWidget::enterEvent(QEvent *) {
+void SlotsWidget::enterEvent(QEnterEvent *event) {
+    QWidget::enterEvent(event);
     setFocus();
+    update();
 }

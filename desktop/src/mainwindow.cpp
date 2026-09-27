@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+#include <QApplication>
 #include <QCloseEvent>
 
 #include "alert.h"
@@ -32,15 +33,15 @@ MainWindow::MainWindow(FileSystemIOManager existingFsIOManager, QWidget *parent)
 }
 
 void MainWindow::setup() {
+#ifdef Q_OS_MAC
+    MacOSWindow::setup(this);
+#endif
+
     WindowGeometryManager::setInitialGeometry(this);
 
     if (!fsIOManager.fileInfo().filePath().isEmpty()) {
         Application::registerOpenedFile(fsIOManager.fileInfo().filePath());
     }
-
-#ifdef Q_OS_MAC
-    MacOSWindow::setup(this);
-#endif
 
     strategy.add_on_change_callback(this, &MainWindow::strategyStateChanged);
 
@@ -185,7 +186,6 @@ void MainWindow::closeEvent(QCloseEvent *event) {
     if (wantToClose()) {
         teardown();
         event->accept();
-        this->deleteLater();
     } else {
         event->ignore();
     }
@@ -205,14 +205,6 @@ MainWindow *MainWindow::createLastOpened() {
     auto *window = new MainWindow(fsIOManager);
 
     return window;
-}
-
-int MainWindow::toolbarHeight() {
-#ifdef Q_OS_MAC
-    return (int) MacOSWindow::toolbarHeight(this);
-#else
-    return 0;
-#endif
 }
 
 void MainWindow::reloadStrategy() {

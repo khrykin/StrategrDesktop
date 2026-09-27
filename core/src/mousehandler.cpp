@@ -326,6 +326,12 @@ namespace stg {
                                    ? cursor::resize
                                    : cursor::pointer;
                 }
+
+                // All mouse_zone cases return above; this is unreachable,
+                // but GCC's -Wimplicit-fallthrough can't see that from a
+                // nested switch and would otherwise warn about falling
+                // through to `case drag` below.
+                return cursor::pointer;
             case drag:
                 return cursor::closed_hand;
             case resize:

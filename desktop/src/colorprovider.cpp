@@ -50,15 +50,21 @@ QColor ColorProvider::windowColor() {
 }
 
 QColor ColorProvider::panelColor() {
-    return ColorUtils::overlayWithAlpha(
-        QApplication::palette().color(QPalette::Window),
-        0.6 * ColorUtils::shadesAlphaFactor(0));
+    using namespace ColorUtils;
+
+    auto base = QApplication::palette().color(QPalette::Base);
+    auto overlay = base.lightnessF() > 0.5 ? darken(base, 0.15) : lighten(base, 0.15);
+
+    return overlayWithAlpha(overlay, 0.6 * shadesAlphaFactor(0), base);
 }
 
 QColor ColorProvider::darkPanelColor() {
-    return ColorUtils::overlayWithAlpha(
-        QApplication::palette().color(QPalette::Window),
-        0.95 * ColorUtils::shadesAlphaFactor(0));
+    using namespace ColorUtils;
+
+    auto base = QApplication::palette().color(QPalette::Base);
+    auto overlay = base.lightnessF() > 0.5 ? darken(base, 0.15) : lighten(base, 0.15);
+
+    return overlayWithAlpha(overlay, 0.95 * shadesAlphaFactor(0), base);
 }
 
 QColor ColorProvider::highlightedTextColor() {

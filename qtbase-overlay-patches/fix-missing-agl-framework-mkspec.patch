@@ -1,0 +1,11 @@
+--- a/mkspecs/common/mac.conf
++++ b/mkspecs/common/mac.conf
+@@ -30,7 +30,7 @@
+ QMAKE_REL_RPATH_BASE    = @loader_path
+ 
+ QMAKE_LIBS_DYNLOAD      =
+-QMAKE_LIBS_OPENGL       = -framework OpenGL -framework AGL
++QMAKE_LIBS_OPENGL       = -framework OpenGL
+ QMAKE_LIBS_THREAD       =
+ 
+ QMAKE_INCDIR_WAYLAND    =

@@ -58,17 +58,25 @@ void ApplicationMenu::setupEditMenu() {
 
     addAction(editMenu,
               actionCenter().undo,
-              QKeySequence(Qt::CTRL + Qt::Key_Z));
+              QKeySequence(Qt::CTRL | Qt::Key_Z));
 
     addAction(editMenu,
               actionCenter().redo,
-              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z));
+              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_Z));
+
+    addAction(editMenu,
+              actionCenter().select_all,
+              QKeySequence(Qt::CTRL | Qt::Key_A));
+
+    addAction(editMenu,
+              actionCenter().empty_selection,
+              QKeySequence(Qt::Key_Backspace));
 
     editMenu->addSeparator();
 
     addAction(editMenu,
               actionCenter().reorder_activities_by_usage,
-              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_R));
+              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
 }
 
 void ApplicationMenu::setupViewMenu() {
@@ -78,13 +86,13 @@ void ApplicationMenu::setupViewMenu() {
 
     addAction(viewMenu,
               actionCenter().show_activities,
-              QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_A));
+              QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_A));
 
     viewMenu->addSeparator();
 
     addAction(viewMenu,
               actionCenter().go_to_current_time,
-              QKeySequence(Qt::CTRL + Qt::Key_Slash));
+              QKeySequence(Qt::CTRL | Qt::Key_Slash));
 }
 
 void ApplicationMenu::setupFileMenu() {
@@ -93,45 +101,41 @@ void ApplicationMenu::setupFileMenu() {
     fileMenu->addAction(tr("New"),
                         window,
                         &MainWindow::openNewWindow,
-                        QKeySequence(Qt::CTRL + Qt::Key_N));
+                        QKeySequence(Qt::CTRL | Qt::Key_N));
 
     fileMenu->addAction(tr("Open"),
                         window,
                         &MainWindow::openFile,
-                        QKeySequence(Qt::CTRL + Qt::Key_O));
-
-    setupRecentMenu();
-
-    fileMenu->addSeparator();
+                        QKeySequence(Qt::CTRL | Qt::Key_O));
 
     fileMenu->addAction(tr("Save"),
                         window,
                         &MainWindow::saveFile,
-                        QKeySequence(Qt::CTRL + Qt::Key_S));
+                        QKeySequence(Qt::CTRL | Qt::Key_S));
 
     fileMenu->addAction(tr("Save As"),
                         window,
                         &MainWindow::saveFileAs,
-                        QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
+                        QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
 
     fileMenu->addSeparator();
 
     fileMenu->addAction(tr("Close"),
                         window,
                         &MainWindow::close,
-                        QKeySequence(Qt::CTRL + Qt::Key_W));
+                        QKeySequence(Qt::CTRL | Qt::Key_W));
 
     fileMenu->addSeparator();
 
     fileMenu->addAction(tr("Settings"),
                         window->scene(),
                         &MainScene::showStrategySettings,
-                        QKeySequence(Qt::CTRL + Qt::Key_Comma));
+                        QKeySequence(Qt::CTRL | Qt::Key_Comma));
 
     fileMenu->addAction(tr("Save as Default"),
                         window,
                         &MainWindow::saveCurrentStrategyAsDefault,
-                        QKeySequence(Qt::CTRL + Qt::Key_D));
+                        QKeySequence(Qt::CTRL | Qt::Key_D));
 
     fileMenu->addSeparator();
 
@@ -139,6 +143,8 @@ void ApplicationMenu::setupFileMenu() {
     addExportToCalendarAction();
 
     fileMenu->addSeparator();
+
+    setupRecentMenu();
 }
 
 void ApplicationMenu::addExportToCalendarAction() {

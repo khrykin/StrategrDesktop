@@ -24,7 +24,34 @@
         "rhs": "Darwin"
       },
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "arm64-osx-13"
+        "VCPKG_TARGET_TRIPLET": "arm64-osx-14",
+        "VCPKG_HOST_TRIPLET": "arm64-osx-14"
+      }
+    },
+    {
+      "name": "linux",
+      "inherits": "default",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      },
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-linux",
+        "VCPKG_HOST_TRIPLET": "x64-linux"
+      }
+    },
+    {
+      "name": "windows",
+      "inherits": "default",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_HOST_TRIPLET": "x64-windows"
       }
     }
   ],

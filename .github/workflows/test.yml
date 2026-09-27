@@ -1,19 +1,10 @@
 name: Test
 
 on:
-  push:
-    branches-ignore:
-      - master
-    tags-ignore:
-      - v*
-
   pull_request:
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: RelWithDebInfo
-  CREDENTIALS: ${{ secrets.CREDENTIALS }}
-  DEVELOPER_DIR: /Applications/Xcode_12.2.app/Contents/Developer
+  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-binary-cache
 
 jobs:
   build:
@@ -24,82 +15,64 @@ jobs:
         shell: bash
 
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - name: "macOS x64"
-            os: macos-latest
-            arch: x64
-
-          - name: "Linux x64 Clang"
+          - name: macOS
+            os: macos-14
+            preset: macos
+          - name: Linux
             os: ubuntu-latest
-            arch: x64
-            cxx-compiler: clang++
-            c-compiler: clang
-
-          - name: "Linux x64 GCC"
-            os: ubuntu-latest
-            arch: x64
-            cxx-compiler: g++
-            c-compiler: gcc
-
-          - name: "Windows x86"
+            preset: linux
+          - name: Windows
             os: windows-latest
-            arch: x86
-            cmake-extra-args: "-A Win32"
+            preset: windows
 
-          - name: "Windows x64"
-            os: windows-latest
-            arch: x64
-            cmake-extra-args: "-A x64"
-
-    env:
-      CXX: ${{ matrix.cxx-compiler }}
-      CC: ${{ matrix.c-compiler }}
-      BUILD_DIR: build
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        env:
-          cache-name: dependencies-cache-${{ runner.os }}-${{ matrix.arch }}
+      - name: Create vcpkg binary cache dir
+        run: mkdir -p "$VCPKG_DEFAULT_BINARY_CACHE"
+
+      - name: Cache vcpkg
+        uses: actions/cache@v4
         with:
-          path: dependencies
-          key: ${{ env.cache-name }}-${{ hashFiles('dependencies/rules/*', 'dependencies/Install.cmake') }}
+          path: |
+            vcpkg/downloads
+            ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'ports/sparkle/**', 'qtbase-overlay-patches/**', 'triplets/**') }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-
 
-      - name: Xcode version
-        if: ${{ startsWith(runner.os, 'macOS') }}
+      - name: Install build tools (macOS)
+        if: runner.os == 'macOS'
+        run: brew install autoconf automake autoconf-archive libtool pkg-config ninja
+
+      - name: Install build tools (Linux)
+        if: runner.os == 'Linux'
         run: |
-          xcodebuild -version
+          sudo apt-get update
+          sudo apt-get install -y ninja-build autoconf automake autoconf-archive libtool pkg-config \
+            '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev \
+            libxkbcommon-x11-dev libegl1-mesa-dev
 
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.4
-        with:
-          cmake-version: "3.19.x"
+      - name: Setup MSVC (Windows)
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Use CMake
-        run: cmake --version
+      - name: Setup vcpkg
+        run: ./scripts/setup_vcpkg.sh
 
-      - name: Build dependencies
-        run: cmake -DQt5_BUILD_STATIC_LIBS_ONLY=ON -P dependencies/Install.cmake
+      - name: Configure
+        working-directory: desktop
+        run: cmake --preset ${{ matrix.preset }}
 
-      - name: Create build environment
-        run: cmake -E make_directory ${{ env.BUILD_DIR }}
-
-      - name: Configure CMake
-        working-directory: ${{ env.BUILD_DIR }}
-        run: |
-          cmake ${{ matrix.cmake-extra-args }} $GITHUB_WORKSPACE \
-          -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-          -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/dependencies/installed \
-          ${{ matrix.cmake-extra-defs }}
       - name: Build
-        working-directory: ${{ env.BUILD_DIR }}
-        shell: bash
-        run: cmake --build . --config $BUILD_TYPE
+        working-directory: desktop
+        run: cmake --build --preset default -t Strategr -t tests
 
-      - name: Test
-        working-directory: ${{ env.BUILD_DIR }}
-        run: echo "Run tests..."
+      - name: Run core tests
+        working-directory: desktop/build/core
+        run: ctest --output-on-failure

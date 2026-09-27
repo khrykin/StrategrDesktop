@@ -49,7 +49,7 @@ inline void setupBackends() {
             return result_callback(nullptr);
 
         // Special handling for QString for backwards compatibility.
-        if (value.type() == QVariant::String) {
+        if (value.typeId() == QMetaType::QString) {
             auto stringValue = value.toString().toStdString();
             auto byteArray = stg::serialize(stringValue);
 

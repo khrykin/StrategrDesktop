@@ -15,7 +15,11 @@ TEST_CASE("Time Utilities", "[time_utils]") {
         std::this_thread::sleep_for(1s);
         auto sec2 = stg::time_utils::current_seconds();
 
-        REQUIRE(sec2 - sec1 == 1);
+        // >= rather than == 1: current_seconds() is whole-second-floored, so
+        // if sec1 was sampled near the end of its second, a 1s sleep (plus
+        // scheduler jitter, more pronounced on loaded CI runners) can cross
+        // two second boundaries rather than one.
+        REQUIRE(sec2 - sec1 >= 1);
     }
 
     SECTION("custom time source") {

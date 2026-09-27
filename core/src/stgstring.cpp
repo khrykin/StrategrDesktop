@@ -2,6 +2,7 @@
 // Created by Dmitry Khrykin on 15.06.2020.
 //
 
+#include <cstdint>
 #include <sstream>
 
 #include <boost/uuid/uuid_generators.hpp>

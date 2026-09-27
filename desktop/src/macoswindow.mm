@@ -6,7 +6,8 @@
 
 #import "cocoa/STGToolbar.h"
 
-#include <QtMac>
+#include <QImage>
+#include <QPixmap>
 
 #include "macoswindow.h"
 #include "mainscene.h"
@@ -24,8 +25,8 @@ void MacOSWindow::setup(MainWindow *window) {
         nsWindow.styleMask |= NSWindowStyleMaskFullSizeContentView;
         [nsWindow.contentView setWantsLayer:YES];
 
-        // Generate unique identifier to ensure that every window
-        // has it's own toolbar
+        // Generate a unique identifier to ensure that every window has its own
+        // toolbar
         NSString *toolbarIdentifier = makeToolbarIdentifier(window);
 
         STGToolbar *toolbar = [[[STGToolbar alloc] initWithIdentifier:toolbarIdentifier] autorelease];
@@ -63,36 +64,32 @@ void MacOSWindow::updateWindowTitle(MainWindow *window) {
 
 QPixmap MacOSWindow::resizeCursor() {
     NSCursor *cursor = [NSCursor resizeUpDownCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+
+    QImage image;
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 QPixmap MacOSWindow::closedHandCursor() {
     NSCursor *cursor = [NSCursor closedHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+
+    QImage image;
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 QPixmap MacOSWindow::openHandCursor() {
     NSCursor *cursor = [NSCursor openHandCursor];
-    CGImageRef cgRef = [cursor.image CGImageForProposedRect:nil
-                                                    context:nil
-                                                      hints:nil];
-    return QtMac::fromCGImageRef(cgRef);
-}
+    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithData:[cursor.image TIFFRepresentation]];
+    NSData *pngData = [bitmapRep representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 
-QRect MacOSWindow::adjustedGeometry(MainWindow *window) {
-    // NB! This method now does nothing. May be removed.
-    auto qRect = QRect(window->geometry().x(),
-                       window->geometry().y(),
-                       window->geometry().width(),
-                       window->geometry().height());
-
-    return qRect;
+    QImage image;
+    image.loadFromData(static_cast<const uchar *>(pngData.bytes), pngData.length, "PNG");
+    return QPixmap::fromImage(image);
 }
 
 bool MacOSWindow::hasSFSymbol() {

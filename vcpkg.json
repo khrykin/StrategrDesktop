@@ -6,14 +6,15 @@
     "utf8proc",
     "nlohmann-json",
     "boost-uuid",
-    "qt5-base",
     {
-      "name": "qt5-macextras",
-      "platform": "osx"
-    },
-    {
-      "name": "qt5-winextras",
-      "platform": "windows"
+      "name": "qtbase",
+      "default-features": false,
+      "features": [
+        "widgets",
+        "testlib",
+        "harfbuzz",
+        "png"
+      ]
     },
     {
       "name": "winsparkle",
@@ -43,16 +44,8 @@
       "version": "1.83.0"
     },
     {
-      "name": "qt5-base",
-      "version": "5.15.12"
-    },
-    {
-      "name": "qt5-macextras",
-      "version": "5.15.12"
-    },
-    {
-      "name": "qt5-winextras",
-      "version": "5.15.12"
+      "name": "qtbase",
+      "version": "6.8.3"
     },
     {
       "name": "winsparkle",

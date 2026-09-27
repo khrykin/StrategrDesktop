@@ -9,7 +9,7 @@ project(StrategrCore VERSION ${VERSION_SHORT})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 13.0)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 14.0)
 
 # Configure Files
 include(StrategrCoreConfigure)
@@ -19,6 +19,15 @@ if (MSVC)
     add_compile_options(/W4 /WX /wd4068 /wd26812)
 else ()
     add_compile_options(-Wall -Wextra -pedantic -Werror -Wno-unknown-pragmas)
+
+    # A handful of types across core/ have a same-named member (e.g. a
+    # `session` holding a reference to its `strategy`), which GCC warns
+    # about via -Wchanges-meaning; Clang doesn't have this warning at all.
+    # It's a long-established, pervasive convention here, not worth
+    # renaming, so disable just this one diagnostic on GCC.
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        add_compile_options(-Wno-changes-meaning)
+    endif ()
 endif ()
 
 # Dependencies
@@ -134,15 +143,14 @@ target_link_libraries(tests
         nlohmann_json::nlohmann_json
         libstrategr
         Catch2::Catch2
-        Catch2::Catch2WithMain
       )
 
 if (APPLE)
     target_compile_options(libstrategr PRIVATE -fobjc-arc)
 
     # Enable std::filesystem for tests
-    target_compile_options(tests PRIVATE -mmacosx-version-min=10.15)
-    target_link_options(tests PRIVATE -mmacosx-version-min=10.15)
+    target_compile_options(tests PRIVATE -mmacos-version-min=15)
+    target_link_options(tests PRIVATE -mmacos-version-min=15)
 
     target_sources(libstrategr
             PRIVATE

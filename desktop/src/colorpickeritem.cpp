@@ -2,6 +2,7 @@
 #include "colorutils.h"
 #include <QPaintEvent>
 #include <QPainter>
+#include <QEnterEvent>
 
 ColorPickerItem::ColorPickerItem(QColor color, QWidget *parent)
     : QWidget(parent), _color(std::move(color)) {
@@ -41,7 +42,7 @@ void ColorPickerItem::mousePressEvent(QMouseEvent *) {
     update();
 }
 
-void ColorPickerItem::enterEvent(QEvent *) {
+void ColorPickerItem::enterEvent(QEnterEvent *) {
     isHovered = true;
     update();
 }

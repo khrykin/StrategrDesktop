@@ -43,7 +43,6 @@ public:
     void clearRecentFilesList();
 
     void reloadStrategy();
-    int toolbarHeight();
 
 private:
     friend ApplicationMenu;

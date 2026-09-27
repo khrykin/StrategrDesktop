@@ -3,10 +3,9 @@
 //
 
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QTimer>
 
 #include "application.h"
-#include "macoswindow.h"
 #include "mainwindow.h"
 #include "windowgeometrymanager.h"
 
@@ -18,16 +17,13 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
 
     auto &settings = Application::currentSettings();
 
-    if (settings.value(windowGeometrySetting).isNull()) {
-        window->setGeometry(defaultInitialRect(window));
-    } else {
-        auto storedData = settings.value(windowGeometrySetting).toByteArray();
-        window->restoreGeometry(storedData);
-    }
+    auto storedRect = settings.value(windowGeometrySetting).toRect();
 
-#ifdef Q_OS_MAC
-    window->setGeometry(MacOSWindow::adjustedGeometry(window));
-#endif
+    if (storedRect.isValid()) {
+        window->setGeometry(storedRect);
+    } else {
+        window->setGeometry(defaultInitialRect(window));
+    }
 
     if (windows.count() > 0) {
         auto fixedGeometry = window->geometry();
@@ -43,12 +39,25 @@ void WindowGeometryManager::setInitialGeometry(MainWindow *window) {
     }
 
     windows.append(window);
+
+#ifdef Q_OS_MAC
+    // Attaching the window to the native run loop (which happens
+    // asynchronously right after this call returns, before the window is
+    // shown) silently resets the vertical position -- macOS's native
+    // toolbar/titlebar layout pass overrides it once, discarding the
+    // geometry set above. Re-apply on the next event loop iteration to
+    // correct for it; this sticks permanently once done.
+    auto target = window->geometry();
+    QTimer::singleShot(0, window, [window, target]() {
+        window->setGeometry(target);
+    });
+#endif
 }
 
 void WindowGeometryManager::saveGeometry(MainWindow *window) {
     windows.removeAll(window);
 
-    Application::currentSettings().setValue(windowGeometrySetting, window->saveGeometry());
+    Application::currentSettings().setValue(windowGeometrySetting, window->geometry());
 }
 
 void WindowGeometryManager::resetSavedGeometry() {
@@ -71,7 +80,7 @@ QRect WindowGeometryManager::defaultInitialRect(QWidget *window) {
 }
 
 QRect WindowGeometryManager::avaliableGeometry(QWidget *widget) {
-    return QDesktopWidget().availableGeometry(widget);
+    return widget->screen()->availableGeometry();
 }
 
 int WindowGeometryManager::minLeft() {

@@ -22,7 +22,7 @@ ActivityListWidget::ActivityListWidget(QWidget *parent) : DataProviderWidget(par
     layout()->setSpacing(0);
     layout()->setContentsMargins(0, 0, 0, 0);
 
-    setContentsMargins(0, toolbarHeight(), 0, 0);
+    setContentsMargins(0, 0, 0, 0);
 
     setupNavbar();
     layoutChildWidgets();
@@ -66,7 +66,7 @@ void ActivityListWidget::layoutChildWidgets() {
     listWidget->setProperty("listWidget", true);
     listWidget->setLayout(new QVBoxLayout());
     listWidget->layout()->setSpacing(0);
-    listWidget->layout()->setMargin(0);
+    listWidget->layout()->setContentsMargins(0, 0, 0, 0);
     listWidget->setStyleSheet("[listWidget] {"
                               "background: rgba(255, 255, 255, 0);"
                               "}");
@@ -208,7 +208,7 @@ void ActivityListWidget::showNewActivityMenu() {
                              newActivityMenu->sizeHint().width() - margin,
                          topOffset + margin);
 
-    center.setY(center.y() + toolbarHeight());
+    center.setY(center.y());
 
     newActivityMenu->focus();
     newActivityMenu->exec(center);

@@ -5,6 +5,8 @@
 #ifndef STRATEGR_EVENT_H
 #define STRATEGR_EVENT_H
 
+#include <cstdint>
+
 #include "geometry.h"
 
 namespace stg {
