@@ -166,4 +166,11 @@ void Application::checkForUpdates() {
     win_sparkle_check_update_with_ui();
 }
 
+#elif !defined(Q_OS_MAC)
+
+// No auto-update mechanism on this platform yet (macOS uses Sparkle, via
+// application.mm; Windows uses WinSparkle, above).
+void Application::checkForUpdates() {
+}
+
 #endif

@@ -11,42 +11,38 @@
 
 #ifdef Q_OS_WIN
 
-namespace {
-    // QtWinExtras (and QtWin::fromHICON with it) was removed in Qt6, so
-    // HICON -> QPixmap needs to go through GDI manually.
-    QPixmap pixmapFromHICON(HICON hicon) {
-        ICONINFO iconInfo;
-        if (!GetIconInfo(hicon, &iconInfo))
-            return {};
+QPixmap ApplicationIcon::fromHICON(HICON hicon) {
+    ICONINFO iconInfo;
+    if (!GetIconInfo(hicon, &iconInfo))
+        return {};
 
-        BITMAP bitmap;
-        GetObject(iconInfo.hbmColor, sizeof(BITMAP), &bitmap);
+    BITMAP bitmap;
+    GetObject(iconInfo.hbmColor, sizeof(BITMAP), &bitmap);
 
-        QImage image(bitmap.bmWidth, bitmap.bmHeight, QImage::Format_ARGB32);
+    QImage image(bitmap.bmWidth, bitmap.bmHeight, QImage::Format_ARGB32);
 
-        BITMAPINFOHEADER header = {};
-        header.biSize = sizeof(BITMAPINFOHEADER);
-        header.biWidth = bitmap.bmWidth;
-        header.biHeight = -bitmap.bmHeight;
-        header.biPlanes = 1;
-        header.biBitCount = 32;
-        header.biCompression = BI_RGB;
+    BITMAPINFOHEADER header = {};
+    header.biSize = sizeof(BITMAPINFOHEADER);
+    header.biWidth = bitmap.bmWidth;
+    header.biHeight = -bitmap.bmHeight;
+    header.biPlanes = 1;
+    header.biBitCount = 32;
+    header.biCompression = BI_RGB;
 
-        HDC hdc = GetDC(nullptr);
-        GetDIBits(hdc,
-                  iconInfo.hbmColor,
-                  0,
-                  bitmap.bmHeight,
-                  image.bits(),
-                  reinterpret_cast<BITMAPINFO *>(&header),
-                  DIB_RGB_COLORS);
-        ReleaseDC(nullptr, hdc);
+    HDC hdc = GetDC(nullptr);
+    GetDIBits(hdc,
+              iconInfo.hbmColor,
+              0,
+              bitmap.bmHeight,
+              image.bits(),
+              reinterpret_cast<BITMAPINFO *>(&header),
+              DIB_RGB_COLORS);
+    ReleaseDC(nullptr, hdc);
 
-        DeleteObject(iconInfo.hbmColor);
-        DeleteObject(iconInfo.hbmMask);
+    DeleteObject(iconInfo.hbmColor);
+    DeleteObject(iconInfo.hbmMask);
 
-        return QPixmap::fromImage(image);
-    }
+    return QPixmap::fromImage(image);
 }
 
 #endif
@@ -72,7 +68,7 @@ QPixmap ApplicationIcon::defaultIcon() {
                                               devicePixelRatio() * size,
                                               devicePixelRatio() * size,
                                               LR_DEFAULTCOLOR));
-    auto icon = pixmapFromHICON(hicon);
+    auto icon = fromHICON(hicon);
     icon.setDevicePixelRatio(devicePixelRatio());
 
     return icon;

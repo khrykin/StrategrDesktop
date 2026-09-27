@@ -7,10 +7,20 @@
 
 #include <QPixmap>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 class ApplicationIcon {
 public:
     static const auto size = 64;
     static QPixmap defaultIcon();
+
+#ifdef Q_OS_WIN
+    // QtWinExtras (and QtWin::fromHICON with it) was removed in Qt6, so
+    // HICON -> QPixmap needs to go through GDI manually.
+    static QPixmap fromHICON(HICON hicon);
+#endif
 };
 
 
