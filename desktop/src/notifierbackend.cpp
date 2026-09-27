@@ -27,7 +27,7 @@ NotifierBackend::NotifierBackend() {
 #ifdef Q_OS_WIN
 
         auto hInstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
-        auto hicon = static_cast<HICON>(LoadIcon(hInstance,"IDI_ICON1"));
+        auto hicon = static_cast<HICON>(LoadIcon(hInstance,L"IDI_ICON1"));
         icon = ApplicationIcon::fromHICON(hicon);
 
 #endif

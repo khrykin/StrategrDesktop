@@ -63,7 +63,7 @@ QPixmap ApplicationIcon::defaultIcon() {
 QPixmap ApplicationIcon::defaultIcon() {
     auto hInstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
     auto hicon = static_cast<HICON>(LoadImage(hInstance,
-                                              "IDI_ICON1",
+                                              L"IDI_ICON1",
                                               IMAGE_ICON,
                                               devicePixelRatio() * size,
                                               devicePixelRatio() * size,
